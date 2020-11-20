@@ -9,10 +9,11 @@ import Foundation
 
 public struct PolisPredefinedServicePaths {
     public static let defaultDomainName = "polis.observer"
-    public static let xmlDataFormat = "xml"
-    public static let jsonDataFormat = "json"
+    public static let xmlDataFormat     = "xml"
+    public static let jsonDataFormat    = "json"
 
     // Level 1 resource paths
+    public static let rootServiceDirectory  = "polis"
     public static let polisServiceDirectory = "service_directory"
 }
 

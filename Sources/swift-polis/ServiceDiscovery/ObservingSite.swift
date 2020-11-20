@@ -7,26 +7,61 @@
 
 import Foundation
 
-public enum ObservingSiteType: String, Codable {
-    case groundBasedFixed
-    case groundBasedMobile
-    case space   //TODO: Find a better name
+public indirect enum SolarSystemBodyType {
+    case Sun
+
+    case Mercury
+    case Venus
+    case Earth
+    case Mars
+    case Jupiter
+    case Saturn
+    case Uranus
+    case Neptune
+
+    case Pluto
+    case Ceres
+    case Haumea
+    case Makemake
+    case Eris
+    case KuiperBeltObject(String)
+
+    case moon(SolarSystemBodyType, String)       // e.g. .moon(.Jupiter, "Titan")
+    case asteroid(String)
+    case comet(String)
 }
 
-public struct ObservingSite: Codable {
+public enum ObservingSiteLocationType {
+    case earthGroundBasedFixed
+    case earthGroundBasedMobile
+    case earthAirBorn(Double)                    // Altitude in km
+    case groundBasedFixed(SolarSystemBodyType)
+    case groundBasedMobile(SolarSystemBodyType)  // e.g. Mars rover
+    case airBorn(SolarSystemBodyType, Double)
+    case solarSystemBody(SolarSystemBodyType)
+    case solarSystemNonOrbital                   // e.g. Voyager
+    case extraSolarSystem
+}
+
+public struct ObservingSite {
     // Location
     public let name: String
     public let startDate: Date
     public let endDate: Date?   // if != nil -> either closed or temporary created (e.g. solar eclipse monitoring)
+    public let observatories: [Observatory]
+}
+
+public enum ObservatoryType {
+    // Location
+    case telescope(Telescope)
+    case radioAntenna(RadioAntenna)
 }
 
 public struct Observatory {
-    // Location
+    let type: ObservatoryType
 }
 
 public enum InstrumentType {
-    case telescope(Telescope)
-    case radioAntenna(RadioAntenna)
 }
 
 public struct Telescope {
@@ -39,6 +74,7 @@ public struct Telescope {
     // SpectralEfficiency
     // SpectralRegion
     // TrackRate
+    public let telescopes: [Telescope]?
     public let instruments: [InstrumentType]?
 }
 

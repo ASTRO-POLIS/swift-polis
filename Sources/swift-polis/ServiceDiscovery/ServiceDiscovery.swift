@@ -25,7 +25,7 @@ public enum PolisProviderType: String, Codable {
 }
 
 public struct PolisDirectoryEntry: Codable {
-    public let id: String      // Actually a UUID
+    public let uid: String      // Actually a UUID
     public let name: String
     public let description: String?
     public let lastUpdate: Date
