@@ -17,20 +17,26 @@ public enum PolisDataFormatType: String, Codable {
     case json
 }
 
-public enum PolisProviderType: String, Codable {
-    case `public`  // default
+public enum PolisProviderType {
+    case `public`         // default
     case `private`
-    case mirror   //TODO: should be mirror(String), where the argument is the ID of the main service
+    case mirror(String)   // The uid of the service provider being mirrored.
     case experimental
 }
 
 public struct PolisDirectoryEntry: Codable {
-    public let uid: String      // Actually a UUID
+    public let uid: String      // Globally unique ID (UUID version 4)
     public let name: String
+    public let domain: String   // Fully qualified, e.g. https://polis.observer
     public let description: String?
     public let lastUpdate: Date
     public let supportedProtocolLevels: [UInt8]
     public let supportedAPIVersions: [String]
     public let supportedDataTypes: [PolisDataFormatType]
     public let providerType: PolisProviderType
+}
+
+public struct ObservingSiteReferenceDirectory {
+    public let lastUpdate: Date
+    public let sireReference: [ObservingSiteReference]
 }

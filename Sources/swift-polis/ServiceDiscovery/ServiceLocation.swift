@@ -41,4 +41,10 @@ public class AbstractPolisProvider {
         self.apiVersion = apiVersion
     }
 
+    // These methods should be overridden
+    public func isAccessible() -> Bool { false }
+    public func isPolisService() -> Bool { false }
+    public func providerType() -> PolisProviderType? { nil }
+    public func siteDirectoryEntry() -> PolisDirectoryEntry? { nil }
+    
 }

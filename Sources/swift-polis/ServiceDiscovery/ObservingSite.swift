@@ -43,10 +43,20 @@ public enum ObservingSiteLocationType {
     case extraSolarSystem
 }
 
+/// This is only a quick reference to check if Client's cache has this site and if the site is up-to-date.
+public struct ObservingSiteReference {
+    public let uid: String       // Globally unique ID (UUID version 4)
+    public let domain: String    // Fully qualified, e.g. https://polis.observer/
+    public let rootPath: String  // Meaning domain/root/path/to/the/service
+    public let lastUpdate: Date
+    public let supportedProtocolLevels: [UInt8]
+    public let supportedAPIVersions: [String]
+    public let supportedDataTypes: [PolisDataFormatType]
+}
 public struct ObservingSite {
     // Location
     public let name: String
-    public let startDate: Date
+    public let startDate: Date? // Might be unknown
     public let endDate: Date?   // if != nil -> either closed or temporary created (e.g. solar eclipse monitoring)
     public let observatories: [Observatory]
 }
