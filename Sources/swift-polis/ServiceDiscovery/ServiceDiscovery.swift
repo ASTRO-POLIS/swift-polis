@@ -16,10 +16,19 @@ import Foundation
 
 /// POLIS APIs are either in XML or in JSON. For reasons stated elsewhere in the documentation XML APIs are preferred
 /// for production code. In contrast, JSON is often easier to be used for new development (no need of schema development)
-/// and often easier to be used from mobile and web applications. But because its fragility it should be avoided.
-public enum PolisDataFormatType: String, Codable {
+/// and often easier to be used from mobile and web applications. But because its fragility it should be avoided in
+/// stable production.
+/// **Note:** Perhaps later we might need also `plist` format?
+public enum PolisDataFormatType: String, Codable, CustomStringConvertible, CaseIterable {
     case xml
     case json
+
+    public var description: String {
+        switch self {
+            case .xml:  return "xml"
+            case .json: return "json"
+        }
+    }
 }
 
 /// `PolisProviderType` defines different types of POLIS providers.
