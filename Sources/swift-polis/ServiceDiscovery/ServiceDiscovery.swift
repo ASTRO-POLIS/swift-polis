@@ -39,21 +39,59 @@ public enum PolisDataFormatType: String, Codable, CustomStringConvertible, CaseI
 /// `private` provider's main purpose is to act as a local cache for larger institutions and should be not accessed from
 /// outside. They might require user authentication.
 /// `experimental` providers are sandboxes for new developments, and might require authentication.
-public enum PolisProviderType {
+public enum PolisProviderType: Codable {
+
     case `public`         // default
     case `private`
     case mirror(String)   // The uid of the service provider being mirrored.
     case experimental
+
+    public init(from decoder: Decoder) throws {
+        if let value = try? String(from: decoder) {
+            if      value.hasPrefix("public")       { self  = .`public` }
+            else if value.hasPrefix("private")      { self  = .`private` }
+            else if value.hasPrefix("experimental") { self  = .experimental }
+            else if value.hasPrefix("mirror::")     {
+                let components = value.components(separatedBy: "::")
+
+                if components.count == 2 { self  = .mirror(components[1]) }
+                else {
+                    let context = DecodingError.Context( codingPath: decoder.codingPath, debugDescription: "Badly formatted mirror option")
+                    throw DecodingError.dataCorrupted(context)
+                }
+            }
+            else {
+                let context = DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Missing proper decoding format!")
+                throw DecodingError.dataCorrupted(context)
+            }
+        }
+        else {
+            let context = DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Cannot decode \(String.self)")
+            throw DecodingError.dataCorrupted(context)
+        }
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+
+        switch self {
+            case .`public`:           try container.encode(String("public"))
+            case .`private`:          try container.encode(String("private"))
+            case .`experimental`:     try container.encode(String("experimental"))
+            case .mirror(let siteID): try container.encode(String("mirror::\(siteID))"))
+        }
+    }
+
 }
 
 /// A list of known
-public struct PolisDirectory {
+public struct PolisDirectory: Codable {
     public let lastUpdate: Date
     public var entries: [PolisDirectoryEntry]
 }
 
 /// All the information needed to identify a site as a POLIS provider
-public struct PolisDirectoryEntry {
+public struct PolisDirectoryEntry: Codable {
     public let uid: String      // Globally unique ID (UUID version 4)
     public let name: String     // Should be unique to avoid errors, but not a requirement
     public let domain: String   // Fully qualified, e.g. https://polis.observer
