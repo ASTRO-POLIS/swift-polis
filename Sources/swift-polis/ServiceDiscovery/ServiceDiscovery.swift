@@ -39,8 +39,7 @@ public enum PolisDataFormatType: String, Codable, CustomStringConvertible, CaseI
 /// `private` provider's main purpose is to act as a local cache for larger institutions and should be not accessed from
 /// outside. They might require user authentication.
 /// `experimental` providers are sandboxes for new developments, and might require authentication.
-public enum PolisProviderType: Codable {
-
+public enum PolisProviderType: Codable, CustomStringConvertible {
     case `public`         // default
     case `private`
     case mirror(String)   // The uid of the service provider being mirrored.
@@ -48,10 +47,10 @@ public enum PolisProviderType: Codable {
 
     public init(from decoder: Decoder) throws {
         if let value = try? String(from: decoder) {
-            if      value.hasPrefix("public")       { self  = .`public` }
-            else if value.hasPrefix("private")      { self  = .`private` }
-            else if value.hasPrefix("experimental") { self  = .experimental }
-            else if value.hasPrefix("mirror::")     {
+            if      value == "public"           { self  = .`public` }
+            else if value == "private"          { self  = .`private` }
+            else if value == "experimental"     { self  = .experimental }
+            else if value.hasPrefix("mirror::") {
                 let components = value.components(separatedBy: "::")
 
                 if components.count == 2 { self  = .mirror(components[1]) }
@@ -82,23 +81,59 @@ public enum PolisProviderType: Codable {
         }
     }
 
+    public var description: String {
+        switch self {
+            case .`public`:           return "public"
+            case .`private`:          return "private"
+            case .`experimental`:     return "experimental"
+            case .mirror(let siteID): return "mirror(\(siteID)))"
+        }
+    }
 }
 
 /// A list of known
-public struct PolisDirectory: Codable {
+public struct PolisDirectory: Codable, CustomStringConvertible {
     public let lastUpdate: Date
     public var entries: [PolisDirectoryEntry]
+
+    public var description: String {
+        var result = "{\n   \"lastUpdate\": \"\(lastUpdate)\",\n"
+        result +=    "    \"entries\": [\n"
+        for entry in entries {
+            result += "      \(entry),\n"
+        }
+        result += "   ]\n}\n"
+
+        //TODO: Test me for good formatting!
+        return result
+    }
 }
 
 /// All the information needed to identify a site as a POLIS provider
-public struct PolisDirectoryEntry: Codable {
+public struct PolisDirectoryEntry: Codable, CustomStringConvertible {
     public let uid: String      // Globally unique ID (UUID version 4)
     public let name: String     // Should be unique to avoid errors, but not a requirement
     public let domain: String   // Fully qualified, e.g. https://polis.observer
-    public let description: String?
+    public let providerDescription: String?
     public let lastUpdate: Date
     public let supportedProtocolLevels: [UInt8]
     public let supportedAPIVersions: [String]
     public let supportedDataTypes: [PolisDataFormatType]
     public let providerType: PolisProviderType
+
+
+    public var description: String {
+        var result = " { \"uid\": \"\(uid)}\", "
+        result +=    "\"name\": \"\(name)\", "
+        result +=    "\"domain\": \"\(domain)\", "
+        result +=    "\"providerDescription\": \"\(providerDescription ?? "No description")\", "
+        result +=    "\"lastUpdate\": \"\(lastUpdate)\", "
+        result +=    "\"supportedProtocolLevels\": \"\(supportedProtocolLevels)\", "
+        result +=    "\"supportedAPIVersions\": \"\(supportedAPIVersions)\", "
+        result +=    "\"supportedDataTypes\": \"\(supportedDataTypes)\", "
+        result +=    "\"providerType\": \"\(providerType)\" }"
+
+        //TODO: Test me for good formatting!
+        return result
+    }
 }
