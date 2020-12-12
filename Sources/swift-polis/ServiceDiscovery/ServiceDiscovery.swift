@@ -115,6 +115,7 @@ public struct PolisDirectoryEntry: Codable, CustomStringConvertible {
     public let name: String     // Should be unique to avoid errors, but not a requirement
     public let domain: String   // Fully qualified, e.g. https://polis.observer
     public let providerDescription: String?
+    // contact: PolisCommunicationContact
     public let lastUpdate: Date
     public let supportedProtocolLevels: [UInt8]
     public let supportedAPIVersions: [String]

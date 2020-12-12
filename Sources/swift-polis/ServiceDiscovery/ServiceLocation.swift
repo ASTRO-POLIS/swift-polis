@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Definition of well known paths and APIs
 public struct PolisPredefinedServicePaths {
     public static let defaultDomainName = "polis.observer"
     public static let xmlDataFormat     = "xml"
@@ -15,6 +16,20 @@ public struct PolisPredefinedServicePaths {
     // Level 1 resource paths
     public static let rootServiceDirectory  = "polis"
     public static let polisServiceDirectory = "service_directory"
+}
+
+public enum ContactType {
+    case twitter(userName: String)
+    case whatsApp(phone: String)
+    case facebook(id: String)
+    case instagram(userName: String)
+    case skype(id: String)
+}
+
+public struct PolisCommunicationContact {
+    public let name: String            // Organisation or user name
+    public let email: String           // Required valid email address (will be checked for validity)
+    public let additionalContacts: [ContactType]?
 }
 
 /// Must be subclassed depending on the needs for synchronous or asynchronous communication with the provider,

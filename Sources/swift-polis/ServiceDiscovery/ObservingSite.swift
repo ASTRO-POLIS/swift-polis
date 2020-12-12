@@ -7,6 +7,18 @@
 
 import Foundation
 
+public enum OwnershipType: String, Codable {
+    case university
+    case research
+    case commercial
+    case school
+    case network
+    case government
+    case ngo
+    case `private`     // personal, amateur, ...
+    case other
+}
+
 public indirect enum SolarSystemBodyType {
     case Sun
 
@@ -31,27 +43,28 @@ public indirect enum SolarSystemBodyType {
     case comet(name: String)
 }
 
-public enum ObservingSiteLocationType {
-    case earthGroundBasedFixed(location: EarthLocation)
-    case earthGroundBasedMobile(description: String)
-    case earthAirBorn(range: AltitudeRange?)     // Altitude in km
-    case groundBasedFixed(SolarSystemBodyType)
-    case groundBasedMobile(SolarSystemBodyType)  // e.g. Mars rover
-    case airBorn(SolarSystemBodyType, Double)
-    case solarSystemBody(SolarSystemBodyType)
-    case solarSystemNonOrbital                   // e.g. Voyager
-    case extraSolarSystem
+public struct EarthLocation: Codable {
+    public let eastLongitude: Double  // degrees
+    public let latitude: Double       // degrees
+    public let altitude: Double?      // m
 }
 
-public struct AltitudeRange {
+public struct AltitudeRange: Codable {
     let lowOrbit: Double  // m
     let highOrbit: Double // m
 }
 
-public struct EarthLocation {
-    public let eastLongitude: Double  // degrees
-    public let latitude: Double       // degrees
-    public let altitude: Double?      // m
+public enum ObservingSiteLocationType {
+    case earthGroundBasedFixed(location: EarthLocation?)
+    case earthGroundBasedMobile(locationDescription: String?)
+    case earthAirBorn(range: AltitudeRange?)                            // Altitude in km
+    case groundBasedFixed(location: SolarSystemBodyType)
+    case groundBasedMobile(location: SolarSystemBodyType)               // e.g. Mars rover
+    case airBorn(location: SolarSystemBodyType, range: AltitudeRange?)
+    case solarSystemBodyOrbital(location: SolarSystemBodyType)
+    case solarSystemNonOrbital(locationDescription: String?)            // e.g. Voyager
+    case extraSolarSystem
+    case ivoa(descriptor: String)
 }
 
 public struct ObservingSite {
@@ -59,6 +72,7 @@ public struct ObservingSite {
     public let name: String
     public let startDate: Date? // Might be unknown
     public let endDate: Date?   // if != nil -> either closed or temporary created (e.g. solar eclipse monitoring)
+    public let ownershipType: OwnershipType
     public let observatories: [Observatory]
     public let description: String?
 }
