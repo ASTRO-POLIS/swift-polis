@@ -19,7 +19,7 @@ import Foundation
 /// implementation) and often easier to be used from mobile and web applications. But because its fragility it should be
 /// avoided in stable production systems.
 /// **Note:** Perhaps later we might need also `plist` format?
-public enum PolisDataFormat: String, Codable, CaseIterable {  // CustomStringConvertible, Equatable
+public enum PolisDataFormat: String, Codable {  // Equatable
     case xml
     case json
 }
@@ -49,7 +49,7 @@ public enum Communicating {              // Coding
 }
 
 /// `PolisCommunicationContact` is the way to contact a provider, an observing site, or an observatory
-public struct PolisContact {
+public struct PolisContact {                        
     public let name: String                         // Organisation or user name
     public let email: String                        // Required valid email address (will be checked for validity)
     public let additionalContacts: [Communicating]?
@@ -71,7 +71,7 @@ public struct PolisDirectoryEntry {                 // Codable
 }
 
 /// A list of known
-public struct PolisDirectory  {   // Codable, CustomStringConvertible
+public struct PolisDirectory  {   // Codable
     public let lastUpdate: Date
     public var entries: [PolisDirectoryEntry]
 }
@@ -202,22 +202,10 @@ extension PolisDirectoryEntry: Codable {
     }
 }
 
+//MARK: - PolisDirectory
 extension PolisDirectory: Codable {
     private enum CodingKeys: String, CodingKey {
         case lastUpdate = "last_updated"
         case entries
    }
 }
-
-//MARK: - Making types CustomStringConvertible -
-
-//MARK: - PolisDataFormat
-extension PolisDataFormat: CustomStringConvertible {
-    public var description: String {
-        switch self {
-            case .xml:  return "xml"
-            case .json: return "json"
-        }
-    }
-}
-

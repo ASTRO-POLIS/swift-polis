@@ -19,9 +19,6 @@ final class ServiceDiscoveryTests: XCTestCase {
         string = String(data: data!, encoding: .utf8)
         let j1 = try! jsonDecoder.decode(PolisDataFormat.self, from: string!.data(using: .utf8)!)
         XCTAssertEqual(j, j1)
-
-        XCTAssertEqual(j.description, "json")
-        XCTAssertEqual(x.description, "xml")
     }
 
     func testPolisProvider() {
