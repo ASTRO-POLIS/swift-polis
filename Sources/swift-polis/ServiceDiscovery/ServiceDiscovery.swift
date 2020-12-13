@@ -24,7 +24,6 @@ public enum PolisDataFormat: String, Codable, CaseIterable {  // CustomStringCon
     case json
 }
 
-
 /// `PolisProviderType` defines different types of POLIS providers.
 ///
 /// Only `public` provider should be used in production. Public providers should run on server with enough bandwidth and
@@ -40,7 +39,8 @@ public enum PolisProvider {         // Codable
     case mirror(identifier: String) // The uid of the service provider being mirrored.
 }
 
-public enum ContactType {
+/// `ContactType` defines different types of communication channels
+public enum Communicating {              // Coding
     case twitter(userName: String)
     case whatsApp(phone: String)
     case facebook(id: String)
@@ -48,10 +48,11 @@ public enum ContactType {
     case skype(id: String)
 }
 
-public struct PolisCommunicationContact {
-    public let name: String            // Organisation or user name
-    public let email: String           // Required valid email address (will be checked for validity)
-    public let additionalContacts: [ContactType]?
+/// `PolisCommunicationContact` is the way to contact a provider, an observing site, or an observatory
+public struct PolisContact {
+    public let name: String                         // Organisation or user name
+    public let email: String                        // Required valid email address (will be checked for validity)
+    public let additionalContacts: [Communicating]?
 }
 
 
@@ -66,6 +67,7 @@ public struct PolisDirectoryEntry {                 // Codable
     public let supportedAPIVersions: [String]       // Formatted as a SemanticVersion, see https://semver.org
     public let supportedFormats: [PolisDataFormat]  // Currently JSON and XML
     public let providerType: PolisProvider
+    public let contact: PolisContact
 }
 
 /// A list of known
@@ -76,6 +78,8 @@ public struct PolisDirectory  {   // Codable, CustomStringConvertible
 
 
 //MARK: - Making types Codable -
+
+//MARK: PolisProvider
 extension PolisProvider: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -104,19 +108,85 @@ extension PolisProvider: Codable {
         }
     }
 
+    private enum CodingKeys: String, CodingKey { case providerType, mirrorParams }
+
+    private enum ProviderType: String, Codable { case `public`, `private`, experimental, mirror }
+
+    private struct MirrorParams: Codable { let identifier: String }
+}
+
+//MARK: - ContactType
+extension Communicating: Codable {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let base      = try container.decode(CommunicationType.self, forKey: .communicationType)
+
+        switch base {
+            case .twitter:
+                let twitterParams = try container.decodeIfPresent(TwitterParams.self, forKey: .twitterParams)
+                self = .twitter(userName: twitterParams!.userName)
+            case .whatsApp:
+                let whatsAppParams = try container.decodeIfPresent(WhatsAppParams.self, forKey: .whatsAppParams)
+                self = .whatsApp(phone: whatsAppParams!.phone)
+            case .facebook:
+                let facebookParams = try container.decodeIfPresent(FacebookParams.self, forKey: .facebookParams)
+                self = .facebook(id: facebookParams!.id)
+            case .instagram:
+                let instagramParams = try container.decodeIfPresent(InstagramParams.self, forKey: .instagramParams)
+                self = .instagram(userName: instagramParams!.userName)
+            case .skype:
+                let skypeParams = try container.decodeIfPresent(SkypeParams.self, forKey: .skypeParams)
+                self = .skype(id: skypeParams!.id)
+        }
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        switch self {
+            case .twitter(let username):
+                try container.encode(CommunicationType.twitter, forKey: .communicationType)
+                try container.encode(TwitterParams(userName: username), forKey: .twitterParams)
+            case .whatsApp(let phone):
+                try container.encode(CommunicationType.whatsApp, forKey: .communicationType)
+                try container.encode(WhatsAppParams(phone: phone), forKey: .whatsAppParams)
+            case .facebook(let id):
+                try container.encode(CommunicationType.facebook, forKey: .communicationType)
+                try container.encode(FacebookParams(id: id), forKey: .facebookParams)
+            case .instagram(let username):
+                try container.encode(CommunicationType.instagram, forKey: .communicationType)
+                try container.encode(InstagramParams(userName: username), forKey: .instagramParams)
+            case .skype(let id):
+                try container.encode(CommunicationType.skype, forKey: .communicationType)
+                try container.encode(SkypeParams(id: id), forKey: .skypeParams)
+        }
+    }
+
+    public enum CodingKeys: String, CodingKey { case communicationType, twitterParams, whatsAppParams, facebookParams, instagramParams, skypeParams }
+
+    private enum CommunicationType: String, Codable { case twitter, whatsApp, facebook, instagram, skype }
+
+    private struct TwitterParams: Codable {  let userName: String }
+
+    private struct WhatsAppParams: Codable { let phone: String }
+
+    private struct FacebookParams: Codable { let id: String }
+
+    private struct InstagramParams: Codable { let userName: String }
+
+    private struct SkypeParams: Codable { let id: String }
+}
+
+//MARK: - PolisContact
+extension PolisContact: Codable {
     private enum CodingKeys: String, CodingKey {
-        case providerType, mirrorParams
-    }
-
-    private enum ProviderType: String, Codable {
-        case `public`, `private`, experimental, mirror
-    }
-
-    private struct MirrorParams: Codable {
-        let identifier: String
+        case name
+        case email
+        case additionalContacts = "additional_contacts"
     }
 }
 
+//MARK: - PolisDirectoryEntry
 extension PolisDirectoryEntry: Codable {
     private enum CodingKeys: String, CodingKey {
         case identifier              = "uid"
@@ -128,6 +198,7 @@ extension PolisDirectoryEntry: Codable {
         case supportedAPIVersions    = "supported_api_versions"
         case supportedFormats        = "supported_formats"
         case providerType            = "provider_type"
+        case contact
     }
 }
 
@@ -139,6 +210,8 @@ extension PolisDirectory: Codable {
 }
 
 //MARK: - Making types CustomStringConvertible -
+
+//MARK: - PolisDataFormat
 extension PolisDataFormat: CustomStringConvertible {
     public var description: String {
         switch self {
@@ -147,3 +220,4 @@ extension PolisDataFormat: CustomStringConvertible {
         }
     }
 }
+

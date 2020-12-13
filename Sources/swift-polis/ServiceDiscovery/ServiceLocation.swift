@@ -7,50 +7,41 @@
 
 import Foundation
 
+/*
+Thoughts about predefined pats and API queries:
+
+ - <domain> - Something like https://polis.observer (it is recommended to support HTTPS)
+
+ **Protocol level 1:**
+ - <domain>/polis/polis.json           [required]
+ - <domain>/polis/polis.xml            [optional]
+    Describes the domain, its ID, type, ownership, contact etc.
+
+ - <domain>/polis/polis_directory.json [required]
+ - <domain>/polis/polis_directory.xml  [optional]
+    List of all known POLIS providers
+
+ - <domain>/polis/sites_directory.json [required]
+ - <domain>/polis/sites_directory.xml  [optional]
+    Directory (list) of known observing sites containing their IDs, last update dates, and optional short names. It is
+    recommended that clients cache this list and access the full observing site only on demand.
+
+ */
+
 /// Definition of well known paths and APIs
 public struct PolisPredefinedServicePaths {
-    public static let defaultDomainName = "polis.observer"
+    public static let defaultDomainName = "https://polis.observer"
     public static let xmlDataFormat     = "xml"
     public static let jsonDataFormat    = "json"
 
     // Level 1 resource paths
     public static let rootServiceDirectory  = "polis"
-    public static let polisServiceDirectory = "service_directory"
 }
 
-/// Must be subclassed depending on the needs for synchronous or asynchronous communication with the provider,
-/// data caching, update frequency etc.
-public class AbstractPolisProvider {
-    public var domainName: String
-    public var dataFormat: PolisDataFormat
-    public var apiVersion: String
 
-    //TODO: Use Georg's SemanticVersion.swift (SoftwareEtudes repo) to validate the apiVersion
-    public init?(domainName: String = PolisPredefinedServicePaths.defaultDomainName,
-         dataFormat: String = PolisPredefinedServicePaths.xmlDataFormat,
-         apiVersion: String = "*") {
-        var dataFormatToBeUsed: String
+//MARK: - JSON encoding / decoding support -
+/// Use these JSONDecoder and JSONEncoder subclasses to convert types to and from JSON
 
-        if (dataFormat != PolisPredefinedServicePaths.xmlDataFormat) && (dataFormat != PolisPredefinedServicePaths.jsonDataFormat) {
-            dataFormatToBeUsed = PolisPredefinedServicePaths.xmlDataFormat
-        } else {
-            dataFormatToBeUsed = dataFormat
-        }
-
-        self.domainName = dataFormatToBeUsed
-        self.dataFormat = dataFormat == "xml" ? PolisDataFormat.xml : PolisDataFormat.json
-        self.apiVersion = apiVersion
-    }
-
-    // These methods should be overridden
-    public func isAccessible() -> Bool { false }
-    public func isPolisService() -> Bool { false }
-    public func providerType() -> PolisProvider? { nil }
-    public func siteDirectoryEntry() -> PolisDirectoryEntry? { nil }
-    
-}
-
-/// Use these JSONDecoder and JSONEncoder to convert types to and from JSON
 @available(OSX 10.12, *)
 public class PolisJSONDecoder: JSONDecoder {
 
@@ -65,10 +56,7 @@ public class PolisJSONDecoder: JSONDecoder {
             let date       = self.dateFormatter.date(from: dateString)
 
             if let date = date { return date }
-            else {
-                throw DecodingError.dataCorruptedError(in: container,
-                                                       debugDescription: "Date values must be ISO8601 formatted")
-            }
+            else { throw DecodingError.dataCorruptedError(in: container, debugDescription: "Date values must be ISO8601 formatted") }
         }
     }
 }
