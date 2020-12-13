@@ -5,31 +5,25 @@
 //  Created by Georg Tuparev on 18/11/2020.
 //
 
-/// This file defines types related to the POLIS provider discovery. The exact process is described in other documents.
+/// This file defines types related to the POLIS provider discovery. The exact process is described in different documents.
 /// Later versions might implement a reference implementation of the discovery process, but every provider is free to
 /// implement its own procedures.
 ///
 /// **Note for Swift developers:** Before releasing version 1.0 of this package all types will implement `Codable` to
-/// allow easy marshalling from JSON or XML data.
+/// allow easy marshalling first from JSON and later from XML data.
 
 import Foundation
 
-/// POLIS APIs are either in XML or in JSON. For reasons stated elsewhere in the documentation XML APIs are preferred
-/// for production code. In contrast, JSON is often easier to be used for new development (no need of schema development)
-/// and often easier to be used from mobile and web applications. But because its fragility it should be avoided in
-/// stable production.
+/// POLIS APIs are either in XML or in JSON format. For reasons stated elsewhere in the documentation XML APIs are
+/// preferred for production code. In contrast, JSON is often easier to be used for new development (no need of schema
+/// implementation) and often easier to be used from mobile and web applications. But because its fragility it should be
+/// avoided in stable production systems.
 /// **Note:** Perhaps later we might need also `plist` format?
-public enum PolisDataFormatType: String, Codable, CustomStringConvertible, CaseIterable {
+public enum PolisDataFormat: String, Codable, CaseIterable {
     case xml
     case json
-
-    public var description: String {
-        switch self {
-            case .xml:  return "xml"
-            case .json: return "json"
-        }
-    }
 }
+
 
 /// `PolisProviderType` defines different types of POLIS providers.
 ///
@@ -91,6 +85,21 @@ public enum PolisProviderType: Codable, CustomStringConvertible {
     }
 }
 
+public enum ContactType {
+    case twitter(userName: String)
+    case whatsApp(phone: String)
+    case facebook(id: String)
+    case instagram(userName: String)
+    case skype(id: String)
+}
+
+public struct PolisCommunicationContact {
+    public let name: String            // Organisation or user name
+    public let email: String           // Required valid email address (will be checked for validity)
+    public let additionalContacts: [ContactType]?
+}
+
+
 /// A list of known
 public struct PolisDirectory: Codable, CustomStringConvertible {
     public let lastUpdate: Date
@@ -119,7 +128,7 @@ public struct PolisDirectoryEntry: Codable, CustomStringConvertible {
     public let lastUpdate: Date
     public let supportedProtocolLevels: [UInt8]
     public let supportedAPIVersions: [String]
-    public let supportedDataTypes: [PolisDataFormatType]
+    public let supportedDataTypes: [PolisDataFormat]
     public let providerType: PolisProviderType
 
 
@@ -136,5 +145,15 @@ public struct PolisDirectoryEntry: Codable, CustomStringConvertible {
 
         //TODO: Test me for good formatting!
         return result
+    }
+}
+
+//MARK: - CustomStringConvertible extensions -
+extension PolisDataFormat: CustomStringConvertible {
+    public var description: String {
+        switch self {
+            case .xml:  return "\"xml\""
+            case .json: return "\"json\""
+        }
     }
 }

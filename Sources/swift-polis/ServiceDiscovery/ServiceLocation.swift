@@ -18,25 +18,11 @@ public struct PolisPredefinedServicePaths {
     public static let polisServiceDirectory = "service_directory"
 }
 
-public enum ContactType {
-    case twitter(userName: String)
-    case whatsApp(phone: String)
-    case facebook(id: String)
-    case instagram(userName: String)
-    case skype(id: String)
-}
-
-public struct PolisCommunicationContact {
-    public let name: String            // Organisation or user name
-    public let email: String           // Required valid email address (will be checked for validity)
-    public let additionalContacts: [ContactType]?
-}
-
 /// Must be subclassed depending on the needs for synchronous or asynchronous communication with the provider,
 /// data caching, update frequency etc.
 public class AbstractPolisProvider {
     public var domainName: String
-    public var dataFormat: PolisDataFormatType
+    public var dataFormat: PolisDataFormat
     public var apiVersion: String
 
     //TODO: Use Georg's SemanticVersion.swift (SoftwareEtudes repo) to validate the apiVersion
@@ -52,7 +38,7 @@ public class AbstractPolisProvider {
         }
 
         self.domainName = dataFormatToBeUsed
-        self.dataFormat = dataFormat == "xml" ? PolisDataFormatType.xml : PolisDataFormatType.json
+        self.dataFormat = dataFormat == "xml" ? PolisDataFormat.xml : PolisDataFormat.json
         self.apiVersion = apiVersion
     }
 
