@@ -45,7 +45,39 @@ public class AbstractPolisProvider {
     // These methods should be overridden
     public func isAccessible() -> Bool { false }
     public func isPolisService() -> Bool { false }
-    public func providerType() -> PolisProviderType? { nil }
+    public func providerType() -> PolisProvider? { nil }
     public func siteDirectoryEntry() -> PolisDirectoryEntry? { nil }
     
+}
+
+/// Use these JSONDecoder and JSONEncoder to convert types to and from JSON
+@available(OSX 10.12, *)
+public class PolisJSONDecoder: JSONDecoder {
+
+    let dateFormatter = ISO8601DateFormatter()
+
+    override init() {
+        super.init()
+
+        dateDecodingStrategy = .custom{ (decoder) -> Date in
+            let container  = try decoder.singleValueContainer()
+            let dateString = try container.decode(String.self)
+            let date       = self.dateFormatter.date(from: dateString)
+
+            if let date = date { return date }
+            else {
+                throw DecodingError.dataCorruptedError(in: container,
+                                                       debugDescription: "Date values must be ISO8601 formatted")
+            }
+        }
+    }
+}
+
+@available(OSX 10.12, *)
+public class PolisJSONEncoder: JSONEncoder {
+    override init() {
+        super.init()
+
+        dateEncodingStrategy = .iso8601
+    }
 }

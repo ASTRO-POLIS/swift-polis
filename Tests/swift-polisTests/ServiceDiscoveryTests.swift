@@ -3,8 +3,8 @@ import XCTest
 
 final class ServiceDiscoveryTests: XCTestCase {
 
-    let jsonEncoder = JSONEncoder()
-    let jsonDecoder = JSONDecoder()
+    let jsonEncoder = PolisJSONEncoder()
+    let jsonDecoder = PolisJSONDecoder()
     var data: Data!
     var string: String!
 
@@ -20,8 +20,8 @@ final class ServiceDiscoveryTests: XCTestCase {
         let j1 = try! jsonDecoder.decode(PolisDataFormat.self, from: string!.data(using: .utf8)!)
         XCTAssertEqual(j, j1)
 
-        XCTAssertEqual(j.description, "\"json\"")
-        XCTAssertEqual(x.description, "\"xml\"")
+        XCTAssertEqual(j.description, "json")
+        XCTAssertEqual(x.description, "xml")
     }
 
     override func setUp() {

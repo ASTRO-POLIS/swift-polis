@@ -19,7 +19,7 @@ import Foundation
 /// implementation) and often easier to be used from mobile and web applications. But because its fragility it should be
 /// avoided in stable production systems.
 /// **Note:** Perhaps later we might need also `plist` format?
-public enum PolisDataFormat: String, Codable, CaseIterable {
+public enum PolisDataFormat: String, Codable, CaseIterable {  // CustomStringConvertible, Equatable
     case xml
     case json
 }
@@ -33,56 +33,11 @@ public enum PolisDataFormat: String, Codable, CaseIterable {
 /// `private` provider's main purpose is to act as a local cache for larger institutions and should be not accessed from
 /// outside. They might require user authentication.
 /// `experimental` providers are sandboxes for new developments, and might require authentication.
-public enum PolisProviderType: Codable, CustomStringConvertible {
-    case `public`         // default
+public enum PolisProvider {         // Codable
+    case `public`                   // Should be the default
     case `private`
-    case mirror(String)   // The uid of the service provider being mirrored.
     case experimental
-
-    public init(from decoder: Decoder) throws {
-        if let value = try? String(from: decoder) {
-            if      value == "public"           { self  = .`public` }
-            else if value == "private"          { self  = .`private` }
-            else if value == "experimental"     { self  = .experimental }
-            else if value.hasPrefix("mirror::") {
-                let components = value.components(separatedBy: "::")
-
-                if components.count == 2 { self  = .mirror(components[1]) }
-                else {
-                    let context = DecodingError.Context( codingPath: decoder.codingPath, debugDescription: "Badly formatted mirror option")
-                    throw DecodingError.dataCorrupted(context)
-                }
-            }
-            else {
-                let context = DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Missing proper decoding format!")
-                throw DecodingError.dataCorrupted(context)
-            }
-        }
-        else {
-            let context = DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Cannot decode \(String.self)")
-            throw DecodingError.dataCorrupted(context)
-        }
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-
-        switch self {
-            case .`public`:           try container.encode(String("public"))
-            case .`private`:          try container.encode(String("private"))
-            case .`experimental`:     try container.encode(String("experimental"))
-            case .mirror(let siteID): try container.encode(String("mirror::\(siteID))"))
-        }
-    }
-
-    public var description: String {
-        switch self {
-            case .`public`:           return "public"
-            case .`private`:          return "private"
-            case .`experimental`:     return "experimental"
-            case .mirror(let siteID): return "mirror(\(siteID)))"
-        }
-    }
+    case mirror(identifier: String) // The uid of the service provider being mirrored.
 }
 
 public enum ContactType {
@@ -100,60 +55,95 @@ public struct PolisCommunicationContact {
 }
 
 
+/// All the information needed to identify a site as a POLIS provider
+public struct PolisDirectoryEntry {                 // Codable
+    public let identifier: String                   // Globally unique ID (UUID version 4)
+    public let name: String                         // Should be unique to avoid errors, but not a requirement
+    public let lastUpdate: Date
+    public let domain: String                       // Fully qualified, e.g. https://polis.observer
+    public let providerDescription: String?
+    public let supportedProtocolLevels: [UInt8]     // Allowed values: 1...3
+    public let supportedAPIVersions: [String]       // Formatted as a SemanticVersion, see https://semver.org
+    public let supportedFormats: [PolisDataFormat]  // Currently JSON and XML
+    public let providerType: PolisProvider
+}
+
 /// A list of known
-public struct PolisDirectory: Codable, CustomStringConvertible {
+public struct PolisDirectory  {   // Codable, CustomStringConvertible
     public let lastUpdate: Date
     public var entries: [PolisDirectoryEntry]
+}
 
-    public var description: String {
-        var result = "{\n   \"lastUpdate\": \"\(lastUpdate)\",\n"
-        result +=    "    \"entries\": [\n"
-        for entry in entries {
-            result += "      \(entry),\n"
+
+//MARK: - Making types Codable -
+extension PolisProvider: Codable {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let base      = try container.decode(ProviderType.self, forKey: .providerType)
+
+        switch base {
+            case .public:       self = .public
+            case .private:      self = .private
+            case .experimental: self = .experimental
+            case .mirror:
+                let mirrorParams = try container.decode(MirrorParams.self, forKey: .mirrorParams)
+                self = .mirror(identifier: mirrorParams.identifier)
         }
-        result += "   ]\n}\n"
+    }
 
-        //TODO: Test me for good formatting!
-        return result
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        switch self {
+            case .public:       try container.encode(ProviderType.public,       forKey: .providerType)
+            case .private:      try container.encode(ProviderType.private,      forKey: .providerType)
+            case .experimental: try container.encode(ProviderType.experimental, forKey: .providerType)
+            case .mirror(let identifier):
+                try container.encode(ProviderType.mirror, forKey: .providerType)
+                try container.encode(MirrorParams(identifier: identifier), forKey: .mirrorParams)
+        }
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case providerType, mirrorParams
+    }
+
+    private enum ProviderType: String, Codable {
+        case `public`, `private`, experimental, mirror
+    }
+
+    private struct MirrorParams: Codable {
+        let identifier: String
     }
 }
 
-/// All the information needed to identify a site as a POLIS provider
-public struct PolisDirectoryEntry: Codable, CustomStringConvertible {
-    public let uid: String      // Globally unique ID (UUID version 4)
-    public let name: String     // Should be unique to avoid errors, but not a requirement
-    public let domain: String   // Fully qualified, e.g. https://polis.observer
-    public let providerDescription: String?
-    // contact: PolisCommunicationContact
-    public let lastUpdate: Date
-    public let supportedProtocolLevels: [UInt8]
-    public let supportedAPIVersions: [String]
-    public let supportedDataTypes: [PolisDataFormat]
-    public let providerType: PolisProviderType
-
-
-    public var description: String {
-        var result = " { \"uid\": \"\(uid)}\", "
-        result +=    "\"name\": \"\(name)\", "
-        result +=    "\"domain\": \"\(domain)\", "
-        result +=    "\"providerDescription\": \"\(providerDescription ?? "No description")\", "
-        result +=    "\"lastUpdate\": \"\(lastUpdate)\", "
-        result +=    "\"supportedProtocolLevels\": \"\(supportedProtocolLevels)\", "
-        result +=    "\"supportedAPIVersions\": \"\(supportedAPIVersions)\", "
-        result +=    "\"supportedDataTypes\": \"\(supportedDataTypes)\", "
-        result +=    "\"providerType\": \"\(providerType)\" }"
-
-        //TODO: Test me for good formatting!
-        return result
+extension PolisDirectoryEntry: Codable {
+    private enum CodingKeys: String, CodingKey {
+        case identifier              = "uid"
+        case name
+        case lastUpdate              = "last_updated"
+        case domain
+        case providerDescription     = "description"
+        case supportedProtocolLevels = "supported_protocol_levels"
+        case supportedAPIVersions    = "supported_api_versions"
+        case supportedFormats        = "supported_formats"
+        case providerType            = "provider_type"
     }
 }
 
-//MARK: - CustomStringConvertible extensions -
+extension PolisDirectory: Codable {
+    private enum CodingKeys: String, CodingKey {
+        case lastUpdate = "last_updated"
+        case entries
+   }
+}
+
+//MARK: - Making types CustomStringConvertible -
 extension PolisDataFormat: CustomStringConvertible {
     public var description: String {
         switch self {
-            case .xml:  return "\"xml\""
-            case .json: return "\"json\""
+            case .xml:  return "xml"
+            case .json: return "json"
         }
     }
 }
