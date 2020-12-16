@@ -48,7 +48,7 @@ public class PolisJSONDecoder: JSONDecoder {
 
     let dateFormatter = ISO8601DateFormatter()
 
-    override init() {
+    public override init() {
         super.init()
 
         dateDecodingStrategy = .custom{ (decoder) -> Date in
@@ -64,7 +64,7 @@ public class PolisJSONDecoder: JSONDecoder {
 
 @available(OSX 10.12, *)
 public class PolisJSONEncoder: JSONEncoder {
-    override init() {
+    public override init() {
         super.init()
 
         dateEncodingStrategy = .iso8601
