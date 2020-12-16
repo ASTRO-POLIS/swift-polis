@@ -11,7 +11,7 @@ import Foundation
 /// compact list of site references is maintained separately containing only site UUIDs and last update time. It is
 /// recommended that clients cache this list and update the observatory data only in case the cache needs to be
 /// invalidated (e.g. lastUpdate is changed).
-public struct ObservatorySiteDirectory {
+public struct ObservatorySiteDirectory: Codable {
     public let lastUpdate: Date                   // UTC
     public let entries: [ObservingSiteReference]
 
@@ -22,7 +22,7 @@ public struct ObservatorySiteDirectory {
 }
 
 /// This is only a quick reference to check if Client's cache has this site and if the site is up-to-date.
-public struct ObservingSiteReference {
+public struct ObservingSiteReference: Codable {
     public let identifier: String         // Globally unique ID (UUID version 4)
     public let shortName: String?  // This is useful for testing during development
     public let lastUpdate: Date    // UTC
