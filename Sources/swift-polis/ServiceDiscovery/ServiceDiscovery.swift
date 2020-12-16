@@ -94,6 +94,11 @@ public struct PolisDirectoryEntry {                 // Codable
 public struct PolisDirectory  {   // Codable
     public let lastUpdate: Date
     public var entries: [PolisDirectoryEntry]
+
+    public init(lastUpdate: Date, entries: [PolisDirectoryEntry]) {
+        self.lastUpdate = lastUpdate
+        self.entries = entries
+    }
 }
 
 
