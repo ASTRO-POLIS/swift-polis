@@ -68,6 +68,19 @@ public struct PolisDirectoryEntry {                 // Codable
     public let supportedFormats: [PolisDataFormat]  // Currently JSON and XML
     public let providerType: PolisProvider
     public let contact: PolisContact
+
+    public init(identifier: String, name: String, lastUpdate: Date, domain: String, providerDescription: String?, supportedProtocolLevels: [UInt8], supportedAPIVersions: [String], supportedFormats: [PolisDataFormat], providerType: PolisProvider, contact: PolisContact) {
+        self.identifier = identifier
+        self.name = name
+        self.lastUpdate = lastUpdate
+        self.domain = domain
+        self.providerDescription = providerDescription
+        self.supportedProtocolLevels = supportedProtocolLevels
+        self.supportedAPIVersions = supportedAPIVersions
+        self.supportedFormats = supportedFormats
+        self.providerType = providerType
+        self.contact = contact
+    }
 }
 
 /// A list of known
