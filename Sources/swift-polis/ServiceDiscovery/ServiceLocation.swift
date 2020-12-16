@@ -37,6 +37,8 @@ public struct PolisPredefinedServicePaths {
     // Level 1 resource paths
     public static let rootServiceDirectory  = "polis"
     public static let serviceProviderConfigurationFileName = "polis.json"
+    public static let serviceProviderDirectoryFileName = "polis_directory.json"
+    public static let siteDirectoryFileName = "sites_directory.json"
 }
 
 
