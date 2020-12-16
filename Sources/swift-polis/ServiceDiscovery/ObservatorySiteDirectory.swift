@@ -14,11 +14,22 @@ import Foundation
 public struct ObservatorySiteDirectory {
     public let lastUpdate: Date                   // UTC
     public let entries: [ObservingSiteReference]
+
+    public init(lastUpdate: Date, entries: [ObservingSiteReference]) {
+        self.lastUpdate = lastUpdate
+        self.entries = entries
+    }
 }
 
 /// This is only a quick reference to check if Client's cache has this site and if the site is up-to-date.
 public struct ObservingSiteReference {
-    public let uid: String         // Globally unique ID (UUID version 4)
+    public let identifier: String         // Globally unique ID (UUID version 4)
     public let shortName: String?  // This is useful for testing during development
     public let lastUpdate: Date    // UTC
+
+    public init(identifier: String, shortName: String?, lastUpdate: Date) {
+        self.identifier = identifier
+        self.shortName = shortName
+        self.lastUpdate = lastUpdate
+    }
 }
