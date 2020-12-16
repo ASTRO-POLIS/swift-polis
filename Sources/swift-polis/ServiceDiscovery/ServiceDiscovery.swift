@@ -53,6 +53,13 @@ public struct PolisContact {
     public let name: String                         // Organisation or user name
     public let email: String                        // Required valid email address (will be checked for validity)
     public let additionalContacts: [Communicating]?
+
+    public init(name: String, email: String, additionalContacts: [Communicating]?) {
+        self.name = name
+        self.email = email
+        self.additionalContacts = additionalContacts
+    }
+
 }
 
 
