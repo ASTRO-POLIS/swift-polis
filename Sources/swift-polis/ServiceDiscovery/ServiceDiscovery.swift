@@ -133,7 +133,10 @@ extension PolisProvider: Codable {
         }
     }
 
-    private enum CodingKeys: String, CodingKey { case providerType, mirrorParams }
+    private enum CodingKeys: String, CodingKey {
+        case providerType = "provider_type"
+        case mirrorParams = "mirror_params"
+    }
 
     private enum ProviderType: String, Codable { case `public`, `private`, experimental, mirror }
 
@@ -187,7 +190,14 @@ extension Communicating: Codable {
         }
     }
 
-    public enum CodingKeys: String, CodingKey { case communicationType, twitterParams, whatsAppParams, facebookParams, instagramParams, skypeParams }
+    public enum CodingKeys: String, CodingKey {
+        case communicationType = "communication_type"
+        case twitterParams     = "Twitter_params"
+        case whatsAppParams    = "WhatsApp_params"
+        case facebookParams    = "Facebook_params"
+        case instagramParams   = "Instagram_params"
+        case skypeParams       = "Skype_params"
+    }
 
     private enum CommunicationType: String, Codable { case twitter, whatsApp, facebook, instagram, skype }
 
