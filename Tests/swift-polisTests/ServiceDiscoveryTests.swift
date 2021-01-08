@@ -54,6 +54,7 @@ final class ServiceDiscoveryTests: XCTestCase {
         let pd = PolisDirectoryEntry(identifier: "abcd",
                                      name: "polis",
                                      lastUpdate: Date(),
+                                     status: .inactive,
                                      domain: "https://polis.net",
                                      providerDescription: "Polis test",
                                      supportedProtocolLevels: [1, 2],

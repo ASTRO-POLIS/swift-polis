@@ -14,6 +14,17 @@
 
 import Foundation
 
+/// Each type (Provider, Observing Site, Observatory, etc.) should include RecordStatus. This will dictate the syncing
+/// policy, e.g.:
+/// - `inactive` - do not sync
+/// - `active` - sync as it is (new, or update, depending on the last update date)
+/// - `deleted` - sync to prevent new propagation of the record and to block the UUID
+public enum RecordStatus: String, Codable {
+    case inactive   // New, being edited, in process of upgrade
+    case active     // in production
+    case deleted    // we need this because otherwise in distributed system disappearing records will reappear.
+}
+
 /// POLIS APIs are either in XML or in JSON format. For reasons stated elsewhere in the documentation XML APIs are
 /// preferred for production code. In contrast, JSON is often easier to be used for new development (no need of schema
 /// implementation) and often easier to be used from mobile and web applications. But because its fragility it should be
@@ -68,6 +79,7 @@ public struct PolisDirectoryEntry {                 // Codable
     public let identifier: String                   // Globally unique ID (UUID version 4)
     public let name: String                         // Should be unique to avoid errors, but not a requirement
     public let lastUpdate: Date
+    public let status: RecordStatus
     public let domain: String                       // Fully qualified, e.g. https://polis.observer
     public let providerDescription: String?
     public let supportedProtocolLevels: [UInt8]     // Allowed values: 1...3
@@ -76,10 +88,11 @@ public struct PolisDirectoryEntry {                 // Codable
     public let providerType: PolisProvider
     public let contact: PolisContact
 
-    public init(identifier: String, name: String, lastUpdate: Date, domain: String, providerDescription: String?, supportedProtocolLevels: [UInt8], supportedAPIVersions: [String], supportedFormats: [PolisDataFormat], providerType: PolisProvider, contact: PolisContact) {
+    public init(identifier: String, name: String, lastUpdate: Date, status: RecordStatus, domain: String, providerDescription: String?, supportedProtocolLevels: [UInt8], supportedAPIVersions: [String], supportedFormats: [PolisDataFormat], providerType: PolisProvider, contact: PolisContact) {
         self.identifier = identifier
         self.name = name
         self.lastUpdate = lastUpdate
+        self.status = status
         self.domain = domain
         self.providerDescription = providerDescription
         self.supportedProtocolLevels = supportedProtocolLevels
@@ -227,6 +240,7 @@ extension PolisDirectoryEntry: Codable {
         case identifier              = "uid"
         case name
         case lastUpdate              = "last_updated"
+        case status
         case domain
         case providerDescription     = "description"
         case supportedProtocolLevels = "supported_protocol_levels"
