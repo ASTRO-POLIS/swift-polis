@@ -36,62 +36,76 @@ public enum Status: String, Codable {
     case unknown    // e.g. the entity exist, but the status is unknown.
 }
 
-/// Describe that the motivation is the RTML attributes.
+/// `PolisItemAttributes` should be part of (almost) every POLIS type. When XML encoding is used, it is recommended to
+/// present this type as attributes of the integrating type (Element).
 public struct PolisItemAttributes: Codable {
-    public let identifier: String            // Globally unique ID (UUID version 4)
+    public let identifier: String            // Globally unique ID (UUID version 4) (ID in XML)
     public let parentIdentifier: String?     // ... to parent Item
-    public let referenceIdentifier: String?  // ... pointer to externally defined item (IDREF in RTML).
-    public let status: Status
-    public let lastUpdate: Date
+    public let referenceIdentifier: String?  // ... pointer to externally defined item (IDREF in XML).
+    public let status: Status                // Current status of the type
+    public let lastUpdate: Date              // Last update time of the attributes and / or any of the Items content
 }
 
 
 //MARK: - POLIS Contact -
-/// `PolisProviderType` defines different types of POLIS providers.
+/// Many POLIS types have reference to contact people (owners of a site, admins, project managers). Later we need to add
+/// Institutions too!
 ///
+
 /// `ContactType` defines different types of communication channels
-public enum Communicating {              // Coding
-    case twitter(userName: String)
-    case whatsApp(phone: String)
-    case facebook(id: String)
-    case instagram(userName: String)
-    case skype(id: String)
+public enum Communicating {      // Codable
+    case twitter(userName: String)    // Twitter user id, e.g. @AstroPolis
+    case whatsApp(phone: String)      // Phone number
+    case facebook(id: String)         // Facebook user id
+    case instagram(userName: String)  // Instagram user id
+    case skype(id: String)            // Skype user id
 }
 
-/// `PolisCommunicationContact` is the way to contact a provider, an observing site, or an observatory
-public struct PolisContact {                        
-    public let name: String                         // Organisation or user name
-    public let email: String                        // Required valid email address (will be checked for validity)
-    public let additionalCommunicationChannels: [Communicating]?
+/// `PolisContact` is the way to contact a provider admin, an observing site owner, or an observatory admin.
+/// - `name`                            - Person's name
+/// - `email`                           - Implementations should guarantee well defined email format
+/// - `mobilePhone`                     - we required **mobile** phone number, so that clients can send SMS
+/// - `additionalCommunicationChannels` - optional list of additional contact channels like Twitter or Skype
+public struct PolisContact {     // Codable
+    public let name: String?                                      // Organisation or user name
+    public let email: String?                                     // Required valid email address (will be checked for validity)
+    public let mobilePhone: String?                               // Clients should implement smart handling of the phone number
+    public let additionalCommunicationChannels: [Communicating]?  // Other ways communicate with the person
 
-    public init(name: String, email: String, additionalCommunicationChannels: [Communicating]?) {
+    public init(name: String?, email: String?, mobilePhone: String?, additionalCommunicationChannels: [Communicating]?) {
         self.name = name
         self.email = email
         self.additionalCommunicationChannels = additionalCommunicationChannels
+        self.mobilePhone = mobilePhone
     }
 }
 
+//TODO: Add here also Institution (like in RTML)
 
 //MARK: - POLIS Directory Entry -
-/// POLIS APIs are either in XML or in JSON format. For reasons stated elsewhere in the documentation XML APIs are
+
+/// POLIS APIs are encoded either in XML or in JSON format. For reasons stated elsewhere in the documentation XML APIs are
 /// preferred for production code. In contrast, JSON is often easier to be used for new development (no need of schema
 /// implementation) and often easier to be used from mobile and web applications. But because its fragility it should be
 /// avoided in stable production systems.
-/// **Note:** Perhaps later we might need also `plist` format?
+/// **Note:** Perhaps later we might need also `plist` format for Apple specific implementations
 public enum PolisDataFormat: String, Codable {  // Equatable
     case xml
     case json
 }
 
+/// `PolisProvider` defines different types of POLIS providers.
 /// Only `public` provider should be used in production. Public providers should run on server with enough bandwidth and
 /// computational power capable of accommodating multiple parallel client requests every second. Only when a `public`
 /// server is unreachable, its `mirror` (if available) should be accessed until the main server is down.
 /// `private` provider's main purpose is to act as a local cache for larger institutions and should be not accessed from
 /// outside. They might require user authentication.
+/// `local` could be used for clients running on mobile devices or desktop apps
 /// `experimental` providers are sandboxes for new developments, and might require authentication.
 public enum PolisProvider {         // Codable
     case `public`                   // Should be the default
     case `private`
+    case local                      // To be used as local cache in mobile or desktop clients
     case experimental
     case mirror(identifier: String) // The uid of the service provider being mirrored.
 }
@@ -149,6 +163,7 @@ extension PolisProvider: Codable {
         switch base {
             case .public:       self = .public
             case .private:      self = .private
+            case .local:        self = .local
             case .experimental: self = .experimental
             case .mirror:
                 let mirrorParams = try container.decode(MirrorParams.self, forKey: .mirrorParams)
@@ -162,6 +177,7 @@ extension PolisProvider: Codable {
         switch self {
             case .public:       try container.encode(ProviderType.public,       forKey: .providerType)
             case .private:      try container.encode(ProviderType.private,      forKey: .providerType)
+            case .local:        try container.encode(ProviderType.local,        forKey: .providerType)
             case .experimental: try container.encode(ProviderType.experimental, forKey: .providerType)
             case .mirror(let identifier):
                 try container.encode(ProviderType.mirror, forKey: .providerType)
@@ -174,7 +190,7 @@ extension PolisProvider: Codable {
         case mirrorParams = "mirror_params"
     }
 
-    private enum ProviderType: String, Codable { case `public`, `private`, experimental, mirror }
+    private enum ProviderType: String, Codable { case `public`, `private`, local, experimental, mirror }
 
     private struct MirrorParams: Codable { let identifier: String }
 }
@@ -253,6 +269,7 @@ extension PolisContact: Codable {
     private enum CodingKeys: String, CodingKey {
         case name
         case email
+        case mobilePhone                     = "mobile_phone"
         case additionalCommunicationChannels = "additional_communication_channels"
     }
 }
