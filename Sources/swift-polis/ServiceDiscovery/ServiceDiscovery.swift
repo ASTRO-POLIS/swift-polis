@@ -44,6 +44,24 @@ public struct PolisItemAttributes: Codable {
     public let referenceIdentifier: String?  // ... pointer to externally defined item (IDREF in XML).
     public let status: Status                // Current status of the type
     public let lastUpdate: Date              // Last update time of the attributes and / or any of the Items content
+
+    public init(identifier: String? = nil,
+                parentIdentifier: String? = nil,
+                referenceIdentifier: String? = nil,
+                status: Status? = nil,
+                lastUpdate: Date? = nil) {
+        if let identifier = identifier { self.identifier = identifier}
+        else                           { self.identifier = UUID().uuidString }
+
+        self.parentIdentifier = parentIdentifier
+        self.referenceIdentifier = referenceIdentifier
+
+        if let status = status { self.status = status }
+        else                   { self.status = Status.unknown }
+
+        if let date = lastUpdate { self.lastUpdate = date }
+        else                     { self.lastUpdate = Date() }
+    }
 }
 
 
@@ -113,10 +131,8 @@ public enum PolisProvider {         // Codable
 
 /// All the information needed to identify a site as a POLIS provider
 public struct PolisDirectoryEntry {                 // Codable
-    public let identifier: String                   // Globally unique ID (UUID version 4)
+    public let attributes: PolisItemAttributes
     public let name: String                         // Should be unique to avoid errors, but not a requirement
-    public let lastUpdate: Date
-    public let status: Status
     public let domain: String                       // Fully qualified, e.g. https://polis.observer
     public let providerDescription: String?
     public let supportedProtocolLevels: [UInt8]     // Allowed values: 1...3
@@ -125,11 +141,9 @@ public struct PolisDirectoryEntry {                 // Codable
     public let providerType: PolisProvider
     public let contact: PolisContact
 
-    public init(identifier: String, name: String, lastUpdate: Date, status: Status, domain: String, providerDescription: String?, supportedProtocolLevels: [UInt8], supportedAPIVersions: [String], supportedFormats: [PolisDataFormat], providerType: PolisProvider, contact: PolisContact) {
-        self.identifier = identifier
+    public init(attributes: PolisItemAttributes, name: String, domain: String, providerDescription: String?, supportedProtocolLevels: [UInt8], supportedAPIVersions: [String], supportedFormats: [PolisDataFormat], providerType: PolisProvider, contact: PolisContact) {
+        self.attributes = attributes
         self.name = name
-        self.lastUpdate = lastUpdate
-        self.status = status
         self.domain = domain
         self.providerDescription = providerDescription
         self.supportedProtocolLevels = supportedProtocolLevels
@@ -140,7 +154,7 @@ public struct PolisDirectoryEntry {                 // Codable
     }
 }
 
-/// A list of known
+/// A list of known providers
 public struct PolisDirectory  {   // Codable
     public let lastUpdate: Date
     public var entries: [PolisDirectoryEntry]
@@ -277,10 +291,8 @@ extension PolisContact: Codable {
 //MARK: - PolisDirectoryEntry
 extension PolisDirectoryEntry: Codable {
     private enum CodingKeys: String, CodingKey {
-        case identifier              = "uid"
+        case attributes
         case name
-        case lastUpdate              = "last_updated"
-        case status
         case domain
         case providerDescription     = "description"
         case supportedProtocolLevels = "supported_protocol_levels"

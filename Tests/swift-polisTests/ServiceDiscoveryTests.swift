@@ -54,10 +54,8 @@ final class ServiceDiscoveryTests: XCTestCase {
     }
 
     func testPolisDirectoryEntry() {
-        let pd = PolisDirectoryEntry(identifier: "abcd",
+        let pd = PolisDirectoryEntry(attributes: PolisItemAttributes(),
                                      name: "polis",
-                                     lastUpdate: Date(),
-                                     status: .inactive,
                                      domain: "https://polis.net",
                                      providerDescription: "Polis test",
                                      supportedProtocolLevels: [1, 2],
