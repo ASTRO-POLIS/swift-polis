@@ -43,7 +43,7 @@ final class ServiceDiscoveryTests: XCTestCase {
     }
 
     func testPolisContact() {
-        let c = PolisContact(name: "polis", email: "polis@observer.net", additionalContacts: [Communicating.instagram(userName: "@polis")])
+        let c = PolisContact(name: "polis", email: "polis@observer.net", additionalCommunicationChannels: [Communicating.instagram(userName: "@polis")])
 
         data = try? jsonEncoder.encode(c)
         string = String(data: data!, encoding: .utf8)
@@ -63,7 +63,7 @@ final class ServiceDiscoveryTests: XCTestCase {
                                      providerType: PolisProvider.experimental,
                                      contact: PolisContact(name: "polis",
                                                            email: "polis@observer.net",
-                                                           additionalContacts: [Communicating.instagram(userName: "@polis")]))
+                                                           additionalCommunicationChannels: [Communicating.instagram(userName: "@polis")]))
 
         data = try? jsonEncoder.encode(pd)
         string = String(data: data!, encoding: .utf8)

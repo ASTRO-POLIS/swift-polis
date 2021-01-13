@@ -5,51 +5,50 @@
 //  Created by Georg Tuparev on 18/11/2020.
 //
 
-/// This file defines types related to the POLIS provider discovery. The exact process is described in different documents.
-/// Later versions might implement a reference implementation of the discovery process, but every provider is free to
-/// implement its own procedures.
+/// This file defines types related to the POLIS provider discovery and few reusable types that are building blocks of
+/// other POLIS types.
+/// Later versions might implement a reference implementation of the discovery process discovery and maintenance, but
+/// every provider is free to implement its own procedures.
 ///
 /// **Note for Swift developers:** Before releasing version 1.0 of this package all types will implement `Codable` to
 /// allow easy marshalling first from JSON and later from XML data.
 
 import Foundation
 
-/// Each type (Provider, Observing Site, Observatory, etc.) should include RecordStatus. This will dictate the syncing
-/// policy, e.g.:
-/// - `inactive` - do not sync
-/// - `active` - sync as it is (new, or update, depending on the last update date)
-/// - `deleted` - sync to prevent new propagation of the record and to block the UUID
-public enum RecordStatus: String, Codable {
+//MARK: - POLIS Item Attributes -
+/// POLIS Attributes uniquely identify and define the status of almost every POLIS item, and define external relationships
+/// to other items.
+/// The idea of POLIS Attributes comes from analogous type from the RTML standard, that turned to be extremely useful.
+
+/// Each type (Provider, Observing Site, Observatory, etc.) should include Status (as part of `PolisItemAttributes`.
+/// This will define the syncing policy, as well as visibility of the POLIS items within client implementations.
+/// Possible values:
+/// - `inactive`  - do not sync, but continue monitoring
+/// - `active`    - sync as it is (new, or update, depending on the last update date)
+/// - `deleted`   - sync the Attributes only to prevent new propagation of the record and to block the UUID
+/// - `suspended` - sync the Attributes only, but not the rest of the item
+/// - `unknown`   - do not sync, but continue monitoring
+public enum Status: String, Codable {
     case inactive   // New, being edited, in process of upgrade
     case active     // in production
     case deleted    // we need this because otherwise in distributed system disappearing records will reappear.
+    case suspended  // e.g., in cases the data is incorrect, or there are rule/standard violations.
+    case unknown    // e.g. the entity exist, but the status is unknown.
 }
 
-/// POLIS APIs are either in XML or in JSON format. For reasons stated elsewhere in the documentation XML APIs are
-/// preferred for production code. In contrast, JSON is often easier to be used for new development (no need of schema
-/// implementation) and often easier to be used from mobile and web applications. But because its fragility it should be
-/// avoided in stable production systems.
-/// **Note:** Perhaps later we might need also `plist` format?
-public enum PolisDataFormat: String, Codable {  // Equatable
-    case xml
-    case json
+/// Describe that the motivation is the RTML attributes.
+public struct PolisItemAttributes: Codable {
+    public let identifier: String            // Globally unique ID (UUID version 4)
+    public let parentIdentifier: String?     // ... to parent Item
+    public let referenceIdentifier: String?  // ... pointer to externally defined item (IDREF in RTML).
+    public let status: Status
+    public let lastUpdate: Date
 }
 
+
+//MARK: - POLIS Contact -
 /// `PolisProviderType` defines different types of POLIS providers.
 ///
-/// Only `public` provider should be used in production. Public providers should run on server with enough bandwidth and
-/// computational power capable of accommodating multiple parallel client requests every second. Only when a `public`
-/// server is unreachable, its `mirror` (if available) should be accessed until the main server is down.
-/// `private` provider's main purpose is to act as a local cache for larger institutions and should be not accessed from
-/// outside. They might require user authentication.
-/// `experimental` providers are sandboxes for new developments, and might require authentication.
-public enum PolisProvider {         // Codable
-    case `public`                   // Should be the default
-    case `private`
-    case experimental
-    case mirror(identifier: String) // The uid of the service provider being mirrored.
-}
-
 /// `ContactType` defines different types of communication channels
 public enum Communicating {              // Coding
     case twitter(userName: String)
@@ -63,14 +62,38 @@ public enum Communicating {              // Coding
 public struct PolisContact {                        
     public let name: String                         // Organisation or user name
     public let email: String                        // Required valid email address (will be checked for validity)
-    public let additionalContacts: [Communicating]?
+    public let additionalCommunicationChannels: [Communicating]?
 
-    public init(name: String, email: String, additionalContacts: [Communicating]?) {
+    public init(name: String, email: String, additionalCommunicationChannels: [Communicating]?) {
         self.name = name
         self.email = email
-        self.additionalContacts = additionalContacts
+        self.additionalCommunicationChannels = additionalCommunicationChannels
     }
+}
 
+
+//MARK: - POLIS Directory Entry -
+/// POLIS APIs are either in XML or in JSON format. For reasons stated elsewhere in the documentation XML APIs are
+/// preferred for production code. In contrast, JSON is often easier to be used for new development (no need of schema
+/// implementation) and often easier to be used from mobile and web applications. But because its fragility it should be
+/// avoided in stable production systems.
+/// **Note:** Perhaps later we might need also `plist` format?
+public enum PolisDataFormat: String, Codable {  // Equatable
+    case xml
+    case json
+}
+
+/// Only `public` provider should be used in production. Public providers should run on server with enough bandwidth and
+/// computational power capable of accommodating multiple parallel client requests every second. Only when a `public`
+/// server is unreachable, its `mirror` (if available) should be accessed until the main server is down.
+/// `private` provider's main purpose is to act as a local cache for larger institutions and should be not accessed from
+/// outside. They might require user authentication.
+/// `experimental` providers are sandboxes for new developments, and might require authentication.
+public enum PolisProvider {         // Codable
+    case `public`                   // Should be the default
+    case `private`
+    case experimental
+    case mirror(identifier: String) // The uid of the service provider being mirrored.
 }
 
 
@@ -79,7 +102,7 @@ public struct PolisDirectoryEntry {                 // Codable
     public let identifier: String                   // Globally unique ID (UUID version 4)
     public let name: String                         // Should be unique to avoid errors, but not a requirement
     public let lastUpdate: Date
-    public let status: RecordStatus
+    public let status: Status
     public let domain: String                       // Fully qualified, e.g. https://polis.observer
     public let providerDescription: String?
     public let supportedProtocolLevels: [UInt8]     // Allowed values: 1...3
@@ -88,7 +111,7 @@ public struct PolisDirectoryEntry {                 // Codable
     public let providerType: PolisProvider
     public let contact: PolisContact
 
-    public init(identifier: String, name: String, lastUpdate: Date, status: RecordStatus, domain: String, providerDescription: String?, supportedProtocolLevels: [UInt8], supportedAPIVersions: [String], supportedFormats: [PolisDataFormat], providerType: PolisProvider, contact: PolisContact) {
+    public init(identifier: String, name: String, lastUpdate: Date, status: Status, domain: String, providerDescription: String?, supportedProtocolLevels: [UInt8], supportedAPIVersions: [String], supportedFormats: [PolisDataFormat], providerType: PolisProvider, contact: PolisContact) {
         self.identifier = identifier
         self.name = name
         self.lastUpdate = lastUpdate
@@ -230,7 +253,7 @@ extension PolisContact: Codable {
     private enum CodingKeys: String, CodingKey {
         case name
         case email
-        case additionalContacts = "additional_contacts"
+        case additionalCommunicationChannels = "additional_communication_channels"
     }
 }
 
