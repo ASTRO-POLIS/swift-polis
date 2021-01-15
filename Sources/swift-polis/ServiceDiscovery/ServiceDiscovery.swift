@@ -86,11 +86,11 @@ public enum Communicating {      // Codable
 /// - `additionalCommunicationChannels` - optional list of additional contact channels like Twitter or Skype
 public struct PolisContact {     // Codable
     public let name: String?                                      // Organisation or user name
-    public let email: String?                                     // Required valid email address (will be checked for validity)
+    public let email: String                                      // Requires valid email address (will be checked for validity)
     public let mobilePhone: String?                               // Clients should implement smart handling of the phone number
     public let additionalCommunicationChannels: [Communicating]?  // Other ways communicate with the person
 
-    public init(name: String?, email: String?, mobilePhone: String?, additionalCommunicationChannels: [Communicating]?) {
+    public init(name: String?, email: String, mobilePhone: String?, additionalCommunicationChannels: [Communicating]?) {
         self.name = name
         self.email = email
         self.additionalCommunicationChannels = additionalCommunicationChannels
