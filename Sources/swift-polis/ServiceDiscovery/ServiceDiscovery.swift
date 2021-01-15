@@ -169,7 +169,7 @@ public struct PolisDirectory  {   // Codable
 //MARK: - Making types Codable -
 
 //MARK: PolisProvider
-extension PolisProvider: Codable {
+extension PolisProvider: Codable, CustomStringConvertible {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let base      = try container.decode(ProviderType.self, forKey: .providerType)
@@ -183,6 +183,18 @@ extension PolisProvider: Codable {
                 let mirrorParams = try container.decode(MirrorParams.self, forKey: .mirrorParams)
                 self = .mirror(identifier: mirrorParams.identifier)
         }
+
+        public var description: String {
+            switch self {
+                case .public:       return "public"
+                case .private:      return "private"
+                case .local:        return "local"
+                case .experimental: return "experimental"
+                case .mirror:       return "mirror"
+            }
+        }
+
+
     }
 
     public func encode(to encoder: Encoder) throws {
