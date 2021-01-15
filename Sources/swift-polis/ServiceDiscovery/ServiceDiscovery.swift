@@ -184,17 +184,6 @@ extension PolisProvider: Codable, CustomStringConvertible {
                 self = .mirror(identifier: mirrorParams.identifier)
         }
 
-        public var description: String {
-            switch self {
-                case .public:       return "public"
-                case .private:      return "private"
-                case .local:        return "local"
-                case .experimental: return "experimental"
-                case .mirror:       return "mirror"
-            }
-        }
-
-
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -211,6 +200,16 @@ extension PolisProvider: Codable, CustomStringConvertible {
         }
     }
 
+    public var description: String {
+        switch self {
+            case .public:       return "public"
+            case .private:      return "private"
+            case .local:        return "local"
+            case .experimental: return "experimental"
+            case .mirror:       return "mirror"
+        }
+    }
+
     private enum CodingKeys: String, CodingKey {
         case providerType = "provider_type"
         case mirrorParams = "mirror_params"
@@ -219,6 +218,7 @@ extension PolisProvider: Codable, CustomStringConvertible {
     private enum ProviderType: String, Codable { case `public`, `private`, local, experimental, mirror }
 
     private struct MirrorParams: Codable { let identifier: String }
+
 }
 
 //MARK: - ContactType
