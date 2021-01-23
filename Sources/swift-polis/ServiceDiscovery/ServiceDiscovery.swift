@@ -43,7 +43,7 @@ public struct PolisItemAttributes: Codable {
     public let parentIdentifier: String?     // ... to parent Item
     public let referenceIdentifier: String?  // ... pointer to externally defined item (IDREF in XML).
     public let status: Status                // Current status of the type
-    public let lastUpdate: Date              // Last update time of the attributes and / or any of the Items content
+    public var lastUpdate: Date              // Last update time of the attributes and / or any of the Items content
 
     public init(identifier: String? = nil,
                 parentIdentifier: String? = nil,
@@ -120,7 +120,7 @@ public enum PolisDataFormat: String, Codable {  // Equatable
 /// outside. They might require user authentication.
 /// `local` could be used for clients running on mobile devices or desktop apps
 /// `experimental` providers are sandboxes for new developments, and might require authentication.
-public enum PolisProvider {         // Codable
+public enum PolisProvider {         // Codable, CustomStringConvertible
     case `public`                   // Should be the default
     case `private`
     case local                      // To be used as local cache in mobile or desktop clients
@@ -131,7 +131,7 @@ public enum PolisProvider {         // Codable
 
 /// All the information needed to identify a site as a POLIS provider
 public struct PolisDirectoryEntry {                 // Codable
-    public let attributes: PolisItemAttributes
+    public var attributes: PolisItemAttributes
     public let name: String                         // Should be unique to avoid errors, but not a requirement
     public let domain: String                       // Fully qualified, e.g. https://polis.observer
     public let providerDescription: String?
@@ -222,7 +222,8 @@ extension PolisProvider: Codable, CustomStringConvertible {
 }
 
 //MARK: - ContactType
-extension Communicating: Codable {
+extension Communicating: Codable, CustomStringConvertible {
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let base      = try container.decode(CommunicationType.self, forKey: .communicationType)
@@ -288,6 +289,17 @@ extension Communicating: Codable {
     private struct InstagramParams: Codable { let userName: String }
 
     private struct SkypeParams: Codable { let id: String }
+
+    public var description: String {
+        switch self {
+            case .twitter:   return "Twitter"
+            case .whatsApp:  return "WhatsApp"
+            case .facebook:  return "Facebook"
+            case .instagram: return "Instagram"
+            case .skype:     return "Skype"
+        }
+    }
+
 }
 
 //MARK: - PolisContact
