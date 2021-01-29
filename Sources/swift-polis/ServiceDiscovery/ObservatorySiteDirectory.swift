@@ -23,13 +23,11 @@ public struct ObservatorySiteDirectory: Codable {
 
 /// This is only a quick reference to check if Client's cache has this site and if the site is up-to-date.
 public struct ObservingSiteReference: Codable {
-    public let identifier: String         // Globally unique ID (UUID version 4)
+    public var attributes: PolisItemAttributes
     public let shortName: String?  // This is useful for testing during development
-    public let lastUpdate: Date    // UTC
 
-    public init(identifier: String, shortName: String?, lastUpdate: Date) {
-        self.identifier = identifier
+    public init(attributes: PolisItemAttributes, shortName: String?) {
+        self.attributes = attributes
         self.shortName = shortName
-        self.lastUpdate = lastUpdate
     }
 }
