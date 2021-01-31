@@ -79,22 +79,26 @@ public enum Communicating {      // Codable
     case skype(id: String)            // Skype user id
 }
 
-/// `PolisContact` is the way to contact a provider admin, an observing site owner, or an observatory admin.
+/// `PolisAdminContact` is a simple way to contact a provider admin, an observing site owner, or an observatory admin.
+/// Complete (and much more complex) general Contact type will be introduced with later versions of the standard.
 /// - `name`                            - Person's name
 /// - `email`                           - Implementations should guarantee well defined email format
 /// - `mobilePhone`                     - we required **mobile** phone number, so that clients can send SMS
 /// - `additionalCommunicationChannels` - optional list of additional contact channels like Twitter or Skype
-public struct PolisContact {     // Codable
+/// - `notes`                           - optional short note
+public struct PolisAdminContact {     // Codable
     public let name: String?                                      // Organisation or user name
     public let email: String                                      // Requires valid email address (will be checked for validity)
     public let mobilePhone: String?                               // Clients should implement smart handling of the phone number
     public let additionalCommunicationChannels: [Communicating]   // Other ways communicate with the person
+    public let notes: String?                                     // Short notes and additional contact info
 
-    public init(name: String?, email: String, mobilePhone: String?, additionalCommunicationChannels: [Communicating] = [Communicating]()) {
+    public init(name: String?, email: String, mobilePhone: String?, additionalCommunicationChannels: [Communicating] = [Communicating](), notes: String?) {
         self.name = name
         self.email = email
-        self.additionalCommunicationChannels = additionalCommunicationChannels
         self.mobilePhone = mobilePhone
+        self.additionalCommunicationChannels = additionalCommunicationChannels
+        self.notes = notes
     }
 }
 
@@ -139,9 +143,9 @@ public struct PolisDirectoryEntry {                 // Codable
     public let supportedAPIVersions: [String]       // Formatted as a SemanticVersion, see https://semver.org
     public let supportedFormats: [PolisDataFormat]  // Currently JSON and XML
     public let providerType: PolisProvider
-    public let contact: PolisContact
+    public let contact: PolisAdminContact
 
-    public init(attributes: PolisItemAttributes, name: String, domain: String, providerDescription: String?, supportedProtocolLevels: [UInt8], supportedAPIVersions: [String], supportedFormats: [PolisDataFormat], providerType: PolisProvider, contact: PolisContact) {
+    public init(attributes: PolisItemAttributes, name: String, domain: String, providerDescription: String?, supportedProtocolLevels: [UInt8], supportedAPIVersions: [String], supportedFormats: [PolisDataFormat], providerType: PolisProvider, contact: PolisAdminContact) {
         self.attributes = attributes
         self.name = name
         self.domain = domain
@@ -303,12 +307,13 @@ extension Communicating: Codable, CustomStringConvertible {
 }
 
 //MARK: - PolisContact
-extension PolisContact: Codable {
+extension PolisAdminContact: Codable {
     private enum CodingKeys: String, CodingKey {
         case name
         case email
         case mobilePhone                     = "mobile_phone"
         case additionalCommunicationChannels = "additional_communication_channels"
+        case notes
     }
 }
 

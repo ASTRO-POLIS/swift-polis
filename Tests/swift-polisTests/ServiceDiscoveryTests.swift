@@ -43,14 +43,15 @@ final class ServiceDiscoveryTests: XCTestCase {
     }
 
     func testPolisContact() {
-        let c = PolisContact(name: "polis",
+        let c = PolisAdminContact(name: "polis",
                              email: "polis@observer.net",
                              mobilePhone: nil,
-                             additionalCommunicationChannels: [Communicating.instagram(userName: "@polis")])
+                             additionalCommunicationChannels: [Communicating.instagram(userName: "@polis")],
+                             notes: nil)
 
         data = try? jsonEncoder.encode(c)
         string = String(data: data!, encoding: .utf8)
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisContact.self, from: string!.data(using: .utf8)!))
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisAdminContact.self, from: string!.data(using: .utf8)!))
     }
 
     func testPolisDirectoryEntry() {
@@ -62,10 +63,11 @@ final class ServiceDiscoveryTests: XCTestCase {
                                      supportedAPIVersions: ["1.0.0", "1.2.0"],
                                      supportedFormats: [PolisDataFormat.xml],
                                      providerType: PolisProvider.experimental,
-                                     contact: PolisContact(name: "polis",
+                                     contact: PolisAdminContact(name: "polis",
                                                            email: "polis@observer.net",
                                                            mobilePhone: nil,
-                                                           additionalCommunicationChannels: [Communicating.instagram(userName: "@polis")]))
+                                                           additionalCommunicationChannels: [Communicating.instagram(userName: "@polis")],
+                                                           notes: "The admin works only on Sunday"))
 
         data = try? jsonEncoder.encode(pd)
         string = String(data: data!, encoding: .utf8)
