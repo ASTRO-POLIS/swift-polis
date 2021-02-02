@@ -15,6 +15,9 @@
 
 import Foundation
 
+/// This is a list of all supported versions. A POLIS provider can support some of them or all of them.
+public static var supportedPolisAPIVersions = ["1.0"]
+
 //MARK: - POLIS Item Attributes -
 /// POLIS Attributes uniquely identify and define the status of almost every POLIS item, and define external relationships
 /// to other items.
