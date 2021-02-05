@@ -7,15 +7,16 @@
 
 /// This file defines types related to the POLIS provider discovery and few reusable types that are building blocks of
 /// other POLIS types.
-/// Later versions might implement a reference implementation of the discovery process discovery and maintenance, but
-/// every provider is free to implement its own procedures.
 ///
-/// **Note for Swift developers:** Before releasing version 1.0 of this package all types will implement `Codable` to
-/// allow easy marshalling first from JSON and later from XML data.
+/// **Note for Swift developers:** COURAGEOUS and IMPORTANT ASSUMPTION: Types defined in this file and in
+/// `ObservatorySiteDirectory.swift` should not have incompatible coding/decoding and API changes in future versions of
+/// the standard! All other types could evolve.
 
 import Foundation
 
-/// This is a list of all supported versions. A POLIS provider can support some of them or all of them.
+/// This is a list of all supported versions. A POLIS provider can support some of them or all of them. Only major and
+/// minor version numbers are supported. Concrete implementations should ignore `patch numbers` and alfa / beta modifiers.
+/// Versions prior `1.0` should be ignored.
 public let supportedPolisAPIVersions = ["1.0"]
 
 //MARK: - POLIS Item Attributes -
@@ -90,7 +91,7 @@ public enum Communicating {      // Codable
 /// - `additionalCommunicationChannels` - optional list of additional contact channels like Twitter or Skype
 /// - `notes`                           - optional short note
 public struct PolisAdminContact {     // Codable
-    public let name: String?                                      // Organisation or user name
+    public let name: String?                                      // Organization or user name
     public let email: String                                      // Requires valid email address (will be checked for validity)
     public let mobilePhone: String?                               // Clients should implement smart handling of the phone number
     public let additionalCommunicationChannels: [Communicating]   // Other ways communicate with the person

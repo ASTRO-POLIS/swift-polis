@@ -11,6 +11,11 @@ import Foundation
 /// compact list of site references is maintained separately containing only site UUIDs and last update time. It is
 /// recommended that clients cache this list and update the observatory data only in case the cache needs to be
 /// invalidated (e.g. lastUpdate is changed).
+/// 
+/// **Note for Swift developers:** COURAGEOUS and IMPORTANT ASSUMPTION: Types defined in this file and in
+/// `ServiceDiscovery.swift` should not have incompatible coding/decoding and API changes in future versions of the
+/// standard! All other types could evolve.
+
 public struct ObservatorySiteDirectory: Codable {
     public let lastUpdate: Date                   // UTC
     public let entries: [ObservingSiteReference]

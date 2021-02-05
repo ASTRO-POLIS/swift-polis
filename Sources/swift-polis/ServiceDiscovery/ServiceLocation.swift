@@ -30,22 +30,64 @@ Thoughts about predefined pats and API queries:
 
 /// Definition of well known paths and APIs
 public struct PolisPredefinedServicePaths {
-    public static let defaultDomainName = "https://polis.observer"
-    public static let xmlDataFormat     = "xml"
-    public static let jsonDataFormat    = "json"
+    public static let defaultDomainName = "https://polis.observer/"
 
     // Level 1 resource paths
     public static let rootServiceDirectory  = "polis"
-    public static let serviceProviderConfigurationFileName = "polis.json"
-    public static let serviceProviderDirectoryFileName = "polis_directory.json"
-    public static let siteDirectoryFileName = "sites_directory.json"
+    public static let serviceProviderConfigurationFileName = "polis"
+    public static let siteDirectoryFileName = "sites_directory"
+    public static let siteDirectory = "polis_sites"
+}
+
+/// The following few functions constructs paths to various POLIS files. It is preferred to use them instead of constructing
+/// path URL manually, because the file organisation of the POLIS provider might change in the future
+///
+/// - `rootPolisFile()`          - returns the path of the root configuration file
+/// - `rootPolisDirectoryFile()` - returns the path of the directory of known POLIS providers
+/// - `observingSiteFile()`      - returns the path to a file containing observing site data
+public func rootPolisFile(rootPath: URL, format: PolisDataFormat = .json) -> URL {
+    var result = normalisedPath(rootPath)
+
+    result.appendPathComponent(
+        "\(PolisPredefinedServicePaths.rootServiceDirectory)/\(PolisPredefinedServicePaths.serviceProviderConfigurationFileName).\(format.rawValue)",
+        isDirectory: false)
+
+    return result
+}
+
+public func rootPolisDirectoryFile(rootPath: URL, format: PolisDataFormat = .json) -> URL {
+    var result = normalisedPath(rootPath)
+
+    result.appendPathComponent(
+        "\(PolisPredefinedServicePaths.rootServiceDirectory)/\(PolisPredefinedServicePaths.siteDirectoryFileName).\(format.rawValue)",
+        isDirectory: false)
+
+    return result
+}
+
+public func observingSiteFile(rootPath: URL, siteID: String, format: PolisDataFormat = .json) -> URL {
+    var result = normalisedPath(rootPath)
+
+    result.appendPathComponent(
+        "\(PolisPredefinedServicePaths.rootServiceDirectory)/\(PolisPredefinedServicePaths.siteDirectory)/\(siteID).\(format.rawValue)",
+        isDirectory: false)
+
+    return result
+}
+
+/// This is for internal use only!
+fileprivate func normalisedPath(_ path: URL) -> URL {
+    let strPath = path.path
+
+    if strPath.hasSuffix("/") { return path }
+    else                      { return URL(fileURLWithPath: "\(strPath)/") }
 }
 
 
 //MARK: - JSON encoding / decoding support -
 /// Use these JSONDecoder and JSONEncoder subclasses to convert types to and from JSON
 
-@available(OSX 10.12, *)
+@available(iOS 10, macOS 10.12, *)
 public class PolisJSONDecoder: JSONDecoder {
 
     let dateFormatter = ISO8601DateFormatter()
@@ -64,7 +106,7 @@ public class PolisJSONDecoder: JSONDecoder {
     }
 }
 
-@available(OSX 10.12, *)
+@available(iOS 10, macOS 10.12, *)
 public class PolisJSONEncoder: JSONEncoder {
     public override init() {
         super.init()
@@ -72,3 +114,4 @@ public class PolisJSONEncoder: JSONEncoder {
         dateEncodingStrategy = .iso8601
     }
 }
+
