@@ -22,17 +22,18 @@ public struct ObservatorySiteDirectory: Codable {
 
     public init(lastUpdate: Date, entries: [ObservingSiteReference]) {
         self.lastUpdate = lastUpdate
-        self.entries = entries
+        self.entries    = entries
     }
 }
 
 /// This is only a quick reference to check if Client's cache has this site and if the site is up-to-date.
-public struct ObservingSiteReference: Codable {
+public struct ObservingSiteReference: Codable, Identifiable {
     public var attributes: PolisItemAttributes
-    public let shortName: String?  // This is useful for testing during development
 
-    public init(attributes: PolisItemAttributes, shortName: String?) {
+    public var id: UUID { attributes.id }
+
+    //TODO: Add site type and coordinates!
+    public init(attributes: PolisItemAttributes) {
         self.attributes = attributes
-        self.shortName = shortName
     }
 }
