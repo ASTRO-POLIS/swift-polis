@@ -42,20 +42,20 @@ public enum Status: String, Codable {
 
 /// `PolisItemAttributes` should be part of (almost) every POLIS type. When XML encoding is used, it is recommended to
 /// present this type as attributes of the integrating type (Element).
-public struct PolisItemAttributes: Codable {
-    public let identifier: String            // Globally unique ID (UUID version 4) (ID in XML)
+public struct PolisItemAttributes: Codable, Identifiable {
+    public let id: UUID                      // Globally unique ID (UUID version 4) (ID in XML)
     public let parentIdentifier: String?     // ... to parent Item
     public let referenceIdentifier: String?  // ... pointer to externally defined item (IDREF in XML).
     public let status: Status                // Current status of the type
     public var lastUpdate: Date              // Last update time of the attributes and / or any of the Items content
 
-    public init(identifier: String? = nil,
+    public init(id: UUID? = nil,
                 parentIdentifier: String? = nil,
                 referenceIdentifier: String? = nil,
                 status: Status? = nil,
                 lastUpdate: Date? = nil) {
-        if let identifier = identifier { self.identifier = identifier}
-        else                           { self.identifier = UUID().uuidString }
+        if let id = id { self.id = id}
+        else           { self.id = UUID() }
 
         self.parentIdentifier = parentIdentifier
         self.referenceIdentifier = referenceIdentifier
@@ -138,7 +138,7 @@ public enum PolisProvider {         // Codable, CustomStringConvertible
 
 
 /// All the information needed to identify a site as a POLIS provider
-public struct PolisDirectoryEntry {                 // Codable
+public struct PolisDirectoryEntry: Identifiable { // Codable, Identifiable
     public var attributes: PolisItemAttributes
     public let name: String                         // Should be unique to avoid errors, but not a requirement
     public let domain: String                       // Fully qualified, e.g. https://polis.observer
@@ -148,6 +148,8 @@ public struct PolisDirectoryEntry {                 // Codable
     public let supportedFormats: [PolisDataFormat]  // Currently JSON and XML
     public let providerType: PolisProvider
     public let contact: PolisAdminContact
+
+    public var id: UUID { attributes.id }
 
     public init(attributes: PolisItemAttributes, name: String, domain: String, providerDescription: String?, supportedProtocolLevels: [UInt8], supportedAPIVersions: [String], supportedFormats: [PolisDataFormat], providerType: PolisProvider, contact: PolisAdminContact) {
         self.attributes = attributes
