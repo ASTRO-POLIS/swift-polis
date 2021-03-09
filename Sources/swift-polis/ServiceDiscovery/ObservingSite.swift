@@ -44,14 +44,14 @@ public indirect enum SolarSystemBodyType {
 }
 
 public struct EarthLocation: Codable {
-    public let eastLongitude: Double  // degrees
-    public let latitude: Double       // degrees
-    public let altitude: Double?      // m
+    public var eastLongitude: Double  // degrees
+    public var latitude: Double       // degrees
+    public var altitude: Double?      // m
 }
 
 public struct AltitudeRange: Codable {
-    let lowOrbit: Double  // m
-    let highOrbit: Double // m
+    public var lowOrbit: Double  // m
+    public var highOrbit: Double // m
 }
 
 public enum ObservingSiteLocationType {
@@ -84,7 +84,7 @@ public enum ObservatoryType {
 }
 
 public struct Observatory {
-    let type: ObservatoryType
+    var type: ObservatoryType
     // Coordinates
 }
 
@@ -103,9 +103,9 @@ public struct OpticalTelescope {
     // SpectralRegion
     // Spectrograph
     // TrackRate
-    public let instruments: [InstrumentType]?
-    public let telescopes: [OpticalTelescope]?
-    public let description: String?
+    public var instruments: [InstrumentType]?
+    public var telescopes: [OpticalTelescope]?
+    public var description: String?
 }
 
 public struct RadioAntenna {

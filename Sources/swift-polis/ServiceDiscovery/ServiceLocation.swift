@@ -33,10 +33,10 @@ public struct PolisPredefinedServicePaths {
     public static let defaultDomainName = "https://polis.observer/"
 
     // Level 1 resource paths
-    public static let rootServiceDirectory  = "polis"
+    public static let rootServiceDirectory                 = "polis"
     public static let serviceProviderConfigurationFileName = "polis"
-    public static let siteDirectoryFileName = "sites_directory"
-    public static let siteDirectory = "polis_sites"
+    public static let siteDirectoryFileName                = "sites_directory"
+    public static let siteDirectory                        = "polis_sites"
 }
 
 /// The following few functions constructs paths to various POLIS files. It is preferred to use them instead of constructing
@@ -101,7 +101,7 @@ public class PolisJSONDecoder: JSONDecoder {
             let date       = self.dateFormatter.date(from: dateString)
 
             if let date = date { return date }
-            else { throw DecodingError.dataCorruptedError(in: container, debugDescription: "Date values must be ISO8601 formatted") }
+            else               { throw DecodingError.dataCorruptedError(in: container, debugDescription: "Date values must be ISO8601 formatted") }
         }
     }
 }

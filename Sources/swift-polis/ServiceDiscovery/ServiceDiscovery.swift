@@ -46,10 +46,10 @@ public struct PolisItemAttributes: Codable, Identifiable {
     public let id: UUID                      // Globally unique ID (UUID version 4) (ID in XML)
     public let parentIdentifier: String?     // ... to parent Item
     public let referenceIdentifier: String?  // ... pointer to externally defined item (IDREF in XML).
-    public let status: Status                // Current status of the type
+    public var status: Status                // Current status of the type
     public var lastUpdate: Date              // Last update time of the attributes and / or any of the Items content
-    public let name: String                  // Should be unique to avoid errors, but not a requirement
-    public let shortDescription: String?     // In XML schema should be max 256 characters
+    public var name: String                  // Should be unique to avoid errors, but not a requirement
+    public var shortDescription: String?     // In XML schema should be max 256 characters
 
     public init(id: UUID? = nil,
                 parentIdentifier: String? = nil,
@@ -70,7 +70,7 @@ public struct PolisItemAttributes: Codable, Identifiable {
         if let date = lastUpdate { self.lastUpdate = date }
         else                     { self.lastUpdate = Date() }
 
-        self.name = name
+        self.name             = name
         self.shortDescription = shortDescription
     }
 }
@@ -82,7 +82,7 @@ public struct PolisItemAttributes: Codable, Identifiable {
 ///
 
 /// `ContactType` defines different types of communication channels
-public enum Communicating {      // Codable
+public enum Communicating {           // Codable
     case twitter(userName: String)    // Twitter user id, e.g. @AstroPolis
     case whatsApp(phone: String)      // Phone number
     case facebook(id: String)         // Facebook user id
@@ -97,12 +97,12 @@ public enum Communicating {      // Codable
 /// - `mobilePhone`                     - we required **mobile** phone number, so that clients can send SMS
 /// - `additionalCommunicationChannels` - optional list of additional contact channels like Twitter or Skype
 /// - `notes`                           - optional short note
-public struct PolisAdminContact {     // Codable
-    public let name: String?                                      // Organization or user name
-    public let email: String                                      // Requires valid email address (will be checked for validity)
-    public let mobilePhone: String?                               // Clients should implement smart handling of the phone number
-    public let additionalCommunicationChannels: [Communicating]   // Other ways communicate with the person
-    public let notes: String?                                     // Short notes and additional contact info
+public struct PolisAdminContact {                                 // Codable
+    public var name: String?                                      // Organization or user name
+    public var email: String                                      // Requires valid email address (will be checked for validity)
+    public var mobilePhone: String?                               // Clients should implement smart handling of the phone number
+    public var additionalCommunicationChannels: [Communicating]   // Other ways communicate with the person
+    public var notes: String?                                     // Short notes and additional contact info
 
     public init(name: String?, email: String, mobilePhone: String?, additionalCommunicationChannels: [Communicating] = [Communicating](), notes: String?) {
         self.name = name
@@ -145,15 +145,15 @@ public enum PolisProvider {         // Codable, CustomStringConvertible
 
 
 /// All the information needed to identify a site as a POLIS provider
-public struct PolisDirectoryEntry: Identifiable { // Codable, Identifiable
+public struct PolisDirectoryEntry: Identifiable {   // Codable, Identifiable
     public var attributes: PolisItemAttributes
-    public let domain: String                       // Fully qualified, e.g. https://polis.observer
-    public let providerDescription: String?
-    public let supportedProtocolLevels: [UInt8]     // Allowed values: 1...3
-    public let supportedAPIVersions: [String]       // Formatted as a SemanticVersion, see https://semver.org
-    public let supportedFormats: [PolisDataFormat]  // Currently JSON and XML
-    public let providerType: PolisProvider
-    public let contact: PolisAdminContact
+    public var domain: String                       // Fully qualified, e.g. https://polis.observer
+    public var providerDescription: String?
+    public var supportedProtocolLevels: [UInt8]     // Allowed values: 1...3
+    public var supportedAPIVersions: [String]       // Formatted as a SemanticVersion, see https://semver.org
+    public var supportedFormats: [PolisDataFormat]  // Currently JSON and XML
+    public var providerType: PolisProvider
+    public var contact: PolisAdminContact
 
     public var id: UUID { attributes.id }
 
@@ -171,7 +171,7 @@ public struct PolisDirectoryEntry: Identifiable { // Codable, Identifiable
 
 /// A list of known providers
 public struct PolisDirectory  {   // Codable
-    public let lastUpdate: Date
+    public var lastUpdate: Date
     public var entries: [PolisDirectoryEntry]
 
     public init(lastUpdate: Date, entries: [PolisDirectoryEntry]) {
@@ -295,15 +295,11 @@ extension Communicating: Codable, CustomStringConvertible {
 
     private enum CommunicationType: String, Codable { case twitter, whatsApp, facebook, instagram, skype }
 
-    private struct TwitterParams: Codable {  let userName: String }
-
-    private struct WhatsAppParams: Codable { let phone: String }
-
-    private struct FacebookParams: Codable { let id: String }
-
+    private struct TwitterParams: Codable   { let userName: String }
+    private struct WhatsAppParams: Codable  { let phone: String }
+    private struct FacebookParams: Codable  { let id: String }
     private struct InstagramParams: Codable { let userName: String }
-
-    private struct SkypeParams: Codable { let id: String }
+    private struct SkypeParams: Codable     { let id: String }
 
     public var description: String {
         switch self {
@@ -314,7 +310,6 @@ extension Communicating: Codable, CustomStringConvertible {
             case .skype:     return "Skype"
         }
     }
-
 }
 
 //MARK: - PolisContact

@@ -16,16 +16,6 @@ import Foundation
 /// `ServiceDiscovery.swift` should not have incompatible coding/decoding and API changes in future versions of the
 /// standard! All other types could evolve.
 
-public struct ObservatorySiteDirectory: Codable {
-    public let lastUpdate: Date                   // UTC
-    public let entries: [ObservingSiteReference]
-
-    public init(lastUpdate: Date, entries: [ObservingSiteReference]) {
-        self.lastUpdate = lastUpdate
-        self.entries    = entries
-    }
-}
-
 /// This is only a quick reference to check if Client's cache has this site and if the site is up-to-date.
 public struct ObservingSiteReference: Codable, Identifiable {
     public var attributes: PolisItemAttributes
@@ -37,3 +27,14 @@ public struct ObservingSiteReference: Codable, Identifiable {
         self.attributes = attributes
     }
 }
+
+public struct ObservatorySiteDirectory: Codable {
+    public var lastUpdate: Date                   // UTC
+    public var entries: [ObservingSiteReference]
+
+    public init(lastUpdate: Date, entries: [ObservingSiteReference]) {
+        self.lastUpdate = lastUpdate
+        self.entries    = entries
+    }
+}
+
