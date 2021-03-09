@@ -23,7 +23,7 @@ final class ServiceDiscoveryTests: XCTestCase {
 
     func testPolisProvider() {
         let pub = PolisProvider.public
-        let mir = PolisProvider.mirror(identifier: "abc")
+        let mir = PolisProvider.mirror(id: "abc")
 
         data = try? jsonEncoder.encode(pub)
         string = String(data: data!, encoding: .utf8)
