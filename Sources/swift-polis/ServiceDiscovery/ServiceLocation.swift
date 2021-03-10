@@ -21,8 +21,8 @@ Thoughts about predefined pats and API queries:
  - <domain>/polis/polis_directory.xml  [optional]
     List of all known POLIS providers
 
- - <domain>/polis/sites_directory.json [required]
- - <domain>/polis/sites_directory.xml  [optional]
+ - <domain>/polis/observing_sites_directory.json [required]
+ - <domain>/polis/observing_sites_directory.xml  [optional]
     Directory (list) of known observing sites containing their IDs, last update dates, and optional short names. It is
     recommended that clients cache this list and access the full observing site only on demand.
 
@@ -33,18 +33,21 @@ public struct PolisPredefinedServicePaths {
     public static let defaultDomainName = "https://polis.observer/"
 
     // Level 1 resource paths
-    public static let rootServiceDirectory                 = "polis"
-    public static let serviceProviderConfigurationFileName = "polis"
-    public static let siteDirectoryFileName                = "sites_directory"
-    public static let siteDirectory                        = "polis_sites"
+    public static let rootServiceDirectory                  = "polis"                      // e.g. /polis/
+    public static let serviceProviderConfigurationFileName  = "polis"                      // e.g. /polis/polis.json
+    public static let serviceProviderSitesDirectoryFileName = "polis_directory"            // e.g. /polis/polis_directory.json
+    public static let observingSitesDirectoryFileName       = "observing_sites_directory"  // e.g. /polis/observing_sites_directory.json
+    public static let siteDirectory                         = "polis_sites"                // e.g. /polis/polis_sites/
 }
 
 /// The following few functions constructs paths to various POLIS files. It is preferred to use them instead of constructing
 /// path URL manually, because the file organisation of the POLIS provider might change in the future
 ///
-/// - `rootPolisFile()`          - returns the path of the root configuration file
-/// - `rootPolisDirectoryFile()` - returns the path of the directory of known POLIS providers
-/// - `observingSiteFile()`      - returns the path to a file containing observing site data
+/// - `rootPolisFile()`               - returns the path of the root configuration file
+/// - `rootPolisDirectoryFile()`      - returns the path of the directory of known POLIS providers
+/// - `observingSitesDirectoryFile()` - returns the path to a file containing a list of all known observing site IDs
+/// - `observingSiteFile()`           - returns the path to a file containing observing site data
+
 public func rootPolisFile(rootPath: URL, format: PolisDataFormat = .json) -> URL {
     var result = normalisedPath(rootPath)
 
@@ -59,7 +62,17 @@ public func rootPolisDirectoryFile(rootPath: URL, format: PolisDataFormat = .jso
     var result = normalisedPath(rootPath)
 
     result.appendPathComponent(
-        "\(PolisPredefinedServicePaths.rootServiceDirectory)/\(PolisPredefinedServicePaths.siteDirectoryFileName).\(format.rawValue)",
+        "\(PolisPredefinedServicePaths.rootServiceDirectory)/\(PolisPredefinedServicePaths.serviceProviderSitesDirectoryFileName).\(format.rawValue)",
+        isDirectory: false)
+
+    return result
+}
+
+public func observingSitesDirectoryFile(rootPath: URL, format: PolisDataFormat = .json) -> URL {
+    var result = normalisedPath(rootPath)
+
+    result.appendPathComponent(
+        "\(PolisPredefinedServicePaths.rootServiceDirectory)/\(PolisPredefinedServicePaths.observingSitesDirectoryFileName).\(format.rawValue)",
         isDirectory: false)
 
     return result

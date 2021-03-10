@@ -14,13 +14,13 @@ final class UtilitiesTests: XCTestCase {
 
     func test_PathUtilities() {
         let sut1 = rootPolisFile(rootPath: URL(fileURLWithPath: "/tmp"))
-        let sut2 = rootPolisFile(rootPath: URL(fileURLWithPath: "/tmp/"))
-        let sut3 = rootPolisDirectoryFile(rootPath: URL(fileURLWithPath: "/tmp/"))
+        let sut2 = rootPolisDirectoryFile(rootPath: URL(fileURLWithPath: "/tmp/"))
+        let sut3 = observingSitesDirectoryFile(rootPath: URL(fileURLWithPath: "/tmp/"))
         let sut4 = observingSiteFile(rootPath: URL(fileURLWithPath: "/tmp/"), siteID: "123456")
 
         XCTAssertEqual(sut1.path, "/tmp/polis/polis.json")
-        XCTAssertEqual(sut2.path, "/tmp/polis/polis.json")
-        XCTAssertEqual(sut3.path, "/tmp/polis/sites_directory.json")
+        XCTAssertEqual(sut2.path, "/tmp/polis/polis_directory.json")
+        XCTAssertEqual(sut3.path, "/tmp/polis/observing_sites_directory.json")
         XCTAssertEqual(sut4.path, "/tmp/polis/polis_sites/123456.json")
     }
 
