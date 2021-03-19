@@ -51,8 +51,8 @@ public struct PolisPredefinedServicePaths {
 /// - `observingSiteFile()`           - returns the path to a file containing observing site data
 
 public func rootPolisFolder(rootPath: URL) -> URL {
-    var result = rootPath
-
+    var result = normalisedPath(rootPath)
+    
     result.appendPathComponent("\(PolisPredefinedServicePaths.rootServiceDirectory)/", isDirectory: true)
 
     return result
@@ -97,6 +97,14 @@ public func observingSiteFile(rootPath: URL, siteID: String, format: PolisDataFo
     result.appendPathComponent( "\(siteID).\(format.rawValue)", isDirectory: false)
 
     return result
+}
+
+/// This is for internal use only!
+fileprivate func normalisedPath(_ path: URL) -> URL {
+    let strPath = path.path
+
+    if strPath.hasSuffix("/") { return path }
+    else                      { return URL(fileURLWithPath: "\(strPath)/") }
 }
 
 
