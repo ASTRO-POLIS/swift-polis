@@ -51,7 +51,7 @@ public struct PolisPredefinedServicePaths {
 /// - `observingSiteFile()`           - returns the path to a file containing observing site data
 
 public func rootPolisFolder(rootPath: URL) -> URL {
-    var result = normalisedPath(rootPath)
+    var result = rootPath
 
     result.appendPathComponent("\(PolisPredefinedServicePaths.rootServiceDirectory)/", isDirectory: true)
 
@@ -68,51 +68,35 @@ public func polisSiteDirectory(rootPath: URL) -> URL {
 
 
 public func rootPolisFile(rootPath: URL, format: PolisDataFormat = .json) -> URL {
-    var result = normalisedPath(rootPath)
+    var result = rootPolisFolder(rootPath: rootPath)
 
-    result.appendPathComponent(
-        "\(PolisPredefinedServicePaths.rootServiceDirectory)/\(PolisPredefinedServicePaths.serviceProviderConfigurationFileName).\(format.rawValue)",
-        isDirectory: false)
+    result.appendPathComponent( "\(PolisPredefinedServicePaths.serviceProviderConfigurationFileName).\(format.rawValue)", isDirectory: false)
 
     return result
 }
 
 public func rootPolisDirectoryFile(rootPath: URL, format: PolisDataFormat = .json) -> URL {
-    var result = normalisedPath(rootPath)
+    var result = rootPolisFolder(rootPath: rootPath)
 
-    result.appendPathComponent(
-        "\(PolisPredefinedServicePaths.rootServiceDirectory)/\(PolisPredefinedServicePaths.serviceProviderSitesDirectoryFileName).\(format.rawValue)",
-        isDirectory: false)
+    result.appendPathComponent( "\(PolisPredefinedServicePaths.serviceProviderSitesDirectoryFileName).\(format.rawValue)", isDirectory: false)
 
     return result
 }
 
 public func observingSitesDirectoryFile(rootPath: URL, format: PolisDataFormat = .json) -> URL {
-    var result = normalisedPath(rootPath)
+    var result = rootPolisFolder(rootPath: rootPath)
 
-    result.appendPathComponent(
-        "\(PolisPredefinedServicePaths.rootServiceDirectory)/\(PolisPredefinedServicePaths.observingSitesDirectoryFileName).\(format.rawValue)",
-        isDirectory: false)
+    result.appendPathComponent("\(PolisPredefinedServicePaths.observingSitesDirectoryFileName).\(format.rawValue)", isDirectory: false)
 
     return result
 }
 
 public func observingSiteFile(rootPath: URL, siteID: String, format: PolisDataFormat = .json) -> URL {
-    var result = normalisedPath(rootPath)
+    var result = polisSiteDirectory(rootPath: rootPath)
 
-    result.appendPathComponent(
-        "\(PolisPredefinedServicePaths.rootServiceDirectory)/\(PolisPredefinedServicePaths.siteDirectory)/\(siteID).\(format.rawValue)",
-        isDirectory: false)
+    result.appendPathComponent( "\(siteID).\(format.rawValue)", isDirectory: false)
 
     return result
-}
-
-/// This is for internal use only!
-fileprivate func normalisedPath(_ path: URL) -> URL {
-    let strPath = path.path
-
-    if strPath.hasSuffix("/") { return path }
-    else                      { return URL(fileURLWithPath: "\(strPath)/") }
 }
 
 
