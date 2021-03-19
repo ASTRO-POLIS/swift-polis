@@ -52,7 +52,7 @@ public struct PolisPredefinedServicePaths {
 
 public func rootPolisFolder(rootPath: URL) -> URL {
     var result = normalisedPath(rootPath)
-    
+
     result.appendPathComponent("\(PolisPredefinedServicePaths.rootServiceDirectory)/", isDirectory: true)
 
     return result
@@ -99,7 +99,8 @@ public func observingSiteFile(rootPath: URL, siteID: String, format: PolisDataFo
     return result
 }
 
-/// This is for internal use only!
+/// This is for internal use only! Without this the URL returned by the utility functions for some strange reason has no
+/// URL schema!
 fileprivate func normalisedPath(_ path: URL) -> URL {
     let strPath = path.path
 
