@@ -12,7 +12,15 @@ import XCTest
 
 final class UtilitiesTests: XCTestCase {
 
-    func test_PathUtilities() {
+    func test_utilityFolderPaths() {
+        let sut1 = rootPolisFolder(rootPath: URL(fileURLWithPath: "/tmp"))
+        let sut2 = polisSiteDirectory(rootPath: URL(fileURLWithPath: "/tmp/"))
+
+        XCTAssertEqual(sut1.path, "/tmp/polis")
+        XCTAssertEqual(sut2.path, "/tmp/polis/polis_sites")
+    }
+
+    func test_utilityFilePaths() {
         let sut1 = rootPolisFile(rootPath: URL(fileURLWithPath: "/tmp"))
         let sut2 = rootPolisDirectoryFile(rootPath: URL(fileURLWithPath: "/tmp/"))
         let sut3 = observingSitesDirectoryFile(rootPath: URL(fileURLWithPath: "/tmp/"))
@@ -33,6 +41,7 @@ final class UtilitiesTests: XCTestCase {
     }
 
     static var allTests = [
-        ("test_PathUtilities", test_PathUtilities)
+        ("test_utilityFolderPaths", test_utilityFolderPaths),
+        ("test_utilityFilePaths", test_utilityFilePaths),
     ]
 }

@@ -53,7 +53,7 @@ public struct PolisPredefinedServicePaths {
 public func rootPolisFolder(rootPath: URL) -> URL {
     var result = normalisedPath(rootPath)
 
-    result.appendPathComponent("\(PolisPredefinedServicePaths.siteDirectory)/", isDirectory: true)
+    result.appendPathComponent("\(PolisPredefinedServicePaths.rootServiceDirectory)/", isDirectory: true)
 
     return result
 }
@@ -61,7 +61,7 @@ public func rootPolisFolder(rootPath: URL) -> URL {
 public func polisSiteDirectory(rootPath: URL) -> URL {
     var result = rootPolisFolder(rootPath: rootPath)
 
-    result.appendPathComponent("\(PolisPredefinedServicePaths.rootServiceDirectory)/", isDirectory: true)
+    result.appendPathComponent("\(PolisPredefinedServicePaths.siteDirectory)/", isDirectory: true)
 
     return result
 }
