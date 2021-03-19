@@ -43,7 +43,8 @@ public struct PolisPredefinedServicePaths {
 /// The following few functions constructs paths to various POLIS files. It is preferred to use them instead of constructing
 /// path URL manually, because the file organisation of the POLIS provider might change in the future
 ///
-/// - `rootPolisFolder()`             - returns the root path + `rootServiceDirectory`
+/// - `rootPolisFolder()`             - returns the root folder + `rootServiceDirectory`
+/// - `polisSiteDirectory()`          - returns the folder  containing all observing site data
 /// - `rootPolisFile()`               - returns the path of the root configuration file
 /// - `rootPolisDirectoryFile()`      - returns the path of the directory of known POLIS providers
 /// - `observingSitesDirectoryFile()` - returns the path to a file containing a list of all known observing site IDs
@@ -52,10 +53,19 @@ public struct PolisPredefinedServicePaths {
 public func rootPolisFolder(rootPath: URL) -> URL {
     var result = normalisedPath(rootPath)
 
+    result.appendPathComponent("\(PolisPredefinedServicePaths.siteDirectory)/", isDirectory: true)
+
+    return result
+}
+
+public func polisSiteDirectory(rootPath: URL) -> URL {
+    var result = rootPolisFolder(rootPath: rootPath)
+
     result.appendPathComponent("\(PolisPredefinedServicePaths.rootServiceDirectory)/", isDirectory: true)
 
     return result
 }
+
 
 public func rootPolisFile(rootPath: URL, format: PolisDataFormat = .json) -> URL {
     var result = normalisedPath(rootPath)
