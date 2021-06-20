@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum OwnershipType: String, Codable {
+public enum SiteOwnershipType: String, Codable {
     case university
     case research
     case commercial
@@ -16,7 +16,7 @@ public enum OwnershipType: String, Codable {
     case government
     case ngo
     case `private`     // personal, amateur, ...
-    case other
+    case other         //TODO: Perhaps we need a `description` parameter?
 }
 
 public indirect enum SolarSystemBodyType {
@@ -44,9 +44,12 @@ public indirect enum SolarSystemBodyType {
 }
 
 public struct EarthLocation: Codable {
-    public var eastLongitude: Double  // degrees
-    public var latitude: Double       // degrees
-    public var altitude: Double?      // m
+    public let eastLongitude: Double  // degrees
+    public let latitude: Double       // degrees
+    public let altitude: Double?      // m
+    public let place: String?
+    public let regionOrState: String?
+    public let country: String        // The English name of the country. Clients should provide localisation.
 }
 
 public struct AltitudeRange: Codable {
@@ -72,7 +75,7 @@ public struct ObservingSite {
     public let name: String
     public let startDate: Date? // Might be unknown
     public let endDate: Date?   // if != nil -> either closed or temporary created (e.g. solar eclipse monitoring)
-    public let ownershipType: OwnershipType
+    public let ownershipType: SiteOwnershipType
     public let observatories: [Observatory]
     public let description: String?
 }

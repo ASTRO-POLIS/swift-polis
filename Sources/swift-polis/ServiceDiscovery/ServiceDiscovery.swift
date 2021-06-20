@@ -32,7 +32,7 @@ public let supportedPolisAPIVersions = ["0.1"]
 /// - `deleted`   - sync the Attributes only to prevent new propagation of the record and to block the UUID
 /// - `suspended` - sync the Attributes only, but not the rest of the item
 /// - `unknown`   - do not sync, but continue monitoring
-public enum Status: String, Codable {
+public enum LifecycleStatus: String, Codable {
     case inactive   // New, being edited, in process of upgrade
     case active     // in production
     case deleted    // we need this because otherwise in distributed system disappearing records will reappear.
@@ -46,18 +46,18 @@ public struct PolisItemAttributes: Codable, Identifiable {
     public let id: UUID                   // Globally unique ID (UUID version 4) (ID in XML)
     public let parentID: String?          // ... to parent Item
     public let referenceID: String?       // ... pointer to externally defined item (IDREF in XML). Used by `local` providers
-    public var status: Status             // Current status of the type
+    public var status: LifecycleStatus    // Current status of the type
     public var lastUpdate: Date           // Last update time of the attributes and / or any of the Items content
     public var name: String               // Should be unique to avoid errors, but not a requirement
     public var shortDescription: String?  // In XML schema should be max 256 characters
 
     public init(id: UUID =  UUID(),
-                parentIdentifier: String? = nil,
+                parentIdentifier: String?    = nil,
                 referenceIdentifier: String? = nil,
-                status: Status = Status.unknown,
-                lastUpdate: Date = Date(),
+                status: LifecycleStatus      = LifecycleStatus.unknown,
+                lastUpdate: Date             = Date(),
                 name: String,
-                shortDescription: String? = nil) {
+                shortDescription: String?    = nil) {
         self.id               = id
         self.parentID         = parentIdentifier
         self.referenceID      = referenceIdentifier
