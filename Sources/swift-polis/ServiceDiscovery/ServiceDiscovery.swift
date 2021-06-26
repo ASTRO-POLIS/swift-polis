@@ -5,52 +5,95 @@
 //  Created by Georg Tuparev on 18/11/2020.
 //
 
-/// This file defines types related to the POLIS provider discovery and few reusable types that are building blocks of
-/// other POLIS types.
-///
-/// **Note for Swift developers:** COURAGEOUS and IMPORTANT ASSUMPTION: Types defined in this file and in
-/// `ObservatorySiteDirectory.swift` should not have incompatible coding/decoding and API changes in future versions of
-/// the standard! All other types could (and will) evolve.
+// This file defines types related to the POLIS provider discovery and few reusable types that are building blocks of
+// other POLIS types.
+//
+// **Note for Swift developers:** COURAGEOUS and IMPORTANT ASSUMPTION - types defined in this file and in
+// `ObservatorySiteDirectory.swift` should not have incompatible coding/decoding and API changes in future versions of
+// the standard! All other types could (and will) evolve. And yes, I know this would be too good to be true 😂
 
 import Foundation
 
 /// This is a list of all supported versions. A POLIS provider can support some of them or all of them. Only major and
 /// minor version numbers are supported. Concrete implementations can ignore `patch numbers` and alfa / beta modifiers.
-/// Versions prior `1.0` could be ignored.
-public let supportedPolisAPIVersions = ["0.1"]
+/// Versions prior `1.0` could be ignored by production-ready implementations. It will be assumed, that they are
+/// experimental.
+public let supportedPolisAPIVersions = [
+    "0.1",    // Initial experimental version. Should not be used for production neither for API compatibility testing.
+]
 
 //MARK: - POLIS Item Attributes -
-/// POLIS Attributes uniquely identify and define the status of almost every POLIS item, and define external relationships
-/// to other items.
-/// The idea of POLIS Attributes comes from analogous type from the RTML standard, that turned out to be extremely useful.
 
-/// Each type (Provider, Observing Site, Observatory, etc.) should include Status (as part of `PolisItemAttributes`.
-/// This will define the syncing policy, as well as visibility of the POLIS items within client implementations.
-/// Possible values:
+/// Each POLIS type (Provider, Observing Site, Observatory, etc.) should include `LifecycleStatus` (as part of
+/// ``PolisItemAttributes``).
+///
+/// `LifecycleStatus` will determine the syncing policy, as well as visibility of the POLIS items within
+/// client implementations. Implementations should adopt following behaviours:
 /// - `inactive`  - do not sync, but continue monitoring
-/// - `active`    - sync as it is (new, or update, depending on the last update date)
-/// - `deleted`   - sync the Attributes only to prevent new propagation of the record and to block the UUID
-/// - `suspended` - sync the Attributes only, but not the rest of the item
+/// - `active`    - must be synced and monitored
+/// - `deleted`   - sync the `Attributes` only to prevent new propagation of the record and to block the UUID
+/// - `suspended` - sync the `Attributes` only the main records
 /// - `unknown`   - do not sync, but continue monitoring
 public enum LifecycleStatus: String, Codable {
-    case inactive   // New, being edited, in process of upgrade
-    case active     // in production
-    case deleted    // we need this because otherwise in distributed system disappearing records will reappear.
-    case suspended  // e.g., in cases the data is incorrect, or there are rules/standard violations.
-    case unknown    // e.g. the entity exist, but the status is unknown.
+
+        /// New, being edited, in process of upgrade providers should be marked as `inactive`.
+    case inactive
+
+        /// `active` marks a production provider that is publicly accessible.
+    case active
+
+        /// `deleted` is needed to prevent reappearance of disabled providers.
+    case deleted
+
+        /// `suspended` in cases of software or hardware migrations, or violations of standard compliance.
+    case suspended
+
+        /// `unknown` marks a provider with unknown status, and is mostly just for completeness.
+    case unknown
 }
 
-/// `PolisItemAttributes` should be part of (almost) every POLIS type. When XML encoding is used, it is recommended to
-/// present this type as attributes of the integrating type (Element).
-public struct PolisItemAttributes: Codable, Identifiable {
-    public let id: UUID                   // Globally unique ID (UUID version 4) (ID in XML)
-    public let parentID: String?          // ... to parent Item
-    public let referenceID: String?       // ... pointer to externally defined item (IDREF in XML). Used by `local` providers
-    public var status: LifecycleStatus    // Current status of the type
-    public var lastUpdate: Date           // Last update time of the attributes and / or any of the Items content
-    public var name: String               // Should be unique to avoid errors, but not a requirement
-    public var shortDescription: String?  // In XML schema should be max 256 characters
 
+
+/// `PolisItemAttributes` uniquely identifies and defines the status of almost every POLIS item and defines external
+/// relationships to other items (or POLIS objects).
+///
+/// The idea of POLIS Attributes comes from analogous type that could be found in the `RTML` standard. The
+/// RTML attributes  turned out to be extremely useful for relating items within one RTML document and linking RTML
+/// documents to each other.
+///
+/// `PolisItemAttributes` are an essential part of (almost) every POLIS type. They are needed to uniquely identify and
+/// describe each item (object) and establish parent-child relationships between them, as well as provide enough
+/// informationIn for the syncing of polis providers.
+///
+/// If XML encoding / decoding is used, it is recommended to implements the `PolisItemAttributes` as attributes of the
+/// corresponding type (Element).
+public struct PolisItemAttributes: Codable, Identifiable {
+
+        /// Globally unique identifier (UUID version 4) (ID in XML). The `id` is needed for `Identifiable` protocol
+        /// conformance.
+    public let id: UUID
+
+        /// Establishing parent-child relationship.
+    public let parentID: String?
+
+        /// Pointer to externally defined item (IDREF in XML). Used mostly by `local` providers
+    public let referenceID: String?
+
+        /// Determines the current status of the POLIS item (object).
+    public var status: LifecycleStatus
+
+        /// Latest update time. Used primarily for syncing.
+    public var lastUpdate: Date
+
+    /// Human readable name of the item (object). It is recommended to be unique to avoid potential confusions.
+    public var name: String
+
+    /// Short optional item (object) description. In XML schema should be max 256 characters for RTML interoperability.
+    public var shortDescription: String?
+
+    /// Designated initialiser.
+    ///
+    /// Only the `name` parameter is required. All other parameters have reasonable default values.
     public init(id: UUID =  UUID(),
                 parentIdentifier: String?    = nil,
                 referenceIdentifier: String? = nil,
@@ -70,35 +113,72 @@ public struct PolisItemAttributes: Codable, Identifiable {
 
 
 //MARK: - POLIS Contact -
-/// Many POLIS types have reference to contact people (owners of sites, admins, project managers). Later we need to add
-/// Institutions too and care about the nasty business of handling addresses, countries, languages, phone numbers and
-/// other developer's horror. For now just a simple contact to be able to communicate with site admins.
-///
+// Many POLIS types have reference to contact people (owners of sites, admins, project managers). Later we need to add
+// Institutions too and care about the nasty business of handling addresses, countries, languages, phone numbers and
+// other developer's horror. Perhaps the best is to rely on external implementation for the address management. For now
+// just a simple contact to be able to communicate with site admins is enough.
+//
 
-/// `ContactType` defines different types of communication channels in addition to the default email and mobile number.
-public enum Communicating {           // Codable
-    case twitter(userName: String)    // Twitter user id, e.g. @AstroPolis
-    case whatsApp(phone: String)      // Phone number
-    case facebook(id: String)         // Facebook user id
-    case instagram(userName: String)  // Instagram user id
-    case skype(id: String)            // Skype user id
+/// `Communicating` defines different types of communication channels in addition to the default email and mobile number.
+///
+/// The current list includes just few popular communication channels. Emerging apps like Signal and Telegram are not
+/// currently included, nor local Chinese and Russian social media communication channels. If someone needs these channels,
+/// please submit a pool request.
+///
+/// The type implements the `Codable` protocol
+public enum Communicating {
+
+        /// Twitter user id, e.g. @AstroPolis "@" is expected to be part of the id
+    case twitter(userName: String)
+
+    /// Phone number used by WhatsApp. The phone number should include the country code, start with "+", and contain no
+    /// spaces, brackets, or other formatting characters.
+    case whatsApp(phone: String)
+
+    /// TheFacebook user id is only the part of the URL after "www.facebooc.com/"!
+    case facebook(id: String)
+
+        /// Instagram user id, e.g. @AstroPolis "@" is expected to be part of the id
+    case instagram(userName: String)
+
+        /// Skype user id
+    case skype(id: String)
 }
 
-/// `PolisAdminContact` is a simple way to contact a provider admin, an observing site owner, or an observatory admin.
-/// **Note:** In general we do not recommend the use of mobile numbers. Use them only if the building is burning or there
-/// is a killer asteroid flying towards the Earth!
-/// - `name`                            - Person's name
-/// - `email`                           - Implementations should guarantee well defined email format
-/// - `mobilePhone`                     - we required **mobile** phone number, so that clients can send SMS
-/// - `additionalCommunicationChannels` - optional list of additional contact channels like Twitter or Skype
-/// - `notes`                           - optional short note
-public struct PolisAdminContact {                                 // Codable
-    public var name: String?                                      // Organization or user name
-    public var email: String                                      // Requires valid email address (will be checked for validity)
-    public var mobilePhone: String?                               // Clients should implement smart handling of the phone number
-    public var additionalCommunicationChannels: [Communicating]   // Other ways communicate with the person
-    public var notes: String?                                     // Short notes and additional contact info
 
+/// `PolisAdminContact` defines a simple way to contact a provider admin, an observing site owner, or an observatory admin.
+///
+/// It is important to be able to contact the admin of POLIS service provider or the admin or the owner of observing
+/// site. But one should not forget that all POLIS data are publicly available and therefore they should expose as
+/// little as possible private information. It is preferred not to expose private email addresses, phone numbers, or
+/// twitter accounts, but only publicly available organisation contacts.
+///
+/// The type implements the `Codable` protocol
+public struct PolisAdminContact {
+
+        /// Admin's name. It is recommended to be either omitted, or to describe admin's role, e.g. "The managing director
+        /// of Rozhen observatory"
+    public var name: String?
+
+        /// Email is the most reliable and widely addopted communication channel, and therefore a valid email address is
+        /// required. To protect private information, it is recommended that the email address is assigned to the
+        /// institution, e.g. "office@mountain-observatory.org"
+    public var email: String
+
+        /// Consider giving only institution phone numbers - not private once. The phone number should include the
+        /// country code, start with "+", and contain no spaces, brackets, or other formatting characters.
+    public var mobilePhone: String?
+
+        /// Possibly empty list (array) of additional communication channels of type ``Communicating``.
+    public var additionalCommunicationChannels: [Communicating]
+
+        /// `notes` can contain additional contact info, e.g. "The admin could be contacted only during office hours"
+    public var notes: String?
+
+    /// Designated initialiser
+    ///
+    /// Only the `email` is a required parameter. It must contain well formatted email address and implementations
+    /// can implement additional validation if the address is a real one and expect confirmation response.
     public init(name: String?, email: String, mobilePhone: String?, additionalCommunicationChannels: [Communicating] = [Communicating](), notes: String?) {
         self.name = name
         self.email = email
