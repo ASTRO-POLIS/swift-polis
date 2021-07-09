@@ -1,9 +1,9 @@
-//
-//  ObservingSite.swift
-//  
-//
-//  Created by Georg Tuparev on 20/11/2020.
-//
+    //
+    //  ObservingSite.swift
+    //
+    //
+    //  Created by Georg Tuparev on 20/11/2020.
+    //
 
 import Foundation
 
@@ -78,31 +78,31 @@ public struct ObservingSite {
 }
 
 public enum ObservatoryType {
-    // Location
+        // Location
     case opticalTelescope(OpticalTelescope)
     case radioAntenna(RadioAntenna)
 }
 
 public struct Observatory {
     var type: ObservatoryType
-    // Coordinates
+        // Coordinates
 }
 
 public enum InstrumentType {
 }
 
 public struct OpticalTelescope {
-    // Aperture
-    // Camera
-    // [Devices]
-    // FocalLength
-    // FocalRatio
-    // [Mirrors]
-    // PlateScale
-    // SpectralEfficiency
-    // SpectralRegion
-    // Spectrograph
-    // TrackRate
+        // Aperture
+        // Camera
+        // [Devices]
+        // FocalLength
+        // FocalRatio
+        // [Mirrors]
+        // PlateScale
+        // SpectralEfficiency
+        // SpectralRegion
+        // Spectrograph
+        // TrackRate
     public var instruments: [InstrumentType]?
     public var telescopes: [OpticalTelescope]?
     public var description: String?

@@ -14,7 +14,7 @@ final class UtilitiesTests: XCTestCase {
 
     func test_utilityFolderPaths() {
         let sut1 = rootPolisFolder(rootPath: URL(fileURLWithPath: "/tmp"))
-        let sut2 = polisSiteDirectory(rootPath: URL(fileURLWithPath: "/tmp/"))
+        let sut2 = polisSitesFolder(rootPath: URL(fileURLWithPath: "/tmp/"))
 
         XCTAssertEqual(sut1.path, "/tmp/polis")
         XCTAssertEqual(sut2.path, "/tmp/polis/polis_sites")

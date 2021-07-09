@@ -50,6 +50,12 @@ public struct PolisPredefinedServicePaths {
 /// - `observingSitesDirectoryFile()` - returns the path to a file containing a list of all known observing site IDs
 /// - `observingSiteFile()`           - returns the path to a file containing observing site data
 
+
+    ///
+    /// Defines the root folder containing all static files (JSON and XML) of a POLIS provider.
+    /// This function does not validate the correctness or path or if the folder is accessible for reading and writing.
+    /// - Parameter rootPath: The path leading to the root polis folder.
+    /// - Returns: Returns the root POLIS folder.
 public func rootPolisFolder(rootPath: URL) -> URL {
     var result = normalisedPath(rootPath)
 
@@ -58,7 +64,7 @@ public func rootPolisFolder(rootPath: URL) -> URL {
     return result
 }
 
-public func polisSiteDirectory(rootPath: URL) -> URL {
+public func polisSitesFolder(rootPath: URL) -> URL {
     var result = rootPolisFolder(rootPath: rootPath)
 
     result.appendPathComponent("\(PolisPredefinedServicePaths.siteDirectory)/", isDirectory: true)
@@ -92,7 +98,7 @@ public func observingSitesDirectoryFile(rootPath: URL, format: PolisDataFormat =
 }
 
 public func observingSiteFile(rootPath: URL, siteID: String, format: PolisDataFormat = .json) -> URL {
-    var result = polisSiteDirectory(rootPath: rootPath)
+    var result = polisSitesFolder(rootPath: rootPath)
 
     result.appendPathComponent( "\(siteID).\(format.rawValue)", isDirectory: false)
 
