@@ -1,9 +1,9 @@
-    //
-    //  ObservingSite.swift
-    //
-    //
-    //  Created by Georg Tuparev on 20/11/2020.
-    //
+//
+//  ObservingSite.swift
+//
+//
+//  Created by Georg Tuparev on 20/11/2020.
+//
 
 import Foundation
 
@@ -21,7 +21,7 @@ public enum SiteOwnershipType: String, Codable {
 
 public indirect enum SolarSystemBodyType {
     case Sun
-
+    
     case Mercury
     case Venus
     case Earth
@@ -30,14 +30,14 @@ public indirect enum SolarSystemBodyType {
     case Saturn
     case Uranus
     case Neptune
-
+    
     case Pluto
     case Ceres
     case Haumea
     case Makemake
     case Eris
     case KuiperBeltObject(name: String)
-
+    
     case moon(planet: SolarSystemBodyType, name: String)       // e.g. .moon(.Jupiter, "Titan")
     case asteroid(name: String)
     case comet(name: String)
@@ -81,36 +81,36 @@ public struct ObservingSite {
 }
 
 public enum ObservatoryType {
-        // Location
+    // Location
     case opticalTelescope(OpticalTelescope)
     case radioAntenna(RadioAntenna)
 }
 
 public struct Observatory {
     var type: ObservatoryType
-        // Coordinates
+    // Coordinates
 }
 
 public enum InstrumentType {
 }
 
 public struct OpticalTelescope {
-        // Aperture
-        // Camera
-        // [Devices]
-        // FocalLength
-        // FocalRatio
-        // [Mirrors]
-        // PlateScale
-        // SpectralEfficiency
-        // SpectralRegion
-        // Spectrograph
-        // TrackRate
+    // Aperture
+    // Camera
+    // [Devices]
+    // FocalLength
+    // FocalRatio
+    // [Mirrors]
+    // PlateScale
+    // SpectralEfficiency
+    // SpectralRegion
+    // Spectrograph
+    // TrackRate
     public var instruments: [InstrumentType]?
     public var telescopes: [OpticalTelescope]?
     public var description: String?
 }
 
 public struct RadioAntenna {
-
+    
 }

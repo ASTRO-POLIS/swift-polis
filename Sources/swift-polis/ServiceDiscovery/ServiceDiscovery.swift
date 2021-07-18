@@ -35,20 +35,20 @@ public let supportedPolisAPIVersions = [
 /// - `suspended` - sync the `Attributes` only the main records
 /// - `unknown`   - do not sync, but continue monitoring
 public enum LifecycleStatus: String, Codable {
-
-        /// New, being edited, in process of upgrade providers should be marked as `inactive`.
+    
+    /// New, being edited, in process of upgrade providers should be marked as `inactive`.
     case inactive
-
-        /// `active` marks a production provider that is publicly accessible.
+    
+    /// `active` marks a production provider that is publicly accessible.
     case active
-
-        /// `deleted` is needed to prevent reappearance of disabled providers.
+    
+    /// `deleted` is needed to prevent reappearance of disabled providers.
     case deleted
-
-        /// `suspended` in cases of software or hardware migrations, or violations of standard compliance.
+    
+    /// `suspended` in cases of software or hardware migrations, or violations of standard compliance.
     case suspended
-
-        /// `unknown` marks a provider with unknown status, and is mostly just for completeness.
+    
+    /// `unknown` marks a provider with unknown status, and is mostly just for completeness.
     case unknown
 }
 
@@ -68,29 +68,29 @@ public enum LifecycleStatus: String, Codable {
 /// If XML encoding / decoding is used, it is recommended to implements the `PolisItemAttributes` as attributes of the
 /// corresponding type (Element).
 public struct PolisItemAttributes: Codable, Identifiable {
-
-        /// Globally unique identifier (UUID version 4) (ID in XML). The `id` is needed for `Identifiable` protocol
-        /// conformance.
+    
+    /// Globally unique identifier (UUID version 4) (ID in XML). The `id` is needed for `Identifiable` protocol
+    /// conformance.
     public let id: UUID
-
-        /// Establishing parent-child relationship.
+    
+    /// Establishing parent-child relationship.
     public let parentID: String?
-
-        /// Pointer to externally defined item (IDREF in XML). Used mostly by `local` providers
+    
+    /// Pointer to externally defined item (IDREF in XML). Used mostly by `local` providers
     public let referenceID: String?
-
-        /// Determines the current status of the POLIS item (object).
+    
+    /// Determines the current status of the POLIS item (object).
     public var status: LifecycleStatus
-
-        /// Latest update time. Used primarily for syncing.
+    
+    /// Latest update time. Used primarily for syncing.
     public var lastUpdate: Date
-
+    
     /// Human readable name of the item (object). It is recommended to be unique to avoid potential confusions.
     public var name: String
-
+    
     /// Short optional item (object) description. In XML schema should be max 256 characters for RTML interoperability.
     public var shortDescription: String?
-
+    
     /// Designated initialiser.
     ///
     /// Only the `name` parameter is required. All other parameters have reasonable default values.
@@ -127,21 +127,21 @@ public struct PolisItemAttributes: Codable, Identifiable {
 ///
 /// The type implements the `Codable` protocol
 public enum Communicating {
-
-        /// Twitter user id, e.g. @AstroPolis "@" is expected to be part of the id
+    
+    /// Twitter user id, e.g. @AstroPolis "@" is expected to be part of the id
     case twitter(userName: String)
-
+    
     /// Phone number used by WhatsApp. The phone number should include the country code, start with "+", and contain no
     /// spaces, brackets, or other formatting characters.
     case whatsApp(phone: String)
-
+    
     /// TheFacebook user id is only the part of the URL after "www.facebooc.com/"!
     case facebook(id: String)
-
-        /// Instagram user id, e.g. @AstroPolis "@" is expected to be part of the id
+    
+    /// Instagram user id, e.g. @AstroPolis "@" is expected to be part of the id
     case instagram(userName: String)
-
-        /// Skype user id
+    
+    /// Skype user id
     case skype(id: String)
 }
 
@@ -155,26 +155,26 @@ public enum Communicating {
 ///
 /// The type implements the `Codable` protocol
 public struct PolisAdminContact {
-
-        /// Admin's name. It is recommended to be either omitted, or to describe admin's role, e.g. "The managing director
-        /// of Rozhen observatory"
+    
+    /// Admin's name. It is recommended to be either omitted, or to describe admin's role, e.g. "The managing director
+    /// of Rozhen observatory"
     public var name: String?
-
-        /// Email is the most reliable and widely addopted communication channel, and therefore a valid email address is
-        /// required. To protect private information, it is recommended that the email address is assigned to the
-        /// institution, e.g. "office@mountain-observatory.org"
+    
+    /// Email is the most reliable and widely addopted communication channel, and therefore a valid email address is
+    /// required. To protect private information, it is recommended that the email address is assigned to the
+    /// institution, e.g. "office@mountain-observatory.org"
     public var email: String
-
-        /// Consider giving only institution phone numbers - not private once. The phone number should include the
-        /// country code, start with "+", and contain no spaces, brackets, or other formatting characters.
+    
+    /// Consider giving only institution phone numbers - not private once. The phone number should include the
+    /// country code, start with "+", and contain no spaces, brackets, or other formatting characters.
     public var mobilePhone: String?
-
-        /// Possibly empty list (array) of additional communication channels of type ``Communicating``.
+    
+    /// Possibly empty list (array) of additional communication channels of type ``Communicating``.
     public var additionalCommunicationChannels: [Communicating]
-
-        /// `notes` can contain additional contact info, e.g. "The admin could be contacted only during office hours"
+    
+    /// `notes` can contain additional contact info, e.g. "The admin could be contacted only during office hours"
     public var notes: String?
-
+    
     /// Designated initialiser
     ///
     /// Only the `email` is a required parameter. It must contain well formatted email address and implementations
@@ -188,29 +188,29 @@ public struct PolisAdminContact {
     }
 }
 
-    //TODO: Add here also Institution (like in RTML). Discuss dependance to external framework.
+//TODO: Add here also Institution (like in RTML). Discuss dependance to external framework.
 
 
-    //MARK: - POLIS Directory Entry -
+//MARK: - POLIS Directory Entry -
 
-    /// POLIS APIs are encoded either in XML or in JSON format. For reasons stated elsewhere in the documentation XML APIs are
-    /// preferred for production code. In contrast, JSON is often easier to be used for new development (no need of schema
-    /// implementation) and often easier to be used within a mobile and a web applications. But because its fragility it
-    /// should be avoided in stable production systems.
-    /// **Note:** Perhaps later we might need also `plist` format for Apple specific implementations
+/// POLIS APIs are encoded either in XML or in JSON format. For reasons stated elsewhere in the documentation XML APIs are
+/// preferred for production code. In contrast, JSON is often easier to be used for new development (no need of schema
+/// implementation) and often easier to be used within a mobile and a web applications. But because its fragility it
+/// should be avoided in stable production systems.
+/// **Note:** Perhaps later we might need also `plist` format for Apple specific implementations
 public enum PolisDataFormat: String, Codable {  // Equatable
     case xml
     case json
 }
 
-    /// `PolisProvider` defines different types of POLIS providers.
-    /// Only `public` provider should be used in production. Public providers should run on server with enough bandwidth and
-    /// computational power capable of accommodating multiple parallel client requests every second. Only when a `public`
-    /// server is unreachable, its `mirror` (if available) should be accessed while the main server is down.
-    /// `private` provider's main purpose is to act as a local cache for larger institutions and should be not accessed from
-    /// outside. They might require user authentication.
-    /// `local` could be used for clients running on mobile devices or desktop apps
-    /// `experimental` providers are sandboxes for new developments, and might require authentication.
+/// `PolisProvider` defines different types of POLIS providers.
+/// Only `public` provider should be used in production. Public providers should run on server with enough bandwidth and
+/// computational power capable of accommodating multiple parallel client requests every second. Only when a `public`
+/// server is unreachable, its `mirror` (if available) should be accessed while the main server is down.
+/// `private` provider's main purpose is to act as a local cache for larger institutions and should be not accessed from
+/// outside. They might require user authentication.
+/// `local` could be used for clients running on mobile devices or desktop apps
+/// `experimental` providers are sandboxes for new developments, and might require authentication.
 public enum PolisProvider { // Codable, CustomStringConvertible
     case `public`           // Should be the default
     case `private`
@@ -220,7 +220,7 @@ public enum PolisProvider { // Codable, CustomStringConvertible
 }
 
 
-    /// All the information needed to identify a site as a POLIS provider
+/// All the information needed to identify a site as a POLIS provider
 public struct PolisDirectoryEntry: Identifiable {   // Codable, Identifiable
     public var attributes: PolisItemAttributes
     public var domain: String                       // Fully qualified, e.g. https://polis.observer
@@ -229,9 +229,9 @@ public struct PolisDirectoryEntry: Identifiable {   // Codable, Identifiable
     public var supportedFormats: [PolisDataFormat]  // Currently JSON and XML
     public var providerType: PolisProvider
     public var contact: PolisAdminContact
-
+    
     public var id: UUID { attributes.id }           // To make the type `Identifiable`
-
+    
     public init(attributes: PolisItemAttributes, domain: String, providerDescription: String?, supportedProtocolLevels: [UInt8], supportedAPIVersions: [String], supportedFormats: [PolisDataFormat], providerType: PolisProvider, contact: PolisAdminContact) {
         self.attributes              = attributes
         self.domain                  = domain
@@ -243,11 +243,11 @@ public struct PolisDirectoryEntry: Identifiable {   // Codable, Identifiable
     }
 }
 
-    /// A list of known providers
+/// A list of known providers
 public struct PolisDirectory  {   // Codable
     public var lastUpdate: Date
     public var entries: [PolisDirectoryEntry]
-
+    
     public init(lastUpdate: Date, entries: [PolisDirectoryEntry]) {
         self.lastUpdate = lastUpdate
         self.entries    = entries
@@ -255,14 +255,14 @@ public struct PolisDirectory  {   // Codable
 }
 
 
-    //MARK: - Making types Codable -
+//MARK: - Making types Codable -
 
-    //MARK: PolisProvider
+//MARK: PolisProvider
 extension PolisProvider: Codable, CustomStringConvertible {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let base      = try container.decode(ProviderType.self, forKey: .providerType)
-
+        
         switch base {
             case .public:       self = .public
             case .private:      self = .private
@@ -272,12 +272,12 @@ extension PolisProvider: Codable, CustomStringConvertible {
                 let mirrorParams = try container.decode(MirrorParams.self, forKey: .mirrorParams)
                 self = .mirror(id: mirrorParams.id)
         }
-
+        
     }
-
+    
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-
+        
         switch self {
             case .public:       try container.encode(ProviderType.public,       forKey: .providerType)
             case .private:      try container.encode(ProviderType.private,      forKey: .providerType)
@@ -288,7 +288,7 @@ extension PolisProvider: Codable, CustomStringConvertible {
                 try container.encode(MirrorParams(id: id), forKey: .mirrorParams)
         }
     }
-
+    
     public var description: String {
         switch self {
             case .public:       return "public"
@@ -298,25 +298,25 @@ extension PolisProvider: Codable, CustomStringConvertible {
             case .mirror:       return "mirror"
         }
     }
-
+    
     private enum CodingKeys: String, CodingKey {
         case providerType = "provider_type"
         case mirrorParams = "mirror_params"
     }
-
+    
     private enum ProviderType: String, Codable { case `public`, `private`, local, experimental, mirror }
-
+    
     private struct MirrorParams: Codable { let id: String }
-
+    
 }
 
-    //MARK: - ContactType
+//MARK: - ContactType
 extension Communicating: Codable, CustomStringConvertible {
-
+    
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let base      = try container.decode(CommunicationType.self, forKey: .communicationType)
-
+        
         switch base {
             case .twitter:
                 let twitterParams = try container.decodeIfPresent(TwitterParams.self, forKey: .twitterParams)
@@ -335,10 +335,10 @@ extension Communicating: Codable, CustomStringConvertible {
                 self = .skype(id: skypeParams!.id)
         }
     }
-
+    
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-
+        
         switch self {
             case .twitter(let username):
                 try container.encode(CommunicationType.twitter, forKey: .communicationType)
@@ -357,7 +357,7 @@ extension Communicating: Codable, CustomStringConvertible {
                 try container.encode(SkypeParams(id: id), forKey: .skypeParams)
         }
     }
-
+    
     public enum CodingKeys: String, CodingKey {
         case communicationType = "communication_type"
         case twitterParams     = "Twitter_params"
@@ -366,15 +366,15 @@ extension Communicating: Codable, CustomStringConvertible {
         case instagramParams   = "Instagram_params"
         case skypeParams       = "Skype_params"
     }
-
+    
     private enum CommunicationType: String, Codable { case twitter, whatsApp, facebook, instagram, skype }
-
+    
     private struct TwitterParams: Codable   { let userName: String }
     private struct WhatsAppParams: Codable  { let phone: String }
     private struct FacebookParams: Codable  { let id: String }
     private struct InstagramParams: Codable { let userName: String }
     private struct SkypeParams: Codable     { let id: String }
-
+    
     public var description: String {
         switch self {
             case .twitter:   return "Twitter"
@@ -386,7 +386,7 @@ extension Communicating: Codable, CustomStringConvertible {
     }
 }
 
-    //MARK: - PolisContact
+//MARK: - PolisContact
 extension PolisAdminContact: Codable {
     private enum CodingKeys: String, CodingKey {
         case name
@@ -397,7 +397,7 @@ extension PolisAdminContact: Codable {
     }
 }
 
-    //MARK: - PolisDirectoryEntry
+//MARK: - PolisDirectoryEntry
 extension PolisDirectoryEntry: Codable {
     private enum CodingKeys: String, CodingKey {
         case attributes
@@ -410,7 +410,7 @@ extension PolisDirectoryEntry: Codable {
     }
 }
 
-    //MARK: - PolisDirectory
+//MARK: - PolisDirectory
 extension PolisDirectory: Codable {
     private enum CodingKeys: String, CodingKey {
         case lastUpdate = "last_updated"

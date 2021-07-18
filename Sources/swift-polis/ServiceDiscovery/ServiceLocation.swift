@@ -8,23 +8,23 @@
 import Foundation
 
 /*
-Thoughts about predefined pats and API queries:
+ Thoughts about predefined pats and API queries:
 
  - <domain> - Something like https://polis.observer (it is recommended to support HTTPS)
 
  **Protocol level 1:**
  - <domain>/polis/polis.json           [required]
  - <domain>/polis/polis.xml            [optional]
-    Describes the domain, its ID, type, ownership, contact etc.
+ Describes the domain, its ID, type, ownership, contact etc.
 
  - <domain>/polis/polis_directory.json [required]
  - <domain>/polis/polis_directory.xml  [optional]
-    List of all known POLIS providers
+ List of all known POLIS providers
 
  - <domain>/polis/observing_sites_directory.json [required]
  - <domain>/polis/observing_sites_directory.xml  [optional]
-    Directory (list) of known observing sites containing their IDs, last update dates, and optional short names. It is
-    recommended that clients cache this list and access the full observing site only on demand.
+ Directory (list) of known observing sites containing their IDs, last update dates, and optional short names. It is
+ recommended that clients cache this list and access the full observing site only on demand.
 
  */
 
@@ -51,11 +51,11 @@ public struct PolisPredefinedServicePaths {
 /// - `observingSiteFile()`           - returns the path to a file containing observing site data
 
 
-    ///
-    /// Defines the root folder containing all static files (JSON and XML) of a POLIS provider.
-    /// This function does not validate the correctness or path or if the folder is accessible for reading and writing.
-    /// - Parameter rootPath: The path leading to the root polis folder.
-    /// - Returns: Returns the root POLIS folder.
+///
+/// Defines the root folder containing all static files (JSON and XML) of a POLIS provider.
+/// This function does not validate the correctness or path or if the folder is accessible for reading and writing.
+/// - Parameter rootPath: The path leading to the root polis folder.
+/// - Returns: Returns the root POLIS folder.
 public func rootPolisFolder(rootPath: URL) -> URL {
     var result = normalisedPath(rootPath)
 
