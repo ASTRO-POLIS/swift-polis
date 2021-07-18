@@ -36,8 +36,11 @@ final class PolisPersistentContainerTests: XCTestCase {
     func test_initWithCorrectEmptyRootFolderAndCreation_shouldReturnNotNil() {
         guard let url = PolisPersistentContainerTests.correctRandomRootFolder else { XCTFail(); return }
 
-        let sut = PolisPersistentContainer(rootPath: url, createIfEmpty: true)
-        XCTAssertNotNil(sut)
+        let sut1 = PolisPersistentContainer(rootPath: url, createIfEmpty: true)  // First create a new service provider
+        let sut2 = PolisPersistentContainer(rootPath: url)                       // Now read the newly created provider
+
+        XCTAssertNotNil(sut1)
+        XCTAssertNotNil(sut2)
   }
 
     override func setUp() {

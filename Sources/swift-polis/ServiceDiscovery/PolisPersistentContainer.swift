@@ -70,7 +70,7 @@ public class PolisPersistentContainer {
         // 3. Check if POLIS required files exist
         if !requiredFilesExist() { return .noData }
 
-        //TODO: 4. Read files and parse data
+        // 4. Read files and parse data
         if let dirEntry = polisDirectoryEntry(), let dir = polisDirectory(), let siteDir = observatorySiteDirectory() {
             currentPolisDirectoryEntry      = dirEntry
             currentPolisDirectory           = dir
@@ -118,18 +118,66 @@ public class PolisPersistentContainer {
     }
 
     private func polisDirectoryEntry() -> PolisDirectoryEntry? {
-        //TODO: Implement me!
-        fatalError("polisDirectoryEntry NOT IMPLEMENTED!")
+        let fm        = FileManager.default
+        let entryPath = rootPolisFile(rootPath: rootPath)
+
+        if fm.fileExists(atPath: entryPath.path) {
+            let jsonDecoder = PolisJSONDecoder()
+            do {
+                let encodedString = try String(contentsOf: entryPath, encoding: .utf8)
+                let dirEntry      = try jsonDecoder.decode(PolisDirectoryEntry.self, from: encodedString.data(using: .utf8)!)
+
+                return dirEntry
+            }
+            catch {
+                //TODO: Add proper logging!
+                print("Cannot decode JSON data for root entry: \(error)")
+                return nil
+            }
+        }
+        return nil
     }
 
     private func polisDirectory() -> PolisDirectory? {
-        //TODO: Implement me!
-        fatalError("polisDirectory NOT IMPLEMENTED!")
+        let fm            = FileManager.default
+        let directoryPath = rootPolisDirectoryFile(rootPath: rootPath)
+
+        if fm.fileExists(atPath: directoryPath.path) {
+            let jsonDecoder = PolisJSONDecoder()
+            do {
+                let encodedString = try String(contentsOf: directoryPath, encoding: .utf8)
+                let dir           = try jsonDecoder.decode(PolisDirectory.self, from: encodedString.data(using: .utf8)!)
+
+                return dir
+            }
+            catch {
+                //TODO: Add proper logging!
+                print("Cannot decode JSON data for directory entry: \(error)")
+                return nil
+            }
+        }
+        return nil
     }
 
     private func observatorySiteDirectory() -> ObservatorySiteDirectory? {
-        //TODO: Implement me!
-        fatalError("observatorySiteDirectory NOT IMPLEMENTED!")
+        let fm              = FileManager.default
+        let observatoryPath = observingSitesDirectoryFile(rootPath: rootPath)
+
+        if fm.fileExists(atPath: observatoryPath.path) {
+            let jsonDecoder = PolisJSONDecoder()
+            do {
+                let encodedString = try String(contentsOf: observatoryPath, encoding: .utf8)
+                let observatories = try jsonDecoder.decode(ObservatorySiteDirectory.self, from: encodedString.data(using: .utf8)!)
+
+                return observatories
+            }
+            catch {
+                //TODO: Add proper logging!
+                print("Cannot decode JSON data for observatory entry: \(error)")
+                return nil
+            }
+        }
+        return nil
     }
 
     //MARK: - Creating required data -
@@ -178,19 +226,19 @@ public class PolisPersistentContainer {
             print(">>>> Error: cannot create file at: \(rootPolisFile(rootPath: rootPath).path)")
             return false
         }
-        
+
         if !fm.createFile(atPath: rootPolisDirectoryFile(rootPath: rootPath).path, contents: polisDirectoryData, attributes: nil) {
             //TODO: Add proper logging!
             print(">>>> Error: cannot create file at: \(rootPolisDirectoryFile(rootPath: rootPath).path)")
             return false
         }
-        
+
         if !fm.createFile(atPath: observingSitesDirectoryFile(rootPath: rootPath).path, contents: observingSiteDirectoryData, attributes: nil) {
             //TODO: Add proper logging!
             print(">>>> Error: cannot create file at: \(observingSitesDirectoryFile(rootPath: rootPath).path)")
             return false
         }
-        
+
         return true
     }
 
