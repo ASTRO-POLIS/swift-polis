@@ -10,9 +10,24 @@ import Foundation
 
 @available(iOS 10, macOS 10.12, *)
 public class PolisPersistentContainer {
-    
+
+    /// The path leading to the folder containing all POLIS static data
     public var rootPath: URL
-    
+
+    //MARK: - Access to raw data (read only)
+    public var polisRootDirectoryEntry: PolisDirectoryEntry? {
+        get { currentPolisDirectoryEntry }
+    }
+
+    public var polisProviderDirectory: PolisDirectory? {
+        get { currentPolisDirectory }
+    }
+
+    public var observatorySites: ObservatorySiteDirectory? {
+        get { currentObservatorySiteDirectory }
+    }
+
+    //MARK: - Public methods -
     public init?(rootPath: URL, createIfEmpty: Bool = false) {
         self.rootPath = rootPath
 
@@ -32,6 +47,7 @@ public class PolisPersistentContainer {
         fatalError("saveChange NOT IMPLEMENTED!")
     }
 
+    //MARK: - Private attributes -
     // Managing the state
     private var hasChanges = false
 
@@ -246,18 +262,18 @@ public class PolisPersistentContainer {
         let polisAdmin     = PolisAdminContact(name: "Big Bang Admin",
                                                email: "admin@bigbang.nu",
                                                mobilePhone: nil,
-                                               notes: "This is the Big Bang Administrator's account. Please email your questions and suggestion to this account.")
-        let rootAttributes = PolisItemAttributes(status: LifecycleStatus.active,
+                                               notes: "This is the Big Bang Administrator's account. Please email your questions and suggestion to this account.")!
+        let rootAttributes = PolisItemAttributes(status: PolisLifecycleStatus.active,
                                                  lastUpdate: Date(),
                                                  name: "Big Bang Observer",
                                                  shortDescription: "This is the Big Bang provider")
         let rootEntry      = PolisDirectoryEntry(attributes: rootAttributes,
-                                                 domain: "https://bigbang.nu",
+                                                 url: "https://bigbang.nu",
                                                  providerDescription: "This is the Big Bang provider",
                                                  supportedProtocolLevels: [1],
                                                  supportedAPIVersions: ["0.1.0"],
                                                  supportedFormats: [.json],
-                                                 providerType: PolisProvider.public,
+                                                 providerType: PolisProviderType.public,
                                                  contact: polisAdmin)
         return rootEntry
     }
