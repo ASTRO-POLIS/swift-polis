@@ -5,12 +5,12 @@
 //  Created by Georg Tuparev on 18/11/2020.
 //
 
-// This file defines types related to the POLIS provider discovery and few reusable types that are building blocks of
-// other POLIS types.
+// This file defines types related to the POLIS provider discovery and few reusable types that are the building blocks
+// of other POLIS types.
 //
 // **Note for Swift developers:** COURAGEOUS and IMPORTANT ASSUMPTION - types defined in this file and in
 // `ObservatorySiteDirectory.swift` should not have incompatible coding/decoding and API changes in future versions of
-// the standard! All other types could (and will) evolve. And yes, I know this would be too good to be true 😂
+// the standard! All other types could (and will) evolve. And yes, I know this sounds be too good to be true 😂
 
 import Foundation
 
@@ -26,7 +26,7 @@ public let supportedPolisAPIVersions = [
 
 //MARK: - POLIS Item Attributes -
 
-/// `PolisLifecycleStatus` defines the current status of the POLIS items (their readiness to be used in different
+/// `PolisLifecycleStatus` defines the current status of the POLIS items (readiness to be used in different
 /// environments)
 ///
 /// Each POLIS type (Provider, Observing Site, Observatory, etc.) should include `PolisLifecycleStatus` (as part of
@@ -37,11 +37,11 @@ public let supportedPolisAPIVersions = [
 /// - `inactive`  - do not sync, but continue monitoring
 /// - `active`    - must be synced and monitored
 /// - `deleted`   - sync the `PolisItemAttributes` only to prevent new propagation of the record and to block the UUID
-/// - `suspended` - sync the `PolisItemAttributes` only of the main records
+/// - `suspended` - sync the `PolisItemAttributes` only from the main records
 /// - `unknown`   - do not sync, but continue monitoring
 public enum PolisLifecycleStatus: String, Codable {
     
-    /// `inactive` indicates new, being edited, or in process of upgrade providers.
+    /// `inactive` indicates new, being edited, or in process of being upgraded providers.
     case inactive
     
     /// `active` indicates a production provider that is publicly accessible.
@@ -70,7 +70,7 @@ public enum PolisLifecycleStatus: String, Codable {
 /// describe each item (object) and establish parent-child relationships between them, as well as provide enough
 /// informationIn for the syncing of polis providers.
 ///
-/// If XML encoding / decoding is used, it is recommended to implements the `PolisItemAttributes` as attributes of the
+/// If XML encoding / decoding is used, it is recommended to implement the `PolisItemAttributes` as attributes of the
 /// corresponding type (Element).
 public struct PolisItemAttributes: Codable, Identifiable {
     
@@ -119,17 +119,17 @@ public struct PolisItemAttributes: Codable, Identifiable {
 
 //MARK: - POLIS Contact -
 // Many POLIS types have reference to contact people (owners of sites, admins, project managers). Later we need to add
-// Institutions too and care about the nasty business of handling addresses, countries, languages, phone numbers and
-// other developer's horror. Perhaps the best is to rely on external implementation for the address management. For now
-// just a simple contact to be able to communicate with POLIS providers site admins is enough.
+// Institutions as well and handle the nasty business of addresses, countries, languages, phone numbers and other
+// developer's horror. Currently it's perhaps best to rely on external implementation for address management.
+// Just a simple contact to be able to communicate with POLIS providers site admins is enough.
 
 
 /// `PolisCommunication` defines different types of communication channels in addition to the default email address and
 /// mobile number.
 ///
-/// The current list includes just few popular communication channels. Emerging apps like Signal and Telegram are not
-/// currently included, nor local Chinese and Russian social media communication channels. If someone needs these channels,
-/// please submit a pool request.
+/// The current list includes just a handful of popular communication channels. Emerging apps like Signal and Telegram
+/// are not currently included, nor are local Chinese and Russian social media communication channels. If someone needs
+/// these channels, please submit a pool request.
 ///
 /// The type implements the `Codable` protocol
 public enum PolisCommunication {
@@ -141,7 +141,7 @@ public enum PolisCommunication {
     /// spaces, brackets, or other formatting characters. No validation is provided.
     case whatsApp(phone: String)
     
-    /// The Facebook user id is only the part of the URL after "www.facebooc.com/".
+    /// The Facebook user id is only the part of the URL after "www.facebook.com/".
     case facebook(id: String)
     
     /// Instagram user id, e.g. @AstroPolis "@" is expected to be part of the id
@@ -154,15 +154,15 @@ public enum PolisCommunication {
 
 /// `PolisAdminContact` defines a simple way to contact a provider admin, an observing site owner, or an observatory admin.
 ///
-/// It is important to be able to contact the admin of POLIS service provider or the admin or the owner of observing
-/// site. But one should not forget that all POLIS data are publicly available and therefore they should expose as
-/// little as possible private information. It is preferred not to expose private email addresses, phone numbers, or
+/// It is important to be able to contact the admin of a POLIS service provider or the admin or the owner of an observing
+/// site, however one should not forget that all POLIS data is publicly available and therefore should expose possible
+/// private information as little as possible. It is preferred not to expose private email addresses, phone numbers, or
 /// twitter accounts, but only publicly available organisation contacts.
 ///
 /// The type implements the `Codable` protocol
 public struct PolisAdminContact {
     
-    /// Admin's name. It is recommended to be either omitted, or to describe admin's role, e.g. "The managing director
+    /// It is recommended that the admin's name either be omitted, or to describe admin's role, e.g. "The managing director
     /// of Rozhen observatory"
     public var name: String?
     
@@ -171,9 +171,9 @@ public struct PolisAdminContact {
     /// institution, e.g. "office@mountain-observatory.org"
     public var email: String
     
-    /// Consider giving only institution phone numbers - not private once. The phone number should include the
-    /// country code, start with "+", and contain no spaces, brackets, or other formatting characters. No validation is
-    /// provided.
+    /// Consider giving only institution phone numbers - not private ones. The phone number should include the country
+    /// code, starting with "+", and should contain no spaces, brackets, or other formatting characters. No validation
+    /// is provided.
     public var mobilePhone: String?
     
     /// Possibly empty list (array) of additional communication channels of type ``Communicating``.
@@ -184,7 +184,7 @@ public struct PolisAdminContact {
     
     /// Designated initialiser
     ///
-    /// Only the `email` is a required parameter. It must contain well formatted email address and implementations
+    /// Only the `email` is a required parameter. It must contain well formatted email addresses. Implementations
     /// can implement additional validation if the address is a real one and expect confirmation response. If the email
     /// is not valid, `nil` will be returned.
     public init?(name:                           String?,
@@ -201,19 +201,19 @@ public struct PolisAdminContact {
     }
 }
 
-//TODO: Add also Institution (like in RTML). Discuss dependance to external framework.
+//TODO: Add  Institution as well (like in RTML). Discuss dependance to external framework.
 
 
 //MARK: - POLIS Directory Entry -
 
-/// POLIS APIs are encoded either in XML or in JSON format. For reasons stated elsewhere in the documentation XML APIs are
-/// preferred for production code. In contrast, JSON is often easier to be used for new development (no need of schema
-/// implementation) and often is easier to be used within a mobile or a web applications. But because of its fragility it
-/// should be avoided in stable production systems.
+/// POLIS APIs are encoded either in XML or in JSON format. For reasons stated elsewhere in the documentation, XML APIs
+/// are preferred for production code. In contrast, JSON is often easier to use for new development (no need of schema
+/// implementation) and is often easier to be used within a mobile or a web applications. Due to its fragility
+/// JSON-based implementation should be avoided in stable production systems.
 ///
 /// The type implements the `Equatable` protocol
 ///
-/// **Note:** Perhaps later we might need also `plist` format for Apple specific implementations
+/// **Note:** Perhaps later we might also need `plist` format for Apple specific implementations
 public enum PolisDataFormat: String, Codable {
     /// The provider implements XML APIs
     case xml
@@ -228,7 +228,7 @@ public enum PolisDataFormat: String, Codable {
 /// The type implements the `Codable` and `CustomStringConvertible` protocols
 public enum PolisProviderType {
     /// Only `public` provider should be used in production or by publicly available client apps or websites. Public
-    /// providers should run on server with enough bandwidth and computational power capable of accommodating multiple
+    /// providers should run on servers with enough bandwidth and computational power capable of accommodating multiple
     /// parallel client requests every second.
     case `public`
 
