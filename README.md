@@ -12,7 +12,11 @@ The simplest configuration is the Polis client. The client monitors and syncs wi
 
 - .../(client/provider)root_path/... - Root path is the folder that contains all POLIS related data. In case the framework is used to maintain also a POLIS provider, two root pats (for the client and for the provider) are required.
 
-
+## Dependancies 
+In general we are trying to avoid dependancies to other projects. Why? We share the concerns of many other well respected developers on this subject. But in the case of `swift-polis` we decided to use software modules developed and maintained by members of our team. This guarantees that even the concrete author of the module abbandons the project, someone from our team can take over the maintenance.
+Current dependences include:
+- [SoftwareEtudes](https://github.com/tuparev/SoftwareEtudes)
+We use this package for the `SemanticVersion` type, that helps us manage POLIS versions.
 
 ### Random notes to be sorted later
 **Note about RTML:** As often as possible types are similar to types defined by [RTML](http://www.astro.physik.uni-goettingen.de/~hessman/misc/RTML-3.2b.xsd)
