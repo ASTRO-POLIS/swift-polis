@@ -32,7 +32,7 @@ public class PolisJSONEncoder: JSONEncoder {
         super.init()
 
         self.dateEncodingStrategy = .iso8601
-        self.outputFormatting = .prettyPrinted
+        self.outputFormatting     = .prettyPrinted
     }
 }
 
