@@ -6,6 +6,7 @@ public func allTests() -> [XCTestCaseEntry] {
         XCTestCase(PolisPersistentContainerTests),
         XCTestCase(ServiceDiscoveryTests.allTests),
         XCTestCase(UtilitiesTests.allTests),
+        XCTestCase(PolisConfigurationTests),
     ]
 }
 #endif
