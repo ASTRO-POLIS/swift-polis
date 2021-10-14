@@ -8,19 +8,6 @@ final class ServiceDiscoveryTests: XCTestCase {
     var data: Data!
     var string: String!
 
-    func testPolisDataFormat() {
-        let j = PolisDataFormat.json
-        let x = PolisDataFormat.xml
-
-        XCTAssertFalse(j == x)
-
-        // Encoding and decoding
-        data = try? jsonEncoder.encode(j)
-        string = String(data: data!, encoding: .utf8)
-        let j1 = try! jsonDecoder.decode(PolisDataFormat.self, from: string!.data(using: .utf8)!)
-        XCTAssertEqual(j, j1)
-    }
-
     func testPolisProvider() {
         let pub = PolisProviderType.public
         let mir = PolisProviderType.mirror(id: "abc")
@@ -60,7 +47,6 @@ final class ServiceDiscoveryTests: XCTestCase {
                                      providerDescription: "Polis test",
                                      supportedProtocolLevels: [1, 2],
                                      supportedAPIVersions: ["1.0.0", "1.2.0"],
-                                     supportedFormats: [PolisDataFormat.xml],
                                      providerType: PolisProviderType.experimental,
                                      contact: PolisAdminContact(name: "polis",
                                                                 email: "polis@observer.net",
@@ -84,7 +70,6 @@ final class ServiceDiscoveryTests: XCTestCase {
     }
 
     static var allTests = [
-        ("testPolisDataFormat", testPolisDataFormat),
         ("testPolisProvider", testPolisProvider),
         ("testCommunicating", testCommunicating),
         ("testPolisContact", testPolisContact),

@@ -7,5 +7,6 @@ tests += ServiceDiscoveryTests.allTests()
 tests += UtilitiesTests.allTests()
 tests += PolisPersistentContainerTests.allTests()
 tests += PolisConfigurationTests.allTests()
+tests += PolisStaticResourceFinderTests.allTests()
 
 XCTMain(tests)

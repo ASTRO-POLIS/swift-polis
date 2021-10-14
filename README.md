@@ -1,5 +1,19 @@
 # swift-polis
 
+## Framework organisation
+The framework contains general sources common to all support levels and sources, specific or level 1, 2, or 3.
+
+### Common for the entire framework sources
+
+### Level 1 support (static resources)
+
+### Level 2 support
+
+### Level 3 support
+
+
+## To be refactored...
+
 This is a Swift implementation of POLIS standard. It contains mostly API types and a predefined set of well known constants. It also implements the entire software infrastructure needed by POLIS client software and / or POLIS provider.
 
 Polis supports two (in future possible more) API formats - JSON and XML. Each API format could support zero, one, or more versions. This framework makes the API and version  details completely opaque. The software based on this framework should focus on the business logic (POLIS provider management or client software with primary goal to visualise the data) while the framework handles compatibility to various API formats and versions.

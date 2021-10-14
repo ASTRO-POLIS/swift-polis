@@ -28,18 +28,6 @@ import Foundation
 
  */
 
-/// Definition of well known paths and APIs
-public struct PolisPredefinedServicePaths {
-    public static let defaultDomainName = "https://polis.observer/"
-
-    // Level 1 resource paths
-    public static let rootServiceDirectory                  = "polis"                      // e.g. /polis/
-    public static let serviceProviderConfigurationFileName  = "polis"                      // e.g. /polis/polis.json
-    public static let serviceProviderSitesDirectoryFileName = "polis_directory"            // e.g. /polis/polis_directory.json
-    public static let observingSitesDirectoryFileName       = "observing_sites_directory"  // e.g. /polis/observing_sites_directory.json
-    public static let siteDirectory                         = "polis_sites"                // e.g. /polis/polis_sites/
-}
-
 /// The following few functions constructs paths to various POLIS files. It is preferred to use them instead of constructing
 /// path URL manually, because the file organisation of the POLIS provider might change in the future
 ///
@@ -56,60 +44,45 @@ public struct PolisPredefinedServicePaths {
 /// This function does not validate the correctness or path or if the folder is accessible for reading and writing.
 /// - Parameter rootPath: The path leading to the root polis folder.
 /// - Returns: Returns the root POLIS folder.
-public func rootPolisFolder(rootPath: URL) -> URL {
-    var result = normalisedPath(rootPath)
 
-    result.appendPathComponent("\(PolisPredefinedServicePaths.rootServiceDirectory)/", isDirectory: true)
-
-    return result
-}
-
-public func polisSitesFolder(rootPath: URL) -> URL {
-    var result = rootPolisFolder(rootPath: rootPath)
-
-    result.appendPathComponent("\(PolisPredefinedServicePaths.siteDirectory)/", isDirectory: true)
-
-    return result
-}
+//public func polisSitesFolder(rootPath: URL) -> URL {
+//    var result = rootPolisFolder(rootPath: rootPath)
+//
+//    result.appendPathComponent("\(PolisPredefinedServicePaths.siteDirectory)/", isDirectory: true)
+//
+//    return result
+//}
 
 
-public func rootPolisFile(rootPath: URL, format: PolisDataFormat = .json) -> URL {
-    var result = rootPolisFolder(rootPath: rootPath)
+//public func rootPolisFile(rootPath: URL, format: PolisDataFormat = .json) -> URL {
+//    var result = rootPolisFolder(rootPath: rootPath)
+//
+//    result.appendPathComponent( "\(PolisPredefinedServicePaths.serviceProviderConfigurationFileName).\(format.rawValue)", isDirectory: false)
+//
+//    return result
+//}
+//
+//public func rootPolisDirectoryFile(rootPath: URL, format: PolisDataFormat = .json) -> URL {
+//    var result = rootPolisFolder(rootPath: rootPath)
+//
+//    result.appendPathComponent( "\(PolisPredefinedServicePaths.serviceProviderSitesDirectoryFileName).\(format.rawValue)", isDirectory: false)
+//
+//    return result
+//}
+//
+//public func observingSitesDirectoryFile(rootPath: URL, format: PolisDataFormat = .json) -> URL {
+//    var result = rootPolisFolder(rootPath: rootPath)
+//
+//    result.appendPathComponent("\(PolisPredefinedServicePaths.observingSitesDirectoryFileName).\(format.rawValue)", isDirectory: false)
+//
+//    return result
+//}
+//
+//public func observingSiteFile(rootPath: URL, siteID: String, format: PolisDataFormat = .json) -> URL {
+//    var result = polisSitesFolder(rootPath: rootPath)
+//
+//    result.appendPathComponent( "\(siteID).\(format.rawValue)", isDirectory: false)
+//
+//    return result
+//}
 
-    result.appendPathComponent( "\(PolisPredefinedServicePaths.serviceProviderConfigurationFileName).\(format.rawValue)", isDirectory: false)
-
-    return result
-}
-
-public func rootPolisDirectoryFile(rootPath: URL, format: PolisDataFormat = .json) -> URL {
-    var result = rootPolisFolder(rootPath: rootPath)
-
-    result.appendPathComponent( "\(PolisPredefinedServicePaths.serviceProviderSitesDirectoryFileName).\(format.rawValue)", isDirectory: false)
-
-    return result
-}
-
-public func observingSitesDirectoryFile(rootPath: URL, format: PolisDataFormat = .json) -> URL {
-    var result = rootPolisFolder(rootPath: rootPath)
-
-    result.appendPathComponent("\(PolisPredefinedServicePaths.observingSitesDirectoryFileName).\(format.rawValue)", isDirectory: false)
-
-    return result
-}
-
-public func observingSiteFile(rootPath: URL, siteID: String, format: PolisDataFormat = .json) -> URL {
-    var result = polisSitesFolder(rootPath: rootPath)
-
-    result.appendPathComponent( "\(siteID).\(format.rawValue)", isDirectory: false)
-
-    return result
-}
-
-/// This is for internal use only! Without this the URL returned by the utility functions for some strange reason has no
-/// URL schema!
-fileprivate func normalisedPath(_ path: URL) -> URL {
-    let strPath = path.path
-
-    if strPath.hasSuffix("/") { return path }
-    else                      { return URL(fileURLWithPath: "\(strPath)/") }
-}
