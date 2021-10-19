@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SoftwareEtudes
 
 //MARK: - POLIS Item Attributes -
 
@@ -169,7 +170,7 @@ public struct PolisAdminContact {
     ///
     /// Only the `email` is a required parameter. It must contain well formatted email addresses. If the email is not a
     /// valid one, `nil` will be returned.
-    public init?(name:                           String?,
+    public init?(name:                            String?,
                  email:                           String,
                  mobilePhone:                     String?,
                  additionalCommunicationChannels: [PolisCommunication] = [PolisCommunication](),
@@ -217,20 +218,48 @@ public enum PolisProviderType {
 ///
 /// The type implements the `Codable` and `Identifiable` protocols
 public struct PolisDirectoryEntry: Identifiable {
-    public var attributes: PolisItemAttributes
-    public var url: String                          // Fully qualified, e.g. https://polis.observer
-    public var supportedProtocolLevels: [UInt8]     // Allowed values: 1...3
-    public var supportedAPIVersions: [String]       // Formatted as a SemanticVersion, see https://semver.org
-    public var providerType: PolisProviderType      // e.g. public, experimental, mirror, ...
-    public var contact: PolisAdminContact           // Should not expose private information!
 
-    public var id: UUID { attributes.id }           // To make the type `Identifiable`
+    /// `attributes` encapsulate entries unique identification and status.
+    ///
+    /// `attributes` are marked with "private(set)" on purpose. Only the framework should change the attributes and
+    /// potential changes should be done only at specific moments of the lifespan of the entry. Otherwise syncing could
+    /// be badly broken.
+    public private(set) var attributes: PolisItemAttributes
 
+    /// The fully qualified URL of the service provider, e.g. https://polis.observer
+    public              var url: String
+
+    /// An array of supported POLIS protocol levels
+    ///
+    /// Possible values are 1, 2, and 3. If level 2 is supported, level 1 is also expected to be supported, etc. Currently
+    /// only this framework supports only level 1.
+    public              var supportedProtocolLevels: [UInt8]
+
+    /// An array of supported POLIS standard's versions
+    ///
+    /// The versions should comply to the [Semantic Version](https://semver.org) specification. In order to avoid
+    /// complexity it is recommended to support limited number of versions.
+    public              var supportedAPIVersions: [SemanticVersion]
+
+    /// Defines the type of the POLIS service provider e.g. public, experimental, mirror, ...
+    public              var providerType: PolisProviderType
+
+    /// POLIS service provider's admin contact
+    ///
+    /// It is recommended that the contact information exposes no or very limited personal information
+    public              var contact: PolisAdminContact
+
+    /// `id` is needed to make the structure `Identifiable`
+    ///
+    /// `id` refers to attributes UUID and should never be changed.
+    public              var id: UUID { attributes.id }
+
+    /// Designated initialiser.
     public init(attributes:              PolisItemAttributes,
                 url:                     String,
                 providerDescription:     String?,
                 supportedProtocolLevels: [UInt8],
-                supportedAPIVersions:    [String],
+                supportedAPIVersions:    [SemanticVersion],
                 providerType:            PolisProviderType,
                 contact:                 PolisAdminContact) {
         self.attributes              = attributes
@@ -244,11 +273,17 @@ public struct PolisDirectoryEntry: Identifiable {
 
 /// `PolisDirectory` is the list of all known Polis providers.
 ///
+/// To avoid confusion (and potential syncing errors) it is recommended that the directory does not contain the POLIS
+/// service provider entry that serves the directory list.
 /// The type implements the `Codable` protocol.
 public struct PolisDirectory  {
     public var lastUpdate: Date                // Used for syncing
     public var entries: [PolisDirectoryEntry]  // List of all known providers
 
+    /// Designated initialiser.
+    /// - Parameters:
+    ///   - lastUpdate: if omitted, the current date and time will be used
+    ///   - entries: possibly empty list of known POSIL service providers
     public init(lastUpdate: Date = Date(),
                 entries: [PolisDirectoryEntry]) {
         self.lastUpdate = lastUpdate

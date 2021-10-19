@@ -1,6 +1,7 @@
 import XCTest
-@testable import swift_polis
+import SoftwareEtudes
 
+@testable import swift_polis
 final class ServiceDiscoveryTests: XCTestCase {
 
     let jsonEncoder = PolisJSONEncoder()
@@ -46,7 +47,7 @@ final class ServiceDiscoveryTests: XCTestCase {
                                      url: "https://polis.net",
                                      providerDescription: "Polis test",
                                      supportedProtocolLevels: [1, 2],
-                                     supportedAPIVersions: ["1.0.0", "1.2.0"],
+                                     supportedAPIVersions: [SemanticVersion(with: "1.0.0")!, SemanticVersion(with: "1.2.0")!],
                                      providerType: PolisProviderType.experimental,
                                      contact: PolisAdminContact(name: "polis",
                                                                 email: "polis@observer.net",

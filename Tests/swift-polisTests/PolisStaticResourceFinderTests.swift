@@ -22,7 +22,7 @@ final class PolisStaticResourceFinderTests: XCTestCase {
         XCTAssertNil(sut_wrongPath)
         XCTAssertNil(sut_wrongFormat)
         XCTAssertNil(sut_wrongVersion)
-        XCTAssert((sut_correct != nil))
+        XCTAssert(sut_correct != nil)
     }
 
     func test_polisFolders() {
