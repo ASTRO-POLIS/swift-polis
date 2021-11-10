@@ -1,7 +1,7 @@
 # swift-polis
 
 ## Framework organisation
-The framework contains general sources common to all support levels and sources, specific or level 1, 2, or 3.
+The framework contains general sources common to all support levels and sources, specific or level 1, 2, or 3 (StaticData, DynamicStatus, or DynamicScheduling)
 
 ### Common for the entire framework sources
 
@@ -10,6 +10,9 @@ The framework contains general sources common to all support levels and sources,
 ### Level 2 support
 
 ### Level 3 support
+
+## Framework Dependancies
+- [SoftwareEtudes](https://github.com/tuparev/SoftwareEtudes) is a collection of useful general types developed and maintained by one of the POLIS creators.
 
 
 ## To be refactored...

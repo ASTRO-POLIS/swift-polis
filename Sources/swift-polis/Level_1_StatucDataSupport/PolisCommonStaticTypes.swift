@@ -7,6 +7,7 @@
 
 import Foundation
 import SoftwareEtudes
+import AppKit
 
 //MARK: - POLIS Item Attributes -
 
@@ -134,6 +135,7 @@ public enum PolisCommunication {
 
     /// Skype user id
     case skype(id: String)
+
 }
 
 /// `PolisAdminContact` defines a simple way to contact a provider admin, an observing site owner, or an observatory admin.
@@ -229,17 +231,8 @@ public struct PolisDirectoryEntry: Identifiable {
     /// The fully qualified URL of the service provider, e.g. https://polis.observer
     public              var url: String
 
-    /// An array of supported POLIS protocol levels
-    ///
-    /// Possible values are 1, 2, and 3. If level 2 is supported, level 1 is also expected to be supported, etc. Currently
-    /// only this framework supports only level 1.
-    public              var supportedProtocolLevels: [UInt8]
-
-    /// An array of supported POLIS standard's versions
-    ///
-    /// The versions should comply to the [Semantic Version](https://semver.org) specification. In order to avoid
-    /// complexity it is recommended to support limited number of versions.
-    public              var supportedAPIVersions: [SemanticVersion]
+    /// A list of one or more supported implementations
+    public              var supportedImplementations: [PolisSupportedImplementation]
 
     /// Defines the type of the POLIS service provider e.g. public, experimental, mirror, ...
     public              var providerType: PolisProviderType
@@ -254,20 +247,27 @@ public struct PolisDirectoryEntry: Identifiable {
     /// `id` refers to attributes UUID and should never be changed.
     public              var id: UUID { attributes.id }
 
+    public enum PolisDirectoryEntryError: Error {
+        case emptyListOfSupportedImplementations
+        case noneOfTheRequestedImplementationsIsSupportedByTheFramework
+    }
+
     /// Designated initialiser.
-    public init(attributes:              PolisItemAttributes,
-                url:                     String,
-                providerDescription:     String?,
-                supportedProtocolLevels: [UInt8],
-                supportedAPIVersions:    [SemanticVersion],
-                providerType:            PolisProviderType,
-                contact:                 PolisAdminContact) {
-        self.attributes              = attributes
-        self.url                     = url
-        self.supportedProtocolLevels = supportedProtocolLevels
-        self.supportedAPIVersions    = supportedAPIVersions
-        self.providerType            = providerType
-        self.contact                 = contact
+    public init(attributes:               PolisItemAttributes,
+                url:                      String,
+                providerDescription:      String?,
+                supportedImplementations: [PolisSupportedImplementation],
+                providerType:             PolisProviderType,
+                contact:                  PolisAdminContact) throws {
+        guard supportedImplementations.isEmpty else { throw PolisDirectoryEntryError.emptyListOfSupportedImplementations }
+
+        //TODO: Check if the implementation is supported by the framework! Remove unsupported implementations and throw and error if none of the requested implementations is supported.
+        
+        self.attributes               = attributes
+        self.url                      = url
+        self.supportedImplementations = supportedImplementations
+        self.providerType             = providerType
+        self.contact                  = contact
     }
 }
 
@@ -286,6 +286,8 @@ public struct PolisDirectory  {
     ///   - entries: possibly empty list of known POSIL service providers
     public init(lastUpdate: Date = Date(),
                 entries: [PolisDirectoryEntry]) {
+
+        //TODO: Only the "Big Bang" provider could have an empty list of entries. All other providers must have at least one entry to the "BigBang". If these conditions are not fulfilled, throw... needs a new Error type. But perhaps this needs to be in the ServiceProvider class? Here we should not have access to the root polis file!
         self.lastUpdate = lastUpdate
         self.entries    = entries
     }
@@ -305,7 +307,7 @@ extension PolisCommunication: Codable, CustomStringConvertible {
         switch base {
             case .twitter:
                 let twitterParams = try container.decodeIfPresent(TwitterParams.self, forKey: .twitterParams)
-                self = .twitter(userName: twitterParams!.userName)
+                self = .twitter(userName: twitterParams!.userName.mustStartWithAtSign())
             case .whatsApp:
                 let whatsAppParams = try container.decodeIfPresent(WhatsAppParams.self, forKey: .whatsAppParams)
                 self = .whatsApp(phone: whatsAppParams!.phone)
@@ -314,7 +316,7 @@ extension PolisCommunication: Codable, CustomStringConvertible {
                 self = .facebook(id: facebookParams!.id)
             case .instagram:
                 let instagramParams = try container.decodeIfPresent(InstagramParams.self, forKey: .instagramParams)
-                self = .instagram(userName: instagramParams!.userName)
+                self = .instagram(userName: instagramParams!.userName.mustStartWithAtSign())
             case .skype:
                 let skypeParams = try container.decodeIfPresent(SkypeParams.self, forKey: .skypeParams)
                 self = .skype(id: skypeParams!.id)
@@ -440,8 +442,7 @@ extension PolisDirectoryEntry: Codable {
     private enum CodingKeys: String, CodingKey {
         case attributes
         case url
-        case supportedProtocolLevels = "supported_protocol_levels"
-        case supportedAPIVersions    = "supported_api_versions"
+        case supportedImplementations = "supported_implementations"
         case providerType            = "provider_type"
         case contact
     }
@@ -453,4 +454,9 @@ extension PolisDirectory: Codable {
         case lastUpdate = "last_updated"
         case entries
     }
+}
+
+extension String {
+    /// Adds `@` prefix if already does not exist
+    public func mustStartWithAtSign() -> String { self.hasPrefix("@") ? self : "@\(self)" }
 }

@@ -10,7 +10,7 @@ import SoftwareEtudes
 
 /// Definition of well known paths and APIs
 public struct PolisPredefinedServicePaths {
-    // Level 1 resource paths
+    // Level 1 resource paths. These are folders or files.
     public static let baseServiceDirectory                  = "polis"                      // e.g. /polis/
     public static let serviceProviderConfigurationFileName  = "polis"                      // e.g. /polis/polis.json
     public static let serviceProviderSitesDirectoryFileName = "polis_directory"            // e.g. /polis/polis_directory.json
@@ -24,20 +24,17 @@ public struct PolisStaticResourceFinder {
 
     public enum PolisStaticResourceFinderError: Error {
         case basePathNotAccessible
-        case dataFormatNotSupported
-        case versionNotSupported
+        case noSupportedImplementation
     }
 
-    public init(at path: URL, dataFormat: PolisDataFormat, version: SemanticVersion) throws {
-        guard frameworkSupportedDataFormats.contains(dataFormat)                                   else { throw PolisStaticResourceFinderError.dataFormatNotSupported }
-        guard ((frameworkSupportedVersions(forDataFormat:dataFormat)?.contains(version)) ?? false) else { throw PolisStaticResourceFinderError.versionNotSupported }
-        guard try path.checkPromisedItemIsReachable()                                              else { throw PolisStaticResourceFinderError.basePathNotAccessible }
-        guard path.hasDirectoryPath                                                                else { throw PolisStaticResourceFinderError.basePathNotAccessible }
-        guard FileManager.default.fileExists(atPath: path.path)                                    else { throw PolisStaticResourceFinderError.basePathNotAccessible }
+    public init(at path: URL, supportedImplementation: PolisSupportedImplementation) throws {
+        guard frameworkSupportedImplementation.contains(supportedImplementation)          else { throw PolisStaticResourceFinderError.noSupportedImplementation }
+        guard try path.checkPromisedItemIsReachable()                                     else { throw PolisStaticResourceFinderError.basePathNotAccessible }
+        guard path.hasDirectoryPath                                                       else { throw PolisStaticResourceFinderError.basePathNotAccessible }
+        guard FileManager.default.fileExists(atPath: path.path)                           else { throw PolisStaticResourceFinderError.basePathNotAccessible }
 
         basePath          = path
-        polisDataFormat   = dataFormat
-        dataFormatVersion = version
+        polisDataFormat   = supportedImplementation.dataFormat
     }
 
     //MARK: - All methods below return absolute paths to POLIS resources without validating if they exist or are reachable!
@@ -49,7 +46,6 @@ public struct PolisStaticResourceFinder {
 
     private let basePath: URL
     private let polisDataFormat: PolisDataFormat
-    private let dataFormatVersion: SemanticVersion
 
     private func fileExtension() -> String { ".\(self.polisDataFormat.rawValue)" }    // e.g. ".json"
 }

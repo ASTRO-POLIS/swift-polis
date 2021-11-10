@@ -13,11 +13,15 @@ import XCTest
 
 final class PolisStaticResourceFinderTests: XCTestCase {
 
+    let correctImplementation      = PolisSupportedImplementation(dataFormat: PolisDataFormat.json, apiSupport: PolisAPISupport.staticData, version: SemanticVersion(with: "0.1-alpha.1")!)
+    let wrongFormatImplementation  = PolisSupportedImplementation(dataFormat: PolisDataFormat.xml,  apiSupport: PolisAPISupport.staticData, version: SemanticVersion(with: "0.1-alpha.1")!)
+    let wrongVersionImplementation = PolisSupportedImplementation(dataFormat: PolisDataFormat.json, apiSupport: PolisAPISupport.staticData, version: SemanticVersion(with: "0.1-beta.1")!)
+
     func test_PolisStaticResourceFinderCreation() {
-        let sut_wrongPath    = try? PolisStaticResourceFinder(at: URL(fileURLWithPath: "/root"), dataFormat: PolisDataFormat.json, version: SemanticVersion(with: "0.1-alpha.1")!)
-        let sut_wrongFormat  = try? PolisStaticResourceFinder(at: URL(fileURLWithPath: "/tmp"),  dataFormat: PolisDataFormat.xml,  version: SemanticVersion(with: "0.1-alpha.1")!)
-        let sut_wrongVersion = try? PolisStaticResourceFinder(at: URL(fileURLWithPath: "/tmp"),  dataFormat: PolisDataFormat.json, version: SemanticVersion(with: "0.1-beta.1")!)
-        let sut_correct      = try? PolisStaticResourceFinder(at: URL(fileURLWithPath: "/tmp"),  dataFormat: PolisDataFormat.json, version: SemanticVersion(with: "0.1-alpha.1")!)
+        let sut_wrongPath    = try? PolisStaticResourceFinder(at: URL(fileURLWithPath: "/root"), supportedImplementation: correctImplementation)
+        let sut_wrongFormat  = try? PolisStaticResourceFinder(at: URL(fileURLWithPath: "/tmp"),  supportedImplementation: wrongFormatImplementation)
+        let sut_wrongVersion = try? PolisStaticResourceFinder(at: URL(fileURLWithPath: "/tmp"),  supportedImplementation: wrongVersionImplementation)
+        let sut_correct      = try? PolisStaticResourceFinder(at: URL(fileURLWithPath: "/tmp"),  supportedImplementation: correctImplementation)
 
         XCTAssertNil(sut_wrongPath)
         XCTAssertNil(sut_wrongFormat)
@@ -26,7 +30,7 @@ final class PolisStaticResourceFinderTests: XCTestCase {
     }
 
     func test_polisFolders() {
-        let sut = try? PolisStaticResourceFinder(at: URL(fileURLWithPath: "/tmp"),  dataFormat: PolisDataFormat.json, version: SemanticVersion(with: "0.1-alpha.1")!)
+        let sut = try? PolisStaticResourceFinder(at: URL(fileURLWithPath: "/tmp"),  supportedImplementation: correctImplementation)
 
         XCTAssert((sut != nil))
         XCTAssertEqual(sut!.rootPolisFolder(), "/tmp/")

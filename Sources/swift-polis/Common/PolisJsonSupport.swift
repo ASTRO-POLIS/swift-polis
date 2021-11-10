@@ -7,6 +7,9 @@
 
 import Foundation
 
+//TODO: Needs documentation!
+
+
 @available(iOS 10, macOS 10.12, *)
 public class PolisJSONDecoder: JSONDecoder {
 

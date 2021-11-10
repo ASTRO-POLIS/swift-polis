@@ -9,26 +9,6 @@ final class ServiceDiscoveryTests: XCTestCase {
     var data: Data!
     var string: String!
 
-    func testPolisProvider() {
-        let pub = PolisProviderType.public
-        let mir = PolisProviderType.mirror(id: "abc")
-
-        data = try? jsonEncoder.encode(pub)
-        string = String(data: data!, encoding: .utf8)
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisProviderType.self, from: string!.data(using: .utf8)!))
-
-        data = try? jsonEncoder.encode(mir)
-        string = String(data: data!, encoding: .utf8)
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisProviderType.self, from: string!.data(using: .utf8)!))
-    }
-
-    func testCommunicating() {
-        let t = PolisCommunication.twitter(userName: "@polis")
-
-        data = try? jsonEncoder.encode(t)
-        string = String(data: data!, encoding: .utf8)
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisCommunication.self, from: string!.data(using: .utf8)!))
-    }
 
     func testPolisContact() {
         let c = PolisAdminContact(name: "polis",
@@ -43,11 +23,10 @@ final class ServiceDiscoveryTests: XCTestCase {
     }
 
     func testPolisDirectoryEntry() {
-        let pd = PolisDirectoryEntry(attributes: PolisItemAttributes(name: "polis"),
+        let pd = try? PolisDirectoryEntry(attributes: PolisItemAttributes(name: "polis"),
                                      url: "https://polis.net",
                                      providerDescription: "Polis test",
-                                     supportedProtocolLevels: [1, 2],
-                                     supportedAPIVersions: [SemanticVersion(with: "1.0.0")!, SemanticVersion(with: "1.2.0")!],
+                                     supportedImplementations: [],
                                      providerType: PolisProviderType.experimental,
                                      contact: PolisAdminContact(name: "polis",
                                                                 email: "polis@observer.net",
@@ -71,8 +50,6 @@ final class ServiceDiscoveryTests: XCTestCase {
     }
 
     static var allTests = [
-        ("testPolisProvider", testPolisProvider),
-        ("testCommunicating", testCommunicating),
         ("testPolisContact", testPolisContact),
         ("testPolisDirectoryEntry", testPolisDirectoryEntry),
     ]
