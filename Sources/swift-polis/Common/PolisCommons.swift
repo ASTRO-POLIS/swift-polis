@@ -8,7 +8,7 @@
 import Foundation
 import SoftwareEtudes
 
-
+//Just checking commit
 /// This is the first and only domain that is guaranteed to be a valid POLIS service provider.
 ///
 /// There might be (hopefully) many more service providers, but one can start the domain search always from the POLIS'
