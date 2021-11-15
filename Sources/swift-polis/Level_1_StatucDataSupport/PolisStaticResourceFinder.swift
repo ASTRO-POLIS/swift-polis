@@ -8,6 +8,9 @@
 import Foundation
 import SoftwareEtudes
 
+//TODO: Needs documentation!
+//TODO: Needs testing of all path methods
+
 /// Definition of well known paths and APIs
 public struct PolisPredefinedServicePaths {
     // Level 1 resource paths. These are folders or files.
@@ -28,22 +31,36 @@ public struct PolisStaticResourceFinder {
     }
 
     public init(at path: URL, supportedImplementation: PolisSupportedImplementation) throws {
-        guard frameworkSupportedImplementation.contains(supportedImplementation)          else { throw PolisStaticResourceFinderError.noSupportedImplementation }
-        guard try path.checkPromisedItemIsReachable()                                     else { throw PolisStaticResourceFinderError.basePathNotAccessible }
-        guard path.hasDirectoryPath                                                       else { throw PolisStaticResourceFinderError.basePathNotAccessible }
-        guard FileManager.default.fileExists(atPath: path.path)                           else { throw PolisStaticResourceFinderError.basePathNotAccessible }
+        guard frameworkSupportedImplementation.contains(supportedImplementation) else { throw PolisStaticResourceFinderError.noSupportedImplementation }
+        guard try path.checkPromisedItemIsReachable()                            else { throw PolisStaticResourceFinderError.basePathNotAccessible }
+        guard path.hasDirectoryPath                                              else { throw PolisStaticResourceFinderError.basePathNotAccessible }
+        guard FileManager.default.fileExists(atPath: path.path)                  else { throw PolisStaticResourceFinderError.basePathNotAccessible }
 
-        basePath          = path
-        polisDataFormat   = supportedImplementation.dataFormat
+        basePath        = path
+        polisDataFormat = supportedImplementation.dataFormat
     }
 
     //MARK: - All methods below return absolute paths to POLIS resources without validating if they exist or are reachable!
 
-    public func rootPolisFolder() -> String { normalisedPath(basePath.path) }
-    public func basePolisFolder() -> String { normalisedPath("\(rootPolisFolder())\(PolisPredefinedServicePaths.baseServiceDirectory)") }
+    public func rootPolisFolder() -> String  { normalisedPath(basePath.path) }
+    public func basePolisFolder() -> String  { normalisedPath("\(rootPolisFolder())\(PolisPredefinedServicePaths.baseServiceDirectory)") }
+    public func sitesPolisFolder() -> String { normalisedPath("\(basePolisFolder())\(PolisPredefinedServicePaths.siteDirectory)") }
 
+    public func polisConfigurationFilePath(format: PolisDataFormat = .json) -> String {
+        "\(basePolisFolder())\(PolisPredefinedServicePaths.serviceProviderConfigurationFileName).\(format.rawValue))"
+    }
 
+    public func polisProviderSitesDirectoryFilePath(format: PolisDataFormat = .json) -> String {
+        "\(basePolisFolder())\(PolisPredefinedServicePaths.serviceProviderSitesDirectoryFileName).\(format.rawValue))"
+    }
 
+    public func polisObservingSitesDirectoryFilePath(format: PolisDataFormat = .json) -> String {
+        "\(basePolisFolder())\(PolisPredefinedServicePaths.observingSitesDirectoryFileName).\(format.rawValue))"
+    }
+
+    public func polisObservingSiteFilePath(siteID: String, format: PolisDataFormat = .json) -> String { "\(sitesPolisFolder())\(siteID).\(format.rawValue))" }
+
+    //MARK: - Private API
     private let basePath: URL
     private let polisDataFormat: PolisDataFormat
 
