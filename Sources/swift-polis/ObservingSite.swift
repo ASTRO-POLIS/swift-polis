@@ -38,7 +38,7 @@ public indirect enum SolarSystemBodyType {
     case Eris
     case KuiperBeltObject(name: String)
     
-    case moon(planet: SolarSystemBodyType, name: String)       // e.g. .moon(.Jupiter, "Titan")
+    case moon(of: SolarSystemBodyType, name: String)       // e.g. .moon(.Jupiter, "Titan")
     case asteroid(name: String)
     case comet(name: String)
 }
@@ -65,7 +65,7 @@ public enum ObservingSiteLocationType {
     case groundBasedMobile(location: SolarSystemBodyType)               // e.g. Mars rover
     case airBorn(location: SolarSystemBodyType, range: AltitudeRange?)
     case solarSystemBodyOrbital(location: SolarSystemBodyType)
-    case solarSystemNonOrbital(locationDescription: String?)            // e.g. Voyager
+    case solarSystemBodyNonOrbital(locationDescription: String?)        // e.g. Voyager
     case extraSolarSystem
     case ivoa(descriptor: String)
 }
