@@ -293,7 +293,14 @@ public struct PolisDirectory  {
     }
 }
 
+public struct ObservatorySiteDirectoryEntry: Codable {
+    public private(set) var attributes: PolisItemAttributes
+}
 
+public struct ObservatorySiteDirectory: Codable {
+    public var lastUpdate: Date                // Used for syncing
+    public var entries: [ObservatorySiteDirectoryEntry]
+}
 
 //MARK: - Making types Codable and CustomStringConvertible -
 
