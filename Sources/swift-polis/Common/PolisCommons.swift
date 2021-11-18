@@ -37,6 +37,7 @@ public enum PolisDataFormat: String, Codable, Equatable {
 
 /// `PolisAPISupport` defines the three levels of API support
 public enum PolisAPISupport: String, Codable, Equatable {
+
     /// The service provider hosts only static (file based) data
     case staticData
 
