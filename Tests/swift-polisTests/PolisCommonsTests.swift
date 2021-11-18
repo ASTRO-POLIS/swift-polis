@@ -6,6 +6,8 @@
 //
 
 import XCTest
+import SoftwareEtudes
+
 @testable import swift_polis
 
 final class PolisCommonsTests: XCTestCase {
@@ -41,6 +43,16 @@ final class PolisCommonsTests: XCTestCase {
         XCTAssertNoThrow(try jsonDecoder.decode(PolisAPISupport.self, from: string!.data(using: .utf8)!))
     }
 
+    func test_polisSupportedImplementation() {
+        let sutAlpha = PolisSupportedImplementation(dataFormat: PolisDataFormat.json, apiSupport: PolisAPISupport.staticData, version: SemanticVersion(with: "0.1-alpha.1")!)
+        let sutBeta  = PolisSupportedImplementation(dataFormat: PolisDataFormat.json, apiSupport: PolisAPISupport.staticData, version: SemanticVersion(with: "0.1-beta.1")!)
+
+        XCTAssertNotEqual(sutAlpha, sutBeta)
+        XCTAssertEqual(sutAlpha,
+                       PolisSupportedImplementation(dataFormat: PolisDataFormat.json, apiSupport: PolisAPISupport.staticData, version: SemanticVersion(with: "0.1-alpha.1")!))
+        XCTAssertTrue(frameworkSupportedImplementation.contains(sutAlpha))
+    }
+
     override func setUp() {
         super.setUp()
     }
@@ -54,6 +66,7 @@ final class PolisCommonsTests: XCTestCase {
 
     static var allTests = [
         ("test_polisDataFormat", test_polisDataFormat),
-        ("test_polisAPISupport", test_polisAPISupport)
+        ("test_polisAPISupport", test_polisAPISupport),
+        ("test_polisSupportedImplementation", test_polisSupportedImplementation),
     ]
 }
