@@ -33,9 +33,9 @@ final class PolisCommonsTests: XCTestCase {
 
         XCTAssertNotEqual(sutStaticData, sutDynamicScheduling)
 
-        XCTAssertEqual(sutStaticData.rawValue,        "staticData")
-        XCTAssertEqual(sutDynamicStatus.rawValue,     "dynamicStatus")
-        XCTAssertEqual(sutDynamicScheduling.rawValue, "dynamicScheduling")
+        XCTAssertEqual(sutStaticData.rawValue,        "static_data")
+        XCTAssertEqual(sutDynamicStatus.rawValue,     "dynamic_status")
+        XCTAssertEqual(sutDynamicScheduling.rawValue, "dynamic_scheduling")
 
         data   = try? jsonEncoder.encode(sutStaticData)
         string = String(data: data!, encoding: .utf8)
@@ -51,6 +51,11 @@ final class PolisCommonsTests: XCTestCase {
         XCTAssertEqual(sutAlpha,
                        PolisSupportedImplementation(dataFormat: PolisDataFormat.json, apiSupport: PolisAPISupport.staticData, version: SemanticVersion(with: "0.1-alpha.1")!))
         XCTAssertTrue(frameworkSupportedImplementation.contains(sutAlpha))
+
+        data   = try? jsonEncoder.encode(sutAlpha)
+        string = String(data: data!, encoding: .utf8)
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisSupportedImplementation.self, from: string!.data(using: .utf8)!))
+
     }
 
     override func setUp() {

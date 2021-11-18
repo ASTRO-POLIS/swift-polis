@@ -39,15 +39,15 @@ public enum PolisDataFormat: String, Codable, Equatable {
 public enum PolisAPISupport: String, Codable, Equatable {
 
     /// The service provider hosts only static (file based) data
-    case staticData
+    case staticData        = "static_data"
 
     /// If the status of observing sites is updated manually (e.g. by the admin) or automatically (by using POLIS-defined
     /// APIs), the service provider dynamically propagates this information.
-    case dynamicStatus
+    case dynamicStatus     = "dynamic_status"
 
     /// The service provider is able dynamically to schedule observations (for sites that implement this functionality)
     /// and manage complex level 2 observing projects.
-    case dynamicScheduling
+    case dynamicScheduling = "dynamic_scheduling"
 }
 
 
@@ -66,10 +66,10 @@ public var frameworkSupportedImplementation: [PolisSupportedImplementation] =
 ]
 
 //MARK: - Type extensions -
-extension PolisAPISupport {
-    public enum CodingKeys: String, CodingKey {
-        case staticData        = "static_data"
-        case dynamicStatus     = "dynamic_status"
-        case dynamicScheduling = "dynamic_scheduling"
-    }
-}
+//extension PolisAPISupport {
+//    public enum CodingKeys: String, CodingKey {
+//        case staticData        = "static_data"
+//        case dynamicStatus     = "dynamic_status"
+//        case dynamicScheduling = "dynamic_scheduling"
+//    }
+//}
