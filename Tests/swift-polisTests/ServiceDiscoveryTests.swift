@@ -4,11 +4,10 @@ import SoftwareEtudes
 @testable import swift_polis
 final class ServiceDiscoveryTests: XCTestCase {
 
-    let jsonEncoder = PolisJSONEncoder()
-    let jsonDecoder = PolisJSONDecoder()
-    var data: Data!
-    var string: String!
-
+    private var jsonEncoder: PolisJSONEncoder!
+    private var jsonDecoder: PolisJSONDecoder!
+    private var data: Data!
+    private var string: String!
 
     func testPolisContact() {
         let c = PolisAdminContact(name: "polis",
@@ -41,12 +40,18 @@ final class ServiceDiscoveryTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+
+        jsonEncoder = PolisJSONEncoder()
+        jsonDecoder = PolisJSONDecoder()
     }
 
     override func tearDown() {
-        super.tearDown()
         data = nil
         string = nil
+        jsonEncoder = nil
+        jsonDecoder = nil
+
+        super.tearDown()
     }
 
     static var allTests = [

@@ -61,11 +61,11 @@ final class PolisPersistentContainerTests: XCTestCase {
     }
 
     override func tearDown() {
-        super.tearDown()
-
         let fm = FileManager.default
 
         try? fm.removeItem(atPath: PolisPersistentContainerTests.correctRandomRootFolder!.path)
+
+        super.tearDown()
     }
 
 //    static var allTests = [

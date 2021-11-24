@@ -13,9 +13,9 @@ import XCTest
 
 final class PolisStaticResourceFinderTests: XCTestCase {
 
-    let correctImplementation      = PolisSupportedImplementation(dataFormat: PolisDataFormat.json, apiSupport: PolisAPISupport.staticData, version: SemanticVersion(with: "0.1-alpha.1")!)
-    let wrongFormatImplementation  = PolisSupportedImplementation(dataFormat: PolisDataFormat.xml,  apiSupport: PolisAPISupport.staticData, version: SemanticVersion(with: "0.1-alpha.1")!)
-    let wrongVersionImplementation = PolisSupportedImplementation(dataFormat: PolisDataFormat.json, apiSupport: PolisAPISupport.staticData, version: SemanticVersion(with: "0.1-beta.1")!)
+    private var correctImplementation: PolisSupportedImplementation!
+    private var wrongFormatImplementation: PolisSupportedImplementation!
+    private var wrongVersionImplementation: PolisSupportedImplementation!
 
     func test_PolisStaticResourceFinderCreation() {
         let sut_wrongPath    = try? PolisStaticResourceFinder(at: URL(fileURLWithPath: "/root"), supportedImplementation: correctImplementation)
@@ -38,11 +38,19 @@ final class PolisStaticResourceFinderTests: XCTestCase {
     }
 
     override func setUp() {
-        super.setUp()
+        super.tearDown()
+
+        correctImplementation      = PolisSupportedImplementation(dataFormat: PolisDataFormat.json, apiSupport: PolisAPISupport.staticData, version: SemanticVersion(with: "0.1-alpha.1")!)
+        wrongFormatImplementation  = PolisSupportedImplementation(dataFormat: PolisDataFormat.xml,  apiSupport: PolisAPISupport.staticData, version: SemanticVersion(with: "0.1-alpha.1")!)
+        wrongVersionImplementation = PolisSupportedImplementation(dataFormat: PolisDataFormat.json, apiSupport: PolisAPISupport.staticData, version: SemanticVersion(with: "0.1-beta.1")!)
     }
 
     override func tearDown() {
-        super.tearDown()
+        correctImplementation      = nil
+        wrongFormatImplementation  = nil
+        wrongVersionImplementation = nil
+        
+     super.tearDown()
     }
 
     static var allTests = [

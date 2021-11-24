@@ -10,10 +10,10 @@ import XCTest
 
 final class PolisCommonStaticTypesTests: XCTestCase {
  
-    let jsonEncoder = PolisJSONEncoder()
-    let jsonDecoder = PolisJSONDecoder()
-    var data: Data!
-    var string: String!
+    private var jsonEncoder: PolisJSONEncoder!
+    private var jsonDecoder: PolisJSONDecoder!
+    private var data: Data!
+    private var string: String!
 
     func test_polisAttributesCodingAndDecoding() {
         let sut = PolisItemAttributes(status: PolisLifecycleStatus.active, lastUpdate: Date(), name: "TestAttributes", shortDescription: "Testing attributes")
@@ -59,12 +59,18 @@ final class PolisCommonStaticTypesTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-    }
+
+        jsonEncoder = PolisJSONEncoder()
+        jsonDecoder = PolisJSONDecoder()
+  }
     
     override func tearDown() {
-        super.tearDown()
         data = nil
         string = nil
+        jsonEncoder = nil
+        jsonDecoder = nil
+        
+        super.tearDown()
     }
     
     static var allTests = [
