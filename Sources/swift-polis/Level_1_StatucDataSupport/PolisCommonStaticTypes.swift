@@ -7,7 +7,6 @@
 
 import Foundation
 import SoftwareEtudes
-import AppKit
 
 //MARK: - POLIS Item Attributes -
 
