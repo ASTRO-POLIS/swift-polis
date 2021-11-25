@@ -65,11 +65,13 @@ public var frameworkSupportedImplementation: [PolisSupportedImplementation] =
     PolisSupportedImplementation(dataFormat: PolisDataFormat.json, apiSupport: PolisAPISupport.staticData, version: SemanticVersion(with: "0.1-alpha.1")!),
 ]
 
+
 //MARK: - Type extensions -
-//extension PolisAPISupport {
-//    public enum CodingKeys: String, CodingKey {
-//        case staticData        = "static_data"
-//        case dynamicStatus     = "dynamic_status"
-//        case dynamicScheduling = "dynamic_scheduling"
-//    }
-//}
+
+extension PolisSupportedImplementation {
+    public enum CodingKeys: String, CodingKey {
+        case dataFormat = "data_format"
+        case apiSupport = "api_support"
+        case version
+    }
+}
