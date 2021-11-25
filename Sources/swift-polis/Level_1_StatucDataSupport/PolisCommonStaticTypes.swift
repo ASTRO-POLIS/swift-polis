@@ -326,7 +326,7 @@ public struct ObservatorySiteDirectory: Codable {
 //MARK: - Making types Codable and CustomStringConvertible -
 
 //MARK: - ContactType
-extension PolisCommunication: Codable, CustomStringConvertible {
+public extension PolisCommunication: Codable, CustomStringConvertible {
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -403,7 +403,7 @@ extension PolisCommunication: Codable, CustomStringConvertible {
 
 //MARK: - PolisContact
 extension PolisAdminContact: Codable {
-    private enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case name
         case email
         case mobilePhone                     = "mobile_phone"
@@ -454,7 +454,7 @@ extension PolisProviderType: Codable, CustomStringConvertible {
         }
     }
 
-    private enum CodingKeys: String, CodingKey {
+    enum CodingKeys: String, CodingKey {
         case providerType = "provider_type"
         case mirrorParams = "mirror_params"
     }
@@ -467,7 +467,7 @@ extension PolisProviderType: Codable, CustomStringConvertible {
 
 //MARK: - PolisDirectoryEntry
 extension PolisDirectoryEntry: Codable {
-    private enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case attributes
         case url
         case supportedImplementations = "supported_implementations"
@@ -478,7 +478,7 @@ extension PolisDirectoryEntry: Codable {
 
 //MARK: - PolisDirectory
 extension PolisDirectory: Codable {
-    private enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case lastUpdate = "last_updated"
         case entries
     }
@@ -490,13 +490,16 @@ extension String {
 }
 
 
-
-
-//MARK: - To be well integrated within this file -
-
-//TODO: Integrate these types moved here from somewhere else...
-//TODO: Needs documentation!
-//TODO: Needs testing of all path methods
-
+public extension PolisItemAttributes {
+    enum CodingKeys: String, CodingKey {
+        case id
+        case parentID         = "parent_id"
+        case referenceID      = "reference_id"
+        case status
+        case lastUpdate       = "last_update"
+        case name
+        case shortDescription = "short_description"
+    }
+}
 
 

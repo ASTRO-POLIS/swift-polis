@@ -68,8 +68,8 @@ public var frameworkSupportedImplementation: [PolisSupportedImplementation] =
 
 //MARK: - Type extensions -
 
-extension PolisSupportedImplementation {
-    public enum CodingKeys: String, CodingKey {
+public extension PolisSupportedImplementation {
+    enum CodingKeys: String, CodingKey {
         case dataFormat = "data_format"
         case apiSupport = "api_support"
         case version
