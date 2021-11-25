@@ -326,7 +326,7 @@ public struct ObservatorySiteDirectory: Codable {
 //MARK: - Making types Codable and CustomStringConvertible -
 
 //MARK: - ContactType
-public extension PolisCommunication: Codable, CustomStringConvertible {
+extension PolisCommunication: Codable, CustomStringConvertible {
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -471,7 +471,7 @@ extension PolisDirectoryEntry: Codable {
         case attributes
         case url
         case supportedImplementations = "supported_implementations"
-        case providerType            = "provider_type"
+        case providerType             = "provider_type"
         case contact
     }
 }
