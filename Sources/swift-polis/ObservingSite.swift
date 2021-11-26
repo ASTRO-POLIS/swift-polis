@@ -49,7 +49,9 @@ public struct EarthLocation: Codable {
     public let altitude: Double?      // m
     public let place: String?
     public let regionOrState: String?
-    public let country: String        // The English name of the country. Clients should provide localisation.
+    public let regionOrStateCode: String?
+    public let zipCode: String?
+    public let countryCode: String        // 3-letter code.
 }
 
 public struct AltitudeRange: Codable {
@@ -84,6 +86,11 @@ public enum ObservatoryType {
     // Location
     case opticalTelescope(OpticalTelescope)
     case radioAntenna(RadioAntenna)
+}
+
+public enum ModeOfOperation {
+    case robotic
+    case manual
 }
 
 public struct Observatory {
