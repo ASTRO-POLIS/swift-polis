@@ -79,6 +79,11 @@ public struct PolisItemAttributes: Codable, Identifiable {
     /// Human readable name of the item (object). It is recommended to be unique to avoid potential confusions.
     public var name: String
 
+    /// The purpose of the optional `automationLabel` is to act as a unique target for scripts and other software
+    /// packages. As an example, the observatory control software could search for an instrument with such label and
+    /// set its status or issue commands etc.
+    public var automationLabel: String? // For script etc. support (internal to the site use...)
+    
     /// Short optional item (object) description. In XML schema should be max 256 characters for RTML interoperability.
     public var shortDescription: String?
 
@@ -91,6 +96,7 @@ public struct PolisItemAttributes: Codable, Identifiable {
                 status: PolisLifecycleStatus = PolisLifecycleStatus.unknown,
                 lastUpdate: Date             = Date(),
                 name: String,
+                automationLabel: String?     = nil,
                 shortDescription: String?    = nil) {
         self.id               = id
         self.parentID         = parentIdentifier
@@ -98,6 +104,7 @@ public struct PolisItemAttributes: Codable, Identifiable {
         self.status           = status
         self.lastUpdate       = lastUpdate
         self.name             = name
+        self.automationLabel  = automationLabel
         self.shortDescription = shortDescription
     }
 }
@@ -196,7 +203,8 @@ public enum PolisProviderType {
     case `public`
 
     /// `private` provider's main purpose is to act as a local cache for larger organisations and should not be accessed
-    /// from outside. They might require user authentication.
+    /// from outside. Also organisations like amateur clubs might maintain private providers. They might require user
+    /// authentication.
     case `private`
 
     /// `local` could be used for clients running on mobile devices or desktop apps. It is a disposable local (often
