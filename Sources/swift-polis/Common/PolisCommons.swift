@@ -50,6 +50,23 @@ public enum PolisAPISupport: String, Codable, Equatable {
     case dynamicScheduling = "dynamic_scheduling"
 }
 
+//TODO: Needs documentation
+public enum PolisRoughDirection: String, Codable {
+    case north     = "N"
+    case northEast = "N/E"
+    case east      = "E"
+    case southEast = "S/E"
+    case south     = "S"
+    case southWest = "S/W"
+    case west      = "W"
+    case northWest = "N/W"
+}
+
+//TODO: Needs documentation
+public enum PolisDirection: Codable {
+    case rough(direction: PolisRoughDirection)
+    case exact(degree: Double)
+}
 
 //TODO: Needs documentation!
 /// `PolisSupportedImplementation` combines supported data format, API level, and version in a single struct
