@@ -50,23 +50,42 @@ public enum PolisAPISupport: String, Codable, Equatable {
     case dynamicScheduling = "dynamic_scheduling"
 }
 
-//TODO: Needs documentation
+//MARK: - Directions
+
+/// A list of 16 rough directions
+///
+/// Rough direction could be used when it is not important to know or impossible to measure the exact direction.
+/// Examples include the wind direction, or the orientations of the doors of clamshell enclosure.
 public enum PolisRoughDirection: String, Codable {
-    case north     = "N"
-    case northEast = "N/E"
-    case east      = "E"
-    case southEast = "S/E"
-    case south     = "S"
-    case southWest = "S/W"
-    case west      = "W"
-    case northWest = "N/W"
+    case north          = "N"
+    case northNorthEast = "NNE"
+    case northEast      = "NE"
+    case eastNorthEast  = "ENE"
+
+    case east           = "E"
+    case eastSouthEast  = "ESE"
+    case southEast      = "SE"
+    case southSouthEast = "SSE"
+
+    case south          = "S"
+    case southSouthWest = "SSW"
+    case southWest      = "SW"
+    case westSouthWest  = "WSW"
+
+    case west           = "W"
+    case westNorthWest  = "WNW"
+    case northWest      = "NW"
+    case northNorthWest = "NNW"
 }
 
-//TODO: Needs documentation
+/// `PolisDirection` is used to represent either a rough direction (of 16 possibilities) or exact direction in degree
+/// represented as a double number (e.g. 57.349)
 public enum PolisDirection: Codable {
     case rough(direction: PolisRoughDirection)
     case exact(degree: Double)
 }
+
+//MARK: - POLIS version management
 
 //TODO: Needs documentation!
 /// `PolisSupportedImplementation` combines supported data format, API level, and version in a single struct
