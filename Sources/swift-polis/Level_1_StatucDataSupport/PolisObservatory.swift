@@ -8,5 +8,5 @@
 import Foundation
 
 public struct PolisObservatory {
-    
+    public var enclosure: PolisEnclosure?
 }

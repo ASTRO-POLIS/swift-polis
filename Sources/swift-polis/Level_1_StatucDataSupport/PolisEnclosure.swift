@@ -15,10 +15,10 @@ public enum PolisEnclosureType: String, Codable {
 }
 
 public protocol PolisEnclosureContainable: Codable {
-
+    var enclosureType: PolisEnclosureType { get set }
 }
 
-public struct PolisEnclosure {
+public class PolisEnclosure {
     public private(set) var attributes: PolisItemAttributes
     public let type: PolisEnclosureType
     public let content: [PolisEnclosureContainable]
