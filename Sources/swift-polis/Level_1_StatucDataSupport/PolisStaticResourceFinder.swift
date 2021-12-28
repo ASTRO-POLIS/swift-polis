@@ -47,18 +47,18 @@ public struct PolisStaticResourceFinder {
     public func sitesPolisFolder() -> String { normalisedPath("\(basePolisFolder())\(PolisPredefinedServicePaths.siteDirectory)") }
 
     public func polisConfigurationFilePath(format: PolisDataFormat = .json) -> String {
-        "\(basePolisFolder())\(PolisPredefinedServicePaths.serviceProviderConfigurationFileName).\(format.rawValue))"
+        "\(basePolisFolder())\(PolisPredefinedServicePaths.serviceProviderConfigurationFileName).\(format.rawValue)"
     }
 
     public func polisProviderSitesDirectoryFilePath(format: PolisDataFormat = .json) -> String {
-        "\(basePolisFolder())\(PolisPredefinedServicePaths.serviceProviderSitesDirectoryFileName).\(format.rawValue))"
+        "\(basePolisFolder())\(PolisPredefinedServicePaths.serviceProviderSitesDirectoryFileName).\(format.rawValue)"
     }
 
     public func polisObservingSitesDirectoryFilePath(format: PolisDataFormat = .json) -> String {
-        "\(basePolisFolder())\(PolisPredefinedServicePaths.observingSitesDirectoryFileName).\(format.rawValue))"
+        "\(basePolisFolder())\(PolisPredefinedServicePaths.observingSitesDirectoryFileName).\(format.rawValue)"
     }
 
-    public func polisObservingSiteFilePath(siteID: String, format: PolisDataFormat = .json) -> String { "\(sitesPolisFolder())\(siteID).\(format.rawValue))" }
+    public func polisObservingSiteFilePath(siteID: String, format: PolisDataFormat = .json) -> String { "\(sitesPolisFolder())\(siteID).\(format.rawValue)" }
 
     //MARK: - Private API
     private let basePath: URL
