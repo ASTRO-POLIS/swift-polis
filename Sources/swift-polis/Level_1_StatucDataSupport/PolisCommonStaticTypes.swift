@@ -180,7 +180,7 @@ public struct PolisAdminContact {
     /// valid one, `nil` will be returned.
     public init?(name:                            String?,
                  email:                           String,
-                 mobilePhone:                     String?,
+                 mobilePhone:                     String? = nil,
                  additionalCommunicationChannels: [PolisCommunication] = [PolisCommunication](),
                  notes:                           String?) {
         self.name                            = name
@@ -190,6 +190,27 @@ public struct PolisAdminContact {
         self.additionalCommunicationChannels = additionalCommunicationChannels
         self.notes                           = notes
     }
+}
+
+//MARK: - Manufacturer information -
+/// `PolisManufacturer` encapsulates basic information about manufacturer.
+///
+/// Every provider is free to implement it's own handling of list of manufacturers, but we highly recommend that all
+/// manufacturer information is managed in a single, possibly manually maintained store. This will help client
+/// application to display unique information.
+public struct PolisManufacturer: Codable, Identifiable {
+    /// Makes `PolisManufacturer` uniquely identifiable
+    public var attributes: PolisItemAttributes
+
+    /// The fully qualified URL of the service provider, e.g. https://www.celestron.com
+    public var url: URL?
+
+    /// The person (or email address) you can contact.
+    public var contact: PolisAdminContact?
+
+    /// `id` is needed to make the structure `Identifiable`
+    public var id: UUID { attributes.id }
+
 }
 
 //MARK: - POLIS Directory Entry -
@@ -228,8 +249,6 @@ public enum PolisProviderType {
 /// The type implements the `Codable` and `Identifiable` protocols
 public struct PolisDirectoryEntry: Identifiable {
 
-    /// `attributes` encapsulate entries unique identification and status.
-    ///
     /// `attributes` are marked with "private(set)" on purpose. Only the framework should change the attributes and
     /// potential changes should be done only at specific moments of the lifespan of the entry. Otherwise syncing could
     /// be badly broken.
@@ -266,7 +285,7 @@ public struct PolisDirectoryEntry: Identifiable {
                 supportedImplementations: [PolisSupportedImplementation],
                 providerType:             PolisProviderType,
                 contact:                  PolisAdminContact) throws {
-        guard supportedImplementations.isEmpty else { throw PolisDirectoryEntryError.emptyListOfSupportedImplementations }
+        guard !supportedImplementations.isEmpty else { throw PolisDirectoryEntryError.emptyListOfSupportedImplementations }
 
         //TODO: Check if the implementation is supported by the framework! Remove unsupported implementations and throw and error if none of the requested implementations is supported.
         

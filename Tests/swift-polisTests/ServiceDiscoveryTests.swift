@@ -25,7 +25,7 @@ final class ServiceDiscoveryTests: XCTestCase {
         let pd = try? PolisDirectoryEntry(attributes: PolisItemAttributes(name: "polis"),
                                      url: "https://polis.net",
                                      providerDescription: "Polis test",
-                                     supportedImplementations: [],
+                                     supportedImplementations: [frameworkSupportedImplementation.last!],
                                      providerType: PolisProviderType.experimental,
                                      contact: PolisAdminContact(name: "polis",
                                                                 email: "polis@observer.net",
