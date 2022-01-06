@@ -7,8 +7,8 @@
 
 import Foundation
 
-//TODO: Needs documentation!
-
+// These are simple subclasses of the system provided JSON Decoder and Encoder that require the dates to be in ISO8601
+// format and produce well formatted and human readable outputs.
 
 @available(iOS 10, macOS 10.12, *)
 public class PolisJSONDecoder: JSONDecoder {

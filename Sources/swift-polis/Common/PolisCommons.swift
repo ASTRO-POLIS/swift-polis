@@ -8,7 +8,6 @@
 import Foundation
 import SoftwareEtudes
 
-//Just checking commit
 /// This is the first and only domain that is guaranteed to be a valid POLIS service provider.
 ///
 /// There might be (hopefully) many more service providers, but one can start the domain search always from the POLIS'
@@ -17,7 +16,7 @@ public let bigBangPolisDomain = "https://polis.onserver"
 
 
 
-//MARK: - Supported POLIS Data formats, e.g. JSON, XML, ..., level of API support and versions -
+//MARK: - Supported POLIS Data formats, e.g. JSON, XML, ..., levels of API support and versions -
 
 /// Defines various POLIS data formats
 ///
@@ -38,15 +37,15 @@ public enum PolisDataFormat: String, Codable, Equatable {
 /// `PolisAPISupport` defines the three levels of API support
 public enum PolisAPISupport: String, Codable, Equatable {
 
-    /// The service provider hosts only static (file based) data
+    /// The service provider hosts only static (most probably saved in text files) data
     case staticData        = "static_data"
 
     /// If the status of observing sites is updated manually (e.g. by the admin) or automatically (by using POLIS-defined
     /// APIs), the service provider dynamically propagates this information.
     case dynamicStatus     = "dynamic_status"
 
-    /// The service provider is able dynamically to schedule observations (for sites that implement this functionality)
-    /// and manage complex level 2 observing projects.
+    /// The service provider can dynamically schedule observations (for sites that implement this functionality) and
+    /// manage complex `Level 2` observing projects.
     case dynamicScheduling = "dynamic_scheduling"
 }
 
@@ -87,15 +86,23 @@ public enum PolisDirection: Codable {
 
 //MARK: - POLIS version management
 
-//TODO: Needs documentation!
 /// `PolisSupportedImplementation` combines supported data format, API level, and version in a single struct
+///
+/// This information is an integral part of the basic POLIS service provider. It is assumed that different clients on
+/// different platform depend on different combinations of data format, API level, and version. Nevertheless, each
+/// client should be able to search for a service provider that supports its concrete requirements. In addition, every
+/// POLIS service provider should be able to maintain the correct list of implementation variants for every other
+/// `public` or `mirror` provider. Only `experimental` service providers should be allowed to implement unsupported
+/// implementations.
+///
+///  For complete description Semantic Version consult [Semantic Versioning](https://semver.org)
 public struct PolisSupportedImplementation: Codable, Equatable {
     let dataFormat: PolisDataFormat
     let apiSupport: PolisAPISupport
     let version: SemanticVersion
 }
 
-//TODO: Needs documentation!
+/// This is a list of supported implementations for this concrete framework.
 public var frameworkSupportedImplementation: [PolisSupportedImplementation] =
 [
     PolisSupportedImplementation(dataFormat: PolisDataFormat.json, apiSupport: PolisAPISupport.staticData, version: SemanticVersion(with: "0.1-alpha.1")!),
@@ -104,6 +111,7 @@ public var frameworkSupportedImplementation: [PolisSupportedImplementation] =
 
 //MARK: - Type extensions -
 
+// This extension is needed for supporting a well formatted JSON API
 public extension PolisSupportedImplementation {
     enum CodingKeys: String, CodingKey {
         case dataFormat = "data_format"

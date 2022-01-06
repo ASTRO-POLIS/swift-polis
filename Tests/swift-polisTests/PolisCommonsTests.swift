@@ -55,7 +55,6 @@ final class PolisCommonsTests: XCTestCase {
         data   = try? jsonEncoder.encode(sutAlpha)
         string = String(data: data!, encoding: .utf8)
         XCTAssertNoThrow(try jsonDecoder.decode(PolisSupportedImplementation.self, from: string!.data(using: .utf8)!))
-
     }
 
     override func setUp() {
