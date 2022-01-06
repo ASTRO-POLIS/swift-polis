@@ -79,6 +79,10 @@ public struct PolisItemAttributes: Codable, Identifiable {
     /// Human readable name of the item (object). It is recommended to be unique to avoid potential confusions.
     public var name: String
 
+    /// Human readable automationLabel of the item (object). If present it is recommended to be unique to avoid
+    /// potential confusions.
+    public var abbreviation: String?
+
     /// The purpose of the optional `automationLabel` is to act as a unique target for scripts and other software
     /// packages. As an example, the observatory control software could search for an instrument with such label and
     /// set its status or issue commands etc.
@@ -96,6 +100,7 @@ public struct PolisItemAttributes: Codable, Identifiable {
                 status: PolisLifecycleStatus = PolisLifecycleStatus.unknown,
                 lastUpdate: Date             = Date(),
                 name: String,
+                abbreviation: String?        = nil,
                 automationLabel: String?     = nil,
                 shortDescription: String?    = nil) {
         self.id               = id
@@ -104,6 +109,7 @@ public struct PolisItemAttributes: Codable, Identifiable {
         self.status           = status
         self.lastUpdate       = lastUpdate
         self.name             = name
+        self.abbreviation     = abbreviation
         self.automationLabel  = automationLabel
         self.shortDescription = shortDescription
     }
