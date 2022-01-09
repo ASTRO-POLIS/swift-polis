@@ -7,17 +7,6 @@
 
 import Foundation
 
-public enum SiteOwnershipType: String, Codable {
-    case university
-    case research
-    case commercial
-    case school
-    case network
-    case government
-    case ngo
-    case `private`     // personal, amateur, ...
-    case other         //TODO: Perhaps we need a `description` parameter?
-}
 
 public indirect enum SolarSystemBodyType {
     case Sun
@@ -77,7 +66,7 @@ public struct ObservingSite {
     public let name: String
     public let startDate: Date? // Might be unknown
     public let endDate: Date?   // if != nil -> either closed or temporary created (e.g. solar eclipse monitoring)
-    public let ownershipType: SiteOwnershipType
+    public let ownershipType: PolisOwnershipType
     public let observatories: [Observatory]
     public let description: String?
 }

@@ -56,6 +56,8 @@ public enum PolisLifecycleStatus: String, Codable {
 /// describe each item (object) and establish parent-child relationships between them, as well as provide enough
 /// informationIn for the syncing of polis providers.
 ///
+/// Parent - child relationship should be defined by nesting data structures.
+///
 /// If XML encoding / decoding is used, it is recommended to implement the `PolisItemAttributes` as attributes of the
 /// corresponding type (Element).
 public struct PolisItemAttributes: Codable, Identifiable {
@@ -64,11 +66,9 @@ public struct PolisItemAttributes: Codable, Identifiable {
     /// conformance.
     public let id: UUID
 
-    /// Establishing parent-child relationship.
-    public let parentID: String?
-
-    /// Pointer to externally defined item (IDREF in XML).
-    public let referenceID: String?
+    /// Pointers to externally defined item (IDREF in XML). It is recommended that the references are URIs (e.g.
+    /// https://monet.org/instruments/12345 or telescope.observer://instriment123456)
+    public let references: [String]?
 
     /// Determines the current status of the POLIS item (object).
     public var status: PolisLifecycleStatus
@@ -95,8 +95,7 @@ public struct PolisItemAttributes: Codable, Identifiable {
     ///
     /// Only the `name` parameter is required. All other parameters have reasonable default values.
     public init(id: UUID =  UUID(),
-                parentIdentifier: String?    = nil,
-                referenceIdentifier: String? = nil,
+                references: [String]?        = nil,
                 status: PolisLifecycleStatus = PolisLifecycleStatus.unknown,
                 lastUpdate: Date             = Date(),
                 name: String,
@@ -104,8 +103,7 @@ public struct PolisItemAttributes: Codable, Identifiable {
                 automationLabel: String?     = nil,
                 shortDescription: String?    = nil) {
         self.id               = id
-        self.parentID         = parentIdentifier
-        self.referenceID      = referenceIdentifier
+        self.references       = references
         self.status           = status
         self.lastUpdate       = lastUpdate
         self.name             = name
@@ -526,8 +524,7 @@ extension String {
 public extension PolisItemAttributes {
     enum CodingKeys: String, CodingKey {
         case id
-        case parentID         = "parent_id"
-        case referenceID      = "reference_id"
+        case references
         case status
         case lastUpdate       = "last_update"
         case name

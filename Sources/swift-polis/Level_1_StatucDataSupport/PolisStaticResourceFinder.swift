@@ -22,7 +22,6 @@ public struct PolisPredefinedServicePaths {
 }
 
 
-@available(iOS 10, macOS 10.12, *)
 public struct PolisStaticResourceFinder {
 
     public enum PolisStaticResourceFinderError: Error {

@@ -8,7 +8,6 @@
 import Foundation
 
 
-//@available(iOS 10, macOS 10.12, *)
 //public class PolisPersistentContainer {
 //
 //    /// The path leading to the folder containing all POLIS static data
