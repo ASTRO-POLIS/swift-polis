@@ -100,6 +100,13 @@ public struct PolisSupportedImplementation: Codable, Equatable {
     let dataFormat: PolisDataFormat
     let apiSupport: PolisAPISupport
     let version: SemanticVersion
+
+    public init(dataFormat: PolisDataFormat, apiSupport: PolisAPISupport, version: SemanticVersion) {
+        self.dataFormat = dataFormat
+        self.apiSupport = apiSupport
+        self.version    = version
+    }
+
 }
 
 /// This is a list of supported implementations for this concrete framework.
