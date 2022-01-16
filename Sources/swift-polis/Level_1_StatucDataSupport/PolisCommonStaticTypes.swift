@@ -488,7 +488,7 @@ extension PolisProviderType: Codable, CustomStringConvertible {
 
     enum CodingKeys: String, CodingKey {
         case providerType = "provider_type"
-        case mirrorParams = "mirror_params"
+        case mirrorParams = "mirror"
     }
 
     private enum ProviderType: String, Codable { case `public`, `private`, local, experimental, mirror }
