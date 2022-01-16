@@ -411,6 +411,7 @@ extension PolisCommunication: Codable, CustomStringConvertible {
         case facebookParams    = "facebook"
         case instagramParams   = "instagram"
         case skypeParams       = "skype"
+        case userName          = "user_name"
     }
 
     private enum CommunicationType: String, Codable { case twitter, whatsApp, facebook, instagram, skype }
