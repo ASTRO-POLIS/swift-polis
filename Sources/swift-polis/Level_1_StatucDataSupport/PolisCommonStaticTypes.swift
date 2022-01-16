@@ -406,11 +406,11 @@ extension PolisCommunication: Codable, CustomStringConvertible {
 
     public enum CodingKeys: String, CodingKey {
         case communicationType = "communication_type"
-        case twitterParams     = "Twitter_params"
+        case twitterParams     = "twitter_params"
         case whatsAppParams    = "WhatsApp_params"
-        case facebookParams    = "Facebook_params"
-        case instagramParams   = "Instagram_params"
-        case skypeParams       = "Skype_params"
+        case facebookParams    = "facebook_params"
+        case instagramParams   = "instagram_params"
+        case skypeParams       = "skype_params"
     }
 
     private enum CommunicationType: String, Codable { case twitter, whatsApp, facebook, instagram, skype }
