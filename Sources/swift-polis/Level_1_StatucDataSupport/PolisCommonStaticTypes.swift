@@ -366,7 +366,7 @@ extension PolisCommunication: Codable, CustomStringConvertible {
         switch base {
             case .twitter:
                 let twitterParams = try container.decodeIfPresent(TwitterParams.self, forKey: .twitterParams)
-                self = .twitter(username: twitterParams!.userName.mustStartWithAtSign())
+                self = .twitter(username: twitterParams!.username.mustStartWithAtSign())
             case .whatsApp:
                 let whatsAppParams = try container.decodeIfPresent(WhatsAppParams.self, forKey: .whatsAppParams)
                 self = .whatsApp(phone: whatsAppParams!.phone)
@@ -375,7 +375,7 @@ extension PolisCommunication: Codable, CustomStringConvertible {
                 self = .facebook(id: facebookParams!.id)
             case .instagram:
                 let instagramParams = try container.decodeIfPresent(InstagramParams.self, forKey: .instagramParams)
-                self = .instagram(username: instagramParams!.userName.mustStartWithAtSign())
+                self = .instagram(username: instagramParams!.username.mustStartWithAtSign())
             case .skype:
                 let skypeParams = try container.decodeIfPresent(SkypeParams.self, forKey: .skypeParams)
                 self = .skype(id: skypeParams!.id)
@@ -388,7 +388,7 @@ extension PolisCommunication: Codable, CustomStringConvertible {
         switch self {
             case .twitter(let username):
                 try container.encode(CommunicationType.twitter, forKey: .communicationType)
-                try container.encode(TwitterParams(userName: username), forKey: .twitterParams)
+                try container.encode(TwitterParams(username: username), forKey: .twitterParams)
             case .whatsApp(let phone):
                 try container.encode(CommunicationType.whatsApp, forKey: .communicationType)
                 try container.encode(WhatsAppParams(phone: phone), forKey: .whatsAppParams)
@@ -397,7 +397,7 @@ extension PolisCommunication: Codable, CustomStringConvertible {
                 try container.encode(FacebookParams(id: id), forKey: .facebookParams)
             case .instagram(let username):
                 try container.encode(CommunicationType.instagram, forKey: .communicationType)
-                try container.encode(InstagramParams(userName: username), forKey: .instagramParams)
+                try container.encode(InstagramParams(username: username), forKey: .instagramParams)
             case .skype(let id):
                 try container.encode(CommunicationType.skype, forKey: .communicationType)
                 try container.encode(SkypeParams(id: id), forKey: .skypeParams)
@@ -411,15 +411,15 @@ extension PolisCommunication: Codable, CustomStringConvertible {
         case facebookParams    = "facebook"
         case instagramParams   = "instagram"
         case skypeParams       = "skype"
-        case userName          = "user_name"
+        case username          = "user_name"
     }
 
     private enum CommunicationType: String, Codable { case twitter, whatsApp, facebook, instagram, skype }
 
-    private struct TwitterParams: Codable   { let userName: String }
+    private struct TwitterParams: Codable   { let username: String }
     private struct WhatsAppParams: Codable  { let phone: String }
     private struct FacebookParams: Codable  { let id: String }
-    private struct InstagramParams: Codable { let userName: String }
+    private struct InstagramParams: Codable { let username: String }
     private struct SkypeParams: Codable     { let id: String }
 
     public var description: String {
