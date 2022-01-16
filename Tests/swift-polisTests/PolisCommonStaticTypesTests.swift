@@ -27,7 +27,7 @@ final class PolisCommonStaticTypesTests: XCTestCase {
     }
 
     func test_polisCommunicationCodingAndDecoding() {
-        let sut_twitter = PolisCommunication.twitter(userName: "@polis")
+        let sut_twitter = PolisCommunication.twitter(username: "@polis")
 
         XCTAssertNotNil(sut_twitter)
 

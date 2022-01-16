@@ -131,7 +131,7 @@ public struct PolisItemAttributes: Codable, Identifiable {
 public enum PolisCommunication {
 
     /// Twitter user id, e.g. @AstroPolis "@" is expected to be part of the id
-    case twitter(userName: String)
+    case twitter(username: String)
 
     /// Phone number used by WhatsApp. The phone number should include the country code, start with "+", and contain no
     /// spaces, brackets, or other formatting characters. No validation is provided.
@@ -141,7 +141,7 @@ public enum PolisCommunication {
     case facebook(id: String)
 
     /// Instagram user id, e.g. @AstroPolis "@" is expected to be part of the id
-    case instagram(userName: String)
+    case instagram(username: String)
 
     /// Skype user id
     case skype(id: String)
@@ -366,7 +366,7 @@ extension PolisCommunication: Codable, CustomStringConvertible {
         switch base {
             case .twitter:
                 let twitterParams = try container.decodeIfPresent(TwitterParams.self, forKey: .twitterParams)
-                self = .twitter(userName: twitterParams!.userName.mustStartWithAtSign())
+                self = .twitter(username: twitterParams!.userName.mustStartWithAtSign())
             case .whatsApp:
                 let whatsAppParams = try container.decodeIfPresent(WhatsAppParams.self, forKey: .whatsAppParams)
                 self = .whatsApp(phone: whatsAppParams!.phone)
@@ -375,7 +375,7 @@ extension PolisCommunication: Codable, CustomStringConvertible {
                 self = .facebook(id: facebookParams!.id)
             case .instagram:
                 let instagramParams = try container.decodeIfPresent(InstagramParams.self, forKey: .instagramParams)
-                self = .instagram(userName: instagramParams!.userName.mustStartWithAtSign())
+                self = .instagram(username: instagramParams!.userName.mustStartWithAtSign())
             case .skype:
                 let skypeParams = try container.decodeIfPresent(SkypeParams.self, forKey: .skypeParams)
                 self = .skype(id: skypeParams!.id)

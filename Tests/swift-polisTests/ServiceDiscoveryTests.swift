@@ -13,7 +13,7 @@ final class ServiceDiscoveryTests: XCTestCase {
         let c = PolisAdminContact(name: "polis",
                                   email: "polis@observer.net",
                                   mobilePhone: nil,
-                                  additionalCommunicationChannels: [PolisCommunication.instagram(userName: "@polis")],
+                                  additionalCommunicationChannels: [PolisCommunication.instagram(username: "@polis")],
                                   notes: nil)
 
         data   = try? jsonEncoder.encode(c)
@@ -30,7 +30,7 @@ final class ServiceDiscoveryTests: XCTestCase {
                                      contact: PolisAdminContact(name: "polis",
                                                                 email: "polis@observer.net",
                                                                 mobilePhone: nil,
-                                                                additionalCommunicationChannels: [PolisCommunication.instagram(userName: "@polis")],
+                                                                additionalCommunicationChannels: [PolisCommunication.instagram(username: "@polis")],
                                                                 notes: "The admin works only on Sunday")!)
 
         data   = try? jsonEncoder.encode(pd)
