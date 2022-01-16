@@ -528,6 +528,8 @@ public extension PolisItemAttributes {
         case status
         case lastUpdate       = "last_update"
         case name
+        case abbreviation
+        case automationLabel
         case shortDescription = "short_description"
     }
 }
