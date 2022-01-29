@@ -30,12 +30,13 @@ public struct PolisItemOwner: Codable {
     public let shortDescription: String?
 }
 
-public protocol PolisItem: Identifiable, Codable {
-    var id: UUID                         { get }   // Should be `attributes`'s `id`
+public protocol PolisItemIdentifiable: Identifiable, Codable {
     var attributes: PolisItemAttributes  { get set }
     var manufacturer: PolisManufacturer? { get set }
     var owners: [PolisItemOwner]?        { get set }
     var imageLinks: [URL]?               { get set }
+
+    func id() -> UUID // Should return `attributes`'s `id`
 }
 
 //MARK: - Type Extensions -

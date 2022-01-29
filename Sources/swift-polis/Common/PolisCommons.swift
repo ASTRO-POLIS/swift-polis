@@ -26,7 +26,7 @@ public let bigBangPolisDomain = "https://polis.onserver"
 /// JSON-based implementation should be avoided in stable production systems.
 ///
 /// The type implements the `Equatable` and the `Codable` protocols
-public enum PolisDataFormat: String, Codable, Equatable {
+public enum PolisDataFormat: String, Codable, Equatable, Hashable {
     /// The provider implements JSON APIs
     case json
 
@@ -35,7 +35,7 @@ public enum PolisDataFormat: String, Codable, Equatable {
 }
 
 /// `PolisAPISupport` defines the three levels of API support
-public enum PolisAPISupport: String, Codable, Equatable {
+public enum PolisAPISupport: String, Codable, Equatable, Hashable {
 
     /// The service provider hosts only static (most probably saved in text files) data
     case staticData        = "static_data"
@@ -106,7 +106,6 @@ public struct PolisSupportedImplementation: Codable, Equatable {
         self.apiSupport = apiSupport
         self.version    = version
     }
-
 }
 
 /// This is a list of supported implementations for this concrete framework.
@@ -124,5 +123,14 @@ public extension PolisSupportedImplementation {
         case dataFormat = "data_format"
         case apiSupport = "api_support"
         case version
+    }
+}
+
+extension PolisSupportedImplementation: Hashable {
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(dataFormat)
+        hasher.combine(apiSupport)
+        hasher.combine(version.description)
     }
 }

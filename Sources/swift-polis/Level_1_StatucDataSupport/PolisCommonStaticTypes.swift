@@ -187,8 +187,9 @@ public struct PolisAdminContact {
                  mobilePhone:                     String? = nil,
                  additionalCommunicationChannels: [PolisCommunication] = [PolisCommunication](),
                  notes:                           String?) {
+        guard email.isValidEmailAddress() else { return nil }
+
         self.name                            = name
-        //TODO: Check the validity (format) of the email address!
         self.email                           = email
         self.mobilePhone                     = mobilePhone
         self.additionalCommunicationChannels = additionalCommunicationChannels
@@ -291,11 +292,16 @@ public struct PolisDirectoryEntry: Identifiable {
                 contact:                  PolisAdminContact) throws {
         guard !supportedImplementations.isEmpty else { throw PolisDirectoryEntryError.emptyListOfSupportedImplementations }
 
-        //TODO: Check if the implementation is supported by the framework! Remove unsupported implementations and throw and error if none of the requested implementations is supported.
-        
+        let suggestedImplementations = Set(supportedImplementations)
+        let supportedImplementations = Set(frameworkSupportedImplementation)
+        let intersection             = supportedImplementations.intersection(suggestedImplementations)
+        let filtered                 = Array(intersection)
+
+        guard !filtered.isEmpty else { throw PolisDirectoryEntryError.noneOfTheRequestedImplementationsIsSupportedByTheFramework }
+
         self.attributes               = attributes
         self.url                      = url
-        self.supportedImplementations = supportedImplementations
+        self.supportedImplementations = filtered
         self.providerType             = providerType
         self.contact                  = contact
     }
@@ -303,7 +309,7 @@ public struct PolisDirectoryEntry: Identifiable {
 
 /// `PolisDirectory` is the list of all known Polis providers.
 ///
-/// To avoid confusion (and potential syncing errors) it is recommended that the directory does not contain the POLIS
+/// To avoid confusion (and potential syncing errors) it is recommended that the directory does contain the POLIS
 /// service provider entry that serves the directory list.
 /// The type implements the `Codable` protocol.
 public struct PolisDirectory  {
@@ -407,7 +413,7 @@ extension PolisCommunication: Codable, CustomStringConvertible {
     public enum CodingKeys: String, CodingKey {
         case communicationType = "communication_type"
         case twitterParams     = "twitter"
-        case whatsAppParams    = "Whatsapp"
+        case whatsAppParams    = "whatsapp"
         case facebookParams    = "facebook"
         case instagramParams   = "instagram"
         case skypeParams       = "skype"
@@ -424,11 +430,11 @@ extension PolisCommunication: Codable, CustomStringConvertible {
 
     public var description: String {
         switch self {
-            case .twitter:   return "Twitter"
-            case .whatsApp:  return "WhatsApp"
-            case .facebook:  return "Facebook"
-            case .instagram: return "Instagram"
-            case .skype:     return "Skype"
+            case .twitter(let username):   return "Twitter: \(username)"
+            case .whatsApp(let phone):     return "WhatsApp: \(phone)"
+            case .facebook(let id):        return "Facebook: \(id)"
+            case .instagram(let username): return "Instagram: \(username)"
+            case .skype(let id):           return "Skype: \(id)"
         }
     }
 }
@@ -459,7 +465,6 @@ extension PolisProviderType: Codable, CustomStringConvertible {
                 let mirrorParams = try container.decode(MirrorParams.self, forKey: .mirrorParams)
                 self = .mirror(id: mirrorParams.id)
         }
-
     }
 
     public func encode(to encoder: Encoder) throws {
