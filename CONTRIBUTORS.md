@@ -12,8 +12,8 @@ organisations who have contributed source code and / or ideas to BrainObjects.
 
 - Frederic Hessman <Hessman@Astro.physik.Uni-Goettingen.de>
 - Georg Tuparev <gtupare@tuparev.com>
-- Philip Tuparev <patupar@tuparev.com>
 - Hasmik Andreasyan <h.andreasyan@tuparev.com>
 - Hasmik Mirzakhanyan <h.mirzakhanyan@tuparev.com>
 - Hunter Wiliam Holland <hunterholland@tuparev.com>
+- Philip Tuparev <patupar@tuparev.com>
 - Thomas Jackson <tmjackson@tuparev.com>
