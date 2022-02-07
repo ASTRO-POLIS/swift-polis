@@ -77,7 +77,7 @@ public struct PolisItemAttributes: Codable, Identifiable {
 
     /// Pointers to externally defined item (IDREF in XML). It is recommended that the references are URIs (e.g.
     /// https://monet.org/instruments/12345 or telescope.observer://instriment123456)
-    public let references: [String]?
+    public var references: [String]?
 
     /// Determines the current status of the POLIS item (object).
     public var status: PolisLifecycleStatus
@@ -266,26 +266,26 @@ public struct PolisDirectoryEntry: Identifiable {
     /// `attributes` are marked with "private(set)" on purpose. Only the framework should change the attributes and
     /// potential changes should be done only at specific moments of the lifespan of the entry. Otherwise syncing could
     /// be badly broken.
-    public private(set) var attributes: PolisItemAttributes
+    public var attributes: PolisItemAttributes
 
     /// The fully qualified URL of the service provider, e.g. https://polis.observer
-    public              var url: String
+    public var url: String
 
     /// A list of one or more supported implementations
-    public              var supportedImplementations: [PolisSupportedImplementation]
+    public var supportedImplementations: [PolisSupportedImplementation]
 
     /// Defines the type of the POLIS service provider e.g. public, experimental, mirror, ...
-    public              var providerType: PolisProviderType
+    public var providerType: PolisProviderType
 
     /// POLIS service provider's admin contact
     ///
     /// It is recommended that the contact information exposes no or very limited personal information
-    public              var contact: PolisAdminContact
+    public var contact: PolisAdminContact
 
     /// `id` is needed to make the structure `Identifiable`
     ///
     /// `id` refers to attributes UUID and should never be changed.
-    public              var id: UUID { attributes.id }
+    public var id: UUID { attributes.id }
 
     public enum PolisDirectoryEntryError: Error {
         case emptyListOfSupportedImplementations
