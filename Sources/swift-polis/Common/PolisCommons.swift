@@ -20,7 +20,7 @@ import SoftwareEtudes
 ///
 /// There might be (hopefully) many more service providers, but one can start the domain search always from the POLIS'
 /// Big Bang.
-public let bigBangPolisDomain = "https://polis.onserver"
+public let bigBangPolisDomain = "https://polis.observer"
 
 
 
