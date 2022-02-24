@@ -15,7 +15,7 @@
 
 
 import XCTest
-import SoftwareEtudes
+import SoftwareEtudesUtilities
 
 @testable import swift_polis
 final class ServiceDiscoveryTests: XCTestCase {
@@ -52,6 +52,50 @@ final class ServiceDiscoveryTests: XCTestCase {
         data   = try? jsonEncoder.encode(pd)
         string = String(data: data!, encoding: .utf8)
         XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectoryEntry.self, from: string!.data(using: .utf8)!))
+    }
+
+    func testPolisDirectoryEntryFromData() {
+        let jsonData = """
+{
+    "supported_implementations": [
+        {
+            "api_support": "static_data",
+            "version": "0.1.0-alpha.1",
+            "data_format": "json"
+        }
+    ],
+    "provider_type": {
+        "type": "experimental"
+    },
+    "url": "www.telescope.observer",
+    "attributes": {
+        "status": "active",
+        "abbreviation": "TO",
+        "short_description": "The original site",
+        "id": "6084D02F-A110-43A1-ACB4-93D32A42E605",
+        "last_update": "2022-02-12T20:59:26Z",
+        "references": [
+
+        ],
+        "automationLabel": "telescope_observer",
+        "name": "Telescope Observer"
+    },
+    "contact": {
+        "email": "polis@tuparev.com",
+        "additional_communication_channels": [
+            {
+                "twitter": {
+                    "username": "@TelescopeObserver"
+                },
+                "communication_type": "twitter"
+            }
+        ],
+        "notes": "The admin of the site. The site is experimental, so not need to contact us yet.",
+        "name": "TelescopeObserver Admin"
+    }
+}
+"""
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectoryEntry.self, from: jsonData.data(using: .utf8)!))
     }
 
     override func setUp() {

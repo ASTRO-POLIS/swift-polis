@@ -15,7 +15,7 @@
 
 
 import Foundation
-import SoftwareEtudes
+import SoftwareEtudesUtilities
 
 //TODO: Needs documentation!
 //TODO: Needs testing of all path methods

@@ -15,7 +15,7 @@
 
 
 import Foundation
-import SoftwareEtudes
+import SoftwareEtudesUtilities
 
 //MARK: - POLIS Item Attributes -
 

@@ -7,7 +7,7 @@ let package = Package(
     name: "swift-polis",
     defaultLocalization: "en",
     platforms: [
-        .macOS(.v10_15), .iOS(.v14), .tvOS(.v11), .watchOS(.v5)
+        .macOS(.v11), .iOS(.v14), .tvOS(.v11), .watchOS(.v5)
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
@@ -23,7 +23,7 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "swift-polis",
-            dependencies: ["SoftwareEtudes"]),
+            dependencies: [.product(name: "SoftwareEtudesUtilities", package: "SoftwareEtudes")]),
         .testTarget(
             name: "swift-polisTests",
             dependencies: ["swift-polis"]),

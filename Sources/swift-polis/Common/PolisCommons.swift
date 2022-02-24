@@ -14,7 +14,7 @@
 //===----------------------------------------------------------------------===//
 
 import Foundation
-import SoftwareEtudes
+import SoftwareEtudesUtilities
 
 /// This is the first and only domain that is guaranteed to be a valid POLIS service provider.
 ///

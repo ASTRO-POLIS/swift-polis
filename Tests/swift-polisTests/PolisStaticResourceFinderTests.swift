@@ -15,7 +15,7 @@
 
 
 import Foundation
-import SoftwareEtudes
+import SoftwareEtudesUtilities
 import XCTest
 
 @testable import swift_polis
