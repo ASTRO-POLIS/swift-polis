@@ -16,7 +16,8 @@
 import Foundation
 import SoftwareEtudesUtilities
 
-/// This is the first and only domain that is guaranteed to be a valid POLIS service provider.
+///This is the first and only POLIS service provider (and domain) that is (almost) guaranteed to be a valid POLIS
+///service provider.
 ///
 /// There might be (hopefully) many more service providers, but one can start the domain search always from the POLIS'
 /// Big Bang.
@@ -32,8 +33,6 @@ public let bigBangPolisDomain = "https://polis.observer"
 /// are preferred for production-ready code. In contrast, JSON is often easier to use for new development (no need of
 /// schema support) and is often easier to be used within a mobile or a web applications. Due to its fragility
 /// JSON-based implementation should be avoided in stable production systems.
-///
-/// The type implements the `Equatable` and the `Codable` protocols
 public enum PolisDataFormat: String, Codable, Equatable, Hashable {
     /// The provider implements JSON APIs
     case json

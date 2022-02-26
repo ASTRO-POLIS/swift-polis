@@ -42,9 +42,9 @@ public indirect enum SolarSystemBodyType {
 }
 
 public struct EarthLocation: Codable {
-    public let eastLongitude: Double  // degrees
-    public let latitude: Double       // degrees
-    public let altitude: Double?      // m
+    public let eastLongitude: Double?  // degrees
+    public let latitude: Double?       // degrees
+    public let altitude: Double?       // m
     public let place: String?
     public let regionOrState: String?
     public let regionOrStateCode: String?
