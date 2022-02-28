@@ -39,13 +39,19 @@ public struct PolisItemOwner: Codable {
     public let shortDescription: String?
 }
 
-public protocol PolisItemIdentifiable: Identifiable, Codable {
+/// The `Identifiable` compliance of `PolisItemIdentifiable` is guaranteed because of `attributes.id`
+public protocol PolisItemIdentifiable: Codable {
     var attributes: PolisItemAttributes  { get set }
     var manufacturer: PolisManufacturer? { get set }
     var owners: [PolisItemOwner]?        { get set }
     var imageLinks: [URL]?               { get set }
+}
 
-    func id() -> UUID // Should return `attributes`'s `id`
+public struct PolisItem: PolisItemIdentifiable {
+    public var attributes: PolisItemAttributes
+    public var manufacturer: PolisManufacturer?
+    public var owners: [PolisItemOwner]?
+    public var imageLinks: [URL]?
 }
 
 //MARK: - Type Extensions -
@@ -60,12 +66,11 @@ public extension PolisItemOwner {
     }
 }
 
-//public extension PolisItem {
-//    enum CodingKeys: String, CodingKey {
-//        case id
-//        case attributes
-//        case manufacturer
-//        case owners
-//        case imageLinks = "image_links"
-//    }
-//}
+public extension PolisItem {
+    enum CodingKeys: String, CodingKey {
+        case attributes
+        case manufacturer
+        case owners
+        case imageLinks = "image_links"
+    }
+}

@@ -70,30 +70,15 @@ public enum ObservingSiteLocationType {
     case ivoa(descriptor: String)
 }
 
-public struct ObservingSite {
-    public let location: ObservingSiteLocationType
-    public let name: String
-    public let startDate: Date? // Might be unknown
-    public let endDate: Date?   // if != nil -> either closed or temporary created (e.g. solar eclipse monitoring)
-    public let ownershipType: PolisOwnershipType
-    public let observatories: [Observatory]
-    public let description: String?
-}
-
 public enum ObservatoryType {
     // Location
     case opticalTelescope(OpticalTelescope)
     case radioAntenna(RadioAntenna)
 }
 
-public enum ModeOfOperation {
-    case robotic
-    case manual
-}
 
 public struct Observatory {
     var type: ObservatoryType
-    // Coordinates
 }
 
 public enum InstrumentType {

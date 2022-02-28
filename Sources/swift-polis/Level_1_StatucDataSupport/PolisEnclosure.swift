@@ -17,25 +17,32 @@
 import Foundation
 
 public enum PolisEnclosureType: String, Codable {
-    case dome      = "dome"
-    case rollOff   = "roll_off"
-    case clamshell = "clamshell"
-    case other     = "other"
+    case dome
+    case rollOff
+    case clamshell
+    case other
 }
 
-public protocol PolisEnclosureContainable: Codable {
-    var enclosureType: PolisEnclosureType { get set }
+public enum PolisEnclosureModeOfOperation: String, Codable {
+    case manual
+    case robotic
 }
 
-//TODO: Make codable!
-public class PolisEnclosure {
-    public private(set) var attributes: PolisItemAttributes
-    public let type: PolisEnclosureType
-    public let content: [PolisEnclosureContainable]
+public struct PolisEnclosure: Codable {
+    public var item: PolisItem   // Observing Site Identification
+    public var type: PolisEnclosureType
+    public var modeOfOperation: PolisEnclosureModeOfOperation
+}
 
-    public init(attributes: PolisItemAttributes, type: PolisEnclosureType = .other, content: [PolisEnclosureContainable] = [PolisEnclosureContainable]()) {
-        self.attributes = attributes
-        self.type       = type
-        self.content    = content
+
+//MARK: - Type extensions -
+
+
+public extension PolisEnclosureType {
+    enum CodingKeys: String, CodingKey {
+        case dome      = "dome"
+        case rollOff   = "roll_off"
+        case clamshell = "clamshell"
+        case other     = "other"
     }
 }

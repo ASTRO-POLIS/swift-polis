@@ -16,6 +16,14 @@
 
 import Foundation
 
-public struct PolisObservatory {
-    public var enclosure: PolisEnclosure?
+public enum PolisObservatoryModeOfOperation: Codable {
+    case manual
+    case manualWithAutomatedImaging
+    case manualWithAutomatedScheduling
+    case robotic
+}
+
+public struct PolisObservatory: Codable {
+    public var enclosure: PolisEnclosure
+    public var modeOfOperation: PolisObservatoryModeOfOperation
 }
