@@ -16,11 +16,36 @@
 
 import Foundation
 
-public protocol PolisInstrument: Codable {
-    var item: PolisItem                    { get set }
+public protocol PolisInstrumentType: Codable {
+    var item: PolisItem                        { get set }
 
-    var parent: PolisInstrument?           { get set }
-    var subInstruments: [PolisInstrument]? { get set }
+    var parent: PolisInstrumentType?           { get set }
+    var subInstruments: [PolisInstrumentType]? { get set }
+
+}
+
+/// This is an abstract class that should not be used directly!
+public class PolisInstrument: PolisInstrumentType {
+    public var item: PolisItem
+
+    public var parent: PolisInstrumentType? {
+        get { return _parent }
+        set { _parent = newValue as? PolisInstrument }
+    }
+
+    public var subInstruments: [PolisInstrumentType]? {
+        get { return _subInstruments }
+        set { _subInstruments = newValue as? [PolisInstrument] }
+    }
+
+    private weak var _parent: PolisInstrument?
+    private      var _subInstruments: [PolisInstrument]?
+
+    public init(item: PolisItem, parent: PolisInstrumentType? = nil, subInstruments: [PolisInstrumentType]? = nil) {
+        self.item           = item
+        self.parent         = parent
+        self.subInstruments = subInstruments
+    }
 }
 
 public enum PolisSensorType: Codable {
@@ -46,7 +71,7 @@ public protocol PolisSensing: Codable {
     var units: String                           { get set }
     var measurementFrequencyInSeconds: Double?  { get set }
 
-    var currentValue: Double                    { get set }
+    var currentValue: Double?                   { get set }
 }
 
 public struct PolisSensor: PolisSensing {
@@ -62,12 +87,8 @@ public struct PolisSensor: PolisSensing {
     public var currentValue: Double?
 }
 
-public struct WeatherStation: PolisInstrument {
-    public var item: PolisItem
-    public var parent: PolisInstrument?
-    public var subInstruments: [PolisInstrument]?
-
-    public var sensors: [PolisSensor]
+public class WeatherStation: PolisInstrument {
+    public var sensors = [PolisSensor]()
 }
 
 //MARK: - Making types Codable and CustomStringConvertible -
@@ -86,31 +107,11 @@ public extension PolisSensorType {
     }
 }
 
-
 public extension WeatherStation {
     enum CodingKeys: String, CodingKey {
         case item
         case parent
         case subInstruments = "sub_instruments"
         case sensors
-    }
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-
-        //TODO: Decode the parent!
-        self.item = try container.decode(PolisItem.self, forKey: .item)
-        self.subInstruments = [PolisInstrument]()   //TODO: Make proper decoding!
-        self.sensors = try container.decode([PolisSensor].self, forKey: .sensors)
-
-        //TODO: Finish implementation!
-    }
-
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-
-        try container.encode(item, forKey: .item)
-        try container.encode(sensors, forKey: .sensors)
-        //TODO: Finish implementation!
     }
 }
