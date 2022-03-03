@@ -87,10 +87,6 @@ public struct PolisSensor: PolisSensing {
     public var currentValue: Double?
 }
 
-public class WeatherStation: PolisInstrument {
-    public var sensors = [PolisSensor]()
-}
-
 //MARK: - Making types Codable and CustomStringConvertible -
 
 public extension PolisSensorType {
@@ -107,11 +103,3 @@ public extension PolisSensorType {
     }
 }
 
-public extension WeatherStation {
-    enum CodingKeys: String, CodingKey {
-        case item
-        case parent
-        case subInstruments = "sub_instruments"
-        case sensors
-    }
-}
