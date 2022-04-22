@@ -39,12 +39,16 @@ public struct PolisStaticResourceFinder {
     }
 
     public init(at path: URL, supportedImplementation: PolisSupportedImplementation) throws {
-        guard frameworkSupportedImplementation.contains(supportedImplementation) else { throw PolisStaticResourceFinderError.noSupportedImplementation }
-        guard try path.checkPromisedItemIsReachable()                            else { throw PolisStaticResourceFinderError.basePathNotAccessible }
-        guard path.hasDirectoryPath                                              else { throw PolisStaticResourceFinderError.basePathNotAccessible }
-        guard FileManager.default.fileExists(atPath: path.path)                  else { throw PolisStaticResourceFinderError.basePathNotAccessible }
+        var enhancedPath = path
 
-        basePath        = path
+        if enhancedPath.scheme == nil { enhancedPath.scheme = "file" }
+
+        guard frameworkSupportedImplementation.contains(supportedImplementation) else { throw PolisStaticResourceFinderError.noSupportedImplementation }
+        guard try enhancedPath.checkPromisedItemIsReachable()                    else { throw PolisStaticResourceFinderError.basePathNotAccessible }
+        guard enhancedPath.hasDirectoryPath                                      else { throw PolisStaticResourceFinderError.basePathNotAccessible }
+        guard FileManager.default.fileExists(atPath: enhancedPath.path)          else { throw PolisStaticResourceFinderError.basePathNotAccessible }
+
+        basePath        = enhancedPath
         polisDataFormat = supportedImplementation.dataFormat
     }
 
