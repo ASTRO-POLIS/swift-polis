@@ -52,6 +52,7 @@ public struct PolisStaticResourceFinder {
         polisDataFormat = supportedImplementation.dataFormat
     }
 
+    
     //MARK: - All methods below return absolute paths to POLIS resources without validating if they exist or are reachable!
 
     public func rootPolisFolder() -> String  { normalisedPath(basePath.path) }
