@@ -41,7 +41,10 @@ public struct PolisStaticResourceFinder {
     public init(at path: URL, supportedImplementation: PolisSupportedImplementation) throws {
         var enhancedPath = path
 
-        if enhancedPath.scheme == nil { enhancedPath = URL(fileURLWithPath: "file:////\(path.path)") }
+        if enhancedPath.scheme == nil {
+            let tempPath = "file://\(path.path)"
+            enhancedPath = URL(fileURLWithPath: tempPath)
+        }
 
         guard frameworkSupportedImplementation.contains(supportedImplementation) else { throw PolisStaticResourceFinderError.noSupportedImplementation }
         guard try enhancedPath.checkPromisedItemIsReachable()                    else { throw PolisStaticResourceFinderError.basePathNotAccessible }
