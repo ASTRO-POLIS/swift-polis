@@ -41,9 +41,7 @@ public struct PolisStaticResourceFinder {
     public init(at path: URL, supportedImplementation: PolisSupportedImplementation) throws {
         var enhancedPath = path
 
-        if enhancedPath.scheme == nil {
-            enhancedPath = URL(fileURLWithPath: path.path)
-        }
+        if enhancedPath.scheme == nil { enhancedPath = URL(fileURLWithPath: path.path) }
 
         guard frameworkSupportedImplementation.contains(supportedImplementation) else { throw PolisStaticResourceFinderError.noSupportedImplementation }
         guard try enhancedPath.checkPromisedItemIsReachable()                    else { throw PolisStaticResourceFinderError.basePathNotAccessible }

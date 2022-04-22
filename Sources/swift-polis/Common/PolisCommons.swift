@@ -95,14 +95,14 @@ public enum PolisDirection: Codable {
 
 /// `PolisSupportedImplementation` combines supported data format, API level, and version in a single struct
 ///
-/// This information is an integral part of the basic POLIS service provider. It is assumed that different clients on
-/// different platform depend on different combinations of data format, API level, and version. Nevertheless, each
+/// This information is an integral part of the POLIS service provider. It is assumed that different clients on
+/// different platforms depend on different combinations of data format, API level, and version. Nevertheless, each
 /// client should be able to search for a service provider that supports its concrete requirements. In addition, every
 /// POLIS service provider should be able to maintain the correct list of implementation variants for every other
 /// `public` or `mirror` provider. Only `experimental` service providers should be allowed to implement unsupported
 /// implementations.
 ///
-///  For complete description Semantic Version consult [Semantic Versioning](https://semver.org)
+///  For complete description Semantic Version see [Semantic Versioning](https://semver.org)
 public struct PolisSupportedImplementation: Codable, Equatable {
     public let dataFormat: PolisDataFormat
     public let apiSupport: PolisAPISupport

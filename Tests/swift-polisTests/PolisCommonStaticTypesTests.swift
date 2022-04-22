@@ -86,8 +86,8 @@ final class PolisCommonStaticTypesTests: XCTestCase {
   }
     
     override func tearDown() {
-        data = nil
-        string = nil
+        data        = nil
+        string      = nil
         jsonEncoder = nil
         jsonDecoder = nil
         
@@ -98,6 +98,6 @@ final class PolisCommonStaticTypesTests: XCTestCase {
         ("test_polisAttributesCodingAndDecoding",    test_polisAttributesCodingAndDecoding),
         ("test_polisProviderCodingAndDecoding",      test_polisProviderCodingAndDecoding),
         ("test_polisCommunicationCodingAndDecoding", test_polisCommunicationCodingAndDecoding),
-        ("test_polisManufacturer",                   test_polisManufacturer ),
+        ("test_polisManufacturer",                   test_polisManufacturer),
     ]
 }
