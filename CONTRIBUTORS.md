@@ -1,14 +1,14 @@
 # Contributors to the ASTRO-POLIS project
 
-For the purpose of tracking copyright, this is the list of individuals and
-organisations who have contributed source code and / or ideas to BrainObjects.
+For the purpose of tracking copyright, this is the list of individuals and organisations who have contributed 
+source code and / or ideas to ASTRO-POLIS project.
 
 
 ## COPYRIGHT HOLDERS
 
 - Tuparev Technologies (all contributors with '@tuparev.com')
 
-### Contributors
+## Contributors
 
 - Frederic Hessman <Hessman@Astro.physik.Uni-Goettingen.de>
 - Georg Tuparev <gtupare@tuparev.com>

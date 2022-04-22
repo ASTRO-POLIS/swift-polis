@@ -17,117 +17,14 @@
 import Foundation
 import SoftwareEtudesUtilities
 
-//MARK: - POLIS Item Attributes -
-
-/// `PolisLifecycleStatus` defines the current status of the POLIS items (readiness to be used in different
-/// environments)
-///
-/// Each POLIS type (Provider, Observing Site, Observatory, etc.) should include `PolisLifecycleStatus` (as part of
-/// ``PolisItemAttributes``).
-///
-/// `PolisLifecycleStatus` will determine the syncing policy, as well as visibility of the POLIS items within
-/// client implementations. Implementations should adopt following behaviours:
-/// - `inactive`  - do not sync, but continue monitoring
-/// - `active`    - must be synced and monitored
-/// - `deleted`   - sync the `PolisItemAttributes` only to prevent secondary propagation of the record and to lock the
-/// UUID of the item
-/// - `suspended` - sync the `PolisItemAttributes`, but do not use the service provider or the observing site. Suspended
-/// is used to mark that the item does not follow the POLIS standard, or violates community rules. Normally entities first
-/// will be worried, and if they continue to not follow standards and rules, they will be deleted.
-/// - `unknown`   - do not sync, but continue monitoring
-public enum PolisLifecycleStatus: String, Codable {
-
-    /// `inactive` indicates new, being edited, or in process of being upgraded providers.
-    case inactive
-
-    /// `active` indicates a production provider that is publicly accessible.
-    case active
-
-    /// `deleted` is needed to prevent reappearance of disabled providers or sites.
-    case deleted
-
-    /// `suspended` marks providers violating the standard (temporary or permanently).
-    case suspended
-
-    /// `unknown` marks a provider with unknown status, and is mostly used when observing site or instrument has
-    /// unknown status.
-    case unknown
-}
-
-/// `PolisItemAttributes` uniquely identifies and defines the status of almost every POLIS item and defines external
-/// relationships to other items (or POLIS objects).
-///
-/// The idea of POLIS Attributes comes from analogous type that could be found in the `RTML` standard. The
-/// RTML attributes  turned out to be extremely useful for relating items within one RTML document and linking RTML
-/// documents to each other.
-///
-/// `PolisItemAttributes` are an essential part of (almost) every POLIS type. They are needed to uniquely identify and
-/// describe each item (object) and establish parent-child relationships between them, as well as provide enough
-/// informationIn for the syncing of polis providers.
-///
-/// Parent - child relationship should be defined by nesting data structures.
-///
-/// If XML encoding / decoding is used, it is recommended to implement the `PolisItemAttributes` as attributes of the
-/// corresponding type (Element).
-public struct PolisItemAttributes: Codable, Identifiable {
-
-    /// Globally unique identifier (UUID version 4) (ID in XML). The `id` is needed for `Identifiable` protocol
-    /// conformance.
-    public let id: UUID
-
-    /// Pointers to externally defined item (IDREF in XML). It is recommended that the references are URIs (e.g.
-    /// https://monet.org/instruments/12345 or telescope.observer://instriment123456)
-    public var references: [String]?
-
-    /// Determines the current status of the POLIS item (object).
-    public var status: PolisLifecycleStatus
-
-    /// Latest update time. Used primarily for syncing.
-    public var lastUpdate: Date
-
-    /// Human readable name of the item (object). It is recommended to be unique to avoid potential confusions.
-    public var name: String
-
-    /// Human readable automationLabel of the item (object). If present it is recommended to be unique to avoid
-    /// potential confusions.
-    public var abbreviation: String?
-
-    /// The purpose of the optional `automationLabel` is to act as a unique target for scripts and other software
-    /// packages. As an example, the observatory control software could search for an instrument with such label and
-    /// set its status or issue commands etc.
-    public var automationLabel: String? // For script etc. support (internal to the site use...)
-    
-    /// Short optional item (object) description. In XML schema should be max 256 characters for RTML interoperability.
-    public var shortDescription: String?
-
-    /// Designated initialiser.
-    ///
-    /// Only the `name` parameter is required. All other parameters have reasonable default values.
-    public init(id: UUID =  UUID(),
-                references: [String]?        = nil,
-                status: PolisLifecycleStatus = PolisLifecycleStatus.unknown,
-                lastUpdate: Date             = Date(),
-                name: String,
-                abbreviation: String?        = nil,
-                automationLabel: String?     = nil,
-                shortDescription: String?    = nil) {
-        self.id               = id
-        self.references       = references
-        self.status           = status
-        self.lastUpdate       = lastUpdate
-        self.name             = name
-        self.abbreviation     = abbreviation
-        self.automationLabel  = automationLabel
-        self.shortDescription = shortDescription
-    }
-}
+//MARK: - Communication related types -
 
 // Many POLIS types have reference to contact people (owners of sites, admins, project managers). Later we need to add
 // Institutions as well and handle the messiness of addresses, countries, languages, phone numbers and other
 // developer's nightmares. We think it's perhaps the best in the future to rely to external implementation for address
 // management.
-// On the other hand the implementation of contact (in order to allow to communicate with POLIS providers site admins) is
-// simple enough task and therefore current implementation of POLIS includes contact-only related types.
+// On the other hand the implementation of contact (in order to allow to communicate with POLIS providers site admins)
+// is simple enough task and therefore current implementation of POLIS includes contact-only related types.
 
 /// `PolisCommunication` defines different types of communication channels in addition to the default email address and
 /// mobile number.
@@ -143,7 +40,7 @@ public enum PolisCommunication {
     case twitter(username: String)
 
     /// Phone number used by WhatsApp. The phone number should include the country code, start with "+", and contain no
-    /// spaces, brackets, or other formatting characters. No validation is provided.
+    /// spaces, brackets, or other formatting characters. Currently no validation is provided.
     case whatsApp(phone: String)
 
     /// The Facebook user id is only the part of the URL after "www.facebook.com/".
@@ -154,26 +51,26 @@ public enum PolisCommunication {
 
     /// Skype user id
     case skype(id: String)
-
 }
 
-/// `PolisAdminContact` defines a simple way to contact a provider admin, an observing site owner, or an observatory admin.
+/// `PolisAdminContact` defines a simple way to contact a provider admin, an observing site owner, or an observatory
+/// admin.
 ///
-/// It is important to be able to contact the admin of a POLIS service provider or the admin or the owner of an observing
-/// site, however one should not forget that all POLIS data is publicly available and therefore should expose possible
-/// private information as little as possible. It is preferred not to expose private email addresses, phone numbers, or
+/// It is important to be able to contact the admin of a POLIS service provider or the admin or the owner of an
+/// observing site, however one should not forget that all POLIS data is publicly available and therefore should not
+/// expose private information if possible. It is preferred not to expose private email addresses, phone numbers, or
 /// twitter accounts, but only publicly available organisation contacts.
 ///
 /// The type implements the `Codable` protocol
 public struct PolisAdminContact {
 
-    /// It is recommended that the admin's name is either omitted, or describes admin's role, e.g. "The managing director
-    /// of Mountain Observatory"
+    /// It is recommended that the admin's name is either omitted, or describes admin's role, e.g. "The managing
+    /// director of Mountain Observatory"
     public var name: String?
 
     /// Email is the most reliable and widely adopted communication channel, and therefore a valid email address is
     /// required. To protect privacy, it is recommended that the email address is assigned to the institution,
-    /// e.g. "office@mountain-observatory.org"
+    /// e.g. "office@mountain-observatory.org". It is expected the email to be valid.
     public var email: String
 
     /// Consider giving only institution phone numbers - not private ones. The phone number should include the country
@@ -206,12 +103,15 @@ public struct PolisAdminContact {
     }
 }
 
+
 //MARK: - Manufacturer information -
+
 /// `PolisManufacturer` encapsulates basic information about manufacturer.
 ///
 /// Every provider is free to implement it's own handling of list of manufacturers, but we highly recommend that all
 /// manufacturer information is managed in a single, possibly manually maintained store. This will help client
 /// application to display unique information.
+/// Later implementation of POLIS might provide a common list of manufacturers.
 public struct PolisManufacturer: Codable, Identifiable {
     /// Makes `PolisManufacturer` uniquely identifiable
     public var attributes: PolisItemAttributes
@@ -224,152 +124,34 @@ public struct PolisManufacturer: Codable, Identifiable {
 
     /// `id` is needed to make the structure `Identifiable`
     public var id: UUID { attributes.id }
-
 }
 
-//MARK: - POLIS Directory Entry -
-/// `PolisProviderType` defines different types of POLIS providers.
-///
-/// The type implements the `Codable` and `CustomStringConvertible` protocols
-public enum PolisProviderType {
-    /// Only `public` provider should be used in production or by publicly available client apps or websites. Public
-    /// providers should run on servers with enough bandwidth and computational power capable of accommodating multiple
-    /// parallel client requests every second.
-    case `public`
+//MARK: - Ownership -
 
-    /// `private` provider's main purpose is to act as a local cache for larger organisations and should not be accessed
-    /// from outside. Also organisations like amateur clubs might maintain private providers. They might require user
-    /// authentication.
+/// `PolisOwnershipType` defines various ownership types
+///
+/// `PolisOwnershipType` is used to identify the ownership type of POLIS items (or instruments) - observing sites,
+/// telescopes, CCD cameras, weather stations, etc. Different cases should be self-explanatory. `private` should be
+/// used by amateurs and hobbyists.
+public enum PolisOwnershipType: String, Codable {
+    case university
+    case research
+    case commercial
+    case school
+    case network
+    case government
+    case ngo
+    case club
+    case consortium
+    case cooperative
     case `private`
-
-    /// `local` could be used for clients running on mobile devices or desktop apps. It is a disposable local (often
-    /// offline) cache.
-    case local
-
-    /// `experimental` providers are sandboxes for new developments, and might require authentication for access. They
-    /// are allowed to be non-compliant with the POLIS standard.
-    case experimental
-
-    /// Only when a `public` server is unreachable, its `mirror` (if available) should be accessed while the main server
-    /// is down.
-    case mirror(id: String) // The `id` of the service provider being mirrored.
+    case other
 }
 
-/// `PolisDirectoryEntry` encapsulates all information needed to identify a site as a POLIS provider
-///
-/// `PolisDirectoryEntry` is used to define the Polis provider itself, as well as as an entry in the list of known Polis
-/// providers.
-///
-/// The type implements the `Codable` and `Identifiable` protocols
-public struct PolisDirectoryEntry: Identifiable {
-
-    /// `attributes` are marked with "private(set)" on purpose. Only the framework should change the attributes and
-    /// potential changes should be done only at specific moments of the lifespan of the entry. Otherwise syncing could
-    /// be badly broken.
-    public var attributes: PolisItemAttributes
-
-    /// The fully qualified URL of the service provider, e.g. https://polis.observer
-    public var url: String
-
-    /// A list of one or more supported implementations
-    public var supportedImplementations: [PolisSupportedImplementation]
-
-    /// Defines the type of the POLIS service provider e.g. public, experimental, mirror, ...
-    public var providerType: PolisProviderType
-
-    /// POLIS service provider's admin contact
-    ///
-    /// It is recommended that the contact information exposes no or very limited personal information
-    public var contact: PolisAdminContact
-
-    /// `id` is needed to make the structure `Identifiable`
-    ///
-    /// `id` refers to attributes UUID and should never be changed.
-    public var id: UUID { attributes.id }
-
-    public enum PolisDirectoryEntryError: Error {
-        case emptyListOfSupportedImplementations
-        case noneOfTheRequestedImplementationsIsSupportedByTheFramework
-    }
-
-    /// Designated initialiser.
-    public init(attributes:               PolisItemAttributes,
-                url:                      String,
-                providerDescription:      String?,
-                supportedImplementations: [PolisSupportedImplementation],
-                providerType:             PolisProviderType,
-                contact:                  PolisAdminContact) throws {
-        guard !supportedImplementations.isEmpty else { throw PolisDirectoryEntryError.emptyListOfSupportedImplementations }
-
-        let suggestedImplementations = Set(supportedImplementations)
-        let supportedImplementations = Set(frameworkSupportedImplementation)
-        let intersection             = supportedImplementations.intersection(suggestedImplementations)
-        let filtered                 = Array(intersection)
-
-        guard !filtered.isEmpty else { throw PolisDirectoryEntryError.noneOfTheRequestedImplementationsIsSupportedByTheFramework }
-
-        self.attributes               = attributes
-        self.url                      = url
-        self.supportedImplementations = filtered
-        self.providerType             = providerType
-        self.contact                  = contact
-    }
-}
-
-/// `PolisDirectory` is the list of all known Polis providers.
-///
-/// To avoid confusion (and potential syncing errors) it is recommended that the directory does contain the POLIS
-/// service provider entry that serves the directory list.
-/// The type implements the `Codable` protocol.
-public struct PolisDirectory  {
-    public var lastUpdate: Date                // Used for syncing
-    public var entries: [PolisDirectoryEntry]  // List of all known providers
-
-    /// Designated initialiser.
-    /// - Parameters:
-    ///   - lastUpdate: if omitted, the current date and time will be used
-    ///   - entries: possibly empty list of known POSIL service providers
-    public init(lastUpdate: Date = Date(),
-                entries: [PolisDirectoryEntry]) {
-
-        //TODO: Only the "Big Bang" provider could have an empty list of entries. All other providers must have at least one entry to the "BigBang". If these conditions are not fulfilled, throw... needs a new Error type. But perhaps this needs to be in the ServiceProvider class? Here we should not have access to the root polis file!
-        self.lastUpdate = lastUpdate
-        self.entries    = entries
-    }
-}
-
-/// It is expected, that the list of observatory sites is long and each site's data could be way over 1MB. Therefore a
-/// compact list of site references is maintained separately containing only site UUIDs and last update time. It is
-/// recommended that clients cache this list and update the observatory data only in case the cache needs to be
-/// invalidated (e.g. lastUpdate is changed).
-///
-/// **Note for Swift developers:** COURAGEOUS and IMPORTANT ASSUMPTION: Types defined in this file and in
-/// `ServiceDiscovery.swift` should not have incompatible coding/decoding and API changes in future versions of the
-/// standard! All other types could evolve.
-
-/// This is only a quick reference to check if Client's cache has this site and if the site is up-to-date.
-public struct ObservingSiteReference: Codable, Identifiable {
-    public var attributes: PolisItemAttributes
-
-    public var id: UUID { attributes.id }
-
-    //TODO: Add site type and coordinates!
-    public init(attributes: PolisItemAttributes) {
-        self.attributes = attributes
-    }
-}
-
-public struct ObservatorySiteDirectory: Codable {
-    public var lastUpdate: Date                   // UTC
-    public var entries: [ObservingSiteReference]
-
-    public init(lastUpdate: Date, entries: [ObservingSiteReference]) {
-        self.lastUpdate = lastUpdate
-        self.entries    = entries
-    }
-}
 
 //MARK: - Making types Codable and CustomStringConvertible -
+// These extensions do not need any additional documentation.
+
 
 //MARK: - ContactType
 extension PolisCommunication: Codable, CustomStringConvertible {
@@ -459,94 +241,5 @@ extension PolisAdminContact: Codable {
     }
 }
 
-//MARK: PolisProviderType
-extension PolisProviderType: Codable, CustomStringConvertible {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        let base      = try container.decode(ProviderType.self, forKey: .providerType)
-
-        switch base {
-            case .public:       self = .public
-            case .private:      self = .private
-            case .local:        self = .local
-            case .experimental: self = .experimental
-            case .mirror:
-                let mirrorParams = try container.decode(MirrorParams.self, forKey: .mirrorParams)
-                self = .mirror(id: mirrorParams.id)
-        }
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-
-        switch self {
-            case .public:       try container.encode(ProviderType.public,       forKey: .providerType)
-            case .private:      try container.encode(ProviderType.private,      forKey: .providerType)
-            case .local:        try container.encode(ProviderType.local,        forKey: .providerType)
-            case .experimental: try container.encode(ProviderType.experimental, forKey: .providerType)
-            case .mirror(let id):
-                try container.encode(ProviderType.mirror, forKey: .providerType)
-                try container.encode(MirrorParams(id: id), forKey: .mirrorParams)
-        }
-    }
-
-    public var description: String {
-        switch self {
-            case .public:         return "public"
-            case .private:        return "private"
-            case .local:          return "local"
-            case .experimental:   return "experimental"
-            case .mirror(let id): return "mirror(id: \(id)"
-        }
-    }
-
-    enum CodingKeys: String, CodingKey {
-        case providerType = "type"
-        case mirrorParams = "mirror"
-    }
-
-    private enum ProviderType: String, Codable { case `public`, `private`, local, experimental, mirror }
-
-    private struct MirrorParams: Codable { let id: String }
-
-}
-
-//MARK: - PolisDirectoryEntry
-extension PolisDirectoryEntry: Codable {
-    public enum CodingKeys: String, CodingKey {
-        case attributes
-        case url
-        case supportedImplementations = "supported_implementations"
-        case providerType             = "provider_type"
-        case contact
-    }
-}
-
-//MARK: - PolisDirectory
-extension PolisDirectory: Codable {
-    public enum CodingKeys: String, CodingKey {
-        case lastUpdate = "last_updated"
-        case entries
-    }
-}
-
-extension String {
-    /// Adds `@` prefix if already does not exist
-    public func mustStartWithAtSign() -> String { self.hasPrefix("@") ? self : "@\(self)" }
-}
-
-
-public extension PolisItemAttributes {
-    enum CodingKeys: String, CodingKey {
-        case id
-        case references
-        case status
-        case lastUpdate       = "last_update"
-        case name
-        case abbreviation
-        case automationLabel
-        case shortDescription = "short_description"
-    }
-}
 
 

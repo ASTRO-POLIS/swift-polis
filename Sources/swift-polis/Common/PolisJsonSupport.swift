@@ -17,7 +17,7 @@
 import Foundation
 
 // These are simple subclasses of the system provided JSON Decoder and Encoder that require the dates to be in ISO8601
-// format and produce well formatted and human readable outputs.
+// format and produce well formatted and human readable JSON outputs.
 
 public class PolisJSONDecoder: JSONDecoder {
 

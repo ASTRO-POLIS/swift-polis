@@ -24,7 +24,6 @@ import SoftwareEtudesUtilities
 public let bigBangPolisDomain = "https://polis.observer"
 
 
-
 //MARK: - Supported POLIS Data formats, e.g. JSON, XML, ..., levels of API support and versions -
 
 /// Defines various POLIS data formats
@@ -133,11 +132,17 @@ public extension PolisSupportedImplementation {
     }
 }
 
+// This makes `PolisSupportedImplementation` Equatable
 extension PolisSupportedImplementation: Hashable {
-
     public func hash(into hasher: inout Hasher) {
         hasher.combine(dataFormat)
         hasher.combine(apiSupport)
         hasher.combine(version.description)
     }
+}
+
+// A String extension that is used only in swift-polis (as far as we know)
+extension String {
+    /// Adds `@` prefix if already does not exist
+    public func mustStartWithAtSign() -> String { self.hasPrefix("@") ? self : "@\(self)" }
 }
