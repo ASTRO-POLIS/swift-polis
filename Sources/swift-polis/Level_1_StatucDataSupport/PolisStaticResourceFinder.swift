@@ -42,8 +42,7 @@ public struct PolisStaticResourceFinder {
         var enhancedPath = path
 
         if enhancedPath.scheme == nil {
-            let tempPath = "file://\(path.path)"
-            enhancedPath = URL(fileURLWithPath: tempPath)
+            enhancedPath = URL(fileURLWithPath: path.path)
         }
 
         guard frameworkSupportedImplementation.contains(supportedImplementation) else { throw PolisStaticResourceFinderError.noSupportedImplementation }
