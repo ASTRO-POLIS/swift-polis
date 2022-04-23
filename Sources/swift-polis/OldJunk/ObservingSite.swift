@@ -41,25 +41,12 @@ public indirect enum SolarSystemBodyType {
     case comet(name: String)
 }
 
-public struct EarthLocation: Codable {
-    public let eastLongitude: Double?  // degrees
-    public let latitude: Double?       // degrees
-    public let altitude: Double?       // m
-    public let place: String?
-    public let regionOrState: String?
-    public let regionOrStateCode: String?
-    public let zipCode: String?
-    public let countryCode: String        // 3-letter code.
-}
-
 public struct AltitudeRange: Codable {
     public var lowOrbit: Double  // m
     public var highOrbit: Double // m
 }
 
 public enum ObservingSiteLocationType {
-    case earthGroundBasedFixed(location: EarthLocation?)
-    case earthGroundBasedMobile(locationDescription: String?)
     case earthAirBorn(range: AltitudeRange?)                            // Altitude in km
     case groundBasedFixed(location: SolarSystemBodyType)
     case groundBasedMobile(location: SolarSystemBodyType)               // e.g. Mars rover

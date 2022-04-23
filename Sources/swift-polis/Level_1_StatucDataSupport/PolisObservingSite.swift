@@ -15,25 +15,16 @@
 
 import Foundation
 
-//MARK: - Common Types -
-
-public enum PolisObservingLocationType: Codable {
-    case unknown
-}
-
-
 
 //MARK: - Observing Site -
 
 public struct PolisObservingSite: Codable {
     public var item: PolisItem   // Observing Site Identification
 
-    public var name: String
     public var startDate: Date?  // Could be nil if unknown
     public var endDate: Date?    // if != nil -> either closed or temporary created (e.g. solar eclipse monitoring)
-    public var description: String?
 
-    public var location: PolisObservingLocationType
+    public var location: PolisObservingLocation
 
     public var observatories: [PolisObservatory]
 }

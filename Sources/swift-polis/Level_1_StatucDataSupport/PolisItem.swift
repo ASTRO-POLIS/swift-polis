@@ -134,11 +134,13 @@ public struct PolisItemOwner: Codable {
 
 
 /// The `Identifiable` compliance of `PolisItemIdentifiable` is guaranteed because of `attributes.id`
-public protocol PolisItemIdentifiable: Codable {
+public protocol PolisItemIdentifiable: Codable, Identifiable {
     var attributes: PolisItemAttributes  { get set }
     var manufacturer: PolisManufacturer? { get set }
     var owners: [PolisItemOwner]?        { get set }
     var imageLinks: [URL]?               { get set }
+
+    var id: UUID                         { get }
 }
 
 public struct PolisItem: PolisItemIdentifiable {
@@ -146,6 +148,8 @@ public struct PolisItem: PolisItemIdentifiable {
     public var manufacturer: PolisManufacturer?
     public var owners: [PolisItemOwner]?
     public var imageLinks: [URL]?
+
+    public var id: UUID { attributes.id }
 }
 
 //MARK: - Type Extensions -
