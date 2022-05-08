@@ -103,9 +103,9 @@ public enum PolisDirection: Codable {
 ///
 ///  For complete description Semantic Version see [Semantic Versioning](https://semver.org)
 public struct PolisSupportedImplementation: Codable, Equatable {
-    public let dataFormat: PolisDataFormat
-    public let apiSupport: PolisAPISupport
-    public let version: SemanticVersion
+    public var dataFormat: PolisDataFormat
+    public var apiSupport: PolisAPISupport
+    public var version: SemanticVersion
 
     public init(dataFormat: PolisDataFormat, apiSupport: PolisAPISupport, version: SemanticVersion) {
         self.dataFormat = dataFormat
