@@ -24,7 +24,7 @@ public struct FixedEarthLocation: Codable {
     public let regionOrState: String?      // e.g. California
     public let regionOrStateCode: String?  // e.g. CA for California
     public let zipCode: String?            // e.g. US
-    public let countryCode: String         // 2-letter code.
+    public let countryCode: String?        // 2-letter code.
     public let surfaceSize: Double?        // in m^2
 }
 
@@ -37,6 +37,7 @@ public struct TemporaryEarthLocation: Codable {
 public enum PolisObservingLocation: Codable {
     case earthGroundBasedFixed(location: FixedEarthLocation)
     case earthGroundBasedMobile(locationDescription: [TemporaryEarthLocation])
+    case unknown
 }
 
 
@@ -48,5 +49,6 @@ public extension PolisObservingLocation {
     enum CodingKeys: String, CodingKey {
         case earthGroundBasedFixed  = "earth_ground_based_fixed"
         case earthGroundBasedMobile = "earth_ground_based_mobile"
-    }
+        case unknown
+   }
 }

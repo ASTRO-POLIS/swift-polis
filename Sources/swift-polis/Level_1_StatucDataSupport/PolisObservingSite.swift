@@ -18,14 +18,16 @@ import Foundation
 
 //MARK: - Observing Site -
 
-public struct PolisObservingSite: Codable {
-    public var item: PolisItem   // Observing Site Identification
+public struct PolisObservingSite: PolisObservatory {
+    public private(set) var type = PolisObservatoryType.observingSite
+    public var modeOfOperation   = PolisObservatoryModeOfOperation.unknown
 
-    public var startDate: Date?  // Could be nil if unknown
-    public var endDate: Date?    // if != nil -> either closed or temporary created (e.g. solar eclipse monitoring)
+    public var item: PolisItem
+
+    public var startDate: Date?
+    public var endDate: Date?
 
     public var location: PolisObservingLocation
 
-    public var observatories: [PolisObservatory]
+    public var instruments: [PolisInstrument]
 }
-
