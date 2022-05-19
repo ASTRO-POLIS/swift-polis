@@ -38,12 +38,17 @@ final class PolisStaticResourceFinderTests: XCTestCase {
         XCTAssert(sut_correct != nil)
     }
 
-    func test_polisFolders() {
+    func test_polisFoldersAndFiles() {
         let sut = try? PolisStaticResourceFinder(at: URL(fileURLWithPath: "/tmp"),  supportedImplementation: correctImplementation)
 
         XCTAssert((sut != nil))
         XCTAssertEqual(sut!.rootPolisFolder(), "/tmp/")
         XCTAssertEqual(sut!.basePolisFolder(), "/tmp/polis/")
+        XCTAssertEqual(sut!.sitesPolisFolder(), "/tmp/polis/polis_sites/")
+
+        XCTAssertEqual(sut!.polisConfigurationFilePath(), "/tmp/polis/polis.json")
+        XCTAssertEqual(sut!.polisProviderSitesDirectoryFilePath(), "/tmp/polis/polis_directory.json")
+        XCTAssertEqual(sut!.polisObservingSitesDirectoryFilePath(), "/tmp/polis/observing_sites_directory.json")
     }
 
     override func setUp() {
@@ -64,7 +69,7 @@ final class PolisStaticResourceFinderTests: XCTestCase {
 
     static var allTests = [
         ("test_PolisStaticResourceFinderCreation", test_PolisStaticResourceFinderCreation),
-        ("test_polisFolders",test_polisFolders),
+        ("test_polisFoldersAndFiles",test_polisFoldersAndFiles),
     ]
 
 }

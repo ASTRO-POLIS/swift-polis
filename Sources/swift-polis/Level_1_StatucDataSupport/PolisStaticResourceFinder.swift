@@ -17,9 +17,6 @@
 import Foundation
 import SoftwareEtudesUtilities
 
-//TODO: Needs documentation!
-//TODO: Needs testing of all path methods
-
 /// Definition of well known paths and APIs
 public struct PolisPredefinedServicePaths {
     // Level 1 resource paths. These are folders or files.
@@ -31,8 +28,12 @@ public struct PolisPredefinedServicePaths {
 }
 
 
+/// The structure provides a way to access POLIS static (file based) resources.
+///
+/// **Note:** There are no checks is POLIS folders and files exist. Only the root folder needs to exist.
 public struct PolisStaticResourceFinder {
 
+    /// Possible (hopefully self-explanatory) errors while creating `PolisStaticResourceFinder`
     public enum PolisStaticResourceFinderError: Error {
         case basePathNotAccessible
         case noSupportedImplementation
