@@ -27,7 +27,22 @@ public struct PolisObservingSite: PolisObservatory {
     public var startDate: Date?
     public var endDate: Date?
 
-    public var location: PolisObservingLocation
+    public var location: PolisObservingLocation?
 
     public var instruments: [PolisInstrument]
+}
+
+//MARK: - Type extensions -
+
+
+public extension PolisObservingSite {
+    enum CodingKeys: String, CodingKey {
+        case type
+        case modeOfOperation = "mode_of_operation"
+        case item
+        case startDate       = "start_date"
+        case endDate         = "end_date"
+        case location
+        case instruments
+    }
 }

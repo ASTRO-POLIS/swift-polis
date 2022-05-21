@@ -38,7 +38,7 @@ public protocol PolisObservatory: Codable {
     var item: PolisItem                                  { get }
     var startDate: Date?                                 { get set } // Could be nil if unknown
     var endDate: Date?                                   { get set } // if != nil -> either closed or temporary created (e.g. solar eclipse monitoring)
-    var location: PolisObservingLocation                 { get set }
+    var location: PolisObservingLocation?                { get set }
     var instruments: [PolisInstrument]                   { get set }
 }
 
