@@ -21,6 +21,7 @@ public enum PolisObservatoryType: Codable {
     case observingSite
     case platform
     case robot
+    case network
 }
 
 public enum PolisObservatoryModeOfOperation: Codable {
@@ -28,6 +29,7 @@ public enum PolisObservatoryModeOfOperation: Codable {
     case manualWithAutomatedDetector
     case manualWithAutomatedDetectorAndScheduling
     case autonomous
+    case mixed                                       // e.g. in case of Network
     case other
     case unknown
 }
@@ -50,6 +52,7 @@ public extension PolisObservatoryType {
         case observingSite = "observing_site"
         case platform
         case robot
+        case network
     }
 }
 
@@ -59,10 +62,13 @@ public extension PolisObservatoryModeOfOperation {
         case manualWithAutomatedDetector              = "manual_with_automated_detector"
         case manualWithAutomatedDetectorAndScheduling = "manual_with_automated_detector_and_scheduling"
         case autonomous
+        case mixed
         case other
         case unknown
     }
 }
+
+//MARK: - Making types Codable and CustomStringConvertible -
 
 //public extension PolisObservatory {
 //    enum CodingKeys: String, CodingKey {

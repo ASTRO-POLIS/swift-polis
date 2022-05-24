@@ -15,7 +15,36 @@
 
 import Foundation
 
-public struct PolisNetwork: Codable {
+public struct PolisNetwork: PolisObservatory {
+    // PolisObservatory
+    public private(set) var type = PolisObservatoryType.network
+    public var modeOfOperation   = PolisObservatoryModeOfOperation.mixed
+
     public var item: PolisItem
+
+    public var startDate: Date?
+    public var endDate: Date?
+
+    public var location: PolisObservingLocation?
+
+    public var instruments: [PolisInstrument]
+
+    // Miscellaneous
     public var sites: [PolisObservingSite]
+}
+
+
+//MARK: - Making types Codable and CustomStringConvertible -
+
+public extension PolisNetwork {
+    enum CodingKeys: String, CodingKey {
+        case type
+        case modeOfOperation = "mode_of_operation"
+        case item
+        case startDate = "start_date"
+        case endDate = "end_date"
+        case location
+        case instruments
+        case sites
+    }
 }
