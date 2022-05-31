@@ -137,16 +137,18 @@ public struct PolisDirectory  {
 /// This is only a quick reference to check if Client's cache has this site and if the site is up-to-date.
 public struct ObservingSiteReference: Codable, Identifiable {
     public var attributes: PolisItemAttributes
+    public var type: PolisObservatoryType
 
     public var id: UUID { attributes.id }
 
     //TODO: Add site type and coordinates!
-    public init(attributes: PolisItemAttributes) {
+    public init(attributes: PolisItemAttributes, type: PolisObservatoryType) {
         self.attributes = attributes
+        self.type       = type
     }
 }
 
-public struct ObservatorySiteDirectory: Codable {
+public struct ObservatoryDirectory: Codable {
     public var lastUpdate: Date                   // UTC
     public var entries: [ObservingSiteReference]
 
