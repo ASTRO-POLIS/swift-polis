@@ -15,9 +15,9 @@
 
 import Foundation
 
-public struct PolisNetwork: PolisObservatory {
+public class PolisNetwork: PolisObservatory {
     // PolisObservatory
-    public private(set) var type = PolisObservatoryType.network
+    public var type = PolisObservatoryType.network
     public var modeOfOperation   = PolisObservatoryModeOfOperation.mixed
 
     public var item: PolisItem
@@ -27,7 +27,7 @@ public struct PolisNetwork: PolisObservatory {
 
     public var location: PolisObservingLocation?
 
-    public var instruments: [PolisInstrument]
+    public var instrumentIDs: [UUID]
 
     // Miscellaneous
     public var sites: [PolisObservingSite]
@@ -41,10 +41,10 @@ public extension PolisNetwork {
         case type
         case modeOfOperation = "mode_of_operation"
         case item
-        case startDate = "start_date"
-        case endDate = "end_date"
+        case startDate       = "start_date"
+        case endDate         = "end_date"
         case location
-        case instruments
+        case instrumentIDs   = "instrument_ids"
         case sites
     }
 }

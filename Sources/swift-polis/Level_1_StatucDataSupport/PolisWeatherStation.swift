@@ -16,15 +16,15 @@
 
 import Foundation
 
-public class PolisWeatherStation: PolisInstrument {
-    public var sensors = [PolisSensor]()
-}
+//public class PolisWeatherStation: PolisInstrument {
+//    public var sensors = [PolisSensor]()
+//}
 
-public extension PolisWeatherStation {
-    enum CodingKeys: String, CodingKey {
-        case item
-        case parent
-        case subInstruments = "sub_instruments"
-        case sensors
-    }
-}
+//public extension PolisWeatherStation {
+//    enum CodingKeys: String, CodingKey {
+//        case item
+//        case parent
+//        case subInstruments = "sub_instruments"
+//        case sensors
+//    }
+//}

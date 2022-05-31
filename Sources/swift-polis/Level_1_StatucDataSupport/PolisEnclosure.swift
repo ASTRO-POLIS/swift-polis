@@ -25,13 +25,15 @@ public enum PolisEnclosureType: String, Codable {
 
 public enum PolisEnclosureModeOfOperation: String, Codable {
     case manual
+    case remote
     case robotic
 }
 
-public struct PolisEnclosure: Codable {
+public class PolisEnclosure: Codable {
     public var item: PolisItem   // Observing Site Identification
     public var type: PolisEnclosureType
     public var modeOfOperation: PolisEnclosureModeOfOperation
+    public var instrumentIDs: [UUID]
 }
 
 
@@ -44,5 +46,14 @@ public extension PolisEnclosureType {
         case rollOff   = "roll_off"
         case clamshell = "clamshell"
         case other     = "other"
+    }
+}
+
+public extension PolisEnclosure {
+    enum CodingKeys: String, CodingKey {
+        case item
+        case type
+        case modeOfOperation = "mode_of_operation"
+        case instrumentIDs   = "instrument_ids"
     }
 }

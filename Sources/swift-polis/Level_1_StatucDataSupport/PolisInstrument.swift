@@ -16,38 +16,6 @@
 
 import Foundation
 
-public protocol PolisInstrumentType: Codable {
-    var item: PolisItem                        { get set }
-
-    var parent: PolisInstrumentType?           { get set }
-    var subInstruments: [PolisInstrumentType]? { get set }
-
-}
-
-/// This is an abstract class that should not be used directly!
-public class PolisInstrument: PolisInstrumentType {
-    public var item: PolisItem
-
-    public var parent: PolisInstrumentType? {
-        get { return _parent }
-        set { _parent = newValue as? PolisInstrument }
-    }
-
-    public var subInstruments: [PolisInstrumentType]? {
-        get { return _subInstruments }
-        set { _subInstruments = newValue as? [PolisInstrument] }
-    }
-
-    private weak var _parent: PolisInstrument?
-    private      var _subInstruments: [PolisInstrument]?
-
-    public init(item: PolisItem, parent: PolisInstrumentType? = nil, subInstruments: [PolisInstrumentType]? = nil) {
-        self.item           = item
-        self.parent         = parent
-        self.subInstruments = subInstruments
-    }
-}
-
 public enum PolisSensorType: Codable {
     case temperature
     case pressure
@@ -60,21 +28,7 @@ public enum PolisSensorType: Codable {
     case UVIndex
 }
 
-public protocol PolisSensing: Codable {
-    var attributes: PolisItemAttributes         { get set }
-
-    var type: PolisSensorType                   { get }
-
-    var minValue: Double?                       { get set }
-    var maxValue: Double?                       { get set }
-    var precision: Double?                      { get set }
-    var units: String                           { get set }
-    var measurementFrequencyInSeconds: Double?  { get set }
-
-    var currentValue: Double?                   { get set }
-}
-
-public struct PolisSensor: PolisSensing {
+public struct PolisSensor: Codable {
     public var attributes: PolisItemAttributes
 
     public var type: PolisSensorType
@@ -86,6 +40,38 @@ public struct PolisSensor: PolisSensing {
 
     public var currentValue: Double?
 }
+
+
+public enum PolisInstrumentType: Codable {
+    case telescope
+    case weatherStation
+    case flatFieldScreen
+    case camera
+    case spectrograph
+    case webcam
+    case unknown
+}
+
+/// This is an abstract class that should not be used directly!
+public struct PolisInstrument: Codable {
+    public var item: PolisItem
+
+    public var type: PolisInstrumentType
+
+    public var parentID: UUID?
+    public var subInstrumentIDs: [UUID]?
+
+    public var sensorIDs: [UUID]?
+
+    public init(item: PolisItem, type: PolisInstrumentType = .unknown, parentID: UUID? = nil, subInstrumentIDs: [UUID]? = nil, sensorIDs: [UUID]? = nil) {
+        self.item             = item
+        self.type             = type
+        self.parentID         = parentID
+        self.subInstrumentIDs = subInstrumentIDs
+        self.sensorIDs        = sensorIDs
+    }
+}
+
 
 //MARK: - Making types Codable and CustomStringConvertible -
 

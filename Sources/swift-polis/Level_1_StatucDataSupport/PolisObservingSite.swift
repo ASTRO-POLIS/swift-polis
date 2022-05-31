@@ -18,9 +18,9 @@ import Foundation
 
 //MARK: - Observing Site -
 
-public struct PolisObservingSite: PolisObservatory {
-    public private(set) var type = PolisObservatoryType.observingSite
-    public var modeOfOperation   = PolisObservatoryModeOfOperation.unknown
+public class PolisObservingSite: PolisObservatory {
+    public var type             = PolisObservatoryType.observingSite
+    public var modeOfOperation  = PolisObservatoryModeOfOperation.unknown
 
     public var item: PolisItem
 
@@ -29,7 +29,9 @@ public struct PolisObservingSite: PolisObservatory {
 
     public var location: PolisObservingLocation?
 
-    public var instruments: [PolisInstrument]
+    public var instrumentIDs: [UUID]
+
+    public var enclosureIDs: [UUID]
 }
 
 //MARK: - Type extensions -
@@ -43,6 +45,7 @@ public extension PolisObservingSite {
         case startDate       = "start_date"
         case endDate         = "end_date"
         case location
-        case instruments
+        case instrumentIDs   = "instrument_ids"
+        case enclosureIDs    = "enclosure_ids"
     }
 }
