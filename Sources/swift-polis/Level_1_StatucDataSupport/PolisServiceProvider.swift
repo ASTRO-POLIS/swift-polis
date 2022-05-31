@@ -230,3 +230,9 @@ extension PolisDirectory: Codable {
     }
 }
 
+extension ObservatoryDirectory {
+    public enum CodingKeys: String, CodingKey {
+        case lastUpdate = "last_updated"
+        case entries
+    }
+}

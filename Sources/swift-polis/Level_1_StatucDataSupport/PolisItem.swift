@@ -161,7 +161,7 @@ public extension PolisItemAttributes {
         case lastUpdate       = "last_update"
         case name
         case abbreviation
-        case automationLabel
+        case automationLabel  = "automation_label"
         case shortDescription = "short_description"
     }
 }
