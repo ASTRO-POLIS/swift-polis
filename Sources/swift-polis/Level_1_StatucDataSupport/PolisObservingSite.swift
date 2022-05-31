@@ -19,7 +19,7 @@ import Foundation
 //MARK: - Observing Site -
 
 public class PolisObservingSite: PolisObservatory {
-    public var type             = PolisObservatoryType.observingSite
+    public var type             = PolisObservatoryType.site
     public var modeOfOperation  = PolisObservatoryModeOfOperation.unknown
 
     public var item: PolisItem

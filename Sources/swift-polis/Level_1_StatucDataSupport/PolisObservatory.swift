@@ -18,7 +18,7 @@ import Foundation
 import CoreText
 
 public enum PolisObservatoryType: String, Codable {
-    case observingSite
+    case site
     case platform
     case robot
     case network
@@ -46,15 +46,6 @@ public protocol PolisObservatory: Codable {
 
 //MARK: - Making types Codable and CustomStringConvertible -
 // These extensions do not need any additional documentation.
-
-public extension PolisObservatoryType {
-    enum CodingKeys: String, CodingKey {
-        case observingSite = "observing_site"
-        case platform
-        case robot
-        case network
-    }
-}
 
 public extension PolisObservatoryModeOfOperation {
     enum CodingKeys: String, CodingKey {
