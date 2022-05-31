@@ -24,7 +24,7 @@ public enum PolisObservatoryType: String, Codable {
     case network
 }
 
-public enum PolisObservatoryModeOfOperation: Codable {
+public enum PolisObservatoryModeOfOperation: String, Codable {
     case manual
     case manualWithAutomatedDetector
     case manualWithAutomatedDetectorAndScheduling

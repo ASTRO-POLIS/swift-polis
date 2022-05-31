@@ -135,7 +135,7 @@ public struct PolisDirectory  {
 /// `ServiceDiscovery.swift` should not have incompatible coding/decoding and API changes in future versions of the
 /// standard! All other types could evolve.
 /// This is only a quick reference to check if Client's cache has this site and if the site is up-to-date.
-public struct ObservingSiteReference: Codable, Identifiable {
+public struct ObservatoryReference: Codable, Identifiable {
     public var attributes: PolisItemAttributes
     public var type: PolisObservatoryType
 
@@ -149,9 +149,9 @@ public struct ObservingSiteReference: Codable, Identifiable {
 
 public struct ObservatoryDirectory: Codable {
     public var lastUpdate: Date                   // UTC
-    public var entries: [ObservingSiteReference]
+    public var entries: [ObservatoryReference]
 
-    public init(lastUpdate: Date, entries: [ObservingSiteReference]) {
+    public init(lastUpdate: Date, entries: [ObservatoryReference]) {
         self.lastUpdate = lastUpdate
         self.entries    = entries
     }
@@ -229,3 +229,4 @@ extension PolisDirectory: Codable {
         case entries
     }
 }
+
