@@ -141,7 +141,6 @@ public struct ObservingSiteReference: Codable, Identifiable {
 
     public var id: UUID { attributes.id }
 
-    //TODO: Add site type and coordinates!
     public init(attributes: PolisItemAttributes, type: PolisObservatoryType) {
         self.attributes = attributes
         self.type       = type
