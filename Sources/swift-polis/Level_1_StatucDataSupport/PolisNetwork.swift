@@ -17,17 +17,15 @@ import Foundation
 
 public class PolisNetwork: PolisObservatory {
     // PolisObservatory
-    public var type = PolisObservatoryType.network
-    public var modeOfOperation   = PolisObservatoryModeOfOperation.mixed
-
+    public var type             = PolisObservatoryType.network
+    public var modeOfOperation  = PolisObservatoryModeOfOperation.mixed
     public var item: PolisItem
-
     public var startDate: Date?
     public var endDate: Date?
-
     public var location: PolisObservingLocation?
-
-    public var instrumentIDs: [UUID]
+    public var admin: PolisAdminContact?
+    public var instrumentIDs: [UUID]?
+    public var enclosureIDs: [UUID]?
 
     // Miscellaneous
     public var sites: [PolisObservingSite]

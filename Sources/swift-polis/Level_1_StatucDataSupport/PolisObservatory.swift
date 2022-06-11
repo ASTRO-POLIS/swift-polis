@@ -41,7 +41,9 @@ public protocol PolisObservatory: Codable {
     var startDate: Date?                                 { get set } // Could be nil if unknown
     var endDate: Date?                                   { get set } // if != nil -> either closed or temporary created (e.g. solar eclipse monitoring)
     var location: PolisObservingLocation?                { get set }
-    var instrumentIDs: [UUID]                            { get set }
+    var admin: PolisAdminContact?                        { get set }
+    var instrumentIDs: [UUID]?                           { get set }
+    var enclosureIDs: [UUID]?                            { get set }
 }
 
 //MARK: - Making types Codable and CustomStringConvertible -
