@@ -46,6 +46,9 @@ public class PolisTelescope: Codable {
     public var vlbiCapabilities: Bool
     public var vlbiParentNetwork: [String]
     public var detectorIDs: [UUID]
+    public var mountIDs: [UUID]
+    public var finderscopeIDs: [UUID]
+    public var aoIDs: [UUID]
 }
 
 
@@ -55,7 +58,10 @@ public class PolisTelescope: Codable {
 public extension PolisTelescope {
     enum CodingKeys: String, CodingKey {
         case item
-        case modeOfOperation = "mode_of_operation"
-        case detectorIDs   = "detector_ids"
+        case modeOfOperation    = "mode_of_operation"
+        case detectorIDs        = "detector_ids"
+        case mountIDs           = "mount_ids"
+        case finderscopeIDs     = "finderscope_ids"
+        case aoIDs              = "ao_ids"
     }
 }
