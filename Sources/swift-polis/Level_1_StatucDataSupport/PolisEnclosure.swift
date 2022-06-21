@@ -20,6 +20,7 @@ public enum PolisEnclosureType: String, Codable {
     case dome
     case rollOff
     case clamshell
+    case none
     case other
 }
 
@@ -27,6 +28,7 @@ public enum PolisEnclosureModeOfOperation: String, Codable {
     case manual
     case remote
     case robotic
+    case unknown
 }
 
 public class PolisEnclosure: Codable {
@@ -45,6 +47,7 @@ public extension PolisEnclosureType {
         case dome      = "dome"
         case rollOff   = "roll_off"
         case clamshell = "clamshell"
+        case none      = "none"
         case other     = "other"
     }
 }
