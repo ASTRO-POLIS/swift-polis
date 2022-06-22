@@ -16,31 +16,24 @@
 
 import Foundation
 
-public enum PolisTelescopeModeOfOperation: String, Codable {
-    case manual
-    case remote
-    case robotic
-    case unknown
-}
-
-public class PolisTelescope: Codable {
+public struct PolisTelescope: Codable {
     public var item: PolisItem   // Telescope Identification
     public var type: [String]
-    public var eastLongitude: Float
-    public var latitude: Float
-    public var elevation: Float
-    public var modeOfOperation: PolisTelescopeModeOfOperation
+    public var eastLongitude: Double
+    public var latitude: Double
+    public var elevation: Double
+    public var modeOfOperation: PolisModeOfOperation
     public var emSpectrumCoverage: [String]
-    public var primaryMirrorDiameter: Float
-    public var secondaryMirrorDiameter: Float
+    public var primaryMirrorDiameter: Double
+    public var secondaryMirrorDiameter: Double
     public var focus: [String]
-    public var focalLength: [Float]
+    public var focalLength: [Double]
     public var focalRatio: [String]
-    public var collectingArea: Float
-    public var aperture: Float
+    public var collectingArea: Double
+    public var aperture: Double
     public var objectives: String
-    public var manimumBaseline: Float
-    public var maximumBaseline: Float
+    public var minimumBaseline: Double
+    public var maximumBaseline: Double
     public var arrayConstituents: Int
     public var mirrorCoating: String
     public var vlbiCapabilities: Bool

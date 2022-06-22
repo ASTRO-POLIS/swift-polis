@@ -90,6 +90,19 @@ public enum PolisDirection: Codable {
     case exact(degree: Double)
 }
 
+//MARK: - POLIS mode of operation
+
+public enum PolisModeOfOperation: String, Codable {
+    case manual
+    case manualWithAutomatedDetector
+    case manualWithAutomatedDetectorAndScheduling
+    case autonomous
+    case mixed                                       // e.g. in case of Network
+    case other
+    case unknown
+}
+
+
 //MARK: - POLIS version management
 
 /// `PolisSupportedImplementation` combines supported data format, API level, and version in a single struct
@@ -122,6 +135,19 @@ public var frameworkSupportedImplementation: [PolisSupportedImplementation] =
 
 
 //MARK: - Type extensions -
+
+public extension PolisModeOfOperation {
+    enum CodingKeys: String, CodingKey {
+        case manual
+        case manualWithAutomatedDetector              = "manual_with_automated_detector"
+        case manualWithAutomatedDetectorAndScheduling = "manual_with_automated_detector_and_scheduling"
+        case autonomous
+        case mixed
+        case other
+        case unknown
+    }
+}
+
 
 // This extension is needed for supporting a well formatted JSON API
 public extension PolisSupportedImplementation {

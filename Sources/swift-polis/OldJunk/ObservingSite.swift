@@ -57,15 +57,15 @@ public enum ObservingSiteLocationType {
     case ivoa(descriptor: String)
 }
 
-public enum ObservatoryType {
-    // Location
-    case opticalTelescope(OpticalTelescope)
-    case radioAntenna(RadioAntenna)
-}
+//public enum PolisObservatoryType {
+//    // Location
+//    case opticalTelescope(OpticalTelescope)
+//    case radioAntenna(RadioAntenna)
+//}
 
 
 public struct Observatory {
-    var type: ObservatoryType
+    var type: PolisObservatoryType
 }
 
 public enum InstrumentType {

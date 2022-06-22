@@ -15,10 +15,10 @@
 
 import Foundation
 
-public class PolisNetwork: PolisObservatory {
+public struct PolisNetwork: PolisObservatory {
     // PolisObservatory
     public var type             = PolisObservatoryType.network
-    public var modeOfOperation  = PolisObservatoryModeOfOperation.mixed
+    public var modeOfOperation  = PolisModeOfOperation.mixed
     public var item: PolisItem
     public var startDate: Date?
     public var endDate: Date?

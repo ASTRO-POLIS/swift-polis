@@ -16,27 +16,20 @@
 
 import Foundation
 
-public enum PolisFinderscopeModeOfOperation: String, Codable {
-    case manual
-    case remote
-    case robotic
-    case unknown
-}
-
-public class PolisFinderscope: Codable {
+public struct PolisFinderscope: Codable {
     public var item: PolisItem   // Finderscope Identification
     public var type: [String]
-    public var eastLongitude: Float
-    public var latitude: Float
-    public var elevation: Float
-    public var modeOfOperation: PolisTelescopeModeOfOperation
-    public var primaryMirrorDiameter: Float
-    public var secondaryMirrorDiameter: Float
+    public var eastLongitude: Double
+    public var latitude: Double
+    public var elevation: Double
+    public var modeOfOperation: PolisModeOfOperation
+    public var primaryMirrorDiameter: Double
+    public var secondaryMirrorDiameter: Double
     public var focus: [String]
     public var focalLength: [Float]
     public var focalRatio: [String]
-    public var collectingArea: Float
-    public var aperture: Float
+    public var collectingArea: Double
+    public var aperture: Double
 }
 
 

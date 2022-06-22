@@ -24,17 +24,10 @@ public enum PolisEnclosureType: String, Codable {
     case other
 }
 
-public enum PolisEnclosureModeOfOperation: String, Codable {
-    case manual
-    case remote
-    case robotic
-    case unknown
-}
-
 public class PolisEnclosure: Codable {
     public var item: PolisItem   // Observing Site Identification
     public var type: PolisEnclosureType
-    public var modeOfOperation: PolisEnclosureModeOfOperation
+    public var modeOfOperation: PolisModeOfOperation
     public var instrumentIDs: [UUID]
 }
 

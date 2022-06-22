@@ -18,10 +18,10 @@ import Foundation
 
 //MARK: - Observing Site -
 
-public class PolisObservingSite: PolisObservatory {
+public struct PolisObservingSite: PolisObservatory {
     // PolisObservatory
     public var type             = PolisObservatoryType.site
-    public var modeOfOperation  = PolisObservatoryModeOfOperation.unknown
+    public var modeOfOperation  = PolisModeOfOperation.unknown
     public var item: PolisItem
     public var startDate: Date?
     public var endDate: Date?

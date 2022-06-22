@@ -16,18 +16,10 @@
 
 import Foundation
 
-public enum PolisMountModeOfOperation: String, Codable {
-    case manual
-    case remote
-    case robotic
-    case unknown
-}
-
-public class PolisMount: Codable {
+public struct PolisMount: Codable {
     public var item: PolisItem   // Mount Identification
     public var type: [String]
-    public var modeOfOperation: PolisMountModeOfOperation
-    
+    public var modeOfOperation: PolisModeOfOperation
 }
 
 
