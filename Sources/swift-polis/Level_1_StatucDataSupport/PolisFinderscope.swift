@@ -16,29 +16,47 @@
 
 import Foundation
 
-public struct PolisFinderscope: Codable {
-    public var item: PolisItem   // Finderscope Identification
-    public var type: [String]
-    public var eastLongitude: Double
-    public var latitude: Double
-    public var elevation: Double
-    public var modeOfOperation: PolisModeOfOperation
-    public var primaryMirrorDiameter: Double
-    public var secondaryMirrorDiameter: Double
-    public var focus: [String]
-    public var focalLength: [Float]
-    public var focalRatio: [String]
-    public var collectingArea: Double
-    public var aperture: Double
-}
+// I see no need of finderscope at all. A finedscope is a telescope, and the main instrument can have a list of 0, 1. or more finderscopes
+//TODO: Discuss!!!
+
+//public struct PolisFinderscope: Codable {
+//    public var item: PolisItem   // Finderscope Identification
+//    public var type: [String]
+    //Finderscope should inherit the location from the main instrument!
+//    public var eastLongitude: Double
+//    public var latitude: Double
+//    public var elevation: Double
+//    public var modeOfOperation: PolisModeOfOperation
+//    public var primaryMirrorDiameter: Double
+//    public var secondaryMirrorDiameter: Double
+//    public var focus: [String]
+//    public var focalLength: [Float]
+//    public var focalRatio: [String]
+//    public var collectingArea: Double
+//    public var aperture: Double
+//}
 
 
 //MARK: - Type extensions -
 
 
-public extension PolisFinderscope {
-    enum CodingKeys: String, CodingKey {
-        case item
-        case modeOfOperation = "mode_of_operation"
-    }
-}
+//public extension PolisFinderscope {
+//    enum CodingKeys: String, CodingKey {
+//
+//        public var type: [String]
+//        public var eastLongitude: Double
+//        public var latitude: Double
+//        public var elevation: Double
+//        public var modeOfOperation: PolisModeOfOperation
+//        public var primaryMirrorDiameter: Double
+//        public var secondaryMirrorDiameter: Double
+//        public var focus: [String]
+//        public var focalLength: [Float]
+//        public var focalRatio: [String]
+//        public var collectingArea: Double
+//        public var aperture: Double
+//
+//        case item
+//        case modeOfOperation = "mode_of_operation"
+//    }
+//}

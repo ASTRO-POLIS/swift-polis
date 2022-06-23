@@ -28,7 +28,7 @@ public struct PolisNetwork: PolisObservatory {
     public var enclosureIDs: [UUID]?
 
     // Miscellaneous
-    public var sites: [PolisObservingSite]
+    public var sitesIDs: [UUID]
 }
 
 
@@ -43,6 +43,6 @@ public extension PolisNetwork {
         case endDate         = "end_date"
         case location
         case instrumentIDs   = "instrument_ids"
-        case sites
+        case sitesIDs        = "site_ids"
     }
 }

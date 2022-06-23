@@ -29,6 +29,7 @@ public struct PolisMount: Codable {
 public extension PolisMount {
     enum CodingKeys: String, CodingKey {
         case item
+        case type
         case modeOfOperation = "mode_of_operation"
     }
 }
