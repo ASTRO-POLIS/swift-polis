@@ -138,6 +138,13 @@ public struct PolisItem: Codable, Identifiable {
     public var imageLinks: [URL]?
 
     public var id: UUID { attributes.id }
+
+    public init(attributes: PolisItemAttributes, manufacturer: PolisManufacturer? = nil, owners: [PolisItemOwner]? = nil, imageLinks: [URL]? = nil) {
+        self.attributes   = attributes
+        self.manufacturer = manufacturer
+        self.owners       = owners
+        self.imageLinks   = imageLinks
+    }
 }
 
 //MARK: - Type Extensions -
