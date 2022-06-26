@@ -29,6 +29,23 @@ public struct PolisObservingSite: PolisObservatory {
     public var instrumentIDs: [UUID]?
     public var enclosureIDs: [UUID]?
 
+    public init(modeOfOperation: PolisModeOfOperation  = .unknown,
+                item: PolisItem,
+                startDate: Date?                   = nil,
+                endDate: Date?                     = nil,
+                location: PolisObservingLocation?  = nil,
+                admin: PolisAdminContact?          = nil,
+                instrumentIDs: [UUID]?             = nil,
+                enclosureIDs: [UUID]?              = nil) {
+        self.item          = item
+        self.startDate     = startDate
+        self.endDate       = endDate
+        self.location      = location
+        self.admin         = admin
+        self.instrumentIDs = instrumentIDs
+        self.enclosureIDs  = enclosureIDs
+    }
+    
     public func type() -> PolisObservatoryType { .site }
 }
 

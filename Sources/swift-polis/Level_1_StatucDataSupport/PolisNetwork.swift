@@ -29,6 +29,25 @@ public struct PolisNetwork: PolisObservatory {
     // Miscellaneous
     public var sitesIDs: [UUID]
 
+    public init(modeOfOperation: PolisModeOfOperation  = .unknown,
+                item: PolisItem,
+                startDate: Date?                   = nil,
+                endDate: Date?                     = nil,
+                location: PolisObservingLocation?  = nil,
+                admin: PolisAdminContact?          = nil,
+                instrumentIDs: [UUID]?             = nil,
+                enclosureIDs: [UUID]?              = nil,
+                sitesIDs: [UUID]                   = [UUID]()) {
+        self.item          = item
+        self.startDate     = startDate
+        self.endDate       = endDate
+        self.location      = location
+        self.admin         = admin
+        self.instrumentIDs = instrumentIDs
+        self.enclosureIDs  = enclosureIDs
+        self.sitesIDs      = sitesIDs
+    }
+
     public func type() -> PolisObservatoryType { .network }
 }
 
