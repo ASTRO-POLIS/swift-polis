@@ -20,7 +20,6 @@ import Foundation
 
 public struct PolisObservingSite: PolisObservatory {
     // PolisObservatory
-    public var type             = PolisObservatoryType.site
     public var modeOfOperation  = PolisModeOfOperation.unknown
     public var item: PolisItem
     public var startDate: Date?
@@ -29,6 +28,8 @@ public struct PolisObservingSite: PolisObservatory {
     public var admin: PolisAdminContact?
     public var instrumentIDs: [UUID]?
     public var enclosureIDs: [UUID]?
+
+    public func type() -> PolisObservatoryType { .site }
 }
 
 //MARK: - Type extensions -
@@ -36,7 +37,6 @@ public struct PolisObservingSite: PolisObservatory {
 
 public extension PolisObservingSite {
     enum CodingKeys: String, CodingKey {
-        case type
         case modeOfOperation = "mode_of_operation"
         case item
         case startDate       = "start_date"

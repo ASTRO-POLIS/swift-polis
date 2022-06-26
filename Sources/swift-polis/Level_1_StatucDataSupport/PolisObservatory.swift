@@ -23,7 +23,6 @@ public enum PolisObservatoryType: Codable {
 }
 
 public protocol PolisObservatory: Codable {
-    var type: PolisObservatoryType            { get set }
     var modeOfOperation: PolisModeOfOperation { get set }
     var item: PolisItem                       { get set }
     var startDate: Date?                      { get set } // Could be nil if unknown
@@ -32,21 +31,6 @@ public protocol PolisObservatory: Codable {
     var admin: PolisAdminContact?             { get set }
     var instrumentIDs: [UUID]?                { get set }
     var enclosureIDs: [UUID]?                 { get set }
+
+    func type() -> PolisObservatoryType
 }
-
-//MARK: - Making types Codable and CustomStringConvertible -
-// These extensions do not need any additional documentation.
-
-//MARK: - Making types Codable and CustomStringConvertible -
-
-//public extension PolisObservatory {
-//    enum CodingKeys: String, CodingKey {
-//        case type
-//        case modeOfOperation = "mode_of_operation"
-//        case item
-//        case startDate = "start_date"
-//        case endDate = "end_date"
-//        case location
-//        case instruments
-//    }
-//}
