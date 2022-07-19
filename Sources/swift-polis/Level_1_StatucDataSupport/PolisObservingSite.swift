@@ -28,6 +28,7 @@ public struct PolisObservingSite: PolisObservatory {
     public var admin: PolisAdminContact?
     public var instrumentIDs: [UUID]?
     public var enclosureIDs: [UUID]?
+    public var type = PolisObservatoryType.site
 
     public init(modeOfOperation: PolisModeOfOperation  = .unknown,
                 item: PolisItem,
@@ -45,8 +46,6 @@ public struct PolisObservingSite: PolisObservatory {
         self.instrumentIDs = instrumentIDs
         self.enclosureIDs  = enclosureIDs
     }
-    
-    public func type() -> PolisObservatoryType { .site }
 }
 
 //MARK: - Type extensions -
@@ -61,5 +60,6 @@ public extension PolisObservingSite {
         case location
         case instrumentIDs   = "instrument_ids"
         case enclosureIDs    = "enclosure_ids"
+        case type
     }
 }

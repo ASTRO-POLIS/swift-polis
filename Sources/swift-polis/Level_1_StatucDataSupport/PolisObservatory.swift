@@ -31,6 +31,5 @@ public protocol PolisObservatory: Codable {
     var admin: PolisAdminContact?             { get set }
     var instrumentIDs: [UUID]?                { get set }
     var enclosureIDs: [UUID]?                 { get set }
-
-    func type() -> PolisObservatoryType
+    var type: PolisObservatoryType            { get }
 }

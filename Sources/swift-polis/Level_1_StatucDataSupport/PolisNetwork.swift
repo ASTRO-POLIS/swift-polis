@@ -25,6 +25,7 @@ public struct PolisNetwork: PolisObservatory {
     public var admin: PolisAdminContact?
     public var instrumentIDs: [UUID]?
     public var enclosureIDs: [UUID]?
+    public var type = PolisObservatoryType.network
 
     // Miscellaneous
     public var sitesIDs: [UUID]
@@ -47,8 +48,6 @@ public struct PolisNetwork: PolisObservatory {
         self.enclosureIDs  = enclosureIDs
         self.sitesIDs      = sitesIDs
     }
-
-    public func type() -> PolisObservatoryType { .network }
 }
 
 
@@ -63,5 +62,6 @@ public extension PolisNetwork {
         case location
         case instrumentIDs   = "instrument_ids"
         case sitesIDs        = "site_ids"
+        case type
     }
 }
