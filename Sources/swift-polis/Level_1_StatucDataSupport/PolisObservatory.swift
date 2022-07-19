@@ -17,7 +17,7 @@
 import Foundation
 import CoreText
 
-public enum PolisObservatoryType: Codable {
+public enum PolisObservatoryType: String, Codable {
     case site
     case network
 }
