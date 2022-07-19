@@ -20,11 +20,11 @@ import SoftwareEtudesUtilities
 /// Definition of well known paths and APIs
 public struct PolisPredefinedServicePaths {
     // Level 1 resource paths. These are folders or files.
-    public static let baseServiceDirectory                  = "polis"                // e.g. /polis/
-    public static let serviceProviderConfigurationFileName  = "polis"                // e.g. /polis/polis.json
-    public static let serviceProviderSitesDirectoryFileName = "polis_directory"      // e.g. /polis/polis_directory.json
-    public static let observingSitesDirectoryFileName       = "observing_directory"  // e.g. /polis/observing_directory.json
-    public static let siteDirectory                         = "polis_sites"          // e.g. /polis/polis_sites/
+    public static let baseServiceDirectory                  = "polis"            // e.g. /polis/
+    public static let serviceProviderConfigurationFileName  = "polis"            // e.g. /polis/polis.json
+    public static let serviceProviderSitesDirectoryFileName = "polis_directory"  // e.g. /polis/polis_directory.json
+    public static let observingSitesDirectoryFileName       = "polis_sites"      // e.g. /polis/polis_sites.json
+    public static let siteDirectory                         = "polis_sites"      // e.g. /polis/polis_sites/
 }
 
 

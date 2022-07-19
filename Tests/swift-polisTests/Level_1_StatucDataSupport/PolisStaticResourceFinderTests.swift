@@ -48,7 +48,7 @@ final class PolisStaticResourceFinderTests: XCTestCase {
 
         XCTAssertEqual(sut!.polisConfigurationFilePath(), "/tmp/polis/polis.json")
         XCTAssertEqual(sut!.polisProviderSitesDirectoryFilePath(), "/tmp/polis/polis_directory.json")
-        XCTAssertEqual(sut!.polisObservingSitesDirectoryFilePath(), "/tmp/polis/observing_directory.json")
+        XCTAssertEqual(sut!.polisObservingSitesDirectoryFilePath(), "/tmp/polis/polis_sites.json")
     }
 
     override func setUp() {
