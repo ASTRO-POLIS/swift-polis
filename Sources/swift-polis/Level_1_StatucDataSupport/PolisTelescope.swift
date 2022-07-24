@@ -15,6 +15,7 @@
 
 
 import Foundation
+import UnitsAndMeasurements
 
 public enum PolisTelescopeType: String, Codable {
     case static_dish
@@ -43,6 +44,7 @@ public enum PolisFocusType: String, Codable {
     case unknown
 }
 
+//Warning: These should be configurable! Not an Enum!
 public enum PolisParentNetwork: String, Codable {
     case eventHorizonTelescope
     case australianVLBINetwork
@@ -57,10 +59,10 @@ public struct PolisTelescope: Codable {
     public var location: PolisObservingLocation?
     public var modeOfOperation: PolisModeOfOperation?
     public var emSpectrumCoverage = PolisEmSpectrumCoverage.unknown
-    public var primaryMirrorDiameter: Double?
-    public var secondaryMirrorDiameter: Double?
+    public var primaryMirrorDiameter: UnitsAndMeasurements.Measurement<Double>
+    public var secondaryMirrorDiameter: UnitsAndMeasurements.Measurement<Double>
     public var focusType = PolisFocusType.unknown
-    public var focalLength: Double
+    public var focalLength: UnitsAndMeasurements.Measurement<Double>
     public var focalRatio: String
     public var collectingArea: Double
     public var aperture: Double

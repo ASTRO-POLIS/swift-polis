@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "ScienceEtudes",
+        "repositoryURL": "https://github.com/tuparev/ScienceEtudes",
+        "state": {
+          "branch": "dev",
+          "revision": "33147e0efb50604870a0441fe5cf8bb8972500e8",
+          "version": null
+        }
+      },
+      {
         "package": "SoftwareEtudes",
         "repositoryURL": "https://github.com/tuparev/SoftwareEtudes",
         "state": {

@@ -16,14 +16,19 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
-        .package(name: "SoftwareEtudes", url: "https://github.com/tuparev/SoftwareEtudes", .branch("dev"))
+        .package(name: "SoftwareEtudes", url: "https://github.com/tuparev/SoftwareEtudes", .branch("dev")),
+        .package(name: "ScienceEtudes",  url: "https://github.com/tuparev/ScienceEtudes",  .branch("dev"))
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "swift-polis",
-            dependencies: [.product(name: "SoftwareEtudesUtilities", package: "SoftwareEtudes")]),
+            dependencies: [
+                .product(name: "SoftwareEtudesUtilities", package: "SoftwareEtudes"),
+                .product(name: "UnitsAndMeasurements",    package: "ScienceEtudes"),
+            ]
+        ),
         .testTarget(
             name: "swift-polisTests",
             dependencies: ["swift-polis"]),
