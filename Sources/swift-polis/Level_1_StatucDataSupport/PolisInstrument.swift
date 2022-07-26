@@ -15,6 +15,7 @@
 
 
 import Foundation
+import UnitsAndMeasurements
 
 public enum PolisSensorType: Codable {
     case temperature
@@ -24,7 +25,7 @@ public enum PolisSensorType: Codable {
     case windDirection
     case rain
     case dust
-    case light
+    case light       // Should it be CCD, or SMOS?
     case UVIndex
 }
 
@@ -34,11 +35,11 @@ public struct PolisSensor: Codable {
     public var type: PolisSensorType
     public var minValue: Double?
     public var maxValue: Double?
-    public var precision: Double?
-    public var units: String
-    public var measurementFrequencyInSeconds: Double?
+    public var precision: Double?                                        // A universal way to express precision???
+    public var units: UnitsAndMeasurements.Unit
+    public var measurementFrequency: UnitsAndMeasurements.Measurement<Double>?
 
-    public var currentValue: Double?
+    public var currentValue: UnitsAndMeasurements.Measurement<Double>?   // This is not good! Discuss! Perhaps an enum?
 }
 
 
@@ -58,15 +59,15 @@ public struct PolisInstrument: Codable {
 
     public var type: PolisInstrumentType
 
-    public var parentID: UUID?
+    public var assignedToID: UUID?
     public var subInstrumentIDs: [UUID]?
 
     public var sensorIDs: [UUID]?
 
-    public init(item: PolisItem, type: PolisInstrumentType = .unknown, parentID: UUID? = nil, subInstrumentIDs: [UUID]? = nil, sensorIDs: [UUID]? = nil) {
+    public init(item: PolisItem, type: PolisInstrumentType = .unknown, assignedToID: UUID? = nil, subInstrumentIDs: [UUID]? = nil, sensorIDs: [UUID]? = nil) {
         self.item             = item
         self.type             = type
-        self.parentID         = parentID
+        self.assignedToID     = assignedToID
         self.subInstrumentIDs = subInstrumentIDs
         self.sensorIDs        = sensorIDs
     }
@@ -89,3 +90,12 @@ public extension PolisSensorType {
     }
 }
 
+public extension PolisInstrument {
+    enum CodingKeys: String, CodingKey {
+        case item
+        case type
+        case assignedToID     = "assignet_to_id"
+        case subInstrumentIDs = "sub_instrument_ids"
+        case sensorIDs        = "sensor_ids"
+    }
+}
