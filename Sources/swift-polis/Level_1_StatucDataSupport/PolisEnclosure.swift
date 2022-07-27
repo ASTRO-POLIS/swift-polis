@@ -29,6 +29,13 @@ public class PolisEnclosure: Codable {
     public var type: PolisEnclosureType
     public var modeOfOperation: PolisModeOfOperation
     public var instrumentIDs: [UUID]
+
+    public init(item: PolisItem, type: PolisEnclosureType, modeOfOperation: PolisModeOfOperation = PolisModeOfOperation.unknown, instrumentIDs: [UUID] = [UUID]() ) {
+        self.item            = item
+        self.type            = type
+        self.modeOfOperation = modeOfOperation
+        self.instrumentIDs   = instrumentIDs
+    }
 }
 
 
