@@ -23,6 +23,9 @@ public enum PolisTelescopeType: String, Codable {
     case steerable_dish
     case refractor
     case antenna
+    case telephoto_lens
+    case other
+    case unknown
 }
 
 public enum PolisEmSpectrumCoverage: String, Codable {
@@ -33,6 +36,7 @@ public enum PolisEmSpectrumCoverage: String, Codable {
     case infrared
     case submillimeter
     case radio
+    case other
     case unknown
 }
 
