@@ -30,7 +30,7 @@ public struct PolisSensor: Codable, Identifiable {
     
 }
 
-public enum PolisInstrumentType: Codable {
+public enum PolisInstrumentType: String, Codable {
     case telescope
     case weatherStation
     case flatFieldScreen
