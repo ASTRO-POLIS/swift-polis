@@ -22,6 +22,12 @@ public struct PolisSensor: Codable, Identifiable {
     public var sensor: SensorDescription
 
     public var id: UUID { attributes.id }
+
+    public init(attributes: PolisItemAttributes, sensorDescription: SensorDescription) {
+        self.attributes = attributes
+        self.sensor     = sensorDescription
+    }
+    
 }
 
 public enum PolisInstrumentType: Codable {
