@@ -17,31 +17,12 @@
 import Foundation
 import UnitsAndMeasurements
 
-public enum PolisSensorType: Codable {
-    case temperature
-    case pressure
-    case humidity
-    case windspeed
-    case windDirection
-    case rain
-    case dust
-    case light       // Should it be CCD, or SMOS?
-    case UVIndex
-}
-
-public struct PolisSensor: Codable {
+public struct PolisSensor: Codable, Identifiable {
     public var attributes: PolisItemAttributes
+    public var sensor: SensorDescription
 
-    public var type: PolisSensorType
-    public var minValue: Double?
-    public var maxValue: Double?
-    public var precision: Double?                                        // A universal way to express precision???
-    public var units: UnitsAndMeasurements.Unit
-    public var measurementFrequency: UnitsAndMeasurements.Measurement<Double>?
-
-    public var currentValue: UnitsAndMeasurements.Measurement<Double>?   // This is not good! Discuss! Perhaps an enum?
+    public var id: UUID { attributes.id }
 }
-
 
 public enum PolisInstrumentType: Codable {
     case telescope
@@ -75,20 +56,6 @@ public struct PolisInstrument: Codable {
 
 
 //MARK: - Making types Codable and CustomStringConvertible -
-
-public extension PolisSensorType {
-    enum CodingKeys: String, CodingKey {
-        case temperature
-        case pressure
-        case humidity
-        case windspeed
-        case windDirection = "wind_direction"
-        case rain
-        case dust
-        case light
-        case UVIndex       = "uv_index"
-    }
-}
 
 public extension PolisInstrument {
     enum CodingKeys: String, CodingKey {
