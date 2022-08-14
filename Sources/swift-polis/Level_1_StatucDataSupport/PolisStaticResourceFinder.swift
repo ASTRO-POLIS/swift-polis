@@ -74,6 +74,10 @@ public struct PolisStaticResourceFinder {
 
     public func polisObservingSiteFilePath(siteID: String, format: PolisDataFormat = .json) -> String { "\(sitesPolisFolder())\(siteID).\(format.rawValue)" }
 
+    public func polisObservingDataFilePath(withID: UUID, siteID: String, format: PolisDataFormat = .json) -> String {
+        "\(sitesPolisFolder())\(siteID)/\(withID.uuidString).\(format.rawValue)"
+    }
+
     //MARK: - Private API
     private let basePath: URL
     private let polisDataFormat: PolisDataFormat

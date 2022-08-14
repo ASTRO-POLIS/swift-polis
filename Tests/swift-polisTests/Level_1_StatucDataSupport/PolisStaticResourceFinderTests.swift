@@ -39,6 +39,8 @@ final class PolisStaticResourceFinderTests: XCTestCase {
     }
 
     func test_polisFoldersAndFiles() {
+        let siteID  = UUID()
+        let dataID  = UUID()
         let sut = try? PolisStaticResourceFinder(at: URL(fileURLWithPath: "/tmp"),  supportedImplementation: correctImplementation)
 
         XCTAssert((sut != nil))
@@ -49,6 +51,7 @@ final class PolisStaticResourceFinderTests: XCTestCase {
         XCTAssertEqual(sut!.polisConfigurationFilePath(), "/tmp/polis/polis.json")
         XCTAssertEqual(sut!.polisProviderSitesDirectoryFilePath(), "/tmp/polis/polis_directory.json")
         XCTAssertEqual(sut!.polisObservingSitesDirectoryFilePath(), "/tmp/polis/polis_sites.json")
+        XCTAssertEqual(sut!.polisObservingDataFilePath(withID: dataID, siteID: siteID.uuidString), "/tmp/polis/polis_sites/\(siteID.uuidString)/\(dataID.uuidString).json")
     }
 
     override func setUp() {
