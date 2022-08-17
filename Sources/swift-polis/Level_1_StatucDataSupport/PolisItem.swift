@@ -174,7 +174,6 @@ public extension PolisItemAttributes {
 }
 
 
-
 public extension PolisItem {
     enum CodingKeys: String, CodingKey {
         case attributes
