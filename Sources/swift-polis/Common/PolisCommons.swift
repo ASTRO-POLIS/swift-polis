@@ -97,6 +97,7 @@ public enum PolisModeOfOperation: String, Codable {
     case manualWithAutomatedDetector
     case manualWithAutomatedDetectorAndScheduling
     case autonomous
+    case remote
     case mixed                                       // e.g. in case of Network
     case other
     case unknown
