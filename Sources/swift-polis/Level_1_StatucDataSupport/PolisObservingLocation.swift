@@ -38,12 +38,41 @@ public struct FixedEarthLocation: Codable {
     public let zipCode: String?                // e.g. US
     public let countryCode: String?            // 2-letter code.
     public let surfaceSize: Double?            // in m^2
+
+    public init(eastLongitude: Double?           = nil,
+                latitude: Double?                = nil,
+                altitude: Double?                = nil,
+                continent: PolisEarthContinent?  = nil,
+                place: String?                   = nil,
+                regionOrState: String?           = nil,
+                regionOrStateCode: String?       = nil,
+                zipCode: String?                 = nil,
+                countryCode: String?             = nil,
+                surfaceSize: Double?             = nil) {
+        self.eastLongitude     = eastLongitude
+        self.latitude          = latitude
+        self.altitude          = altitude
+        self.continent         = continent
+        self.place             = place
+        self.regionOrState     = regionOrState
+        self.regionOrStateCode = regionOrStateCode
+        self.zipCode           = zipCode
+        self.countryCode       = countryCode
+        self.surfaceSize       = surfaceSize
+    }
 }
+
 
 public struct TemporaryEarthLocation: Codable {
     public let startTime: Date
     public let endTime: Date
     public let location: FixedEarthLocation
+
+    public init(startTime: Date, endTime: Date, location: FixedEarthLocation) {
+        self.startTime = startTime
+        self.endTime   = endTime
+        self.location  = location
+    }
 }
 
 public enum PolisObservingLocation: Codable {
