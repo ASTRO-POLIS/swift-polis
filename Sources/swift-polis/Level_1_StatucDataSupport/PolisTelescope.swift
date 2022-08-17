@@ -34,7 +34,7 @@ public enum PolisEmSpectrumCoverage: String, Codable {
     case ultraviolet
     case optical
     case infrared
-    case submillimeter
+    case subMillimeter
     case radio
     case other
     case unknown
@@ -49,13 +49,13 @@ public enum PolisFocusType: String, Codable {
 }
 
 //Warning: These should be configurable! Not an Enum!
-public enum PolisParentNetwork: String, Codable {
-    case eventHorizonTelescope
-    case australianVLBINetwork
-    case europeanVLBINetwork
-    case americanVLBINetwork
-    case unknown
-}
+//public enum PolisParentNetwork: String, Codable {
+//    case eventHorizonTelescope
+//    case australianVLBINetwork
+//    case europeanVLBINetwork
+//    case americanVLBINetwork
+//    case unknown
+//}
 
 public struct PolisTelescope: Codable {
     public var item: PolisItem   // Telescope Identification
@@ -76,7 +76,7 @@ public struct PolisTelescope: Codable {
     public var arrayConstituents: Int
     public var mirrorCoating: String
     public var vlbiCapabilities: Bool
-    public var vlbiParentNetwork = PolisParentNetwork.unknown
+//    public var vlbiParentNetwork = PolisParentNetwork.unknown
     public var detectorIDs: [UUID]?
     public var mountIDs: [UUID]?
     public var finderscopeIDs: [UUID]?

@@ -68,9 +68,6 @@ public struct Observatory {
     var type: PolisObservatoryType
 }
 
-public enum InstrumentType {
-}
-
 public struct OpticalTelescope {
     // Aperture
     // Camera
@@ -83,11 +80,7 @@ public struct OpticalTelescope {
     // SpectralRegion
     // Spectrograph
     // TrackRate
-    public var instruments: [InstrumentType]?
+//    public var instruments: [InstrumentType]?
     public var telescopes: [OpticalTelescope]?
     public var description: String?
-}
-
-public struct RadioAntenna {
-    
 }
