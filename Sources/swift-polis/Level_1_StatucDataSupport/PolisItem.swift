@@ -133,7 +133,7 @@ public struct PolisItemOwner: Codable {
 
 public struct PolisItem: Codable, Identifiable {
     public var attributes: PolisItemAttributes
-    public var parentItem: UUID?
+    public var parentID: UUID?
     public var manufacturer: PolisManufacturer?
     public var owners: [PolisItemOwner]?
     public var imageLinks: [URL]?
@@ -178,7 +178,7 @@ public extension PolisItemAttributes {
 public extension PolisItem {
     enum CodingKeys: String, CodingKey {
         case attributes
-        case parentItem   = "parent_item"
+        case parentID   = "parent_id"
         case manufacturer
         case owners
         case imageLinks   = "image_links"
