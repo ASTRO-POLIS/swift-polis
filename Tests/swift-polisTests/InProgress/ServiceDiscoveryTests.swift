@@ -29,7 +29,7 @@ final class ServiceDiscoveryTests: XCTestCase {
         let c = PolisAdminContact(name: "polis",
                                   email: "polis@observer.net",
                                   mobilePhone: nil,
-                                  additionalCommunicationChannels: [PolisCommunication.instagram(username: "@polis")],
+                                  additionalCommunicationChannels: [PolisAdminContact.Communication.instagram(username: "@polis")],
                                   notes: nil)
 
         data   = try? jsonEncoder.encode(c)
@@ -38,7 +38,7 @@ final class ServiceDiscoveryTests: XCTestCase {
     }
 
     func testPolisDirectoryEntry() {
-        let pd = try? PolisDirectoryEntry(attributes: PolisItemAttributes(name: "polis"),
+        let pd = try? PolisDirectoryEntry(attributes: PolisIdentification(name: "polis"),
                                      url: "https://polis.net",
                                      providerDescription: "Polis test",
                                      supportedImplementations: [frameworkSupportedImplementation.last!],
@@ -46,7 +46,7 @@ final class ServiceDiscoveryTests: XCTestCase {
                                      contact: PolisAdminContact(name: "polis",
                                                                 email: "polis@observer.net",
                                                                 mobilePhone: nil,
-                                                                additionalCommunicationChannels: [PolisCommunication.instagram(username: "@polis")],
+                                                                additionalCommunicationChannels: [PolisAdminContact.Communication.instagram(username: "@polis")],
                                                                 notes: "The admin works only on Sunday")!)
 
         data   = try? jsonEncoder.encode(pd)

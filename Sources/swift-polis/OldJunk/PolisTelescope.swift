@@ -57,32 +57,32 @@ public enum PolisFocusType: String, Codable {
 //    case unknown
 //}
 
-public struct PolisTelescope: Codable {
-    public var item: PolisItem   // Telescope Identification
-    public var type: PolisTelescopeType
-    public var location: PolisObservingLocation?
-    public var modeOfOperation: PolisModeOfOperation?
-    public var emSpectrumCoverage = PolisEmSpectrumCoverage.unknown
-    public var primaryMirrorDiameter: UnitsAndMeasurements.Measurement<Double>
-    public var secondaryMirrorDiameter: UnitsAndMeasurements.Measurement<Double>
-    public var focusType = PolisFocusType.unknown
-    public var focalLength: UnitsAndMeasurements.Measurement<Double>
-    public var focalRatio: String
-    public var collectingArea: Double
-    public var aperture: Double
-    public var objectives: String
-    public var minimumBaseline: Double
-    public var maximumBaseline: Double
-    public var arrayConstituents: Int
-    public var mirrorCoating: String
-    public var vlbiCapabilities: Bool
-//    public var vlbiParentNetwork = PolisParentNetwork.unknown
-    public var detectorIDs: [UUID]?
-    public var mountIDs: [UUID]?
-    public var finderscopeIDs: [UUID]?
-    public var aoIDs: [UUID]?
-}
-
+//public struct PolisTelescope: Codable {
+////    public var item: PolisItem   // Telescope Identification
+//    public var type: PolisTelescopeType
+//    public var location: PolisObservingLocation?
+//    public var modeOfOperation: PolisModeOfOperation?
+//    public var emSpectrumCoverage = PolisEmSpectrumCoverage.unknown
+//    public var primaryMirrorDiameter: UnitsAndMeasurements.Measurement<Double>
+//    public var secondaryMirrorDiameter: UnitsAndMeasurements.Measurement<Double>
+//    public var focusType = PolisFocusType.unknown
+//    public var focalLength: UnitsAndMeasurements.Measurement<Double>
+//    public var focalRatio: String
+//    public var collectingArea: Double
+//    public var aperture: Double
+//    public var objectives: String
+//    public var minimumBaseline: Double
+//    public var maximumBaseline: Double
+//    public var arrayConstituents: Int
+//    public var mirrorCoating: String
+//    public var vlbiCapabilities: Bool
+////    public var vlbiParentNetwork = PolisParentNetwork.unknown
+//    public var detectorIDs: [UUID]?
+//    public var mountIDs: [UUID]?
+//    public var finderscopeIDs: [UUID]?
+//    public var aoIDs: [UUID]?
+//}
+//
 
 //MARK: - Type extensions -
 

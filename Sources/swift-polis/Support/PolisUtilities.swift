@@ -14,18 +14,18 @@
 //===----------------------------------------------------------------------===//
 
 
-import XCTest
+import Foundation
 
-#if !canImport(ObjectiveC)
-public func allTests() -> [XCTestCaseEntry] {
-    return [
-        XCTestCase(PolisUtilitiesTests),
-        XCTestCase(PolisCommonTypesTests),
 
-        XCTestCase(PolisProviderTests),
-        XCTestCase(ServiceDiscoveryTests.allTests),
-        XCTestCase(PolisStaticResourceFinderTests),
-        XCTestCase(PolisCommonsTests),
-    ]
+/// A String extension that is used only in swift-polis (as far as we know)
+extension String {
+    /// Adds `@` prefix if already does not exist
+    public func mustStartWithAtSign() -> String { self.hasPrefix("@") ? self : "@\(self)" }
 }
-#endif
+
+/// This is for internal use only! Without this the URL returned by the utility functions for some strange reason has no
+/// URL schema!
+func normalisedPath(_ path: String) -> String {
+    if path.hasSuffix("/") { return path }
+    else                   { return "\(path)/" }
+}

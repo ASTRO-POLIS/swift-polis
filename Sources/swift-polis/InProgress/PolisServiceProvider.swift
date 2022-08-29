@@ -54,13 +54,13 @@ public struct PolisDirectoryEntry: Identifiable {
     /// `attributes` are marked with "private(set)" on purpose. Only the framework should change the attributes and
     /// potential changes should be done only at specific moments of the lifespan of the entry. Otherwise syncing could
     /// be badly broken.
-    public var attributes: PolisItemAttributes
+    public var attributes: PolisIdentification
 
     /// The fully qualified URL of the service provider, e.g. https://polis.observer
     public var url: String
 
     /// A list of one or more supported implementations
-    public var supportedImplementations: [PolisSupportedImplementation]
+    public var supportedImplementations: [PolisImplementationInfo]
 
     /// Defines the type of the POLIS service provider e.g. public, experimental, mirror, ...
     public var providerType: PolisProviderType
@@ -81,10 +81,10 @@ public struct PolisDirectoryEntry: Identifiable {
     }
 
     /// Designated initialiser.
-    public init(attributes:               PolisItemAttributes,
+    public init(attributes:               PolisIdentification,
                 url:                      String,
                 providerDescription:      String?,
-                supportedImplementations: [PolisSupportedImplementation],
+                supportedImplementations: [PolisImplementationInfo],
                 providerType:             PolisProviderType,
                 contact:                  PolisAdminContact) throws {
         guard !supportedImplementations.isEmpty else { throw PolisDirectoryEntryError.emptyListOfSupportedImplementations }
@@ -136,12 +136,12 @@ public struct PolisDirectory  {
 /// standard! All other types could evolve.
 /// This is only a quick reference to check if Client's cache has this site and if the site is up-to-date.
 public struct ObservatoryReference: Codable, Identifiable {
-    public var attributes: PolisItemAttributes
+    public var attributes: PolisIdentification
     public var type: PolisObservatoryType
 
     public var id: UUID { attributes.id }
 
-    public init(attributes: PolisItemAttributes, type: PolisObservatoryType) {
+    public init(attributes: PolisIdentification, type: PolisObservatoryType) {
         self.attributes = attributes
         self.type       = type
     }

@@ -22,14 +22,14 @@ public enum PolisObservatoryType: String, Codable {
     case network
 }
 
-public protocol PolisObservatory: Codable {
-    var modeOfOperation: PolisModeOfOperation { get set }
-    var item: PolisItem                       { get set }
-    var startDate: Date?                      { get set } // Could be nil if unknown
-    var endDate: Date?                        { get set } // if != nil -> either closed or temporary created (e.g. solar eclipse monitoring)
-    var location: PolisObservingLocation?     { get set }
-    var admin: PolisAdminContact?             { get set }
-    var instrumentIDs: [UUID]?                { get set }
-    var enclosureIDs: [UUID]?                 { get set }
-    var type: PolisObservatoryType            { get set }
-}
+//public protocol PolisObservatory: Codable {
+//    var modeOfOperation: ModeOfOperation { get set }
+////    var item: PolisItem                       { get set }
+//    var startDate: Date?                      { get set } // Could be nil if unknown
+//    var endDate: Date?                        { get set } // if != nil -> either closed or temporary created (e.g. solar eclipse monitoring)
+//    var location: PolisObservingLocation?     { get set }
+//    var admin: PolisAdminContact?             { get set }
+//    var instrumentIDs: [UUID]?                { get set }
+//    var enclosureIDs: [UUID]?                 { get set }
+//    var type: PolisObservatoryType            { get set }
+//}

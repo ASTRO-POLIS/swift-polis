@@ -22,11 +22,12 @@ import XCTest
 
 final class PolisStaticResourceFinderTests: XCTestCase {
 
-    private var correctImplementation: PolisSupportedImplementation!
-    private var wrongFormatImplementation: PolisSupportedImplementation!
-    private var wrongVersionImplementation: PolisSupportedImplementation!
+    private var version: SemanticVersion!
+    private var correctImplementation: PolisImplementationInfo!
+    private var wrongFormatImplementation: PolisImplementationInfo!
+    private var wrongVersionImplementation: PolisImplementationInfo!
 
-    func test_PolisStaticResourceFinderCreation() {
+    func testPolisStaticResourceFinderCreation() {
         let sut_wrongPath    = try? PolisStaticResourceFinder(at: URL(fileURLWithPath: "/root"), supportedImplementation: correctImplementation)
         let sut_wrongFormat  = try? PolisStaticResourceFinder(at: URL(fileURLWithPath: "/tmp"),  supportedImplementation: wrongFormatImplementation)
         let sut_wrongVersion = try? PolisStaticResourceFinder(at: URL(fileURLWithPath: "/tmp"),  supportedImplementation: wrongVersionImplementation)
@@ -38,7 +39,7 @@ final class PolisStaticResourceFinderTests: XCTestCase {
         XCTAssert(sut_correct != nil)
     }
 
-    func test_polisFoldersAndFiles() {
+    func testPolisFoldersAndFiles() {
         let siteID  = UUID()
         let dataID  = UUID()
         let sut = try? PolisStaticResourceFinder(at: URL(fileURLWithPath: "/tmp"),  supportedImplementation: correctImplementation)
@@ -46,20 +47,27 @@ final class PolisStaticResourceFinderTests: XCTestCase {
         XCTAssert((sut != nil))
         XCTAssertEqual(sut!.rootPolisFolder(), "/tmp/")
         XCTAssertEqual(sut!.basePolisFolder(), "/tmp/polis/")
-        XCTAssertEqual(sut!.sitesPolisFolder(), "/tmp/polis/polis_sites/")
+        XCTAssertEqual(sut!.sitesPolisFolder(), "/tmp/polis/\(version.description)/polis_sites/")
 
         XCTAssertEqual(sut!.polisConfigurationFilePath(), "/tmp/polis/polis.json")
-        XCTAssertEqual(sut!.polisProviderSitesDirectoryFilePath(), "/tmp/polis/polis_directory.json")
-        XCTAssertEqual(sut!.polisObservingSitesDirectoryFilePath(), "/tmp/polis/polis_sites.json")
-        XCTAssertEqual(sut!.polisObservingDataFilePath(withID: dataID, siteID: siteID.uuidString), "/tmp/polis/polis_sites/\(siteID.uuidString)/\(dataID.uuidString).json")
+        XCTAssertEqual(sut!.polisProviderSitesDirectoryFilePath(), "/tmp/polis/\(version.description)/polis_directory.json")
+        XCTAssertEqual(sut!.polisObservingSitesDirectoryFilePath(), "/tmp/polis/\(version.description)/polis_sites.json")
+        XCTAssertEqual(sut!.polisObservingDataFilePath(withID: dataID, siteID: siteID.uuidString), "/tmp/polis/\(version.description)/polis_sites/\(siteID.uuidString)/\(dataID.uuidString).json")
     }
 
     override func setUp() {
         super.tearDown()
 
-        correctImplementation      = PolisSupportedImplementation(dataFormat: PolisDataFormat.json, apiSupport: PolisAPISupport.staticData, version: SemanticVersion(with: "0.1-alpha.1")!)
-        wrongFormatImplementation  = PolisSupportedImplementation(dataFormat: PolisDataFormat.xml,  apiSupport: PolisAPISupport.staticData, version: SemanticVersion(with: "0.1-alpha.1")!)
-        wrongVersionImplementation = PolisSupportedImplementation(dataFormat: PolisDataFormat.json, apiSupport: PolisAPISupport.staticData, version: SemanticVersion(with: "0.1-beta.1")!)
+        version                    = frameworkSupportedImplementation.last!.version
+        correctImplementation      = PolisImplementationInfo(dataFormat: PolisImplementationInfo.DataFormat.json,
+                                                             apiSupport: PolisImplementationInfo.APILevel.staticData,
+                                                             version: version)
+        wrongFormatImplementation  = PolisImplementationInfo(dataFormat: PolisImplementationInfo.DataFormat.xml,
+                                                             apiSupport: PolisImplementationInfo.APILevel.staticData,
+                                                             version: version)
+        wrongVersionImplementation = PolisImplementationInfo(dataFormat: PolisImplementationInfo.DataFormat.json,
+                                                             apiSupport: PolisImplementationInfo.APILevel.staticData,
+                                                             version: SemanticVersion(with: "12.3-beta.1")!)
     }
 
     override func tearDown() {
@@ -67,12 +75,12 @@ final class PolisStaticResourceFinderTests: XCTestCase {
         wrongFormatImplementation  = nil
         wrongVersionImplementation = nil
         
-     super.tearDown()
+        super.tearDown()
     }
 
     static var allTests = [
-        ("test_PolisStaticResourceFinderCreation", test_PolisStaticResourceFinderCreation),
-        ("test_polisFoldersAndFiles",test_polisFoldersAndFiles),
+        ("testPolisStaticResourceFinderCreation", testPolisStaticResourceFinderCreation),
+        ("testPolisFoldersAndFiles",              testPolisFoldersAndFiles),
     ]
 
 }

@@ -7,6 +7,7 @@ source code and / or ideas to ASTRO-POLIS project.
 ## COPYRIGHT HOLDERS
 
 - Tuparev Technologies (all contributors with '@tuparev.com')
+- Frederic Hessman
 
 ## Contributors
 

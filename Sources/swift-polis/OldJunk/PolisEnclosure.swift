@@ -24,39 +24,39 @@ public enum PolisEnclosureType: String, Codable {
     case other
 }
 
-public class PolisEnclosure: Codable {
-    public var item: PolisItem   // Observing Site Identification
-    public var type: PolisEnclosureType
-    public var modeOfOperation: PolisModeOfOperation
-    public var instrumentIDs: [UUID]
-
-    public init(item: PolisItem, type: PolisEnclosureType, modeOfOperation: PolisModeOfOperation = PolisModeOfOperation.unknown, instrumentIDs: [UUID] = [UUID]() ) {
-        self.item            = item
-        self.type            = type
-        self.modeOfOperation = modeOfOperation
-        self.instrumentIDs   = instrumentIDs
-    }
-}
+//public class PolisEnclosure: Codable {
+////    public var item: PolisItem   // Observing Site Identification
+//    public var type: PolisEnclosureType
+//    public var modeOfOperation: PolisModeOfOperation
+//    public var instrumentIDs: [UUID]
+//
+//    public init(item: PolisItem, type: PolisEnclosureType, modeOfOperation: PolisModeOfOperation = PolisModeOfOperation.unknown, instrumentIDs: [UUID] = [UUID]() ) {
+//        self.item            = item
+//        self.type            = type
+//        self.modeOfOperation = modeOfOperation
+//        self.instrumentIDs   = instrumentIDs
+//    }
+//}
 
 
 //MARK: - Type extensions -
 
 
-public extension PolisEnclosureType {
-    enum CodingKeys: String, CodingKey {
-        case dome      = "dome"
-        case rollOff   = "roll_off"
-        case clamshell = "clamshell"
-        case none      = "none"
-        case other     = "other"
-    }
-}
+//public extension PolisEnclosureType {
+//    enum CodingKeys: String, CodingKey {
+//        case dome      = "dome"
+//        case rollOff   = "roll_off"
+//        case clamshell = "clamshell"
+//        case none      = "none"
+//        case other     = "other"
+//    }
+//}
 
-public extension PolisEnclosure {
-    enum CodingKeys: String, CodingKey {
-        case item
-        case type
-        case modeOfOperation = "mode_of_operation"
-        case instrumentIDs   = "instrument_ids"
-    }
-}
+//public extension PolisEnclosure {
+//    enum CodingKeys: String, CodingKey {
+//        case item
+//        case type
+//        case modeOfOperation = "mode_of_operation"
+//        case instrumentIDs   = "instrument_ids"
+//    }
+//}

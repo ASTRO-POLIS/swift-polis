@@ -27,8 +27,8 @@ final class PolisCommonsTests: XCTestCase {
     private var string: String!
 
     func test_polisDataFormat() {
-        let sutJSON = PolisDataFormat.json
-        let sutXML  = PolisDataFormat.xml
+        let sutJSON = PolisImplementationInfo.DataFormat.json
+        let sutXML  = PolisImplementationInfo.DataFormat.xml
 
         XCTAssertNotEqual(sutJSON, sutXML)
         XCTAssertEqual(sutJSON.rawValue, "json")
@@ -36,9 +36,9 @@ final class PolisCommonsTests: XCTestCase {
     }
 
     func test_polisAPISupport() {
-        let sutStaticData        = PolisAPISupport.staticData
-        let sutDynamicStatus     = PolisAPISupport.dynamicStatus
-        let sutDynamicScheduling = PolisAPISupport.dynamicScheduling
+        let sutStaticData        = PolisImplementationInfo.APILevel.staticData
+        let sutDynamicStatus     = PolisImplementationInfo.APILevel.dynamicStatus
+        let sutDynamicScheduling = PolisImplementationInfo.APILevel.dynamicScheduling
 
         XCTAssertNotEqual(sutStaticData, sutDynamicScheduling)
 
@@ -49,21 +49,26 @@ final class PolisCommonsTests: XCTestCase {
         data   = try? jsonEncoder.encode(sutStaticData)
         string = String(data: data!, encoding: .utf8)
         XCTAssertEqual(string, "\"static_data\"")
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisAPISupport.self, from: string!.data(using: .utf8)!))
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisImplementationInfo.APILevel.self, from: string!.data(using: .utf8)!))
     }
 
     func test_polisSupportedImplementation() {
-        let sutAlpha = PolisSupportedImplementation(dataFormat: PolisDataFormat.json, apiSupport: PolisAPISupport.staticData, version: SemanticVersion(with: "0.1-alpha.1")!)
-        let sutBeta  = PolisSupportedImplementation(dataFormat: PolisDataFormat.json, apiSupport: PolisAPISupport.staticData, version: SemanticVersion(with: "0.1-beta.1")!)
+        let sutAlpha = PolisImplementationInfo(dataFormat: PolisImplementationInfo.DataFormat.json,
+                                               apiSupport: PolisImplementationInfo.APILevel.staticData,
+                                               version: SemanticVersion(with: "0.1-alpha.1")!)
+        let sutBeta  = PolisImplementationInfo(dataFormat: PolisImplementationInfo.DataFormat.json,
+                                               apiSupport: PolisImplementationInfo.APILevel.staticData,
+                                               version: SemanticVersion(with: "0.1-beta.1")!)
 
         XCTAssertNotEqual(sutAlpha, sutBeta)
         XCTAssertEqual(sutAlpha,
-                       PolisSupportedImplementation(dataFormat: PolisDataFormat.json, apiSupport: PolisAPISupport.staticData, version: SemanticVersion(with: "0.1-alpha.1")!))
-        XCTAssertTrue(frameworkSupportedImplementation.contains(sutAlpha))
+                       PolisImplementationInfo(dataFormat: PolisImplementationInfo.DataFormat.json,
+                                               apiSupport: PolisImplementationInfo.APILevel.staticData,
+                                               version: SemanticVersion(with: "0.1-alpha.1")!))
 
         data   = try? jsonEncoder.encode(sutAlpha)
         string = String(data: data!, encoding: .utf8)
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisSupportedImplementation.self, from: string!.data(using: .utf8)!))
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisImplementationInfo.self, from: string!.data(using: .utf8)!))
     }
 
     override func setUp() {
