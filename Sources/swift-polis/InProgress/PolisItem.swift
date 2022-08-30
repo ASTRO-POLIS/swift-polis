@@ -16,20 +16,6 @@
 
 import Foundation
 
-//MARK: - Ownership -
-
-public struct PolisItemOwner: Codable, Identifiable {
-
-    public let identification: PolisIdentification
-    public let name: String?
-    public let type: PolisOwnershipType
-    public let url: URL?
-    public let shortDescription: String?
-
-    public var id: UUID { identification.id }
-}
-
-
 
 //public struct PolisItem: Codable, Identifiable {
 //    public var attributes: PolisIdentification
@@ -62,14 +48,3 @@ public struct PolisItemOwner: Codable, Identifiable {
 //        case imageLinks   = "image_links"
 //    }
 //}
-
-public extension PolisItemOwner {
-    enum CodingKeys: String, CodingKey {
-        case identification
-        case name
-        case type
-        case url
-        case shortDescription = "short_description"
-    }
-}
-

@@ -22,6 +22,7 @@ var tests = [XCTestCaseEntry]()
 tests += PolisUtilitiesTests.allTests()
 tests += PolisCommonTypesTests.allTests()
 tests += PolisServiceProviderTests.allTests()
+tests += PolisItemOwnerTests.allTests()
 
 tests += PolisProviderTests.allTests()
 tests += PolisStaticResourceFinderTests.allTests()
