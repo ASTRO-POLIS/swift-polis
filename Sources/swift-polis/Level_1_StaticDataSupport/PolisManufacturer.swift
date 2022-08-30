@@ -21,10 +21,12 @@ import Foundation
 
 /// `PolisManufacturer` encapsulates basic information about manufacturer.
 ///
-/// Every provider is free to implement it's own handling of list of manufacturers, but we highly recommend that all
-/// manufacturer information is managed in a single, possibly manually maintained store. This will help client
-/// application to display unique information.
-/// Later implementation of POLIS might provide a common list of manufacturers.
+/// Every provider is free to implement it's own handling of list of manufacturers, but we highly recommend that all manufacturer information is managed in a single,
+/// possibly manually maintained cache. This will help client application to display unique information and avoid "almost the same" information to be found multiple
+/// times. It is best if manufacturers maintain their product catalogues themselves.
+///
+/// It is important that POLIS Providers guarantee the uniqueness of manufacturers and their products. This is not required by the standard, but it is strongly
+/// recommended.
 public struct PolisManufacturer: Codable, Identifiable {
     /// Makes `PolisManufacturer` uniquely identifiable
     public var identity: PolisIdentity

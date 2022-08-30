@@ -24,7 +24,7 @@ tests += PolisCommonTypesTests.allTests()
 tests += PolisServiceProviderTests.allTests()
 tests += PolisItemOwnerTests.allTests()
 tests += PolisItemTests.allTests()
-
+tests += PolisManufacturerTests.allTests()
 tests += PolisProviderTests.allTests()
 tests += PolisStaticResourceFinderTests.allTests()
 tests += PolisCommonsTests.allTests()
