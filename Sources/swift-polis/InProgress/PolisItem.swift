@@ -17,34 +17,34 @@
 import Foundation
 
 
-//public struct PolisItem: Codable, Identifiable {
-//    public var attributes: PolisIdentification
-//    public var parentID: UUID?
-//    public var manufacturer: PolisManufacturer?
-//    public var owners: [PolisItemOwner]?
-//    public var imageLinks: [URL]?
-//
-//    public var id: UUID { attributes.id }
-//
-//    public init(attributes: PolisIdentification, manufacturer: PolisManufacturer? = nil, owners: [PolisItemOwner]? = nil, imageLinks: [URL]? = nil) {
-//        self.attributes   = attributes
-//        self.manufacturer = manufacturer
-//        self.owners       = owners
-//        self.imageLinks   = imageLinks
-//    }
-//}
-//
+public struct PolisItem: Codable, Identifiable {
+    public var identity: PolisIdentity
+    public var parentID: UUID?
+    public var manufacturer: PolisManufacturer?
+    public var owners: [PolisItemOwner]?
+    public var imageLinks: [URL]?
+
+    public var id: UUID { identity.id }
+
+    public init(identity: PolisIdentity, manufacturer: PolisManufacturer? = nil, owners: [PolisItemOwner]? = nil, imageLinks: [URL]? = nil) {
+        self.identity   = identity
+        self.manufacturer = manufacturer
+        self.owners       = owners
+        self.imageLinks   = imageLinks
+    }
+}
+
 //MARK: - Type Extensions -
 
 
 
 
-//public extension PolisItem {
-//    enum CodingKeys: String, CodingKey {
-//        case attributes
-//        case parentID   = "parent_id"
-//        case manufacturer
-//        case owners
-//        case imageLinks   = "image_links"
-//    }
-//}
+public extension PolisItem {
+    enum CodingKeys: String, CodingKey {
+        case identity
+        case parentID   = "parent_id"
+        case manufacturer
+        case owners
+        case imageLinks   = "image_links"
+    }
+}

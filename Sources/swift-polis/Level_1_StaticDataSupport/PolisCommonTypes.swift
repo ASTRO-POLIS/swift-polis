@@ -18,31 +18,31 @@ import Foundation
 
 // This file contains several unrelated Swift types that are accessed from different and also mostly unrelated sources.
 
-//MARK: - POLIS Identification related types -
+//MARK: - POLIS Identity related types -
 
 
-/// `PolisIdentification` uniquely identifies and defines the status of almost every POLIS item and defines external
+/// `PolisIdentity` uniquely identifies and defines the status of almost every POLIS item and defines external
 /// relationships to other items (or POLIS objects of any type).
 ///
-/// The idea of POLIS Identification comes from analogous type that could be found in the `RTML` standard. The
+/// The idea of POLIS Identity comes from analogous type that could be found in the `RTML` standard. The
 /// RTML references  turned out to be extremely useful for relating items within one RTML document and linking RTML
 /// documents to each other.
 ///
-/// `PolisIdentification` is an essential part of (almost) every POLIS type. They are needed to uniquely identify and
+/// `PolisIdentity` is an essential part of (almost) every POLIS type. They are needed to uniquely identify and
 /// describe each item (object) and establish parent-child relationships between them, as well as provide enough
 /// informationIn for the syncing of POLIS Providers.
 ///
 /// Parent - child relationship should be defined by nesting data structures.
 ///
-/// If /when XML encoding and decoding is used, it is strongly recommended to implement the `PolisIdentification` as
+/// If /when XML encoding and decoding is used, it is strongly recommended to implement the `PolisIdentity` as
 /// attributes of the corresponding type (Element).
-public struct PolisIdentification: Codable, Identifiable {
+public struct PolisIdentity: Codable, Identifiable {
 
     /// `LifecycleStatus` defines the current status of the POLIS items (readiness to be used in different
     /// environments)
     ///
     /// Each POLIS type (Provider, Observing Site, Device, etc.) should include `LifecycleStatus` (as part of
-    /// ``PolisIdentification``).
+    /// ``PolisIdentity``).
     ///
     /// `LifecycleStatus` will determine the syncing policy, as well as visibility of the POLIS items within client
     /// implementations. Implementations should adopt following behaviours:
@@ -265,8 +265,8 @@ public enum PolisDirection: Codable {
 
 
 
-//MARK: - Identification
-public extension PolisIdentification {
+//MARK: - Identity
+public extension PolisIdentity {
     enum CodingKeys: String, CodingKey {
         case id
         case references

@@ -85,7 +85,7 @@ final class PolisServiceProviderTests: XCTestCase {
 
     //MARK: - Actual tests -
     func testPolisDirectoryEntryCodingSupport() {
-        let sut = try? PolisDirectoryEntry(identity: PolisIdentification(name: "polis"),
+        let sut = try? PolisDirectoryEntry(identity: PolisIdentity(name: "polis"),
                                            url: "https://polis.net",
                                            providerDescription: "Polis test",
                                            supportedImplementations: [frameworkSupportedImplementation.last!],

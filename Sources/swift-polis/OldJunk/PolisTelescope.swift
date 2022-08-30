@@ -58,7 +58,7 @@ public enum PolisFocusType: String, Codable {
 //}
 
 //public struct PolisTelescope: Codable {
-////    public var item: PolisItem   // Telescope Identification
+////    public var item: PolisItem   // Telescope Identity
 //    public var type: PolisTelescopeType
 //    public var location: PolisObservingLocation?
 //    public var modeOfOperation: PolisModeOfOperation?

@@ -25,7 +25,7 @@ public enum PolisEnclosureType: String, Codable {
 }
 
 //public class PolisEnclosure: Codable {
-////    public var item: PolisItem   // Observing Site Identification
+////    public var item: PolisItem   // Observing Site Identity
 //    public var type: PolisEnclosureType
 //    public var modeOfOperation: PolisModeOfOperation
 //    public var instrumentIDs: [UUID]

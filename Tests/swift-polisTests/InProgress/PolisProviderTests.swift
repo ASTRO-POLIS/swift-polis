@@ -36,9 +36,9 @@ class PolisProviderTests: XCTestCase {
 //    }
 
 //    func testPolisManufacturerCodingAndDecoding() {
-//        let sut_attributes = PolisIdentification(id: UUID(), status: PolisIdentification.LifecycleStatus.inactive, lastUpdate: Date(), name: "Apple", automationLabel: "APPL")
+//        let sut_attributes = PolisIdentity(id: UUID(), status: PolisIdentity.LifecycleStatus.inactive, lastUpdate: Date(), name: "Apple", automationLabel: "APPL")
 //        let sut_admin      = PolisAdminContact(name: "Tim Cook", email: "tim@apple.com", additionalCommunicationChannels: [PolisAdminContact.Communication](), notes: "The big boss")
-//        let sut            = PolisManufacturer(identification: sut_attributes, uniqueName: "apple", url: URL(string: "https://www.apple.com"), contact: sut_admin)
+//        let sut            = PolisManufacturer(identity: sut_attributes, uniqueName: "apple", url: URL(string: "https://www.apple.com"), contact: sut_admin)
 //
 //        XCTAssertNotNil(sut)
 //

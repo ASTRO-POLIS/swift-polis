@@ -42,21 +42,21 @@ final class PolisCommonTypesTests: XCTestCase {
     }
 
     //MARK: - Actual tests -
-    func testPolisIdentificationCodingSupport() {
-        let sut = PolisIdentification(references: ["1234", "6539"],
-                                      status: PolisIdentification.LifecycleStatus.active,
-                                      lastUpdate: Date(),
-                                      name: "TestAttributes",
-                                      abbreviation: "abc",
-                                      automationLabel: "Ascom Label",
-                                      shortDescription: "Testing attributes")
+    func testPolisIdentityCodingSupport() {
+        let sut = PolisIdentity(references: ["1234", "6539"],
+                                status: PolisIdentity.LifecycleStatus.active,
+                                lastUpdate: Date(),
+                                name: "TestAttributes",
+                                abbreviation: "abc",
+                                automationLabel: "Ascom Label",
+                                shortDescription: "Testing attributes")
 
         XCTAssertNotNil(sut)
 
         data   = try? jsonEncoder.encode(sut)
         string = String(data: data!, encoding: .utf8)
 
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisIdentification.self, from: string!.data(using: .utf8)!))
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisIdentity.self, from: string!.data(using: .utf8)!))
     }
 
     func testPolisAdminContactCodingSupport() {
@@ -125,9 +125,9 @@ final class PolisCommonTypesTests: XCTestCase {
 
     //MARK: - Housekeeping -
     static var allTests = [
-        ("testPolisIdentificationCodingSupport", testPolisIdentificationCodingSupport),
-        ("testPolisAdminContactCodingSupport",   testPolisAdminContactCodingSupport),
-        ("testPolisDirectionsCodingSupport",     testPolisDirectionsCodingSupport),
-        ("testPolisContactCodingSupport",        testPolisContactCodingSupport),
+        ("testPolisIdentityCodingSupport",     testPolisIdentityCodingSupport),
+        ("testPolisAdminContactCodingSupport", testPolisAdminContactCodingSupport),
+        ("testPolisDirectionsCodingSupport",   testPolisDirectionsCodingSupport),
+        ("testPolisContactCodingSupport",      testPolisContactCodingSupport),
     ]
 }

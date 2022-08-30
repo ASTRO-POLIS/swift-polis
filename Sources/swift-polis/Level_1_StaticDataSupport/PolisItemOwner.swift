@@ -46,18 +46,18 @@ public struct PolisItemOwner: Codable, Identifiable {
         case other
     }
 
-    public let identification: PolisIdentification
+    public let identity: PolisIdentity
     public let type: OwnershipType
     public let shortName: String?   // e.g. MIT. MONET, BAO, ...
 
-    public var id: UUID { identification.id }
+    public var id: UUID { identity.id }
 }
 
 //MARK: - Type Extensions -
 
 public extension PolisItemOwner {
     enum CodingKeys: String, CodingKey {
-        case identification
+        case identity
         case type
         case shortName = "short_name"
     }

@@ -50,16 +50,16 @@ class PolisItemOwnerTests: XCTestCase {
     }
 
     func testPolisItemOwnerCodingSupport() {
-        let identification = PolisIdentification(references: ["1234"],
-                                                 status: PolisIdentification.LifecycleStatus.active,
-                                                 lastUpdate: Date(),
-                                                 name: "TestIdentification",
-                                                 abbreviation: "abc",
-                                                 automationLabel: "Ascom Label",
-                                                 shortDescription: "Testing ownership")
-        let sut            = PolisItemOwner(identification: identification, type: PolisItemOwner.OwnershipType.club, shortName: "AstroClubBAO")
+        let identity = PolisIdentity(references: ["1234"],
+                                     status: PolisIdentity.LifecycleStatus.active,
+                                     lastUpdate: Date(),
+                                     name: "Test identity",
+                                     abbreviation: "abc",
+                                     automationLabel: "Ascom Label",
+                                     shortDescription: "Testing ownership")
+        let sut      = PolisItemOwner(identity: identity, type: PolisItemOwner.OwnershipType.club, shortName: "AstroClubBAO")
 
-        XCTAssertNotNil(identification)
+        XCTAssertNotNil(identity)
         XCTAssertNotNil(sut)
 
         data   = try? jsonEncoder.encode(sut)

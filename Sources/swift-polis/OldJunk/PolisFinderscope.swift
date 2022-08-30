@@ -20,7 +20,7 @@ import Foundation
 //TODO: Discuss!!!
 
 //public struct PolisFinderscope: Codable {
-//    public var item: PolisItem   // Finderscope Identification
+//    public var item: PolisItem   // Finderscope Identity
 //    public var type: [String]
     //Finderscope should inherit the location from the main instrument!
 //    public var eastLongitude: Double

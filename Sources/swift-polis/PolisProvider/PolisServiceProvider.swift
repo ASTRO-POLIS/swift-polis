@@ -59,7 +59,7 @@ public struct PolisDirectoryEntry: Identifiable {
     /// `identity` uniquely identifies a POLIS Provider. Only the framework should change the attributes and
     /// potential changes should be done only at specific moments of the lifespan of the entry. Otherwise syncing could
     /// be badly broken.
-    public var identity: PolisIdentification
+    public var identity: PolisIdentity
 
     /// The fully qualified URL of the service provider, e.g. https://polis.observer
     public var url: String
@@ -87,7 +87,7 @@ public struct PolisDirectoryEntry: Identifiable {
     }
 
     /// Designated initialiser.
-    public init(identity:                 PolisIdentification,
+    public init(identity:                 PolisIdentity,
                 url:                      String,
                 providerDescription:      String?,
                 supportedImplementations: [PolisImplementationInfo],
@@ -142,12 +142,12 @@ public struct PolisObservingSiteDirectory: Codable {
     /// recommended that clients cache this list and update the observatory data only in case the cache needs to be
     /// invalidated (e.g. lastUpdate is changed).
     public struct ObservingSiteReference: Codable, Identifiable {
-        public var identity: PolisIdentification
+        public var identity: PolisIdentity
         public var type: PolisObservatoryType
 
         public var id: UUID { identity.id }
 
-        public init(identity: PolisIdentification, type: PolisObservatoryType) {
+        public init(identity: PolisIdentity, type: PolisObservatoryType) {
             self.identity = identity
             self.type     = type
         }
