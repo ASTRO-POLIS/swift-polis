@@ -23,6 +23,7 @@ public func allTests() -> [XCTestCaseEntry] {
         XCTestCase(PolisCommonTypesTests),
         XCTestCase(PolisServiceProviderTests.allTests),
         XCTestCase(PolisItemOwnerTests),
+        XCTestCase(PolisItemTests),
         
         XCTestCase(PolisProviderTests),
         XCTestCase(PolisStaticResourceFinderTests),

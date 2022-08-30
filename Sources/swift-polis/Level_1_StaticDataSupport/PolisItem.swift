@@ -17,6 +17,10 @@
 import Foundation
 
 
+/// `PolisItem` uniquely identifies almost every POLIS object and defines the hierarchies and references between different objects
+///
+/// Any `[[PolisDevice]]`,  Observing Source (site, mobile platform, Collaboration, Network, ...), or Resource (e.g. a manufacturer of astronomy related
+/// hardware) must have a `PolisItem` to uniquely identify the object and build the logical and spacial hierarchy between them
 public struct PolisItem: Codable, Identifiable {
     public var identity: PolisIdentity
     public var parentID: UUID?
@@ -26,8 +30,9 @@ public struct PolisItem: Codable, Identifiable {
 
     public var id: UUID { identity.id }
 
-    public init(identity: PolisIdentity, manufacturer: PolisManufacturer? = nil, owners: [PolisItemOwner]? = nil, imageLinks: [URL]? = nil) {
-        self.identity   = identity
+    public init(identity: PolisIdentity, parentID: UUID? = nil, manufacturer: PolisManufacturer? = nil, owners: [PolisItemOwner]? = nil, imageLinks: [URL]? = nil) {
+        self.identity     = identity
+        self.parentID     = parentID
         self.manufacturer = manufacturer
         self.owners       = owners
         self.imageLinks   = imageLinks
@@ -36,13 +41,10 @@ public struct PolisItem: Codable, Identifiable {
 
 //MARK: - Type Extensions -
 
-
-
-
 public extension PolisItem {
     enum CodingKeys: String, CodingKey {
         case identity
-        case parentID   = "parent_id"
+        case parentID     = "parent_id"
         case manufacturer
         case owners
         case imageLinks   = "image_links"
