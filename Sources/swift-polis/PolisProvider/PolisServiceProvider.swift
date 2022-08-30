@@ -15,46 +15,51 @@
 
 import Foundation
 
+// **Note for Swift developers:** COURAGEOUS and IMPORTANT ASSUMPTION: Types defined in this file and in should not have
+// incompatible coding/decoding and API changes in future versions of the standard! All other types could evolve.
+// The types defined here are only simple lists of IDs and last update dates.
+
 //MARK: - POLIS Directory Entry -
-/// `PolisProviderType` defines different types of POLIS providers.
-///
-/// The type implements the `Codable` and `CustomStringConvertible` protocols
-public enum PolisProviderType {
-    /// Only `public` provider should be used in production or by publicly available client apps or websites. Public
-    /// providers should run on servers with enough bandwidth and computational power capable of accommodating multiple
-    /// parallel client requests every second.
-    case `public`
 
-    /// `private` provider's main purpose is to act as a local cache for larger organisations and should not be accessed
-    /// from outside. Also organisations like amateur clubs might maintain private providers. They might require user
-    /// authentication.
-    case `private`
-
-    /// `local` could be used for clients running on mobile devices or desktop apps. It is a disposable local (often
-    /// offline) cache.
-    case local
-
-    /// `experimental` providers are sandboxes for new developments, and might require authentication for access. They
-    /// are allowed to be non-compliant with the POLIS standard.
-    case experimental
-
-    /// Only when a `public` server is unreachable, its `mirror` (if available) should be accessed while the main server
-    /// is down.
-    case mirror(id: String) // The `id` of the service provider being mirrored.
-}
-
-/// `PolisDirectoryEntry` encapsulates all information needed to identify a site as a POLIS provider
+/// `PolisDirectoryEntry` encapsulates all information needed to identify a site as a POLIS provider.
 ///
 /// `PolisDirectoryEntry` is used to define the Polis provider itself, as well as as an entry in the list of known Polis
 /// providers.
-///
-/// The type implements the `Codable` and `Identifiable` protocols
 public struct PolisDirectoryEntry: Identifiable {
 
-    /// `attributes` are marked with "private(set)" on purpose. Only the framework should change the attributes and
+    /// `ProviderType` defines different types of POLIS Providers.
+    ///
+    /// In general, only `public` and `mirror` types should be used by clients. Astro clubs and other communities might
+    /// access `private` providers, but they probably will allow only a restricted access to members only.
+    public enum ProviderType {
+
+        /// Only `public` provider should be used in production or by publicly available client apps or websites. Public
+        /// providers should run on servers with enough bandwidth and computational power capable of accommodating multiple
+        /// parallel client requests every second.
+        case `public`
+
+        /// `private` provider's main purpose is to act as a local cache for larger organisations and should not be accessed
+        /// from outside. Also organisations like amateur clubs might maintain private providers. They might require user
+        /// authentication.
+        case `private`
+
+        /// `local` could be used for clients running on mobile devices or desktop apps. It is a disposable local (often
+        /// offline) cache.
+        case local
+
+        /// `experimental` providers are sandboxes for new developments, and might require authentication for access. They
+        /// are allowed to be non-compliant with the POLIS standard.
+        case experimental
+
+        /// Only when a `public` provider is unreachable, its `mirror` (if available) should be accessed while the main server
+        /// is down.
+        case mirror(id: String) // The `id` of the service provider being mirrored.
+    }
+
+    /// `identity` uniquely identifies a POLIS Provider. Only the framework should change the attributes and
     /// potential changes should be done only at specific moments of the lifespan of the entry. Otherwise syncing could
     /// be badly broken.
-    public var attributes: PolisIdentification
+    public var identity: PolisIdentification
 
     /// The fully qualified URL of the service provider, e.g. https://polis.observer
     public var url: String
@@ -63,7 +68,7 @@ public struct PolisDirectoryEntry: Identifiable {
     public var supportedImplementations: [PolisImplementationInfo]
 
     /// Defines the type of the POLIS service provider e.g. public, experimental, mirror, ...
-    public var providerType: PolisProviderType
+    public var providerType: ProviderType
 
     /// POLIS service provider's admin contact
     ///
@@ -72,31 +77,32 @@ public struct PolisDirectoryEntry: Identifiable {
 
     /// `id` is needed to make the structure `Identifiable`
     ///
-    /// `id` refers to attributes UUID and should never be changed.
-    public var id: UUID { attributes.id }
+    /// `id` refers to identity's `id` and should never be changed.
+    public var id: UUID { identity.id }
 
-    public enum PolisDirectoryEntryError: Error {
+    /// Possible errors while creating a `PolisDirectoryEntry`
+    public enum DirectoryEntryError: Error {
         case emptyListOfSupportedImplementations
         case noneOfTheRequestedImplementationsIsSupportedByTheFramework
     }
 
     /// Designated initialiser.
-    public init(attributes:               PolisIdentification,
+    public init(identity:                 PolisIdentification,
                 url:                      String,
                 providerDescription:      String?,
                 supportedImplementations: [PolisImplementationInfo],
-                providerType:             PolisProviderType,
+                providerType:             ProviderType,
                 contact:                  PolisAdminContact) throws {
-        guard !supportedImplementations.isEmpty else { throw PolisDirectoryEntryError.emptyListOfSupportedImplementations }
+        guard !supportedImplementations.isEmpty else { throw DirectoryEntryError.emptyListOfSupportedImplementations }
 
         let suggestedImplementations = Set(supportedImplementations)
         let supportedImplementations = Set(frameworkSupportedImplementation)
         let intersection             = supportedImplementations.intersection(suggestedImplementations)
         let filtered                 = Array(intersection)
 
-        guard !filtered.isEmpty else { throw PolisDirectoryEntryError.noneOfTheRequestedImplementationsIsSupportedByTheFramework }
+        guard !filtered.isEmpty else { throw DirectoryEntryError.noneOfTheRequestedImplementationsIsSupportedByTheFramework }
 
-        self.attributes               = attributes
+        self.identity                 = identity
         self.url                      = url
         self.supportedImplementations = filtered
         self.providerType             = providerType
@@ -106,52 +112,51 @@ public struct PolisDirectoryEntry: Identifiable {
 
 /// `PolisDirectory` is the list of all known Polis providers.
 ///
-/// To avoid confusion (and potential syncing errors) it is recommended that the directory does contain the POLIS
+/// To avoid confusion (and potential syncing errors) it is required that the directory does contain the POLIS
 /// service provider entry that serves the directory list.
-/// The type implements the `Codable` protocol.
 public struct PolisDirectory  {
     public var lastUpdate: Date                // Used for syncing
-    public var entries: [PolisDirectoryEntry]  // List of all known providers
+    public var entries: [PolisDirectoryEntry]  // List of all known providers, including it's own provider entry
 
     /// Designated initialiser.
     /// - Parameters:
     ///   - lastUpdate: if omitted, the current date and time will be used
-    ///   - entries: possibly empty list of known POSIL service providers
-    public init(lastUpdate: Date = Date(),
+    ///   - entries: possibly empty list of known POSIL service providers. `entries` must contain at least the
+    ///   `PolisDirectoryEntry` for its own provider. Otherwise the method returns `nil`.
+    public init?(lastUpdate: Date = Date(),
                 entries: [PolisDirectoryEntry]) {
+        guard !entries.isEmpty else { return nil }
 
-        //TODO: Only the "Big Bang" provider could have an empty list of entries. All other providers must have at least one entry to the "BigBang". If these conditions are not fulfilled, throw... needs a new Error type. But perhaps this needs to be in the ServiceProvider class? Here we should not have access to the root polis file!
         self.lastUpdate = lastUpdate
         self.entries    = entries
     }
 }
 
-/// It is expected, that the list of observatory sites is long and each site's data could be way over 1MB. Therefore a
-/// compact list of site references is maintained separately containing only site UUIDs and last update time. It is
-/// recommended that clients cache this list and update the observatory data only in case the cache needs to be
-/// invalidated (e.g. lastUpdate is changed).
-///
-/// **Note for Swift developers:** COURAGEOUS and IMPORTANT ASSUMPTION: Types defined in this file and in
-/// `ServiceDiscovery.swift` should not have incompatible coding/decoding and API changes in future versions of the
-/// standard! All other types could evolve.
-/// This is only a quick reference to check if Client's cache has this site and if the site is up-to-date.
-public struct ObservatoryReference: Codable, Identifiable {
-    public var attributes: PolisIdentification
-    public var type: PolisObservatoryType
+//MARK: - Observing Site Directory -
 
-    public var id: UUID { attributes.id }
+/// A compact list of all known Observing Sites
+public struct PolisObservingSiteDirectory: Codable {
 
-    public init(attributes: PolisIdentification, type: PolisObservatoryType) {
-        self.attributes = attributes
-        self.type       = type
+    /// It is expected, that the list of observatory sites is long and each site's data could be way over 1MB. Therefore a
+    /// compact list of site references is maintained separately containing only site UUIDs and last update time. It is
+    /// recommended that clients cache this list and update the observatory data only in case the cache needs to be
+    /// invalidated (e.g. lastUpdate is changed).
+    public struct ObservingSiteReference: Codable, Identifiable {
+        public var identity: PolisIdentification
+        public var type: PolisObservatoryType
+
+        public var id: UUID { identity.id }
+
+        public init(identity: PolisIdentification, type: PolisObservatoryType) {
+            self.identity = identity
+            self.type     = type
+        }
     }
-}
 
-public struct ObservatoryDirectory: Codable {
     public var lastUpdate: Date                   // UTC
-    public var entries: [ObservatoryReference]
+    public var entries: [ObservingSiteReference]
 
-    public init(lastUpdate: Date, entries: [ObservatoryReference]) {
+    public init(lastUpdate: Date, entries: [ObservingSiteReference]) {
         self.lastUpdate = lastUpdate
         self.entries    = entries
     }
@@ -160,7 +165,7 @@ public struct ObservatoryDirectory: Codable {
 //MARK: - Making types Codable and CustomStringConvertible -
 
 //MARK: PolisProviderType
-extension PolisProviderType: Codable, CustomStringConvertible {
+extension PolisDirectoryEntry.ProviderType: Codable, CustomStringConvertible {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let base      = try container.decode(ProviderType.self, forKey: .providerType)
@@ -214,7 +219,7 @@ extension PolisProviderType: Codable, CustomStringConvertible {
 //MARK: - PolisDirectoryEntry
 extension PolisDirectoryEntry: Codable {
     public enum CodingKeys: String, CodingKey {
-        case attributes
+        case identity
         case url
         case supportedImplementations = "supported_implementations"
         case providerType             = "provider_type"
@@ -230,7 +235,7 @@ extension PolisDirectory: Codable {
     }
 }
 
-extension ObservatoryDirectory {
+extension PolisObservingSiteDirectory {
     public enum CodingKeys: String, CodingKey {
         case lastUpdate = "last_updated"
         case entries

@@ -21,9 +21,9 @@ public func allTests() -> [XCTestCaseEntry] {
     return [
         XCTestCase(PolisUtilitiesTests),
         XCTestCase(PolisCommonTypesTests),
+        XCTestCase(PolisServiceProviderTests.allTests),
 
         XCTestCase(PolisProviderTests),
-        XCTestCase(ServiceDiscoveryTests.allTests),
         XCTestCase(PolisStaticResourceFinderTests),
         XCTestCase(PolisCommonsTests),
     ]

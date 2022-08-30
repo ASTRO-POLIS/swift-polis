@@ -21,9 +21,9 @@ import swift_polisTests
 var tests = [XCTestCaseEntry]()
 tests += PolisUtilitiesTests.allTests()
 tests += PolisCommonTypesTests.allTests()
+tests += PolisServiceProviderTests.allTests()
 
 tests += PolisProviderTests.allTests()
-tests += ServiceDiscoveryTests.allTests()
 tests += PolisStaticResourceFinderTests.allTests()
 tests += PolisCommonsTests.allTests()
 

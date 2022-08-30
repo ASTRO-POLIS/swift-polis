@@ -110,11 +110,24 @@ final class PolisCommonTypesTests: XCTestCase {
         XCTAssertNoThrow(try jsonDecoder.decode(PolisDirection.self, from: string!.data(using: .utf8)!))
     }
 
+    func testPolisContactCodingSupport() {
+        let c = PolisAdminContact(name: "polis",
+                                  email: "polis@observer.net",
+                                  mobilePhone: nil,
+                                  additionalCommunicationChannels: [PolisAdminContact.Communication.instagram(username: "@polis")],
+                                  notes: nil)
+
+        data   = try? jsonEncoder.encode(c)
+        string = String(data: data!, encoding: .utf8)
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisAdminContact.self, from: string!.data(using: .utf8)!))
+    }
+
 
     //MARK: - Housekeeping -
     static var allTests = [
         ("testPolisIdentificationCodingSupport", testPolisIdentificationCodingSupport),
         ("testPolisAdminContactCodingSupport",   testPolisAdminContactCodingSupport),
         ("testPolisDirectionsCodingSupport",     testPolisDirectionsCodingSupport),
+        ("testPolisContactCodingSupport",        testPolisContactCodingSupport),
     ]
 }

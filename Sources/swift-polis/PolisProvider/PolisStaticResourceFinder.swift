@@ -26,7 +26,7 @@ public struct PolisPredefinedServicePaths {
     // Level 1 resource paths. These are folders or files.
     public static let baseServiceDirectory                  = "polis"            // e.g. /polis/
     public static let serviceProviderConfigurationFileName  = "polis"            // e.g. /polis/polis.json
-    public static let serviceProviderSitesDirectoryFileName = "polis_directory"  // e.g. /polis/<version>/polis_directory.json
+    public static let serviceProviderSitesDirectoryFileName = "polis_directory"  // e.g. /polis/polis_directory.json
     public static let observingSitesDirectoryFileName       = "polis_sites"      // e.g. /polis/<version>/polis_sites.json
     public static let siteDirectory                         = "polis_sites"      // e.g. /polis/<version>/polis_sites/
     public static let polisResources                        = "polis_resources"  // e.g. /polis/<version>/polis_resources/ .. e.g. manufacturers
@@ -72,7 +72,7 @@ public struct PolisStaticResourceFinder {
     }
 
     public func polisProviderSitesDirectoryFilePath(format: PolisImplementationInfo.DataFormat = .json) -> String {
-        "\(basePolisFolder())\(versionString)/\(PolisPredefinedServicePaths.serviceProviderSitesDirectoryFileName).\(format.rawValue)"
+        "\(basePolisFolder())\(PolisPredefinedServicePaths.serviceProviderSitesDirectoryFileName).\(format.rawValue)"
     }
 
     public func polisObservingSitesDirectoryFilePath(format: PolisImplementationInfo.DataFormat = .json) -> String {

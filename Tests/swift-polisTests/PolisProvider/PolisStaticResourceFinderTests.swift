@@ -50,7 +50,7 @@ final class PolisStaticResourceFinderTests: XCTestCase {
         XCTAssertEqual(sut!.sitesPolisFolder(), "/tmp/polis/\(version.description)/polis_sites/")
 
         XCTAssertEqual(sut!.polisConfigurationFilePath(), "/tmp/polis/polis.json")
-        XCTAssertEqual(sut!.polisProviderSitesDirectoryFilePath(), "/tmp/polis/\(version.description)/polis_directory.json")
+        XCTAssertEqual(sut!.polisProviderSitesDirectoryFilePath(), "/tmp/polis/polis_directory.json")
         XCTAssertEqual(sut!.polisObservingSitesDirectoryFilePath(), "/tmp/polis/\(version.description)/polis_sites.json")
         XCTAssertEqual(sut!.polisObservingDataFilePath(withID: dataID, siteID: siteID.uuidString), "/tmp/polis/\(version.description)/polis_sites/\(siteID.uuidString)/\(dataID.uuidString).json")
     }
