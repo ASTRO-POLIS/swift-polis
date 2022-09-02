@@ -16,9 +16,13 @@
 
 import Foundation
 
-public struct PolisDevice {
+public protocol DeviceDescribable: Codable {
+    
+}
 
-    public enum Types: String, Codable {
+public struct PolisDevice: Codable, Identifiable {
+
+    public enum DeviceType: String, Codable {
 
         //TODO: Sort them logically!
 
@@ -54,6 +58,8 @@ public struct PolisDevice {
         case spaceStation      = "SpaceStation"
     }
 
+
+    //MARK: - POLIS mode of operation
     public enum ModeOfOperation: String, Codable {
         case manual
         case manualWithAutomatedDetector
@@ -65,8 +71,17 @@ public struct PolisDevice {
         case unknown
     }
 
+    public var type: DeviceType
+    public var item: PolisItem
+    public var propertiesID: UUID
+    public private(set) var subDeviceIDs: [UUID]
+
+    public var id: UUID { item.identity.id }
+
+    public mutating func add(subDevice: PolisDevice) throws {
+        //TODO: Implement me!
+    }
 }
-//MARK: - POLIS mode of operation
 
 
 //MARK: - Type extensions -

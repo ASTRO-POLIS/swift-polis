@@ -89,7 +89,34 @@ public struct PolisImplementationInfo: Codable, Equatable {
         self.version    = version
     }
 
-    //TODO: We need methods for list of supported from this specific version device types and allowed sub-device types!
+    //TODO: Need docs
+    public static func isValid(deviceType: PolisDevice.DeviceType, for implementationInfo: PolisImplementationInfo) -> Bool {
+        guard let possibleDevices = PolisImplementationInfo.devicesSupportedByVersion[implementationInfo.version] else  { return false }
+
+        return possibleDevices.contains(deviceType)
+    }
+
+    //TODO: Need docs
+    public static func canDevice(ofType: PolisDevice.DeviceType, beSubDeviceOfType: PolisDevice.DeviceType, for implementationInfo: PolisImplementationInfo) -> Bool {
+        guard let possibleVersionCombinations = PolisImplementationInfo.subDevicesSupportedByVersion[implementationInfo.version] else { return false }
+        guard let parentDevice                = possibleVersionCombinations[beSubDeviceOfType]                                   else { return false }
+
+        return parentDevice.contains(ofType)
+    }
+
+    //MARK: - Private definitions -
+    private static var devicesSupportedByVersion = [SemanticVersion(with: "0.1-alpha.1") :
+                                                        [PolisDevice.DeviceType.telescope,
+                                                        ]
+    ]
+
+    private static var subDevicesSupportedByVersion = [SemanticVersion(with: "0.1-alpha.1") :
+                                                        [PolisDevice.DeviceType.telescope :
+                                                            [PolisDevice.DeviceType.telescope,
+                                                            ],
+                                                        ]
+    ]
+
 }
 
 /// A list of supported implementations for this concrete framework.

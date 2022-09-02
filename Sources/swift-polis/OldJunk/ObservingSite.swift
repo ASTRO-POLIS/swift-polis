@@ -41,6 +41,10 @@ public indirect enum SolarSystemBodyType {
     case comet(name: String)
 }
 
+// Wanderar (for mobile platforms)
+//    Orbiter
+//    Rover
+
 public struct AltitudeRange: Codable {
     public var lowOrbit: Double  // m
     public var highOrbit: Double // m

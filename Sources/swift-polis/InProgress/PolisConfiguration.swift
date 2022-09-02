@@ -14,21 +14,8 @@
 //===----------------------------------------------------------------------===//
 
 
-import XCTest
+import Foundation
 
-#if !canImport(ObjectiveC)
-public func allTests() -> [XCTestCaseEntry] {
-    return [
-        XCTestCase(PolisUtilitiesTests),
-        XCTestCase(PolisCommonTypesTests),
-        XCTestCase(PolisServiceProviderTests.allTests),
-        XCTestCase(PolisItemOwnerTests),
-        XCTestCase(PolisItemTests),
-        XCTestCase(PolisManufacturerTests),
-        XCTestCase(PolisVersionSupportTests),
-        
-        XCTestCase(PolisProviderTests),
-        XCTestCase(PolisStaticResourceFinderTests),
-    ]
+public struct PolisConfiguration: Codable {
+    
 }
-#endif

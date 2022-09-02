@@ -19,14 +19,33 @@ import SoftwareEtudesUtilities
 
 @testable import swift_polis
 
-final class PolisCommonsTests: XCTestCase {
+class PolisVersionSupportTests: XCTestCase {
 
+    //MARK: - Initialisation -
     private var jsonEncoder: PolisJSONEncoder!
     private var jsonDecoder: PolisJSONDecoder!
     private var data: Data!
     private var string: String!
 
-    func test_polisDataFormat() {
+    override func setUp() {
+        super.setUp()
+
+        jsonEncoder = PolisJSONEncoder()
+        jsonDecoder = PolisJSONDecoder()
+    }
+
+    override func tearDown() {
+        data        = nil
+        string      = nil
+        jsonEncoder = nil
+        jsonDecoder = nil
+
+        super.tearDown()
+    }
+
+
+    //MARK: - Actual tests -
+    func testPolisDataFormat() {
         let sutJSON = PolisImplementationInfo.DataFormat.json
         let sutXML  = PolisImplementationInfo.DataFormat.xml
 
@@ -35,7 +54,7 @@ final class PolisCommonsTests: XCTestCase {
         XCTAssertEqual(sutXML.rawValue, "xml")
     }
 
-    func test_polisAPISupport() {
+    func testPolisAPISupport() {
         let sutStaticData        = PolisImplementationInfo.APILevel.staticData
         let sutDynamicStatus     = PolisImplementationInfo.APILevel.dynamicStatus
         let sutDynamicScheduling = PolisImplementationInfo.APILevel.dynamicScheduling
@@ -52,7 +71,7 @@ final class PolisCommonsTests: XCTestCase {
         XCTAssertNoThrow(try jsonDecoder.decode(PolisImplementationInfo.APILevel.self, from: string!.data(using: .utf8)!))
     }
 
-    func test_polisSupportedImplementation() {
+    func testPolisSupportedImplementation() {
         let sutAlpha = PolisImplementationInfo(dataFormat: PolisImplementationInfo.DataFormat.json,
                                                apiSupport: PolisImplementationInfo.APILevel.staticData,
                                                version: SemanticVersion(with: "0.1-alpha.1")!)
@@ -71,25 +90,23 @@ final class PolisCommonsTests: XCTestCase {
         XCTAssertNoThrow(try jsonDecoder.decode(PolisImplementationInfo.self, from: string!.data(using: .utf8)!))
     }
 
-    override func setUp() {
-        super.setUp()
+    func testDeviceCompatibilityDiscovery() {
+        let version             = frameworkSupportedImplementation.last!.version
+        let implementationInfo  = PolisImplementationInfo(dataFormat: PolisImplementationInfo.DataFormat.json,
+                                                          apiSupport: PolisImplementationInfo.APILevel.staticData,
+                                                          version: version)
+        let telescopeDeviceType = PolisDevice.DeviceType.telescope
 
-        jsonEncoder = PolisJSONEncoder()
-        jsonDecoder = PolisJSONDecoder()
+        XCTAssertTrue(PolisImplementationInfo.isValid(deviceType: telescopeDeviceType, for: implementationInfo))
+        XCTAssertTrue(PolisImplementationInfo.canDevice(ofType: telescopeDeviceType, beSubDeviceOfType: telescopeDeviceType, for: implementationInfo))
     }
 
-    override func tearDown() {
-        data = nil
-        string = nil
-        jsonEncoder = nil
-        jsonDecoder = nil
-
-        super.tearDown()
-    }
-
+    //MARK: - Housekeeping -
     static var allTests = [
-        ("test_polisDataFormat", test_polisDataFormat),
-        ("test_polisAPISupport", test_polisAPISupport),
-        ("test_polisSupportedImplementation", test_polisSupportedImplementation),
+        ("testPolisDataFormat",              testPolisDataFormat),
+        ("testPolisAPISupport",              testPolisAPISupport),
+        ("testPolisSupportedImplementation", testPolisSupportedImplementation),
+        ("testDeviceCompatibilityDiscovery", testDeviceCompatibilityDiscovery),
     ]
+
 }

@@ -14,21 +14,16 @@
 //===----------------------------------------------------------------------===//
 
 
-import XCTest
+import Foundation
 
-#if !canImport(ObjectiveC)
-public func allTests() -> [XCTestCaseEntry] {
-    return [
-        XCTestCase(PolisUtilitiesTests),
-        XCTestCase(PolisCommonTypesTests),
-        XCTestCase(PolisServiceProviderTests.allTests),
-        XCTestCase(PolisItemOwnerTests),
-        XCTestCase(PolisItemTests),
-        XCTestCase(PolisManufacturerTests),
-        XCTestCase(PolisVersionSupportTests),
-        
-        XCTestCase(PolisProviderTests),
-        XCTestCase(PolisStaticResourceFinderTests),
-    ]
+public enum PolisObservingType: String, Codable {
+    case site
+    case mobilePlatform
+    case collaboration
+    case network
+    case array
 }
-#endif
+
+public protocol PolisObserving: Codable {
+    var type: PolisObservingType { get set }
+}
