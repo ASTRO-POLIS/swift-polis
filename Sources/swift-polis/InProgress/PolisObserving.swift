@@ -24,6 +24,28 @@ public enum PolisObservingType: String, Codable {
     case array
 }
 
-public protocol PolisObserving: Codable {
-    var type: PolisObservingType { get set }
+public protocol PolisObserving: Codable, Identifiable {
+    var type: PolisObservingType          { get }
+    var item: PolisItem                   { get set }
+    var parentID: UUID?                   { get set }
+    var deviceIDs: [UUID]                 { get set }
+    var configurationIDs: [UUID]          { get set }
+    var location: PolisObservingLocation? { get set }
+    var startDate: Date?                  { get set } // Could be nil if unknown
+    var endDate: Date?                    { get set } // if != nil -> either closed or temporary created (e.g. solar eclipse monitoring)
+    var admin: [PolisAdminContact]?       { get set }
+}
+
+public struct PolisObservingSite: PolisObserving {
+    public var type                              = PolisObservingType.site
+    public var item: PolisItem
+    public var parentID: UUID?
+    public var deviceIDs                         = [UUID]()
+    public var configurationIDs                  = [UUID]()
+    public var location: PolisObservingLocation?
+    public var startDate: Date?
+    public var endDate: Date?
+    public var admin: [PolisAdminContact]?
+
+    public var id: UUID { item.identity.id }
 }

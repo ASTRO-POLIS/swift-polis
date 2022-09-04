@@ -16,6 +16,45 @@
 
 import Foundation
 
+//TODO: Make this stuff Codable! Uf what a pain :-(
+public indirect enum SolarSystemBodyType {
+    case Sun
+
+    case Mercury
+    case Venus
+    case Earth
+    case Mars
+    case Jupiter
+    case Saturn
+    case Uranus
+    case Neptune
+
+    case Pluto
+    case Ceres
+    case Haumea
+    case Makemake
+    case Eris
+    case KuiperBeltObject(name: String)
+
+    case moon(of: SolarSystemBodyType, name: String)       // e.g. .moon(.Jupiter, "Titan")
+    case asteroid(name: String)
+    case comet(name: String)
+}
+
+//TODO: Make this stuff Codable! Oh boy, oh boy! What a pain!
+public enum ObservingSiteLocationType {
+    case earthAirBorn(range: AltitudeRange?)                            // Altitude in km
+    case groundBasedFixed(location: SolarSystemBodyType)
+    case groundBasedMobile(location: SolarSystemBodyType)               // e.g. Mars rover
+    case airBorn(location: SolarSystemBodyType, range: AltitudeRange?)
+    case solarSystemBodyOrbital(location: SolarSystemBodyType)
+    case solarSystemBodyNonOrbital(locationDescription: String?)        // e.g. Voyager
+    case extraSolarSystem
+    case ivoa(descriptor: String)
+}
+
+
+
 public enum PolisEarthContinent: String, Codable {
     case europe
     case northAmerica
@@ -35,7 +74,8 @@ public struct FixedEarthLocation: Codable {
     public let place: String?                  // e.g. Mount Wilson
     public let regionOrState: String?          // e.g. California
     public let regionOrStateCode: String?      // e.g. CA for California
-    public let zipCode: String?                // e.g. US
+    public let zipCode: String?                // e.g. 12345
+    public let country: String?                // e.g. Armenia
     public let countryCode: String?            // 2-letter code.
     public let surfaceSize: Double?            // in m^2
 
@@ -47,6 +87,7 @@ public struct FixedEarthLocation: Codable {
                 regionOrState: String?           = nil,
                 regionOrStateCode: String?       = nil,
                 zipCode: String?                 = nil,
+                country: String?                 = nil,
                 countryCode: String?             = nil,
                 surfaceSize: Double?             = nil) {
         self.eastLongitude     = eastLongitude
@@ -57,6 +98,7 @@ public struct FixedEarthLocation: Codable {
         self.regionOrState     = regionOrState
         self.regionOrStateCode = regionOrStateCode
         self.zipCode           = zipCode
+        self.country           = country
         self.countryCode       = countryCode
         self.surfaceSize       = surfaceSize
     }
@@ -78,6 +120,10 @@ public struct TemporaryEarthLocation: Codable {
 public enum PolisObservingLocation: Codable {
     case earthGroundBasedFixed(location: FixedEarthLocation)
     case earthGroundBasedMobile(locationDescription: [TemporaryEarthLocation])
+
+    // orbiting: SolarSystemBodyType
+    // roving: SolarSystemBodyType
+
     case unknown
 }
 
@@ -98,20 +144,20 @@ public extension PolisEarthContinent {
 }
 
 
-public extension FixedEarthLocation {
-    enum CodingKeys: String, CodingKey {
-        case eastLongitude     = "east_longitude"
-        case latitude
-        case altitude
-        case continent
-        case place
-        case regionOrState     = "region_or_state"
-        case regionOrStateCode = "region_or_state_code"
-        case zipCode           = "zip_code"
-        case countryCode       = "country_ode"
-        case surfaceSize       = "surface_size"
-    }
-}
+//public extension FixedEarthLocation {
+//    enum CodingKeys: String, CodingKey {
+//        case eastLongitude     = "east_longitude"
+//        case latitude
+//        case altitude
+//        case continent
+//        case place
+//        case regionOrState     = "region_or_state"
+//        case regionOrStateCode = "region_or_state_code"
+//        case zipCode           = "zip_code"
+//        case countryCode       = "country_ode"
+//        case surfaceSize       = "surface_size"
+//    }
+//}
 
 
 public extension PolisObservingLocation {

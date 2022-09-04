@@ -16,6 +16,18 @@
 
 import Foundation
 
+public enum PolisObservationResultType: String, Codable {
+    case simple2DImage
+    case multiFilter2DImage
+    case photometry
+    case spectrography
+
+    //TODO: Astronomers should define the entire list!
+}
+
 public struct PolisConfiguration: Codable {
-    
+    public var observationResulType: PolisObservationResultType
+    public var item: PolisItem
+    public var deviceIDs: [UUID]
+    public var isDefault = true
 }

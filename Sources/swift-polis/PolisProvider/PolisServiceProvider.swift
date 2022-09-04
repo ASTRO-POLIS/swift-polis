@@ -143,11 +143,11 @@ public struct PolisObservingSiteDirectory: Codable {
     /// invalidated (e.g. lastUpdate is changed).
     public struct ObservingSiteReference: Codable, Identifiable {
         public var identity: PolisIdentity
-        public var type: PolisObservatoryType
+        public var type: PolisObservingType
 
         public var id: UUID { identity.id }
 
-        public init(identity: PolisIdentity, type: PolisObservatoryType) {
+        public init(identity: PolisIdentity, type: PolisObservingType) {
             self.identity = identity
             self.type     = type
         }
