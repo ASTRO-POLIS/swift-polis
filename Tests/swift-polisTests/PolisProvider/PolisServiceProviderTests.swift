@@ -84,6 +84,25 @@ final class PolisServiceProviderTests: XCTestCase {
     }
 
     //MARK: - Actual tests -
+    func testPolisProviderTypeCodingAndDecoding() {
+        let sut_pub = PolisDirectoryEntry.ProviderType.public
+        let sut_mir = PolisDirectoryEntry.ProviderType.mirror(id: "abc")
+
+        XCTAssertNotNil(sut_pub)
+        XCTAssertNotNil(sut_mir)
+
+        data   = try? jsonEncoder.encode(sut_pub)
+        string = String(data: data!, encoding: .utf8)
+
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectoryEntry.ProviderType.self, from: string!.data(using: .utf8)!))
+
+        data   = try? jsonEncoder.encode(sut_mir)
+        string = String(data: data!, encoding: .utf8)
+
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectoryEntry.ProviderType.self, from: string!.data(using: .utf8)!))
+    }
+
+
     func testPolisDirectoryEntryCodingSupport() {
         let sut = try? PolisDirectoryEntry(identity: PolisIdentity(name: "polis"),
                                            url: "https://polis.net",
@@ -115,7 +134,9 @@ final class PolisServiceProviderTests: XCTestCase {
 
     //MARK: - Housekeeping -
     static var allTests = [
+        ("testPolisProviderTypeCodingAndDecoding", testPolisProviderTypeCodingAndDecoding),
         ("testPolisDirectoryEntryCodingSupport",   testPolisDirectoryEntryCodingSupport),
         ("testLoadingPolisDirectoryEntryFromData", testLoadingPolisDirectoryEntryFromData),
+        ("testPolisDirectoryFromStaticData",       testPolisDirectoryFromStaticData),
     ]
 }

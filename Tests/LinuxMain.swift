@@ -19,14 +19,15 @@ import XCTest
 import swift_polisTests
 
 var tests = [XCTestCaseEntry]()
+
 tests += PolisUtilitiesTests.allTests()
 tests += PolisCommonTypesTests.allTests()
 tests += PolisServiceProviderTests.allTests()
 tests += PolisItemOwnerTests.allTests()
 tests += PolisItemTests.allTests()
 tests += PolisManufacturerTests.allTests()
-tests += PolisProviderTests.allTests()
 tests += PolisStaticResourceFinderTests.allTests()
 tests += PolisVersionSupportTests.allTests(),
+tests += PolisObservingTests.allTests(),
 
 XCTMain(tests)
