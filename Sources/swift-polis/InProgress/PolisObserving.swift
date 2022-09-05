@@ -48,11 +48,40 @@ public struct PolisObservingSite: PolisObserving {
     public var admins: [PolisAdminContact]?
 
     public var id: UUID { item.identity.id }
+
+    public init(type: PolisObservingType           = .site,
+                item: PolisItem,
+                parentID: UUID?                    = nil,
+                deviceIDs: [UUID]                  = [UUID](),
+                configurationIDs: [UUID]           = [UUID](),
+                location: PolisObservingLocation?  = nil,
+                startDate: Date?                   = nil,
+                endDate: Date?                     = nil,
+                admins: [PolisAdminContact]?       = nil) {
+        self.type             = type
+        self.item             = item
+        self.parentID         = parentID
+        self.deviceIDs        = deviceIDs
+        self.configurationIDs = configurationIDs
+        self.location         = location
+        self.startDate        = startDate
+        self.endDate          = endDate
+        self.admins           = admins
+    }
 }
 
 
 //MARK: - Type extensions -
 
+public extension PolisObservingType {
+    enum CodingKeys: String, CodingKey {
+        case site
+        case mobilePlatform = "mobile_platform"
+        case collaboration
+        case network
+        case array
+    }
+}
 
 
 //MARK: - Observing Site
