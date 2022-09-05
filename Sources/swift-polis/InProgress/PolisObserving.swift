@@ -33,7 +33,7 @@ public protocol PolisObserving: Codable, Identifiable {
     var location: PolisObservingLocation? { get set }
     var startDate: Date?                  { get set } // Could be nil if unknown
     var endDate: Date?                    { get set } // if != nil -> either closed or temporary created (e.g. solar eclipse monitoring)
-    var admin: [PolisAdminContact]?       { get set }
+    var admins: [PolisAdminContact]?      { get set }
 }
 
 public struct PolisObservingSite: PolisObserving {
@@ -45,7 +45,27 @@ public struct PolisObservingSite: PolisObserving {
     public var location: PolisObservingLocation?
     public var startDate: Date?
     public var endDate: Date?
-    public var admin: [PolisAdminContact]?
+    public var admins: [PolisAdminContact]?
 
     public var id: UUID { item.identity.id }
+}
+
+
+//MARK: - Type extensions -
+
+
+
+//MARK: - Observing Site
+public extension PolisObservingSite {
+    enum CodingKeys: String, CodingKey {
+        case type
+        case item
+        case parentID         = "parent_id"
+        case deviceIDs        = "device_ids"
+        case configurationIDs = "configuration_ids"
+        case location
+        case startDate        = "start_date"
+        case endDate          = "end_date"
+        case admins
+    }
 }
