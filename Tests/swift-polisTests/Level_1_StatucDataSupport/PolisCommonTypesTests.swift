@@ -113,7 +113,7 @@ final class PolisCommonTypesTests: XCTestCase {
     func testPolisContactCodingSupport() {
         let c = PolisAdminContact(name: "polis",
                                   email: "polis@observer.net",
-                                  mobilePhone: nil,
+                                  phone: nil,
                                   additionalCommunicationChannels: [PolisAdminContact.Communication.instagram(username: "@polis")],
                                   notes: nil)
 

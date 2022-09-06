@@ -190,7 +190,7 @@ public struct PolisAdminContact {
     /// Consider giving only institution phone numbers - not private ones. The phone number should include the country
     /// code, starting with "+", and should contain no spaces, brackets, or other formatting characters. No validation
     /// is provided.
-    public var mobilePhone: String?
+    public var phone: String?
 
     /// Possibly empty list (array) of additional communication channels of type ``PolisCommunication``.
     public var additionalCommunicationChannels: [Communication]
@@ -204,14 +204,14 @@ public struct PolisAdminContact {
     /// valid one, `nil` will be returned.
     public init?(name:                            String?,
                  email:                           String,
-                 mobilePhone:                     String? = nil,
+                 phone:                           String? = nil,
                  additionalCommunicationChannels: [Communication] = [Communication](),
                  notes:                           String?) {
         guard email.isValidEmailAddress() else { return nil }
 
         self.name                            = name
         self.email                           = email
-        self.mobilePhone                     = mobilePhone
+        self.phone                          = phone
         self.additionalCommunicationChannels = additionalCommunicationChannels
         self.notes                           = notes
     }
@@ -361,7 +361,7 @@ extension PolisAdminContact: Codable {
     public enum CodingKeys: String, CodingKey {
         case name
         case email
-        case mobilePhone                     = "mobile_phone"
+        case phone
         case additionalCommunicationChannels = "additional_communication_channels"
         case notes
     }

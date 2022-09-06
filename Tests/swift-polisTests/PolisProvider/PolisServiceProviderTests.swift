@@ -111,7 +111,7 @@ final class PolisServiceProviderTests: XCTestCase {
                                            providerType: PolisDirectoryEntry.ProviderType.experimental,
                                            contact: PolisAdminContact(name: "polis",
                                                                       email: "polis@observer.net",
-                                                                      mobilePhone: "+3068452820",
+                                                                      phone: "+3068452820",
                                                                       additionalCommunicationChannels: [PolisAdminContact.Communication.instagram(username: "@polis")],
                                                                       notes: "The admin works only on Sunday")!)
 
