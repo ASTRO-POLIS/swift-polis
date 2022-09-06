@@ -71,16 +71,54 @@ public struct PolisDevice: Codable, Identifiable {
         case unknown
     }
 
-    public var type: DeviceType
+    public enum SubDeviceOperationError: Error {
+        case subDeviceNotFound                      // Trying to remove a non-existing sub-device
+        case attemptToAddSubDeviceOfTypeNotAllowed  // e.g. try to add Telescope to a Weather Station
+    }
+
     public var item: PolisItem
+    public var type: DeviceType
+    public var modeOfOperation: ModeOfOperation
     public var propertiesID: UUID
-    public private(set) var subDeviceIDs: [UUID]
 
     public var id: UUID { item.identity.id }
 
-    public mutating func add(subDevice: PolisDevice) throws {
-        //TODO: Implement me!
+    public init(item: PolisItem, type: DeviceType, modeOfOperation: ModeOfOperation = .unknown, propertiesID: UUID) {
+        self.item            = item
+        self.type            = type
+        self.modeOfOperation = modeOfOperation
+        self.propertiesID    = propertiesID
     }
+
+    // VERY IMPORTANT NOTE: The order of elements in `_subDeviceIDs` and `_subDevices` MUST be the same!
+    // This is done for optimisation reasons. If this rule is not follow, what will follow is a gigantic mess!
+
+    private var _subDeviceIDs = [UUID]()
+    public func subDeviceIDs() -> [UUID] { _subDeviceIDs }
+
+
+    private var _subDevices = [PolisDevice]()
+
+    public mutating func add(subDevice: PolisDevice) throws {
+        if PolisImplementationInfo.canDevice(ofType: subDevice.type, beSubDeviceOfType: self.type, for: frameworkSupportedImplementation.last!) {
+            let dID = subDevice.id
+
+            _subDeviceIDs.append(dID)
+            _subDevices.append(subDevice)
+        }
+        else { throw SubDeviceOperationError.attemptToAddSubDeviceOfTypeNotAllowed }
+    }
+
+    public mutating func remove(subDevice: PolisDevice) throws {
+        let dID = subDevice.id
+
+        guard let index = _subDeviceIDs.firstIndex(of: dID) else { throw SubDeviceOperationError.subDeviceNotFound }
+
+        _subDeviceIDs.remove(at: index)
+        _subDevices.remove(at: index)
+    }
+
+
 }
 
 
