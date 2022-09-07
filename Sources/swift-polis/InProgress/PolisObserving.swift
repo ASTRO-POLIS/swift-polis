@@ -37,7 +37,7 @@ public protocol PolisObserving: Codable, Identifiable {
 }
 
 public struct PolisObservingSite: PolisObserving {
-    public var type                              = PolisObservingType.site
+    public var type: PolisObservingType
     public var item: PolisItem
     public var parentID: UUID?
     public var deviceIDs                         = [UUID]()

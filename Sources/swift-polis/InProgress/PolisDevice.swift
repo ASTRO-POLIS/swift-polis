@@ -71,53 +71,27 @@ public struct PolisDevice: Codable, Identifiable {
         case unknown
     }
 
-    public enum SubDeviceOperationError: Error {
-        case subDeviceNotFound                      // Trying to remove a non-existing sub-device
-        case attemptToAddSubDeviceOfTypeNotAllowed  // e.g. try to add Telescope to a Weather Station
-    }
-
     public var item: PolisItem
     public var type: DeviceType
     public var modeOfOperation: ModeOfOperation
     public var propertiesID: UUID
 
+    /// Device administrator's suggested sub-devices
+    ///
+    /// It is the responsibility of the client software to decide to load or reject these sub-devices. ``PolisImplementationInfo`` implements methods to
+    /// support the client software to make the loading decision, but the POLIS standard just recommends a device hierarchy without strictly requiring it. There are
+    /// legit cases when the suggested hierarchy does not fit complexity of astronomical observing stations.
+    public var proposedSubDeviceIDs: [UUID]?
+
     public var id: UUID { item.identity.id }
 
-    public init(item: PolisItem, type: DeviceType, modeOfOperation: ModeOfOperation = .unknown, propertiesID: UUID) {
-        self.item            = item
-        self.type            = type
-        self.modeOfOperation = modeOfOperation
-        self.propertiesID    = propertiesID
+    public init(item: PolisItem, type: DeviceType, modeOfOperation: ModeOfOperation = .unknown, propertiesID: UUID, proposedSubDeviceIDs: [UUID]? = nil) {
+        self.item                 = item
+        self.type                 = type
+        self.modeOfOperation      = modeOfOperation
+        self.propertiesID         = propertiesID
+        self.proposedSubDeviceIDs = proposedSubDeviceIDs
     }
-
-    // VERY IMPORTANT NOTE: The order of elements in `_subDeviceIDs` and `_subDevices` MUST be the same!
-    // This is done for optimisation reasons. If this rule is not follow, what will follow is a gigantic mess!
-
-    private var _subDeviceIDs = [UUID]()
-    public func subDeviceIDs() -> [UUID] { _subDeviceIDs }
-
-
-    private var _subDevices = [PolisDevice]()
-
-    public mutating func add(subDevice: PolisDevice) throws {
-        if PolisImplementationInfo.canDevice(ofType: subDevice.type, beSubDeviceOfType: self.type, for: frameworkSupportedImplementation.last!) {
-            let dID = subDevice.id
-
-            _subDeviceIDs.append(dID)
-            _subDevices.append(subDevice)
-        }
-        else { throw SubDeviceOperationError.attemptToAddSubDeviceOfTypeNotAllowed }
-    }
-
-    public mutating func remove(subDevice: PolisDevice) throws {
-        let dID = subDevice.id
-
-        guard let index = _subDeviceIDs.firstIndex(of: dID) else { throw SubDeviceOperationError.subDeviceNotFound }
-
-        _subDeviceIDs.remove(at: index)
-        _subDevices.remove(at: index)
-    }
-
 
 }
 
@@ -136,3 +110,12 @@ public extension PolisDevice.ModeOfOperation {
     }
 }
 
+public extension PolisDevice {
+    enum CodingKeys: String, CodingKey {
+        case item
+        case type
+        case modeOfOperation      = "mode_of_operation"
+        case propertiesID         = "properties_id"
+        case proposedSubDeviceIDs = "proposed_sub_device_ids"
+    }
+}
