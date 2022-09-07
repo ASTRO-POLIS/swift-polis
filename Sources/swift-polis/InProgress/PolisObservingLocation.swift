@@ -56,14 +56,13 @@ public enum ObservingSiteLocationType {
 
 
 public enum PolisEarthContinent: String, Codable {
-    case europe = "Europa"
-    case northAmerica
-    case southAmerica
-    case africa
-    case asia
-    case oceania
-    case arctica
-    case antarctica
+    case europe       = "Europa"
+    case northAmerica = "Norh America"
+    case southAmerica = "South America"
+    case africa       = "Africa"
+    case asia         = "Asia"
+    case oceania      = "Australia and Oceania"
+    case antarctica   = "Antarctica"
 }
 
 public struct FixedEarthLocation: Codable {
