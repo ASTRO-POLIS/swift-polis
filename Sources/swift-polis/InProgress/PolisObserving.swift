@@ -47,6 +47,8 @@ public struct PolisObservingSite: PolisObserving {
     public var endDate: Date?
     public var admins: [PolisAdminContact]?
 
+    public var subObservingSiteIDs: [UUID]?
+
     public var id: UUID { item.identity.id }
 
     public init(type: PolisObservingType           = .site,
@@ -57,16 +59,18 @@ public struct PolisObservingSite: PolisObserving {
                 location: PolisObservingLocation?  = nil,
                 startDate: Date?                   = nil,
                 endDate: Date?                     = nil,
-                admins: [PolisAdminContact]?       = nil) {
-        self.type             = type
-        self.item             = item
-        self.parentID         = parentID
-        self.deviceIDs        = deviceIDs
-        self.configurationIDs = configurationIDs
-        self.location         = location
-        self.startDate        = startDate
-        self.endDate          = endDate
-        self.admins           = admins
+                admins: [PolisAdminContact]?       = nil,
+                subObservingSiteIDs: [UUID]?       = nil) {
+        self.type                = type
+        self.item                = item
+        self.parentID            = parentID
+        self.deviceIDs           = deviceIDs
+        self.configurationIDs    = configurationIDs
+        self.location            = location
+        self.startDate           = startDate
+        self.endDate             = endDate
+        self.admins              = admins
+        self.subObservingSiteIDs = subObservingSiteIDs
     }
 }
 
@@ -89,12 +93,13 @@ public extension PolisObservingSite {
     enum CodingKeys: String, CodingKey {
         case type
         case item
-        case parentID         = "parent_id"
-        case deviceIDs        = "device_ids"
-        case configurationIDs = "configuration_ids"
+        case parentID            = "parent_id"
+        case deviceIDs           = "device_ids"
+        case configurationIDs    = "configuration_ids"
         case location
-        case startDate        = "start_date"
-        case endDate          = "end_date"
+        case startDate           = "start_date"
+        case endDate             = "end_date"
         case admins
+        case subObservingSiteIDs = "sub_observing_site_ids"
     }
 }
