@@ -56,7 +56,7 @@ public enum ObservingSiteLocationType {
 
 
 public enum PolisEarthContinent: String, Codable {
-    case europe
+    case europe = "Europa"
     case northAmerica
     case southAmerica
     case africa
