@@ -62,7 +62,7 @@ public struct PolisStaticResourceFinder {
 
     //MARK: - All non-remote methods below return absolute paths to POLIS resources without validating if they exist or are reachable!
 
-    public func reemoteRootPolisFolder() -> String { "/" }
+    public func reemoteRootPolisFolder() -> String { "" }
     public func rootPolisFolder() -> String        { normalisedPath(basePath.path) }
 
     public func remoteBasePolisFolder() -> String { normalisedPath("\(reemoteRootPolisFolder())\(PolisPredefinedServicePaths.baseServiceDirectory)") }
