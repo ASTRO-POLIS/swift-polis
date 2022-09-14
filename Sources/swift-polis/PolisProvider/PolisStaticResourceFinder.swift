@@ -60,32 +60,41 @@ public struct PolisStaticResourceFinder {
     }
 
 
-    //MARK: - All methods below return absolute paths to POLIS resources without validating if they exist or are reachable!
+    //MARK: - All non-remote methods below return absolute paths to POLIS resources without validating if they exist or are reachable!
 
-    public func rootPolisFolder() -> String      { normalisedPath(basePath.path) }
-    public func basePolisFolder() -> String      { normalisedPath("\(rootPolisFolder())\(PolisPredefinedServicePaths.baseServiceDirectory)") }
-    public func sitesPolisFolder() -> String     { normalisedPath("\(basePolisFolder())\(versionString)/\(PolisPredefinedServicePaths.siteDirectory)") }
-    public func resourcesPolisFolder() -> String { normalisedPath("\(basePolisFolder())\(versionString)/\(PolisPredefinedServicePaths.polisResources)") }
+    public func reemoteRootPolisFolder() -> String { "/" }
+    public func rootPolisFolder() -> String        { normalisedPath(basePath.path) }
 
-    public func polisConfigurationFilePath(format: PolisImplementationInfo.DataFormat = .json) -> String {
-        "\(basePolisFolder())\(PolisPredefinedServicePaths.serviceProviderConfigurationFileName).\(format.rawValue)"
+    public func remoteBasePolisFolder() -> String { normalisedPath("\(reemoteRootPolisFolder())\(PolisPredefinedServicePaths.baseServiceDirectory)") }
+    public func basePolisFolder() -> String       { normalisedPath("\(rootPolisFolder())\(PolisPredefinedServicePaths.baseServiceDirectory)") }
+
+    public func remoteSitesPolisFolder() -> String { normalisedPath("\(remoteBasePolisFolder())\(versionString)/\(PolisPredefinedServicePaths.siteDirectory)") }
+    public func sitesPolisFolder() -> String       { normalisedPath("\(basePolisFolder())\(versionString)/\(PolisPredefinedServicePaths.siteDirectory)") }
+
+    public func remoteResourcesPolisFolder() -> String { normalisedPath("\(remoteBasePolisFolder()))\(versionString)/\(PolisPredefinedServicePaths.polisResources)") }
+    public func resourcesPolisFolder() -> String       { normalisedPath("\(basePolisFolder())\(versionString)/\(PolisPredefinedServicePaths.polisResources)") }
+
+    public func remotePolisConfigurationFilePath(format: PolisImplementationInfo.DataFormat = .json) -> String { "\(remoteBasePolisFolder())\(PolisPredefinedServicePaths.serviceProviderConfigurationFileName).\(format.rawValue)" }
+    public func polisConfigurationFilePath(format: PolisImplementationInfo.DataFormat = .json) -> String       { "\(basePolisFolder())\(PolisPredefinedServicePaths.serviceProviderConfigurationFileName).\(format.rawValue)" }
+
+    public func remotePolisProviderSitesDirectoryFilePath(format: PolisImplementationInfo.DataFormat = .json) -> String { "\(remoteBasePolisFolder())\(PolisPredefinedServicePaths.serviceProviderSitesDirectoryFileName).\(format.rawValue)" }
+    public func polisProviderSitesDirectoryFilePath(format: PolisImplementationInfo.DataFormat = .json) -> String       { "\(basePolisFolder())\(PolisPredefinedServicePaths.serviceProviderSitesDirectoryFileName).\(format.rawValue)" }
+
+    public func remotePolisObservingSitesDirectoryFilePath(format: PolisImplementationInfo.DataFormat = .json) -> String {
+        "\(remoteBasePolisFolder())\(versionString)/\(PolisPredefinedServicePaths.observingSitesDirectoryFileName).\(format.rawValue)"
     }
-
-    public func polisProviderSitesDirectoryFilePath(format: PolisImplementationInfo.DataFormat = .json) -> String {
-        "\(basePolisFolder())\(PolisPredefinedServicePaths.serviceProviderSitesDirectoryFileName).\(format.rawValue)"
-    }
-
     public func polisObservingSitesDirectoryFilePath(format: PolisImplementationInfo.DataFormat = .json) -> String {
         "\(basePolisFolder())\(versionString)/\(PolisPredefinedServicePaths.observingSitesDirectoryFileName).\(format.rawValue)"
     }
 
-    public func polisObservingSiteFilePath(siteID: String, format: PolisImplementationInfo.DataFormat = .json) -> String { "\(sitesPolisFolder())\(siteID)/\(siteID).\(format.rawValue)" }
+    public func remotePolisObservingSiteFilePath(siteID: String, format: PolisImplementationInfo.DataFormat = .json) -> String { "\(remoteSitesPolisFolder())\(siteID)/\(siteID).\(format.rawValue)" }
+    public func polisObservingSiteFilePath(siteID: String, format: PolisImplementationInfo.DataFormat = .json) -> String       { "\(sitesPolisFolder())\(siteID)/\(siteID).\(format.rawValue)" }
 
-    public func polisResourcesPath(uniqueName: String, format: PolisImplementationInfo.DataFormat = .json) -> String { "\(resourcesPolisFolder())\(uniqueName)/\(uniqueName).\(format.rawValue)" }
+    public func remotePolisResourcesPath(uniqueName: String, format: PolisImplementationInfo.DataFormat = .json) -> String { "\(remoteResourcesPolisFolder())\(uniqueName)/\(uniqueName).\(format.rawValue)" }
+    public func polisResourcesPath(uniqueName: String, format: PolisImplementationInfo.DataFormat = .json) -> String       { "\(resourcesPolisFolder())\(uniqueName)/\(uniqueName).\(format.rawValue)" }
 
-    public func polisObservingDataFilePath(withID: UUID, siteID: String, format: PolisImplementationInfo.DataFormat = .json) -> String {
-        "\(sitesPolisFolder())\(siteID)/\(withID.uuidString).\(format.rawValue)"
-    }
+    public func premotePolisObservingDataFilePath(withID: UUID, siteID: String, format: PolisImplementationInfo.DataFormat = .json) -> String { "\(remoteSitesPolisFolder())\(siteID)/\(withID.uuidString).\(format.rawValue)" }
+    public func polisObservingDataFilePath(withID: UUID, siteID: String, format: PolisImplementationInfo.DataFormat = .json) -> String        { "\(sitesPolisFolder())\(siteID)/\(withID.uuidString).\(format.rawValue)" }
 
     //MARK: - Private API
     private let basePath: URL
