@@ -144,12 +144,14 @@ public struct PolisObservingSiteDirectory: Codable {
     public struct ObservingSiteReference: Codable, Identifiable {
         public var identity: PolisIdentity
         public var type: PolisObservingType
+        public var parentObservingSiteID: UUID?
 
         public var id: UUID { identity.id }
 
-        public init(identity: PolisIdentity, type: PolisObservingType) {
+        public init(identity: PolisIdentity, type: PolisObservingType, parentObservingSiteID: UUID? = nil) {
             self.identity = identity
             self.type     = type
+            self.parentObservingSiteID = parentObservingSiteID
         }
     }
 
@@ -158,7 +160,7 @@ public struct PolisObservingSiteDirectory: Codable {
 
     public init(lastUpdate: Date, entries: [ObservingSiteReference]) {
         self.lastUpdate = lastUpdate
-        self.entries    = entries
+        self.entries = entries
     }
 }
 
