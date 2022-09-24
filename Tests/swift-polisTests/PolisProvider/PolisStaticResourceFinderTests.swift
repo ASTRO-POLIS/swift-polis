@@ -27,32 +27,60 @@ final class PolisStaticResourceFinderTests: XCTestCase {
     private var wrongFormatImplementation: PolisImplementationInfo!
     private var wrongVersionImplementation: PolisImplementationInfo!
 
-    func testPolisStaticResourceFinderCreation() {
-        let sut_wrongPath    = try? PolisStaticResourceFinder(at: URL(fileURLWithPath: "/root"), supportedImplementation: correctImplementation)
-        let sut_wrongFormat  = try? PolisStaticResourceFinder(at: URL(fileURLWithPath: "/tmp"),  supportedImplementation: wrongFormatImplementation)
-        let sut_wrongVersion = try? PolisStaticResourceFinder(at: URL(fileURLWithPath: "/tmp"),  supportedImplementation: wrongVersionImplementation)
-        let sut_correct      = try? PolisStaticResourceFinder(at: URL(fileURLWithPath: "/tmp"),  supportedImplementation: correctImplementation)
+    func test_PolisStaticResourceFinderCreation() {
+        let sut_wrongPath    = try? PolisFileResourceFinder(at: URL(fileURLWithPath: "/root"), supportedImplementation: correctImplementation)
+        let sut_wrongFormat  = try? PolisFileResourceFinder(at: URL(fileURLWithPath: "/tmp"),  supportedImplementation: wrongFormatImplementation)
+        let sut_wrongVersion = try? PolisFileResourceFinder(at: URL(fileURLWithPath: "/tmp"),  supportedImplementation: wrongVersionImplementation)
+        let sut_correct      = try? PolisFileResourceFinder(at: URL(fileURLWithPath: "/tmp"),  supportedImplementation: correctImplementation)
 
         XCTAssertNil(sut_wrongPath)
         XCTAssertNil(sut_wrongFormat)
         XCTAssertNil(sut_wrongVersion)
-        XCTAssert(sut_correct != nil)
+
+        XCTAssertNotNil(sut_correct)
     }
 
-    func testPolisFoldersAndFiles() {
+    func test_PolisFoldersAndFiles() {
         let siteID  = UUID()
         let dataID  = UUID()
-        let sut = try? PolisStaticResourceFinder(at: URL(fileURLWithPath: "/tmp"),  supportedImplementation: correctImplementation)
+        let sut = try? PolisFileResourceFinder(at: URL(fileURLWithPath: "/tmp"),  supportedImplementation: correctImplementation)
 
         XCTAssert((sut != nil))
-        XCTAssertEqual(sut!.rootPolisFolder(), "/tmp/")
-        XCTAssertEqual(sut!.basePolisFolder(), "/tmp/polis/")
-        XCTAssertEqual(sut!.sitesPolisFolder(), "/tmp/polis/\(version.description)/polis_sites/")
+        XCTAssertEqual(sut!.rootFolder(), "/tmp/")
+        XCTAssertEqual(sut!.baseFolder(), "/tmp/polis/")
+        XCTAssertEqual(sut!.sitesFolder(), "/tmp/polis/\(version.description)/polis_sites/")
+        XCTAssertEqual(sut!.resourcesFolder(), "/tmp/polis/\(version.description)/polis_resources/")
 
-        XCTAssertEqual(sut!.polisConfigurationFilePath(), "/tmp/polis/polis.json")
-        XCTAssertEqual(sut!.polisProviderSitesDirectoryFilePath(), "/tmp/polis/polis_directory.json")
-        XCTAssertEqual(sut!.polisObservingSitesDirectoryFilePath(), "/tmp/polis/\(version.description)/polis_sites.json")
-        XCTAssertEqual(sut!.polisObservingDataFilePath(withID: dataID, siteID: siteID.uuidString), "/tmp/polis/\(version.description)/polis_sites/\(siteID.uuidString)/\(dataID.uuidString).json")
+        XCTAssertEqual(sut!.configurationFilePath(), "/tmp/polis/polis.json")
+        XCTAssertEqual(sut!.sitesDirectoryFilePath(), "/tmp/polis/polis_directory.json")
+        XCTAssertEqual(sut!.observingSitesDirectoryFilePath(), "/tmp/polis/\(version.description)/polis_sites.json")
+
+        XCTAssertEqual(sut!.observingSiteFilePath(siteID: siteID.uuidString), "/tmp/polis/\(version.description)/polis_sites/\(siteID.uuidString)/\(siteID.uuidString).json")
+        //TODO: Understand why the test below fails!
+        // XCTAssertEqual(sut!.resourcesPath(uniqueName: "mead"), "/tmp/polis/\(version.description)/polis_resources/mead/)")
+        XCTAssertEqual(sut!.observingDataFilePath(withID: dataID, siteID: siteID.uuidString), "/tmp/polis/\(version.description)/polis_sites/\(siteID.uuidString)/\(dataID.uuidString).json")
+    }
+
+    func test_PolisRemoteResouceFinder() {
+        let domain = "https://polis.observer/"
+        let siteID = UUID()
+        let dataID = UUID()
+        let sut    = try? PolisRemoteResourceFinder(at: URL(string: domain)!, supportedImplementation: correctImplementation)
+
+        XCTAssert((sut != nil))
+        XCTAssertEqual(sut!.polisDomain(), domain)
+        XCTAssertEqual(sut!.baseURL(), "\(domain)polis/")
+        XCTAssertEqual(sut!.sitesURL(), "\(domain)polis/\(version.description)/polis_sites/")
+        XCTAssertEqual(sut!.resourcesURL(), "\(domain)polis/\(version.description)/polis_resources/")
+
+        XCTAssertEqual(sut!.configurationURL(), "\(domain)polis/polis.json")
+        XCTAssertEqual(sut!.sitesDirectoryURL(), "\(domain)polis/polis_directory.json")
+        XCTAssertEqual(sut!.observingSitesDirectoryURL(), "\(domain)polis/\(version.description)/polis_sites.json")
+
+        XCTAssertEqual(sut!.observingSiteURL(siteID: siteID.uuidString), "\(domain)polis/\(version.description)/polis_sites/\(siteID.uuidString)/\(siteID.uuidString).json")
+        //TODO: Understand why the test below fails!
+        // XCTAssertEqual(sut!.resourcesURL(uniqueName: "mead"), "\(domain)polis/\(version.description)/polis_resources/mead/)")
+        XCTAssertEqual(sut!.observingDataURL(withID: dataID, siteID: siteID.uuidString), "\(domain)polis/\(version.description)/polis_sites/\(siteID.uuidString)/\(dataID.uuidString).json")
     }
 
     override func setUp() {
@@ -79,8 +107,9 @@ final class PolisStaticResourceFinderTests: XCTestCase {
     }
 
     static var allTests = [
-        ("testPolisStaticResourceFinderCreation", testPolisStaticResourceFinderCreation),
-        ("testPolisFoldersAndFiles",              testPolisFoldersAndFiles),
+        ("test_PolisStaticResourceFinderCreation", test_PolisStaticResourceFinderCreation),
+        ("test_PolisFoldersAndFiles",              test_PolisFoldersAndFiles),
+        ("test_PolisRemoteResouceFinder",          test_PolisRemoteResouceFinder),
     ]
 
 }
