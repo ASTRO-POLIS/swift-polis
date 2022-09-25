@@ -44,18 +44,18 @@ public class PolisStaticResourceFinder {
     public init(supportedImplementation: PolisImplementationInfo) throws {
         guard frameworkSupportedImplementation.contains(supportedImplementation) else { throw ResourceFinderError.noSupportedImplementation }
 
-        self.dataFormaStringt = supportedImplementation.dataFormat.rawValue
+        self.dataFormatString = supportedImplementation.dataFormat.rawValue
         self.versionString    = supportedImplementation.version.description
 
-        self.relativePats     = RelativePaths(versionString: versionString, fileExtension: dataFormaStringt)
+        self.relativePaths     = RelativePaths(versionString: versionString, fileExtension: dataFormatString)
     }
 
-    func fileExtension() -> String { ".\(self.dataFormaStringt)" }    // e.g. ".json"
+    func fileExtension() -> String { ".\(self.dataFormatString)" }    // e.g. ".json"
 
-    let dataFormaStringt: String
+    let dataFormatString: String
     let versionString: String
 
-    fileprivate let relativePats: RelativePaths
+    fileprivate let relativePaths: RelativePaths
 }
 
 public class PolisFileResourceFinder: PolisStaticResourceFinder {
@@ -76,13 +76,13 @@ public class PolisFileResourceFinder: PolisStaticResourceFinder {
 
 
     public func rootFolder() -> String      { normalisedPath(rootPath.path) }
-    public func baseFolder() -> String      { normalisedPath("\(rootFolder())\(relativePats.basePath)") }
-    public func sitesFolder() -> String     { normalisedPath("\(rootFolder())\(relativePats.sitesPath())") }
-    public func resourcesFolder() -> String { normalisedPath("\(rootFolder())\(relativePats.resourcesPath())") }
+    public func baseFolder() -> String      { normalisedPath("\(rootFolder())\(relativePaths.basePath)") }
+    public func sitesFolder() -> String     { normalisedPath("\(rootFolder())\(relativePaths.sitesPath())") }
+    public func resourcesFolder() -> String { normalisedPath("\(rootFolder())\(relativePaths.resourcesPath())") }
 
-    public func configurationFilePath() -> String           { "\(rootFolder())\(relativePats.configurationFilePath())" }
-    public func sitesDirectoryFilePath() -> String          { "\(rootFolder())\(relativePats.providerSitesDirectoryFilePath())" }
-    public func observingSitesDirectoryFilePath() -> String { "\(rootFolder())\(relativePats.polisObservingSitesDirectoryFilePath())" }
+    public func configurationFilePath() -> String           { "\(rootFolder())\(relativePaths.configurationFilePath())" }
+    public func sitesDirectoryFilePath() -> String          { "\(rootFolder())\(relativePaths.providerSitesDirectoryFilePath())" }
+    public func observingSitesDirectoryFilePath() -> String { "\(rootFolder())\(relativePaths.polisObservingSitesDirectoryFilePath())" }
 
     public func observingSiteFilePath(siteID: String) -> String               { "\(sitesFolder())\(siteID)/\(siteID)\(fileExtension())" }
     public func resourcesPath(uniqueName: String) -> String                   { normalisedPath("\(resourcesFolder())\(uniqueName)") }
@@ -102,13 +102,13 @@ public class PolisRemoteResourceFinder: PolisStaticResourceFinder {
 
     public func polisDomain() -> String { domain }
 
-    public func baseURL() -> String      { normalisedPath("\(polisDomain())\(relativePats.basePath)") }
-    public func sitesURL() -> String     { normalisedPath("\(polisDomain())\(relativePats.sitesPath())") }
-    public func resourcesURL() -> String { normalisedPath("\(polisDomain())\(relativePats.resourcesPath())") }
+    public func baseURL() -> String      { normalisedPath("\(polisDomain())\(relativePaths.basePath)") }
+    public func sitesURL() -> String     { normalisedPath("\(polisDomain())\(relativePaths.sitesPath())") }
+    public func resourcesURL() -> String { normalisedPath("\(polisDomain())\(relativePaths.resourcesPath())") }
 
-    public func configurationURL() -> String           { "\(polisDomain())\(relativePats.configurationFilePath())" }
-    public func sitesDirectoryURL() -> String          { "\(polisDomain())\(relativePats.providerSitesDirectoryFilePath())" }
-    public func observingSitesDirectoryURL() -> String { "\(polisDomain())\(relativePats.polisObservingSitesDirectoryFilePath())" }
+    public func configurationURL() -> String           { "\(polisDomain())\(relativePaths.configurationFilePath())" }
+    public func sitesDirectoryURL() -> String          { "\(polisDomain())\(relativePaths.providerSitesDirectoryFilePath())" }
+    public func observingSitesDirectoryURL() -> String { "\(polisDomain())\(relativePaths.polisObservingSitesDirectoryFilePath())" }
 
     public func observingSiteURL(siteID: String) -> String               { "\(sitesURL())\(siteID)/\(siteID)\(fileExtension())" }
     public func resourcesURL(uniqueName: String) -> String               { "\(resourcesURL())\(uniqueName)/" }

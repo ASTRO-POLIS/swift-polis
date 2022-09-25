@@ -57,11 +57,11 @@ final class PolisStaticResourceFinderTests: XCTestCase {
 
         XCTAssertEqual(sut!.observingSiteFilePath(siteID: siteID.uuidString), "/tmp/polis/\(version.description)/polis_sites/\(siteID.uuidString)/\(siteID.uuidString).json")
         //TODO: Understand why the test below fails!
-        // XCTAssertEqual(sut!.resourcesPath(uniqueName: "mead"), "/tmp/polis/\(version.description)/polis_resources/mead/)")
+         XCTAssertEqual(sut!.resourcesPath(uniqueName: "mead"), "/tmp/polis/\(version.description)/polis_resources/mead/")
         XCTAssertEqual(sut!.observingDataFilePath(withID: dataID, siteID: siteID.uuidString), "/tmp/polis/\(version.description)/polis_sites/\(siteID.uuidString)/\(dataID.uuidString).json")
     }
 
-    func test_PolisRemoteResouceFinder() {
+    func test_PolisRemoteResourceFinder() {
         let domain = "https://polis.observer/"
         let siteID = UUID()
         let dataID = UUID()
@@ -79,7 +79,7 @@ final class PolisStaticResourceFinderTests: XCTestCase {
 
         XCTAssertEqual(sut!.observingSiteURL(siteID: siteID.uuidString), "\(domain)polis/\(version.description)/polis_sites/\(siteID.uuidString)/\(siteID.uuidString).json")
         //TODO: Understand why the test below fails!
-        // XCTAssertEqual(sut!.resourcesURL(uniqueName: "mead"), "\(domain)polis/\(version.description)/polis_resources/mead/)")
+         XCTAssertEqual(sut!.resourcesURL(uniqueName: "mead"), "\(domain)polis/\(version.description)/polis_resources/mead/")
         XCTAssertEqual(sut!.observingDataURL(withID: dataID, siteID: siteID.uuidString), "\(domain)polis/\(version.description)/polis_sites/\(siteID.uuidString)/\(dataID.uuidString).json")
     }
 
@@ -109,7 +109,7 @@ final class PolisStaticResourceFinderTests: XCTestCase {
     static var allTests = [
         ("test_PolisStaticResourceFinderCreation", test_PolisStaticResourceFinderCreation),
         ("test_PolisFoldersAndFiles",              test_PolisFoldersAndFiles),
-        ("test_PolisRemoteResouceFinder",          test_PolisRemoteResouceFinder),
+        ("test_PolisRemoteResouceFinder",          test_PolisRemoteResourceFinder),
     ]
 
 }
