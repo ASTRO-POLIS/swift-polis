@@ -56,8 +56,7 @@ final class PolisStaticResourceFinderTests: XCTestCase {
         XCTAssertEqual(sut!.observingSitesDirectoryFilePath(), "/tmp/polis/\(version.description)/polis_sites.json")
 
         XCTAssertEqual(sut!.observingSiteFilePath(siteID: siteID.uuidString), "/tmp/polis/\(version.description)/polis_sites/\(siteID.uuidString)/\(siteID.uuidString).json")
-        //TODO: Understand why the test below fails!
-         XCTAssertEqual(sut!.resourcesPath(uniqueName: "mead"), "/tmp/polis/\(version.description)/polis_resources/mead/")
+        XCTAssertEqual(sut!.resourcesPath(uniqueName: "mead"), "/tmp/polis/\(version.description)/polis_resources/mead/")
         XCTAssertEqual(sut!.observingDataFilePath(withID: dataID, siteID: siteID.uuidString), "/tmp/polis/\(version.description)/polis_sites/\(siteID.uuidString)/\(dataID.uuidString).json")
     }
 
@@ -78,13 +77,12 @@ final class PolisStaticResourceFinderTests: XCTestCase {
         XCTAssertEqual(sut!.observingSitesDirectoryURL(), "\(domain)polis/\(version.description)/polis_sites.json")
 
         XCTAssertEqual(sut!.observingSiteURL(siteID: siteID.uuidString), "\(domain)polis/\(version.description)/polis_sites/\(siteID.uuidString)/\(siteID.uuidString).json")
-        //TODO: Understand why the test below fails!
-         XCTAssertEqual(sut!.resourcesURL(uniqueName: "mead"), "\(domain)polis/\(version.description)/polis_resources/mead/")
+        XCTAssertEqual(sut!.resourcesURL(uniqueName: "mead"), "\(domain)polis/\(version.description)/polis_resources/mead/")
         XCTAssertEqual(sut!.observingDataURL(withID: dataID, siteID: siteID.uuidString), "\(domain)polis/\(version.description)/polis_sites/\(siteID.uuidString)/\(dataID.uuidString).json")
     }
 
     override func setUp() {
-        super.tearDown()
+        super.setUp()
 
         version                    = frameworkSupportedImplementation.last!.version
         correctImplementation      = PolisImplementationInfo(dataFormat: PolisImplementationInfo.DataFormat.json,
