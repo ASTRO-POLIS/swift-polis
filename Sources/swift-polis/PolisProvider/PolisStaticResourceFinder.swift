@@ -96,6 +96,7 @@ public class PolisRemoteResourceFinder: PolisStaticResourceFinder {
 
     public init(at domain: URL, supportedImplementation: PolisImplementationInfo) throws {
         self.domain = "\(domain.absoluteString)"
+        if !self.domain.hasSuffix("/") { self.domain.append("/") }
 
         try super.init(supportedImplementation: supportedImplementation)
     }
@@ -114,7 +115,7 @@ public class PolisRemoteResourceFinder: PolisStaticResourceFinder {
     public func resourcesURL(uniqueName: String) -> String               { "\(resourcesURL())\(uniqueName)/" }
     public func observingDataURL(withID: UUID, siteID: String) -> String { "\(sitesURL())\(siteID)/\(withID.uuidString)\(fileExtension())" }
 
-    private let domain: String
+    private var domain: String
 }
 
 fileprivate struct RelativePaths {
