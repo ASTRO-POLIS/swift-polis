@@ -98,6 +98,7 @@ public extension PolisObservingSite {
         case type
         case item
         case parentID            = "parent_id"
+        case observatoryCode     = "observatory_code"
         case deviceIDs           = "device_ids"
         case configurationIDs    = "configuration_ids"
         case location
