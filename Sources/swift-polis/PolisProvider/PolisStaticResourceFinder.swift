@@ -30,9 +30,10 @@ public class PolisStaticResourceFinder {
         public static let baseServiceDirectory                  = "polis"            // e.g. /polis/
         public static let serviceProviderConfigurationFileName  = "polis"            // e.g. /polis/polis.json
         public static let serviceProviderSitesDirectoryFileName = "polis_directory"  // e.g. /polis/polis_directory.json
-        public static let observingSitesDirectoryFileName       = "polis_sites"      // e.g. /polis/<version>/polis_sites.json
         public static let siteDirectory                         = "polis_sites"      // e.g. /polis/<version>/polis_sites/
+        public static let sitesDirectoryFileName                = "polis_sites"      // e.g. /polis/<version>/polis_sites.json
         public static let polisResources                        = "polis_resources"  // e.g. /polis/<version>/polis_resources/ .. e.g. manufacturers
+        public static let polisResourcesDirectoryFileName       = "polis_resources"  // e.g. /polis/<version>/polis_resources/polis_resources.json
     }
 
     /// Possible (hopefully self-explanatory) errors while creating various Resource Finders
@@ -131,6 +132,6 @@ fileprivate struct RelativePaths {
     // File paths
     func configurationFilePath() -> String                { "\(basePath)\(PolisStaticResourceFinder.PredefinedPaths.serviceProviderConfigurationFileName).\(fileExtension)" }
     func providerSitesDirectoryFilePath() -> String       { "\(basePath)\(PolisStaticResourceFinder.PredefinedPaths.serviceProviderSitesDirectoryFileName).\(fileExtension)" }
-    func polisObservingSitesDirectoryFilePath() -> String { "\(basePath)\(versionString)/\(PolisStaticResourceFinder.PredefinedPaths.observingSitesDirectoryFileName).\(fileExtension)" }
+    func polisObservingSitesDirectoryFilePath() -> String { "\(basePath)\(versionString)/\(PolisStaticResourceFinder.PredefinedPaths.sitesDirectoryFileName).\(fileExtension)" }
 }
 

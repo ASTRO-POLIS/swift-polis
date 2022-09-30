@@ -164,6 +164,35 @@ public struct PolisObservingSiteDirectory: Codable {
     }
 }
 
+//MARK: - Resources provided by manufacturers -
+
+//TODO: Documentation!
+public struct PolisResourceSiteDirectory: Codable {
+
+    public struct ResourceReference: Codable, Identifiable {
+        public var identity: PolisIdentity
+        public var uniqueManufacturerName: String
+        public var deviceTypes: [PolisDevice.DeviceType]
+
+        public var id: UUID { identity.id }
+
+        public init(identity: PolisIdentity, uniqueName: String, deviceTypes: [PolisDevice.DeviceType] = [PolisDevice.DeviceType]()) {
+            self.identity               = identity
+            self.uniqueManufacturerName = uniqueName
+            self.deviceTypes            = deviceTypes
+        }
+    }
+
+    public var lastUpdate: Date                   // UTC
+    public var entries: [ResourceReference]
+
+    public init(lastUpdate: Date, entries: [ResourceReference]) {
+        self.lastUpdate = lastUpdate
+        self.entries = entries
+    }
+
+}
+
 //MARK: - Making types Codable and CustomStringConvertible -
 
 //MARK: PolisProviderType
@@ -241,5 +270,28 @@ extension PolisObservingSiteDirectory {
     public enum CodingKeys: String, CodingKey {
         case lastUpdate = "last_updated"
         case entries
+    }
+}
+
+extension PolisObservingSiteDirectory.ObservingSiteReference {
+    public enum CodingKeys: String, CodingKey {
+        case identity
+        case type
+        case parentObservingSiteID = "parent_observing_site_id"
+    }
+}
+
+extension PolisResourceSiteDirectory {
+    public enum CodingKeys: String, CodingKey {
+        case lastUpdate = "last_updated"
+        case entries
+    }
+}
+
+extension PolisResourceSiteDirectory.ResourceReference {
+    public enum CodingKeys: String, CodingKey {
+        case identity
+        case uniqueManufacturerName = "unique_manufacturer_mame"
+        case deviceTypes            = "device_types"
     }
 }

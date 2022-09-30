@@ -76,9 +76,12 @@ final class PolisStaticResourceFinderTests: XCTestCase {
         XCTAssertEqual(sut!.sitesDirectoryURL(), "\(domain)polis/polis_directory.json")
         XCTAssertEqual(sut!.observingSitesDirectoryURL(), "\(domain)polis/\(version.description)/polis_sites.json")
 
-        XCTAssertEqual(sut!.observingSiteURL(siteID: siteID.uuidString), "\(domain)polis/\(version.description)/polis_sites/\(siteID.uuidString)/\(siteID.uuidString).json")
-        XCTAssertEqual(sut!.resourcesURL(uniqueName: "mead"), "\(domain)polis/\(version.description)/polis_resources/mead/")
-        XCTAssertEqual(sut!.observingDataURL(withID: dataID, siteID: siteID.uuidString), "\(domain)polis/\(version.description)/polis_sites/\(siteID.uuidString)/\(dataID.uuidString).json")
+        XCTAssertEqual(sut!.observingSiteURL(siteID: siteID.uuidString),
+                       "\(domain)polis/\(version.description)/polis_sites/\(siteID.uuidString)/\(siteID.uuidString).json")
+        XCTAssertEqual(sut!.resourcesURL(uniqueName: "mead"),
+                       "\(domain)polis/\(version.description)/polis_resources/mead/")
+        XCTAssertEqual(sut!.observingDataURL(withID: dataID, siteID: siteID.uuidString),
+                       "\(domain)polis/\(version.description)/polis_sites/\(siteID.uuidString)/\(dataID.uuidString).json")
     }
 
     override func setUp() {

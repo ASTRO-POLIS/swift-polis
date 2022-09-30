@@ -132,11 +132,28 @@ final class PolisServiceProviderTests: XCTestCase {
         XCTAssertNotNil(sut)
     }
 
+    func test_PolisResourceSiteDirectoryResourceReference_coding_shouldSucceed() throws {
+        // Given
+        let asa_identity = PolisIdentity(name: "ASA")
+        let asa          = PolisResourceSiteDirectory.ResourceReference(identity: asa_identity, uniqueName: "asa")
+
+        // When
+        let sut = PolisResourceSiteDirectory(lastUpdate: Date(), entries: [asa])
+
+        // Then
+        XCTAssertNotNil(sut)
+
+        data   = try? jsonEncoder.encode(sut)
+        string = String(data: data!, encoding: .utf8)
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisResourceSiteDirectory.self, from: string!.data(using: .utf8)!))
+   }
+
     //MARK: - Housekeeping -
     static var allTests = [
-        ("testPolisProviderTypeCodingAndDecoding", testPolisProviderTypeCodingAndDecoding),
-        ("testPolisDirectoryEntryCodingSupport",   testPolisDirectoryEntryCodingSupport),
-        ("testLoadingPolisDirectoryEntryFromData", testLoadingPolisDirectoryEntryFromData),
-        ("testPolisDirectoryFromStaticData",       testPolisDirectoryFromStaticData),
+        ("testPolisProviderTypeCodingAndDecoding",                                testPolisProviderTypeCodingAndDecoding),
+        ("testPolisDirectoryEntryCodingSupport",                                  testPolisDirectoryEntryCodingSupport),
+        ("testLoadingPolisDirectoryEntryFromData",                                testLoadingPolisDirectoryEntryFromData),
+        ("testPolisDirectoryFromStaticData",                                      testPolisDirectoryFromStaticData),
+        ("test_PolisResourceSiteDirectoryResourceReference_coding_shouldSucceed", test_PolisResourceSiteDirectoryResourceReference_coding_shouldSucceed),
     ]
 }
