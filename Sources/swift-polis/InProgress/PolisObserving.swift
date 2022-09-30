@@ -28,6 +28,7 @@ public protocol PolisObserving: Codable, Identifiable {
     var type: PolisObservingType          { get }
     var item: PolisItem                   { get set }
     var parentID: UUID?                   { get set }
+    var observatoryCode: String?          { get set } // IAU or MPC (Minor Planet Center) code
     var deviceIDs: [UUID]                 { get set }
     var configurationIDs: [UUID]          { get set }
     var location: PolisObservingLocation? { get set }
@@ -40,6 +41,7 @@ public struct PolisObservingSite: PolisObserving {
     public var type: PolisObservingType
     public var item: PolisItem
     public var parentID: UUID?
+    public var observatoryCode: String?
     public var deviceIDs                         = [UUID]()
     public var configurationIDs                  = [UUID]()
     public var location: PolisObservingLocation?
@@ -54,6 +56,7 @@ public struct PolisObservingSite: PolisObserving {
     public init(type: PolisObservingType           = .site,
                 item: PolisItem,
                 parentID: UUID?                    = nil,
+                observatoryCode: String?           = nil,
                 deviceIDs: [UUID]                  = [UUID](),
                 configurationIDs: [UUID]           = [UUID](),
                 location: PolisObservingLocation?  = nil,
@@ -64,6 +67,7 @@ public struct PolisObservingSite: PolisObserving {
         self.type                = type
         self.item                = item
         self.parentID            = parentID
+        self.observatoryCode     = observatoryCode
         self.deviceIDs           = deviceIDs
         self.configurationIDs    = configurationIDs
         self.location            = location
