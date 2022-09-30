@@ -135,7 +135,7 @@ final class PolisServiceProviderTests: XCTestCase {
     func test_PolisResourceSiteDirectoryResourceReference_coding_shouldSucceed() throws {
         // Given
         let asa_identity = PolisIdentity(name: "ASA")
-        let asa          = PolisResourceSiteDirectory.ResourceReference(identity: asa_identity, uniqueName: "asa")
+        let asa          = PolisResourceSiteDirectory.ResourceReference(identity: asa_identity, uniqueName: "asa", deviceTypes: [.mount])
 
         // When
         let sut = PolisResourceSiteDirectory(lastUpdate: Date(), entries: [asa])

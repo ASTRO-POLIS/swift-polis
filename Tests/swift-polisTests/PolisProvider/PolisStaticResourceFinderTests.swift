@@ -54,6 +54,7 @@ final class PolisStaticResourceFinderTests: XCTestCase {
         XCTAssertEqual(sut!.configurationFilePath(), "/tmp/polis/polis.json")
         XCTAssertEqual(sut!.sitesDirectoryFilePath(), "/tmp/polis/polis_directory.json")
         XCTAssertEqual(sut!.observingSitesDirectoryFilePath(), "/tmp/polis/\(version.description)/polis_sites.json")
+        XCTAssertEqual(sut!.resourcesDirectoryFilePath(), "/tmp/polis/\(version.description)/polis_resources.json")
 
         XCTAssertEqual(sut!.observingSiteFilePath(siteID: siteID.uuidString), "/tmp/polis/\(version.description)/polis_sites/\(siteID.uuidString)/\(siteID.uuidString).json")
         XCTAssertEqual(sut!.resourcesPath(uniqueName: "mead"), "/tmp/polis/\(version.description)/polis_resources/mead/")
@@ -75,6 +76,7 @@ final class PolisStaticResourceFinderTests: XCTestCase {
         XCTAssertEqual(sut!.configurationURL(), "\(domain)polis/polis.json")
         XCTAssertEqual(sut!.sitesDirectoryURL(), "\(domain)polis/polis_directory.json")
         XCTAssertEqual(sut!.observingSitesDirectoryURL(), "\(domain)polis/\(version.description)/polis_sites.json")
+        XCTAssertEqual(sut!.resourcesDirectoryURL(), "\(domain)polis/\(version.description)/polis_resources.json")
 
         XCTAssertEqual(sut!.observingSiteURL(siteID: siteID.uuidString),
                        "\(domain)polis/\(version.description)/polis_sites/\(siteID.uuidString)/\(siteID.uuidString).json")

@@ -84,6 +84,7 @@ public class PolisFileResourceFinder: PolisStaticResourceFinder {
     public func configurationFilePath() -> String           { "\(rootFolder())\(relativePaths.configurationFilePath())" }
     public func sitesDirectoryFilePath() -> String          { "\(rootFolder())\(relativePaths.providerSitesDirectoryFilePath())" }
     public func observingSitesDirectoryFilePath() -> String { "\(rootFolder())\(relativePaths.polisObservingSitesDirectoryFilePath())" }
+    public func resourcesDirectoryFilePath() -> String      { "\(rootFolder())\(relativePaths.polisResourcesDirectoryFilePath())" }
 
     public func observingSiteFilePath(siteID: String) -> String               { "\(sitesFolder())\(siteID)/\(siteID)\(fileExtension())" }
     public func resourcesPath(uniqueName: String) -> String                   { normalisedPath("\(resourcesFolder())\(uniqueName)") }
@@ -111,6 +112,7 @@ public class PolisRemoteResourceFinder: PolisStaticResourceFinder {
     public func configurationURL() -> String           { "\(polisDomain())\(relativePaths.configurationFilePath())" }
     public func sitesDirectoryURL() -> String          { "\(polisDomain())\(relativePaths.providerSitesDirectoryFilePath())" }
     public func observingSitesDirectoryURL() -> String { "\(polisDomain())\(relativePaths.polisObservingSitesDirectoryFilePath())" }
+    public func resourcesDirectoryURL() -> String      { "\(polisDomain())\(relativePaths.polisResourcesDirectoryFilePath())" }
 
     public func observingSiteURL(siteID: String) -> String               { "\(sitesURL())\(siteID)/\(siteID)\(fileExtension())" }
     public func resourcesURL(uniqueName: String) -> String               { "\(resourcesURL())\(uniqueName)/" }
@@ -133,5 +135,7 @@ fileprivate struct RelativePaths {
     func configurationFilePath() -> String                { "\(basePath)\(PolisStaticResourceFinder.PredefinedPaths.serviceProviderConfigurationFileName).\(fileExtension)" }
     func providerSitesDirectoryFilePath() -> String       { "\(basePath)\(PolisStaticResourceFinder.PredefinedPaths.serviceProviderSitesDirectoryFileName).\(fileExtension)" }
     func polisObservingSitesDirectoryFilePath() -> String { "\(basePath)\(versionString)/\(PolisStaticResourceFinder.PredefinedPaths.sitesDirectoryFileName).\(fileExtension)" }
+    func polisResourcesDirectoryFilePath() -> String { "\(basePath)\(versionString)/\(PolisStaticResourceFinder.PredefinedPaths.polisResourcesDirectoryFileName).\(fileExtension)" }
+
 }
 
