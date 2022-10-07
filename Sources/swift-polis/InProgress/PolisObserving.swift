@@ -49,21 +49,30 @@ public struct PolisObservingSite: PolisObserving {
     public var endDate: Date?
     public var admins: [PolisAdminContact]?
 
-    public var subObservingSiteIDs: [UUID]?
+    public var subObservingSiteIDs: Set<UUID>?
 
     public var id: UUID { item.identity.id }
 
-    public init(type: PolisObservingType           = .site,
+    // Miscellaneous properties
+    public var dominantWindDirection: PolisDirection.RoughDirection?
+
+    //TODO: We need to add few things
+    // - Is accessible by road and all seasons
+    // - Visiting hours and possibilities -> WebSite?
+    // - Min/Max/Average climate parameters / season
+    // - History (this perhaps is a property of PolisObserving?)
+
+    public init(type: PolisObservingType          = .site,
                 item: PolisItem,
-                parentID: UUID?                    = nil,
-                observatoryCode: String?           = nil,
-                deviceIDs: Set<UUID>               = Set<UUID>(),
-                configurationIDs: Set<UUID>        = Set<UUID>(),
-                location: PolisObservingLocation?  = nil,
-                startDate: Date?                   = nil,
-                endDate: Date?                     = nil,
-                admins: [PolisAdminContact]?       = nil,
-                subObservingSiteIDs: [UUID]?       = nil) {
+                parentID: UUID?                   = nil,
+                observatoryCode: String?          = nil,
+                deviceIDs: Set<UUID>              = Set<UUID>(),
+                configurationIDs: Set<UUID>       = Set<UUID>(),
+                location: PolisObservingLocation? = nil,
+                startDate: Date?                  = nil,
+                endDate: Date?                    = nil,
+                admins: [PolisAdminContact]?      = nil,
+                subObservingSiteIDs: Set<UUID>?   = nil) {
         self.type                = type
         self.item                = item
         self.parentID            = parentID
@@ -97,14 +106,15 @@ public extension PolisObservingSite {
     enum CodingKeys: String, CodingKey {
         case type
         case item
-        case parentID            = "parent_id"
-        case observatoryCode     = "observatory_code"
-        case deviceIDs           = "device_ids"
-        case configurationIDs    = "configuration_ids"
+        case parentID              = "parent_id"
+        case observatoryCode       = "observatory_code"
+        case deviceIDs             = "device_ids"
+        case configurationIDs      = "configuration_ids"
         case location
-        case startDate           = "start_date"
-        case endDate             = "end_date"
+        case startDate             = "start_date"
+        case endDate               = "end_date"
         case admins
-        case subObservingSiteIDs = "sub_observing_site_ids"
+        case subObservingSiteIDs   = "sub_observing_site_ids"
+        case dominantWindDirection = "dominant_wind_direction"
     }
 }

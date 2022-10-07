@@ -27,6 +27,7 @@ public struct PolisItem: Codable, Identifiable {
     public var manufacturer: PolisManufacturer?
     public var owners: [PolisItemOwner]?
     public var imageLinks: [URL]?
+    //TODO: Image Links should be with description and accessibility description, and copyright notice and rights of use!
 
     public var id: UUID { identity.id }
 
