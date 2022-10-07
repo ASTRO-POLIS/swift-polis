@@ -29,8 +29,8 @@ public protocol PolisObserving: Codable, Identifiable {
     var item: PolisItem                   { get set }
     var parentID: UUID?                   { get set }
     var observatoryCode: String?          { get set } // IAU or MPC (Minor Planet Center) code
-    var deviceIDs: [UUID]                 { get set }
-    var configurationIDs: [UUID]          { get set }
+    var deviceIDs: Set<UUID>              { get set }
+    var configurationIDs: Set<UUID>       { get set }
     var location: PolisObservingLocation? { get set }
     var startDate: Date?                  { get set } // Could be nil if unknown
     var endDate: Date?                    { get set } // if != nil -> either closed or temporary created (e.g. solar eclipse monitoring)
@@ -42,8 +42,8 @@ public struct PolisObservingSite: PolisObserving {
     public var item: PolisItem
     public var parentID: UUID?
     public var observatoryCode: String?
-    public var deviceIDs                         = [UUID]()
-    public var configurationIDs                  = [UUID]()
+    public var deviceIDs                         = Set<UUID>()
+    public var configurationIDs                  = Set<UUID>()
     public var location: PolisObservingLocation?
     public var startDate: Date?
     public var endDate: Date?
@@ -57,8 +57,8 @@ public struct PolisObservingSite: PolisObserving {
                 item: PolisItem,
                 parentID: UUID?                    = nil,
                 observatoryCode: String?           = nil,
-                deviceIDs: [UUID]                  = [UUID](),
-                configurationIDs: [UUID]           = [UUID](),
+                deviceIDs: Set<UUID>               = Set<UUID>(),
+                configurationIDs: Set<UUID>        = Set<UUID>(),
                 location: PolisObservingLocation?  = nil,
                 startDate: Date?                   = nil,
                 endDate: Date?                     = nil,
