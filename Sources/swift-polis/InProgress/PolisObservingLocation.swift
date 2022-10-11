@@ -16,7 +16,7 @@
 
 import Foundation
 
-public enum PolisRelationshipToTheGravitationalBodyType: Codable {
+public enum PolisRelationshipToTheGravitationalBodyType: String, Codable {
     case surface
     case orbital
 }
@@ -28,39 +28,47 @@ public protocol PolisLocationClassificationProtocol {
 }
 
 //TODO: Make this stuff Codable and Equitable! Uf what a pain :-(
+//TODO: Make the type a PolisLocationClassificationProtocol
 public enum PolisObservingSiteLocationType {
 
-    public enum SurfaceLocationType: Codable {
+    public enum SurfaceLocationType: String, Codable {
         case fixed
         case movable
         case mobile
         case unknown
     }
 
+    public enum OrbitalType: String, Codable {
+        case keplerian
+        case transitional
+        case nonKeplerian
+        case chaotic
+        case unknown
+    }
+
     public indirect enum SolarSystemBodyType {
-        case Sun
+        case sun
 
         // Planets
-        case Mercury
-        case Venus
-        case Earth
-        case Mars
-        case Jupiter
-        case Saturn
-        case Uranus
-        case Neptune
+        case mercury
+        case venus
+        case earth
+        case mars
+        case jupiter
+        case saturn
+        case uranus
+        case neptune
 
         // Kuiper and Asteroid belt
-        case Pluto
-        case Ceres
-        case Haumea
-        case Makemake
-        case Eris
+        case pluto
+        case ceres
+        case haumea
+        case makemake
+        case eris
         case asteroidBeltObject(name: String, code: String?)
-        case KuiperBeltObject(name: String, code: String?)
+        case kuiperBeltObject(name: String, code: String?)
 
         // Miscellaneous
-        //TODO: Do we need the Minor Planet code?
         case moon(of: SolarSystemBodyType, name: String, code: String?)       // e.g. .moon(.Jupiter, "Titan")
         case comet(name: String, code: String?)
     }
@@ -117,51 +125,74 @@ public enum PolisObservingSiteLocationType {
         }
     }
 
+    /// Anything but the Earth
+    public struct GravitationalObjectBasedLocation {
+        public let solarSystemBody: SolarSystemBodyType
+        public let eastLongitude: PolisMeasurement?     // degrees
+        public let latitude: PolisMeasurement?          // degrees
+        public let altitude: PolisMeasurement?          // m
+        public let region: String?                      // e.g. the Tranquility crater
+    }
+
     case earthSurfaceBased(base: EarthBasedLocation, type: SurfaceLocationType)
-    case orbitBased
+    case earthOrbitBased(currentOrbitType: OrbitalType)
+    case solarSystemBodySurfaceBased(base: GravitationalObjectBasedLocation, type: SurfaceLocationType)
+    case solarSystemBodyOrbitBased(aroundGravitationalObject: GravitationalObjectBasedLocation, currentOrbitType: OrbitalType)
 }
-
-
-//TODO: Make this stuff Codable! Oh boy, oh boy! What a pain!
-//public enum ObservingSiteLocationType {
-//    case earthAirBorn(range: AltitudeRange?)                            // Altitude in km
-//    case groundBasedFixed(location: SolarSystemBodyType)
-//    case groundBasedMobile(location: SolarSystemBodyType)               // e.g. Mars rover
-//    case airBorn(location: SolarSystemBodyType, range: AltitudeRange?)
-//    case solarSystemBodyOrbital(location: SolarSystemBodyType)
-//    case solarSystemBodyNonOrbital(locationDescription: String?)        // e.g. Voyager
-//}
-
-
-
-
-
-
-//public struct TemporaryEarthLocation: Codable {
-//    public let startTime: Date
-//    public let endTime: Date
-//    public let location: FixedEarthLocation
-//
-//    public init(startTime: Date, endTime: Date, location: FixedEarthLocation) {
-//        self.startTime = startTime
-//        self.endTime   = endTime
-//        self.location  = location
-//    }
-//}
-
-//public enum EarthBaseLocation: Codable {
-//    case earthGroundBasedFixed(location: FixedEarthLocation)
-//    case earthGroundBasedMobile(locationDescription: [TemporaryEarthLocation])
-//
-//    // orbiting: SolarSystemBodyType
-//    // roving: SolarSystemBodyType
-//
-//    case unknown
-//}
-
 
 //MARK: - Making types Codable and CustomStringConvertible -
 // These extensions do not need any additional documentation.
+
+public extension PolisObservingSiteLocationType.OrbitalType {
+    enum CodingKeys: String, CodingKey {
+        case keplerian    = "Keplerian"
+        case transitional
+        case nonKeplerian = "non Keplerian"
+        case chaotic
+        case unknown
+    }
+}
+
+public extension PolisObservingSiteLocationType.SolarSystemBodyType {
+    enum CodingKeys: String, CodingKey {
+        case sun                = "Sun"
+        case mercury            = "Mercury"
+        case venus              = "Venus"
+        case earth              = "Earth"
+        case mars               = "Mars"
+        case jupiter            = "Jupiter"
+        case saturn             = "Saturn"
+        case uranus             = "Uranus"
+        case neptune            = "Neptune"
+        case pluto              = "Pluto"
+        case ceres              = "Ceres"
+        case haumea             = "Haumea"
+        case makemake           = "Makemake"
+        case eris               = "Eris"
+        case asteroidBeltObject = "asteroid_belt_object"
+        case kuiperBeltObject   = "Kuiper_belt_object"
+        case moon
+        case comet
+   }
+}
+
+public extension PolisObservingSiteLocationType.EarthBasedLocation {
+    enum CodingKeys: String, CodingKey {
+        case eastLongitude     = "east_longitude"
+        case latitude
+        case altitude
+        case continent
+        case place
+        case regionOrState     = "region_or_state"
+        case regionOrStateCode = "region_or_state_code"
+        case zipCode           = "zip_code"
+        case country
+        case countryCode       = "country_code"
+        case surfaceSize       = "surface_size"
+        case staticLocation    = "staticL_location"
+    }
+}
+
 public extension PolisObservingSiteLocationType.EarthBasedLocation.EarthContinent {
     enum CodingKeys: String, CodingKey {
         case europe       = "Europe"
@@ -175,27 +206,21 @@ public extension PolisObservingSiteLocationType.EarthBasedLocation.EarthContinen
     }
 }
 
+public extension PolisObservingSiteLocationType.GravitationalObjectBasedLocation {
+    enum CodingKeys: String, CodingKey {
+        case solarSystemBody = "solar_system_body"
+        case eastLongitude   = "east_longitude"
+        case latitude
+        case altitude
+        case region
+    }
+}
 
-//public extension FixedEarthLocation {
-//    enum CodingKeys: String, CodingKey {
-//        case eastLongitude     = "east_longitude"
-//        case latitude
-//        case altitude
-//        case continent
-//        case place
-//        case regionOrState     = "region_or_state"
-//        case regionOrStateCode = "region_or_state_code"
-//        case zipCode           = "zip_code"
-//        case countryCode       = "country_ode"
-//        case surfaceSize       = "surface_size"
-//    }
-//}
-
-
-//public extension PolisObservingLocation {
-//    enum CodingKeys: String, CodingKey {
-//        case earthGroundBasedFixed  = "earth_ground_based_fixed"
-//        case earthGroundBasedMobile = "earth_ground_based_mobile"
-//        case unknown
-//   }
-//}
+public extension PolisObservingSiteLocationType {
+    enum CodingKeys: String, CodingKey {
+        case earthSurfaceBased           = "earth_surface_based"
+        case earthOrbitBased             = "earth_orbit_based"
+        case solarSystemBodySurfaceBased = "solar_system_body_surface_based"
+        case solarSystemBodyOrbitBased   = "solar_system_body_orbit_based"
+    }
+}
