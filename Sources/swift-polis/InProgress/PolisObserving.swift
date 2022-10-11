@@ -31,7 +31,7 @@ public protocol PolisObserving: Codable, Identifiable {
     var observatoryCode: String?          { get set } // IAU or MPC (Minor Planet Center) code
     var deviceIDs: Set<UUID>              { get set }
     var configurationIDs: Set<UUID>       { get set }
-    var location: PolisObservingLocation? { get set }
+//    var location: PolisObservingLocation? { get set }
     var startDate: Date?                  { get set } // Could be nil if unknown
     var endDate: Date?                    { get set } // if != nil -> either closed or temporary created (e.g. solar eclipse monitoring)
     var admins: [PolisAdminContact]?      { get set }
@@ -44,7 +44,7 @@ public struct PolisObservingSite: PolisObserving {
     public var observatoryCode: String?
     public var deviceIDs                         = Set<UUID>()
     public var configurationIDs                  = Set<UUID>()
-    public var location: PolisObservingLocation?
+//    public var location: PolisObservingLocation?
     public var startDate: Date?
     public var endDate: Date?
     public var admins: [PolisAdminContact]?
@@ -68,7 +68,7 @@ public struct PolisObservingSite: PolisObserving {
                 observatoryCode: String?          = nil,
                 deviceIDs: Set<UUID>              = Set<UUID>(),
                 configurationIDs: Set<UUID>       = Set<UUID>(),
-                location: PolisObservingLocation? = nil,
+//                location: PolisObservingLocation? = nil,
                 startDate: Date?                  = nil,
                 endDate: Date?                    = nil,
                 admins: [PolisAdminContact]?      = nil,
@@ -79,7 +79,7 @@ public struct PolisObservingSite: PolisObserving {
         self.observatoryCode     = observatoryCode
         self.deviceIDs           = deviceIDs
         self.configurationIDs    = configurationIDs
-        self.location            = location
+//        self.location            = location
         self.startDate           = startDate
         self.endDate             = endDate
         self.admins              = admins
@@ -110,7 +110,7 @@ public extension PolisObservingSite {
         case observatoryCode       = "observatory_code"
         case deviceIDs             = "device_ids"
         case configurationIDs      = "configuration_ids"
-        case location
+//        case location
         case startDate             = "start_date"
         case endDate               = "end_date"
         case admins

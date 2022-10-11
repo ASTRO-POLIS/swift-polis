@@ -18,6 +18,18 @@ import Foundation
 
 // This file contains several unrelated Swift types that are accessed from different and also mostly unrelated sources.
 
+public struct PolisMeasurement: Codable {
+    public let value: Double
+    public let unit: String
+    public let time: Date?
+
+    public init(value: Double, unit: String, time: Date? = nil) {
+        self.value = value
+        self.unit  = unit
+        self.time  = time
+    }
+}
+
 //MARK: - POLIS Identity related types -
 
 
