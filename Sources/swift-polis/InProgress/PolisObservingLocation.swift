@@ -16,10 +16,14 @@
 
 import Foundation
 
-//TODO: Make this stuff Codable! Uf what a pain :-(
+//TODO: Make this stuff Codable and Equitable! Uf what a pain :-(
+//TODO: Discuss - Do we need to have special category for the asteroid belt?
+//TODO: Discuss - Hot to represent (reference) solar system ephemeris?
+//TODO: Discuss - Do we need to care about the current galactic coordinates of the sun here?
 public indirect enum SolarSystemBodyType {
     case Sun
 
+    // Planets
     case Mercury
     case Venus
     case Earth
@@ -29,6 +33,7 @@ public indirect enum SolarSystemBodyType {
     case Uranus
     case Neptune
 
+    // Kuiper belt
     case Pluto
     case Ceres
     case Haumea
@@ -36,6 +41,8 @@ public indirect enum SolarSystemBodyType {
     case Eris
     case KuiperBeltObject(name: String)
 
+    // Miscellaneous
+    //TODO: Do we need the Minor Planet code?
     case moon(of: SolarSystemBodyType, name: String)       // e.g. .moon(.Jupiter, "Titan")
     case asteroid(name: String)
     case comet(name: String)
@@ -49,8 +56,6 @@ public enum ObservingSiteLocationType {
     case airBorn(location: SolarSystemBodyType, range: AltitudeRange?)
     case solarSystemBodyOrbital(location: SolarSystemBodyType)
     case solarSystemBodyNonOrbital(locationDescription: String?)        // e.g. Voyager
-    case extraSolarSystem
-    case ivoa(descriptor: String)
 }
 
 
