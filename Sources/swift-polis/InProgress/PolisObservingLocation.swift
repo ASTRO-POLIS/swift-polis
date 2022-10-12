@@ -40,13 +40,13 @@ public enum PolisObservingSiteLocationType {
 
     public enum OrbitalType: String, Codable {
         case keplerian
-        case transitional
         case nonKeplerian
+        case transitional // For transitional orbits the base should be the destination object!
         case chaotic
         case unknown
     }
 
-    public indirect enum SolarSystemBodyType {
+    public indirect enum SolarSystemBodyType: Codable {
         case sun
 
         // Planets
@@ -146,8 +146,8 @@ public enum PolisObservingSiteLocationType {
 public extension PolisObservingSiteLocationType.OrbitalType {
     enum CodingKeys: String, CodingKey {
         case keplerian    = "Keplerian"
-        case transitional
         case nonKeplerian = "non Keplerian"
+        case transitional
         case chaotic
         case unknown
     }
