@@ -227,10 +227,12 @@ public extension PolisObservingSiteLocationType.GravitationalObjectBasedLocation
 
 public extension PolisObservingSiteLocationType {
     enum CodingKeys: String, CodingKey {
-        case earthSurfaceBased           = "earth_surface_based"
-        case earthOrbitBased             = "earth_orbit_based"
-        case solarSystemBodySurfaceBased = "solar_system_body_surface_based"
-        case solarSystemBodyOrbitBased   = "solar_system_body_orbit_based"
+        case locationTypeType            = "location_type"
+
+        case earthSurfaceBasedParams           = "earth_surface_based"
+        case earthOrbitBasedParams             = "earth_orbit_based"
+        case solarSystemBodySurfaceBasedParams = "solar_system_body_surface_based"
+        case solarSystemBodyOrbitBasedParams   = "solar_system_body_orbit_based"
     }
 
     init(from decoder: Decoder) throws {
@@ -244,18 +246,25 @@ public extension PolisObservingSiteLocationType {
 
         switch self {
             case .earthSurfaceBased(base: let base, type: let type):
-                try container.encode(base, forKey: .earthSurfaceBased)
-                try container.encode(type, forKey: .earthSurfaceBased)
+                try container.encode(LocationType.earthSurfaceBased, forKey: .locationTypeType)
+                try container.encode(type, forKey: .locationTypeType)
             case .earthOrbitBased(currentOrbitType: let currentOrbitType):
-                try container.encode(currentOrbitType, forKey: .earthOrbitBased)
+                try container.encode(LocationType.earthOrbitBased, forKey: .locationTypeType)
             case .solarSystemBodySurfaceBased(base: let base, type: let type):
-                try container.encode(base, forKey: .solarSystemBodySurfaceBased)
-                try container.encode(type, forKey: .earthSurfaceBased)
+                try container.encode(base, forKey: .locationTypeType)
+                try container.encode(type, forKey: .locationTypeType)
             case .solarSystemBodyOrbitBased(aroundGravitationalObject: let aroundGravitationalObject, currentOrbitType: let currentOrbitType):
-                try container.encode(aroundGravitationalObject, forKey: .solarSystemBodyOrbitBased)
-                try container.encode(currentOrbitType, forKey: .solarSystemBodyOrbitBased)
+                try container.encode(aroundGravitationalObject, forKey: .locationTypeType)
+                try container.encode(currentOrbitType, forKey: .locationTypeType)
         }
 
         //TODO: Test me!
     }
+    private enum LocationType: String, Codable {
+        case earthSurfaceBased           = "earth_surface_based"
+        case earthOrbitBased             = "earth_orbit_based"
+        case solarSystemBodySurfaceBased = "solar_system_body_surface_based"
+        case solarSystemBodyOrbitBased   = "solar_system_body_orbit_based"
+    }
+
 }
