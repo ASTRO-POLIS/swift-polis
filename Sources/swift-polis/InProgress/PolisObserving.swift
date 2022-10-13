@@ -62,24 +62,24 @@ public struct PolisObservingSite: PolisObserving {
     // - Min/Max/Average climate parameters / season
     // - History (this perhaps is a property of PolisObserving?)
 
-    public init(type: PolisObservingType          = .site,
+    public init(type: PolisObservingType         = .site,
                 item: PolisItem,
-                parentID: UUID?                   = nil,
-                observatoryCode: String?          = nil,
-                deviceIDs: Set<UUID>              = Set<UUID>(),
-                configurationIDs: Set<UUID>       = Set<UUID>(),
-//                location: PolisObservingLocation? = nil,
-                startDate: Date?                  = nil,
-                endDate: Date?                    = nil,
-                admins: [PolisAdminContact]?      = nil,
-                subObservingSiteIDs: Set<UUID>?   = nil) {
+                parentID: UUID?                  = nil,
+                observatoryCode: String?         = nil,
+                deviceIDs: Set<UUID>             = Set<UUID>(),
+                configurationIDs: Set<UUID>      = Set<UUID>(),
+                location: PolisObservingSiteLocationType,
+                startDate: Date?                 = nil,
+                endDate: Date?                   = nil,
+                admins: [PolisAdminContact]?     = nil,
+                subObservingSiteIDs: Set<UUID>?  = nil) {
         self.type                = type
         self.item                = item
         self.parentID            = parentID
         self.observatoryCode     = observatoryCode
         self.deviceIDs           = deviceIDs
         self.configurationIDs    = configurationIDs
-//        self.location            = location
+        self.location            = location
         self.startDate           = startDate
         self.endDate             = endDate
         self.admins              = admins
