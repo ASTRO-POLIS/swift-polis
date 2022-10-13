@@ -234,8 +234,8 @@ public extension PolisObservingSiteLocationType {
     }
 
     init(from decoder: Decoder) throws {
-//        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.init()
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        try self.init(from: decoder)
         //TODO: Implement me!
     }
 
