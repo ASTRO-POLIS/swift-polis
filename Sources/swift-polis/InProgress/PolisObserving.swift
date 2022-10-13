@@ -110,7 +110,7 @@ public extension PolisObservingSite {
         case observatoryCode       = "observatory_code"
         case deviceIDs             = "device_ids"
         case configurationIDs      = "configuration_ids"
-//        case location
+        case location
         case startDate             = "start_date"
         case endDate               = "end_date"
         case admins
