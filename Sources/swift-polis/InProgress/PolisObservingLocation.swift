@@ -134,9 +134,9 @@ public enum PolisObservingSiteLocationType: Codable {
         public let region: String?                      // e.g. the Tranquility crater
     }
 
-    case earthSurfaceBased(base: EarthBasedLocation, type: SurfaceLocationType)
+    case earthSurfaceBased(earthBase: EarthBasedLocation, type: SurfaceLocationType)
     case earthOrbitBased(currentOrbitType: OrbitalType)
-    case solarSystemBodySurfaceBased(base: GravitationalObjectBasedLocation, type: SurfaceLocationType)
+    case solarSystemBodySurfaceBased(spaceBase: GravitationalObjectBasedLocation, type: SurfaceLocationType)
     case solarSystemBodyOrbitBased(aroundGravitationalObject: GravitationalObjectBasedLocation, currentOrbitType: OrbitalType)
 }
 
@@ -227,7 +227,8 @@ public extension PolisObservingSiteLocationType.GravitationalObjectBasedLocation
 
 public extension PolisObservingSiteLocationType {
     enum CodingKeys: String, CodingKey {
-        case locationTypeType            = "location_type"
+        case locationTypeType                  = "location_type"
+        case earthBase                         = "earth_base"
 
         case earthSurfaceBasedParams           = "earth_surface_based"
         case earthOrbitBasedParams             = "earth_orbit_based"
@@ -245,12 +246,13 @@ public extension PolisObservingSiteLocationType {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         switch self {
-            case .earthSurfaceBased(base: let base, type: let type):
+            case .earthSurfaceBased(earthBase: let base, type: let type):
                 try container.encode(LocationType.earthSurfaceBased, forKey: .locationTypeType)
+                try container.encode(EarthBasedLocation(), forKey: .earthBase)
 //                try container.encode(type, forKey: .locationTypeType)
             case .earthOrbitBased(currentOrbitType: let currentOrbitType):
                 try container.encode(LocationType.earthOrbitBased, forKey: .locationTypeType)
-            case .solarSystemBodySurfaceBased(base: let base, type: let type):
+            case .solarSystemBodySurfaceBased(spaceBase: let base, type: let type):
                 try container.encode(base, forKey: .locationTypeType)
 //                try container.encode(type, forKey: .locationTypeType)
             case .solarSystemBodyOrbitBased(aroundGravitationalObject: let aroundGravitationalObject, currentOrbitType: let currentOrbitType):
