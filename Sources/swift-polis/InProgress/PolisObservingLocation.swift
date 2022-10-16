@@ -200,6 +200,13 @@ public extension PolisObservingSiteLocationType.EarthBasedLocation {
         case surfaceSize       = "surface_size"
         case staticLocation    = "staticL_location"
     }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try container.encode(staticLocation, forKey: .staticLocation)
+        if continent != nil {  try container.encode(continent, forKey: .continent) }
+    }
 }
 
 public extension PolisObservingSiteLocationType.EarthBasedLocation.EarthContinent {
