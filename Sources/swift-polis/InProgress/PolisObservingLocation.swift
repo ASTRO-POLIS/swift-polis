@@ -200,13 +200,6 @@ public extension PolisObservingSiteLocationType.EarthBasedLocation {
         case surfaceSize       = "surface_size"
         case staticLocation    = "static_location"
     }
-
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        
-        try container.encode(staticLocation, forKey: .staticLocation)
-        if continent != nil {  try container.encode(continent, forKey: .continent) }
-    }
 }
 
 public extension PolisObservingSiteLocationType.EarthBasedLocation.EarthContinent {
@@ -255,7 +248,7 @@ public extension PolisObservingSiteLocationType {
         switch self {
             case .earthSurfaceBased(earthBase: let base, type: let type):
                 try container.encode(LocationType.earthSurfaceBased, forKey: .locationTypeType)
-                try container.encode(EarthBasedLocation(), forKey: .earthBase)
+                try container.encode(base, forKey: .earthBase)
 //                try container.encode(type, forKey: .locationTypeType)
             case .earthOrbitBased(currentOrbitType: let currentOrbitType):
                 try container.encode(LocationType.earthOrbitBased, forKey: .locationTypeType)
