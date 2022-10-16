@@ -88,7 +88,7 @@ public enum PolisObservingSiteLocationType: Codable {
         public let eastLongitude: PolisMeasurement? // degrees
         public let latitude: PolisMeasurement?      // degrees
         public let altitude: PolisMeasurement?      // m
-        public let continent: EarthContinent?
+        public var continent: EarthContinent?
         public let place: String?                   // e.g. Mount Wilson
         public let regionOrState: String?           // e.g. California
         public let regionOrStateCode: String?       // e.g. CA for California
