@@ -198,7 +198,7 @@ public extension PolisObservingSiteLocationType.EarthBasedLocation {
         case country
         case countryCode       = "country_code"
         case surfaceSize       = "surface_size"
-        case staticLocation    = "staticL_location"
+        case staticLocation    = "static_location"
     }
 
     func encode(to encoder: Encoder) throws {
