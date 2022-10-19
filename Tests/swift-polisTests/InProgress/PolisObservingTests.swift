@@ -42,12 +42,13 @@ class PolisObservingTests: XCTestCase {
                                      automationLabel: "tst",
                                      shortDescription: "test identity")
         let item     = PolisItem(identity: identity)
-        let location = PolisObservingSiteLocationType.earthSurfaceBased(earthBase: PolisObservingSiteLocationType.EarthBasedLocation(), type: PolisObservingSiteLocationType.SurfaceLocationType.fixed)
-        let sut      = PolisObservingSite(item: item, location: location)
-
-        data   = try? jsonEncoder.encode(sut)
-        string = String(data: data!, encoding: .utf8)
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisObservingSite.self, from: string!.data(using: .utf8)!))
+//        var earth    = PolisObservingSiteLocationType.EarthBasedLocation(continent: .africa, country: "Austria")
+//        let location = PolisObservingSiteLocationType.earthSurfaceBased(earthBase: earth, type: PolisObservingSiteLocationType.SurfaceLocationType.fixed)
+//        let sut      = PolisObservingSite(item: item, location: location)
+//
+//        data   = try? jsonEncoder.encode(sut)
+//        string = String(data: data!, encoding: .utf8)
+//        XCTAssertNoThrow(try jsonDecoder.decode(PolisObservingSite.self, from: string!.data(using: .utf8)!))
     }
 
     //MARK: - Housekeeping -
