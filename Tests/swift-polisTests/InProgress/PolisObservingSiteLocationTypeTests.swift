@@ -46,15 +46,37 @@ final class PolisObservingSiteLocationTypeTests: XCTestCase {
     //MARK: - Tests -
     func test_PolisObservingSiteLocationType_earthBasedLocationCodable_shouldSucceed() throws {
         // Given
-        let eastLongitude = PolisMeasurement(value: 13.7, unit: "degree")
-        let latitude      = PolisMeasurement(value: 45.17, unit: "degree")
+        let eastLongitude     = PolisMeasurement(value: 14.15, unit: "degree")
+        let latitude          = PolisMeasurement(value: 48.51, unit: "degree")
+        let altitude          = PolisMeasurement(value: 896.0, unit: "m")
+        let continent         = PolisObservingSiteLocationType.EarthBasedLocation.EarthContinent.europe
+        let place             = "Sandl"
+        let regionOrState     = "Ober Östereich"
+        let regionOrStateCode = "OÖ"
+        let zipCode           = "1234"
+        let country           = "Austria"
+        let countryCode       = "OS"
+        let surfaceSize       = PolisMeasurement(value: 453.2, unit: "m^2")
+        let staticLocation    = true
 
         // When
         let sut = PolisObservingSiteLocationType.EarthBasedLocation(eastLongitude: eastLongitude,
-                                                                    latitude: latitude)
+                                                                    latitude: latitude,
+                                                                    altitude: altitude,
+                                                                    continent: continent,
+                                                                    place: place,
+                                                                    regionOrState: regionOrState,
+                                                                    regionOrStateCode: regionOrStateCode,
+                                                                    zipCode: zipCode,
+                                                                    country: country,
+                                                                    countryCode: countryCode,
+                                                                    surfaceSize: surfaceSize,
+                                                                    staticLocation: staticLocation)
 
         data   = try? jsonEncoder.encode(sut)
         string = String(data: data!, encoding: .utf8)
+
+        print(string!)
 
         // Then
         XCTAssertNotNil(sut)
