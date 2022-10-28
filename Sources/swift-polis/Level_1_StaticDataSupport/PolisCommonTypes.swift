@@ -30,6 +30,63 @@ public struct PolisMeasurement: Codable {
     }
 }
 
+public struct PolisImageSource: Codable, Identifiable {
+
+    public enum CopyrightHolderType: Codable {
+        case polisContributor(id: UUID)
+        case starClusterImage
+        case creativeCommons(source: URL)
+        case openSource(source: URL)
+        case useWithOwnersPermission(text: String, explanationNotes: String?)
+    }
+
+    public struct ImageItem: Codable {
+        public let index: UInt
+        public var lastUpdate: Date
+        public let originalSource: URL
+        public let description: String?
+        public let accessibilityDescription: String?
+        public let copyrightHolder: CopyrightHolderType
+    }
+
+    public enum ImageSourceError: Error {
+        case duplicateIndex
+        case indexNotFound
+        case unaccessibleURL
+    }
+
+    public let id: UUID
+    public var imageItems = [ImageItem]()
+
+    public init(id: UUID) { self.id = id }
+
+    public mutating func addImage(item: ImageItem) async throws {
+        if indexSet.contains(item.index) { throw ImageSourceError.duplicateIndex }
+
+        do {
+            for try await _ in item.originalSource.resourceBytes { break }
+        }
+        catch { throw ImageSourceError.unaccessibleURL }
+
+        indexSet.insert(item.index)
+        imageItems.append(item)
+    }
+
+    public mutating func removeImage(at index: UInt) throws -> ImageItem? {
+        if !indexSet.contains(index) { throw ImageSourceError.indexNotFound }
+        var item: ImageItem?
+
+        for anItem in imageItems {
+            if anItem.index == index {
+                item = anItem
+                break
+            }
+        }
+        return item
+    }
+
+    private var indexSet = Set<UInt>()
+}
 //MARK: - POLIS Identity related types -
 
 
@@ -161,7 +218,7 @@ public struct PolisIdentity: Codable, Identifiable {
 /// twitter accounts, but only publicly available organisation contacts.
 ///
 /// The type implements the `Codable` protocol
-public struct PolisAdminContact {
+public struct PolisAdminContact: Identifiable {
 
     /// `Communication` defines different types of communication channels in addition to the default email address and
     /// mobile number.
@@ -190,6 +247,9 @@ public struct PolisAdminContact {
         case skype(id: String)
     }
 
+    /// Admin's ID is needed for defining login credentials and identifying sources of data changes and contributions
+    public let id: UUID
+
     /// It is recommended that the admin's name is either omitted, or describes admin's role, e.g. "The managing
     /// director of Mountain Observatory"
     public var name: String?
@@ -214,16 +274,18 @@ public struct PolisAdminContact {
     ///
     /// Only the `email` is a required parameter. It must contain well formatted email addresses. If the email is not a
     /// valid one, `nil` will be returned.
-    public init?(name:                            String?,
+    public init?(id:                              UUID            = UUID(),
+                 name:                            String?,
                  email:                           String,
-                 phone:                           String? = nil,
+                 phone:                           String?         = nil,
                  additionalCommunicationChannels: [Communication] = [Communication](),
                  notes:                           String?) {
         guard email.isValidEmailAddress() else { return nil }
 
+        self.id                              = id
         self.name                            = name
         self.email                           = email
-        self.phone                          = phone
+        self.phone                           = phone
         self.additionalCommunicationChannels = additionalCommunicationChannels
         self.notes                           = notes
     }
@@ -371,6 +433,7 @@ extension PolisAdminContact.Communication: Codable, CustomStringConvertible {
 //MARK: - PolisContact
 extension PolisAdminContact: Codable {
     public enum CodingKeys: String, CodingKey {
+        case id
         case name
         case email
         case phone

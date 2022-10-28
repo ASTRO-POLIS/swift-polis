@@ -51,7 +51,8 @@ final class PolisServiceProviderTests: XCTestCase {
         "name": "Telescope Observer"
     },
     "contact": {
-        "email": "polis@tuparev.com",
+       "id": "6084D02F-A110-43A1-ACB4-93D32A42E606",
+       "email": "polis@tuparev.com",
         "additional_communication_channels": [
             {
                 "twitter": {
