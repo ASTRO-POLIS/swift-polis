@@ -18,18 +18,49 @@ import Foundation
 
 // This file contains several unrelated Swift types that are accessed from different and also mostly unrelated sources.
 
+/// `PolisMeasurement` is used when a pair of value and unit is needed.
+///
+/// Examples include telescope apertures, instrument wavelengths, etc. POLIS only defines means of recording measurements. Client applications using POLIS
+/// should implement unit conversions (if needed). The POLIS provider is not expected to make any conversions, but it might check is the units are allowed.
 public struct PolisMeasurement: Codable {
+    /// The value of the measurement
     public let value: Double
+    /// Standard precision of the measurement
+    ///
+    /// If precision is 0, the value could be assumed an integer.
+    public let precision: UInt8?
+
+
+    /// Unit is expected to be in a format that is accepted by the astronomical community (as defined by IAU, FITS Standard, etc).
+    ///
+    /// In case no unit is defined, the measurement has no dimension (e.g. counter)
+    /// Examples:
+    /// - "m"
+    /// - "km"
+    /// - "in"
+    /// - "m^2"
+    /// - "µm"
+    /// - "solMass"
+    /// - "eV"
     public let unit: String
+
+    /// Optional time (in UTC) of the measurement
     public let time: Date?
 
-    public init(value: Double, unit: String, time: Date? = nil) {
-        self.value = value
-        self.unit  = unit
-        self.time  = time
+    public init(value: Double, precision: UInt8? = nil, unit: String, time: Date? = nil) {
+        self.value     = value
+        self.precision = precision
+        self.unit      = unit
+        self.time      = time
     }
 }
 
+/// `PolisImageSource` defines a source for images related to a single item (observing site, satellite, telescope, camera., ...)
+///
+/// Each image from the set defines its index within the set (used mainly for naming image data), and image attributes (source URL, description and
+/// accessibility description, as well as information about the copyright holder and copyright type).
+///
+/// **Important note:** POLIS providers should allowed only images that are either open source or the copyright holder transferred explicit rights of use!
 public struct PolisImageSource: Codable, Identifiable {
 
     public enum CopyrightHolderType: Codable {
