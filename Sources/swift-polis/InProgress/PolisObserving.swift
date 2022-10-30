@@ -25,16 +25,16 @@ public enum PolisObservingType: String, Codable {
 }
 
 public protocol PolisObserving: Codable, Identifiable {
-    var type: PolisObservingType                  { get }
-    var item: PolisItem                           { get set }
-    var parentID: UUID?                           { get set }
-    var observatoryCode: String?                  { get set } // IAU or MPC (Minor Planet Center) code
-    var deviceIDs: Set<UUID>                      { get set }
-    var configurationIDs: Set<UUID>               { get set }
-    var location: PolisObservingSiteLocationType? { get set }
-    var startDate: Date?                          { get set } // Could be nil if unknown
-    var endDate: Date?                            { get set } // if != nil -> either closed or temporary created (e.g. solar eclipse monitoring)
-    var admins: [PolisAdminContact]?              { get set }
+    var type: PolisObservingType                      { get }
+    var item: PolisItem                               { get set }
+    var parentID: UUID?                               { get set }
+    var observatoryCode: String?                      { get set } // IAU or MPC (Minor Planet Center) code
+    var deviceIDs: Set<UUID>                          { get set }
+    var configurationIDs: Set<UUID>                   { get set }
+    var siteLocation: PolisObservingSiteLocationType? { get set }
+    var startDate: Date?                              { get set } // Could be nil if unknown
+    var endDate: Date?                                { get set } // if != nil -> either closed or temporary created (e.g. solar eclipse monitoring)
+    var admins: [PolisAdminContact]?                  { get set }
 }
 
 public struct PolisObservingSite: PolisObserving {
@@ -42,9 +42,9 @@ public struct PolisObservingSite: PolisObserving {
     public var item: PolisItem
     public var parentID: UUID?
     public var observatoryCode: String?
-    public var deviceIDs                                 = Set<UUID>()
-    public var configurationIDs                          = Set<UUID>()
-    public var location: PolisObservingSiteLocationType?
+    public var deviceIDs                                     = Set<UUID>()
+    public var configurationIDs                              = Set<UUID>()
+    public var siteLocation: PolisObservingSiteLocationType?
     public var startDate: Date?
     public var endDate: Date?
     public var admins: [PolisAdminContact]?
@@ -62,24 +62,24 @@ public struct PolisObservingSite: PolisObserving {
     // - Min/Max/Average climate parameters / season
     // - History (this perhaps is a property of PolisObserving?)
 
-    public init(type: PolisObservingType                   = .site,
+    public init(type: PolisObservingType                       = .site,
                 item: PolisItem,
-                parentID: UUID?                            = nil,
-                observatoryCode: String?                   = nil,
-                deviceIDs: Set<UUID>                       = Set<UUID>(),
-                configurationIDs: Set<UUID>                = Set<UUID>(),
-                location: PolisObservingSiteLocationType?  = nil,
-                startDate: Date?                           = nil,
-                endDate: Date?                             = nil,
-                admins: [PolisAdminContact]?               = nil,
-                subObservingSiteIDs: Set<UUID>?            = nil) {
+                parentID: UUID?                                = nil,
+                observatoryCode: String?                       = nil,
+                deviceIDs: Set<UUID>                           = Set<UUID>(),
+                configurationIDs: Set<UUID>                    = Set<UUID>(),
+                siteLocation: PolisObservingSiteLocationType?  = nil,
+                startDate: Date?                               = nil,
+                endDate: Date?                                 = nil,
+                admins: [PolisAdminContact]?                   = nil,
+                subObservingSiteIDs: Set<UUID>?                = nil) {
         self.type                = type
         self.item                = item
         self.parentID            = parentID
         self.observatoryCode     = observatoryCode
         self.deviceIDs           = deviceIDs
         self.configurationIDs    = configurationIDs
-        self.location            = location
+        self.siteLocation        = siteLocation
         self.startDate           = startDate
         self.endDate             = endDate
         self.admins              = admins
@@ -110,7 +110,7 @@ public extension PolisObservingSite {
         case observatoryCode       = "observatory_code"
         case deviceIDs             = "device_ids"
         case configurationIDs      = "configuration_ids"
-        case location
+        case siteLocation          = "site_location"
         case startDate             = "start_date"
         case endDate               = "end_date"
         case admins
