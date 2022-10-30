@@ -70,8 +70,7 @@ final class PolisObservingSiteLocationTypeTests: XCTestCase {
                                                                     zipCode: zipCode,
                                                                     country: country,
                                                                     countryCode: countryCode,
-                                                                    surfaceSize: surfaceSize,
-                                                                    staticLocation: staticLocation)
+                                                                    surfaceSize: surfaceSize)
 
         data   = try? jsonEncoder.encode(sut)
         string = String(data: data!, encoding: .utf8)

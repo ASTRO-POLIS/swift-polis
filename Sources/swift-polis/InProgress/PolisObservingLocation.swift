@@ -33,7 +33,7 @@ public enum PolisObservingSiteLocationType: Codable {
 
     public enum SurfaceLocationType: String, Codable {
         case fixed
-        case movable
+        case airborne
         case mobile
         case unknown
     }
@@ -96,20 +96,18 @@ public enum PolisObservingSiteLocationType: Codable {
         public let country: String?                 // e.g. Armenia
         public let countryCode: String?             // 2-letter code.
         public let surfaceSize: PolisMeasurement?   // in m^2
-        public let staticLocation: Bool             // Static or Airborne
 
-        public init(eastLongitude: PolisMeasurement?  = nil,
-                    latitude: PolisMeasurement?       = nil,
-                    altitude: PolisMeasurement?       = nil,
-                    continent: EarthContinent?        = nil,
-                    place: String?                    = nil,
-                    regionOrState: String?            = nil,
-                    regionOrStateCode: String?        = nil,
-                    zipCode: String?                  = nil,
-                    country: String?                  = nil,
-                    countryCode: String?              = nil,
-                    surfaceSize: PolisMeasurement?    = nil,
-                    staticLocation: Bool              = true) {
+        public init(eastLongitude: PolisMeasurement? = nil,
+                    latitude: PolisMeasurement?      = nil,
+                    altitude: PolisMeasurement?      = nil,
+                    continent: EarthContinent?       = nil,
+                    place: String?                   = nil,
+                    regionOrState: String?           = nil,
+                    regionOrStateCode: String?       = nil,
+                    zipCode: String?                 = nil,
+                    country: String?                 = nil,
+                    countryCode: String?             = nil,
+                    surfaceSize: PolisMeasurement?   = nil) {
             self.eastLongitude     = eastLongitude
             self.latitude          = latitude
             self.altitude          = altitude
@@ -121,7 +119,6 @@ public enum PolisObservingSiteLocationType: Codable {
             self.country           = country
             self.countryCode       = countryCode
             self.surfaceSize       = surfaceSize
-            self.staticLocation    = staticLocation
         }
     }
 
@@ -146,7 +143,7 @@ public enum PolisObservingSiteLocationType: Codable {
 public extension PolisObservingSiteLocationType.SurfaceLocationType {
     enum CodingKeys: String, CodingKey {
         case fixed
-        case movable
+        case airborne 
         case mobile
         case unknown
     }
@@ -198,7 +195,6 @@ public extension PolisObservingSiteLocationType.EarthBasedLocation {
         case country
         case countryCode       = "country_code"
         case surfaceSize       = "surface_size"
-        case staticLocation    = "static_location"
     }
 }
 
