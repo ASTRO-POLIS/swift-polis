@@ -131,10 +131,10 @@ public enum PolisObservingSiteLocationType: Codable {
         public let region: String?                      // e.g. the Tranquility crater
     }
 
-    case earthSurfaceBased(earthBase: EarthBasedLocation, type: SurfaceLocationType)
-    case earthOrbitBased(currentOrbitType: OrbitalType)
-    case solarSystemBodySurfaceBased(spaceBase: GravitationalObjectBasedLocation, type: SurfaceLocationType)
-    case solarSystemBodyOrbitBased(aroundGravitationalObject: GravitationalObjectBasedLocation, currentOrbitType: OrbitalType)
+    case earthSurfaceBased(location: EarthBasedLocation, type: SurfaceLocationType)
+    case earthOrbital(type: OrbitalType)
+    case solarSystemBodySurfaceBased(location: GravitationalObjectBasedLocation, type: SurfaceLocationType)
+    case solarSystemBodyOrbital(type: OrbitalType)
 }
 
 //MARK: - Making types Codable and CustomStringConvertible -
@@ -224,27 +224,8 @@ public extension PolisObservingSiteLocationType.GravitationalObjectBasedLocation
 public extension PolisObservingSiteLocationType {
     enum CodingKeys: String, CodingKey {
         case earthSurfaceBased           = "earth_surface_based"
-        case earthOrbitBased             = "earth_orbit_based"
+        case earthOrbital                = "earth_orbital"
         case solarSystemBodySurfaceBased = "solar_system_body_surface_based"
-        case solarSystemBodyOrbitBased   = "solar_system_body_orbit_based"
-    }
-
-    enum EarthSurfaceBasedCodingKeys: String, CodingKey {
-        case earthBase = "earth_based"
-        case type
-    }
-
-    enum EarthOrbitBasedCodingKeys: String, CodingKey {
-        case currentOrbitType = "orbital_type"
-    }
-
-    enum SolarSystemBodySurfaceBasedCodingKeys: String, CodingKey {
-        case spaceBase = "space_based"
-        case type
-    }
-
-    enum SolarSystemBodyOrbitBased: String, CodingKey {
-        case aroundGravitationalObject
-        case currentOrbitType
+        case solarSystemBodyOrbital      = "solar_system_body_orbital"
     }
 }
