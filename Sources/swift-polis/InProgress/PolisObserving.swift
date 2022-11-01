@@ -27,7 +27,6 @@ public enum PolisObservingType: String, Codable {
 public protocol PolisObserving: Codable, Identifiable {
     var type: PolisObservingType                      { get }
     var item: PolisItem                               { get set }
-    var parentID: UUID?                               { get set }
     var observatoryCode: String?                      { get set } // IAU or MPC (Minor Planet Center) code
     var deviceIDs: Set<UUID>                          { get set }
     var configurationIDs: Set<UUID>                   { get set }
@@ -40,7 +39,6 @@ public protocol PolisObserving: Codable, Identifiable {
 public struct PolisObservingSite: PolisObserving {
     public var type: PolisObservingType
     public var item: PolisItem
-    public var parentID: UUID?
     public var observatoryCode: String?
     public var deviceIDs                                     = Set<UUID>()
     public var configurationIDs                              = Set<UUID>()
@@ -64,7 +62,6 @@ public struct PolisObservingSite: PolisObserving {
 
     public init(type: PolisObservingType                       = .site,
                 item: PolisItem,
-                parentID: UUID?                                = nil,
                 observatoryCode: String?                       = nil,
                 deviceIDs: Set<UUID>                           = Set<UUID>(),
                 configurationIDs: Set<UUID>                    = Set<UUID>(),
@@ -75,7 +72,6 @@ public struct PolisObservingSite: PolisObserving {
                 subObservingSiteIDs: Set<UUID>?                = nil) {
         self.type                = type
         self.item                = item
-        self.parentID            = parentID
         self.observatoryCode     = observatoryCode
         self.deviceIDs           = deviceIDs
         self.configurationIDs    = configurationIDs
@@ -106,7 +102,6 @@ public extension PolisObservingSite {
     enum CodingKeys: String, CodingKey {
         case type
         case item
-        case parentID              = "parent_id"
         case observatoryCode       = "observatory_code"
         case deviceIDs             = "device_ids"
         case configurationIDs      = "configuration_ids"
