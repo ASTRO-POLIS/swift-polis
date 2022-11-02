@@ -364,7 +364,16 @@ public enum PolisDirection: Codable {
     case exact(degree: Double)                  //TODO: Clock or anticlockwise? e.g. 157.12
 }
 
-
+/// The `PolisActivityPeriods` struct is used to define periods of time when an ``PolisObservingSite`` could be visited, or the working hours of the personal.
+///
+/// Note that some sites might be opened only during part of the year (e.g. because of difficult winter conditions) or could be visited only during the school vacations.
+///
+/// The first version of the type defines only an optional `notes` string.  Future versions will add more structured types expressing numerically periods like:
+///    Mo-Fr: 16:00-18:00h or
+///    June - September
+public struct PolisActivityPeriods: Codable {
+    var notes: String?
+}
 
 //MARK: - Type extensions -
 

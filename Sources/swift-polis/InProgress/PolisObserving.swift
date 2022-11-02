@@ -46,6 +46,18 @@ public struct PolisObservingSite: PolisObserving {
     public var startDate: Date?
     public var endDate: Date?
     public var admins: [PolisAdminContact]?
+    public var website: URL?
+    public var scientificObjectives: String?
+
+    public var workingHours: PolisActivityPeriods?
+    public var openingHours: PolisActivityPeriods?
+    public var accessRestrictions: String?
+
+    public var averageClearNightsYear: UInt?
+    public var averageSeeingConditions: PolisMeasurement? // [arcec]
+    public var averageSkyQuality: Double?                 // [magnitude]
+
+    public var traditionalLandOwners: String?
 
     public var subObservingSiteIDs: Set<UUID>?
 
@@ -69,17 +81,35 @@ public struct PolisObservingSite: PolisObserving {
                 startDate: Date?                               = nil,
                 endDate: Date?                                 = nil,
                 admins: [PolisAdminContact]?                   = nil,
+                website: URL?                                  = nil,
+                scientificObjectives: String?                  = nil,
+                workingHours: PolisActivityPeriods?            = nil,
+                openingHours: PolisActivityPeriods?            = nil,
+                accessRestrictions: String?                    = nil,
+                averageClearNightsYear: UInt?                  = nil,
+                averageSeeingConditions: PolisMeasurement?     = nil,
+                averageSkyQuality: Double?                     = nil,
+                traditionalLandOwners: String?                 = nil,
                 subObservingSiteIDs: Set<UUID>?                = nil) {
-        self.type                = type
-        self.item                = item
-        self.observatoryCode     = observatoryCode
-        self.deviceIDs           = deviceIDs
-        self.configurationIDs    = configurationIDs
-        self.siteLocation        = siteLocation
-        self.startDate           = startDate
-        self.endDate             = endDate
-        self.admins              = admins
-        self.subObservingSiteIDs = subObservingSiteIDs
+        self.type                    = type
+        self.item                    = item
+        self.observatoryCode         = observatoryCode
+        self.deviceIDs               = deviceIDs
+        self.configurationIDs        = configurationIDs
+        self.siteLocation            = siteLocation
+        self.startDate               = startDate
+        self.endDate                 = endDate
+        self.admins                  = admins
+        self.website                 = website
+        self.scientificObjectives    = scientificObjectives
+        self.workingHours            = workingHours
+        self.openingHours            = openingHours
+        self.accessRestrictions      = accessRestrictions
+        self.averageClearNightsYear  = averageClearNightsYear
+        self.averageSeeingConditions = averageSeeingConditions
+        self.averageSkyQuality       = averageSkyQuality
+        self.traditionalLandOwners   = traditionalLandOwners
+        self.subObservingSiteIDs     = subObservingSiteIDs
     }
 }
 
@@ -102,14 +132,23 @@ public extension PolisObservingSite {
     enum CodingKeys: String, CodingKey {
         case type
         case item
-        case observatoryCode       = "observatory_code"
-        case deviceIDs             = "device_ids"
-        case configurationIDs      = "configuration_ids"
-        case siteLocation          = "site_location"
-        case startDate             = "start_date"
-        case endDate               = "end_date"
+        case observatoryCode         = "observatory_code"
+        case deviceIDs               = "device_ids"
+        case configurationIDs        = "configuration_ids"
+        case siteLocation            = "site_location"
+        case startDate               = "start_date"
+        case endDate                 = "end_date"
         case admins
-        case subObservingSiteIDs   = "sub_observing_site_ids"
-        case dominantWindDirection = "dominant_wind_direction"
+        case website
+        case scientificObjectives    = "scientific_objectives"
+        case workingHours            = "working_hours"
+        case openingHours            = "opening_hours"
+        case accessRestrictions      = "access_restrictions"
+        case subObservingSiteIDs     = "sub_observing_site_ids"
+        case averageClearNightsYear  = "average_clear_nights_year"
+        case averageSeeingConditions = "average_seeing_conditions"
+        case averageSkyQuality       = "average_sky_quality"
+        case traditionalLandOwners   = "traditional_land_owners"
+        case dominantWindDirection   = "dominant_wind_direction"
     }
 }
