@@ -58,6 +58,7 @@ public struct PolisObservingSite: PolisObserving {
     public var averageSkyQuality: Double?                 // [magnitude]
 
     public var traditionalLandOwners: String?
+    public var history: String?
 
     public var subObservingSiteIDs: Set<UUID>?
 
@@ -67,10 +68,7 @@ public struct PolisObservingSite: PolisObserving {
     public var dominantWindDirection: PolisDirection.RoughDirection?
 
     //TODO: We need to add few things
-    // - Is accessible by road and all seasons
-    // - Visiting hours and possibilities -> WebSite?
     // - Min/Max/Average climate parameters / season
-    // - History (this perhaps is a property of PolisObserving?)
 
     public init(type: PolisObservingType                       = .site,
                 item: PolisItem,
@@ -90,6 +88,7 @@ public struct PolisObservingSite: PolisObserving {
                 averageSeeingConditions: PolisMeasurement?     = nil,
                 averageSkyQuality: Double?                     = nil,
                 traditionalLandOwners: String?                 = nil,
+                history: String?                               = nil,
                 subObservingSiteIDs: Set<UUID>?                = nil) {
         self.type                    = type
         self.item                    = item
@@ -109,6 +108,7 @@ public struct PolisObservingSite: PolisObserving {
         self.averageSeeingConditions = averageSeeingConditions
         self.averageSkyQuality       = averageSkyQuality
         self.traditionalLandOwners   = traditionalLandOwners
+        self.history                 = history
         self.subObservingSiteIDs     = subObservingSiteIDs
     }
 }
@@ -149,6 +149,7 @@ public extension PolisObservingSite {
         case averageSeeingConditions = "average_seeing_conditions"
         case averageSkyQuality       = "average_sky_quality"
         case traditionalLandOwners   = "traditional_land_owners"
+        case history
         case dominantWindDirection   = "dominant_wind_direction"
     }
 }
