@@ -22,10 +22,16 @@ public struct PolisConfiguration: Codable {
     public enum ObservationResultType: String, Codable {
         case simple2DImage
         case multiFilter2DImage
-        case photometry
-        case spectrography
-
-        //TODO: Astronomers should define the entire list!
+        case singleFibreSpectrography
+        case multiFibreSpectrography
+        case integralFieldSpectrography
+        case singleSlitSpectrography
+        case multiSlitSpectrography
+        case fabryPerot
+        case photopolarimetry
+        case spectropolarimetry
+        case radiospectroscopy
+        case photographicPlate
     }
 
     public var observationResultType: ObservationResultType
@@ -38,10 +44,18 @@ public struct PolisConfiguration: Codable {
 
 public extension PolisConfiguration.ObservationResultType {
     enum CodingKeys: String, CodingKey {
-        case simple2DImage      = "simple_2D_image"
-        case multiFilter2DImage = "multi_filter_2D_image"
-        case photometry
-        case spectrography
+        case simple2DImage              = "simple_2D_image"
+        case multiFilter2DImage         = "multi_filter_2D_image"
+        case singleFibreSpectrography   = "single_fibre_spectroscopy"
+        case multiFibreSpectrography    = "multi_fibre_spectroscopy"
+        case integralFieldSpectrography = "integral_field_spectroscopy"
+        case singleSlitSpectrography    = "single_slit_spectroscopy"
+        case multiSlitSpectrography     = "multi_slit_spectroscopy"
+        case fabryPerot                 = "fabry_perot"
+        case photopolarimetry           = "photopolarimetry"
+        case spectropolarimetry         = "spectropolarimetry"
+        case radiospectroscopy          = "radiospectroscopy"
+        case photographicPlate          = "photographic_plate"
     }
 }
 
