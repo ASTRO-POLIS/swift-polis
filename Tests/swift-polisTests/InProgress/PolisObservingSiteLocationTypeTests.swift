@@ -57,7 +57,6 @@ final class PolisObservingSiteLocationTypeTests: XCTestCase {
         let country           = "Austria"
         let countryCode       = "OS"
         let surfaceSize       = PolisMeasurement(value: 453.2, unit: "m^2")
-        let staticLocation    = true
 
         // When
         let sut = PolisObservingSiteLocationType.EarthBasedLocation(eastLongitude: eastLongitude,

@@ -361,7 +361,7 @@ public enum PolisDirection: Codable {
     }
 
     case rough(direction: RoughDirection)
-    case exact(degree: Double)                  //TODO: Clock or anticlockwise? e.g. 157.12
+    case exact(degree: Double)                  // Clockwise e.g. 157.12
 }
 
 /// The `PolisActivityPeriods` struct is used to define periods of time when an ``PolisObservingSite`` could be visited, or the working hours of the personal.
