@@ -43,7 +43,7 @@ class PolisObservingTests: XCTestCase {
                                      shortDescription: "test identity")
         let item     = PolisItem(identity: identity)
         let location = PolisObservingSiteLocationType.earthSurfaceBased(location: PolisObservingSiteLocationType.EarthBasedLocation(), type: PolisObservingSiteLocationType.SurfaceLocationType.fixed)
-        let sut      = PolisObservingSite(item: item, siteLocation: location)
+        let sut      = PolisEarthObservingSite(item: item, siteLocation: location)
 
         data   = try? jsonEncoder.encode(sut)
         string = String(data: data!, encoding: .utf8)
@@ -51,7 +51,7 @@ class PolisObservingTests: XCTestCase {
         print("///////////////")
         print(string!)
 
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisObservingSite.self, from: string!.data(using: .utf8)!))
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisEarthObservingSite.self, from: string!.data(using: .utf8)!))
     }
 
     //MARK: - Housekeeping -

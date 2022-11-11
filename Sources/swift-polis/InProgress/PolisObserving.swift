@@ -36,7 +36,7 @@ public protocol PolisObserving: Codable, Identifiable {
     var admins: [PolisAdminContact]?                  { get set }
 }
 
-public struct PolisObservingSite: PolisObserving {
+public struct PolisEarthObservingSite: PolisObserving {
     public var type: PolisObservingType
     public var item: PolisItem
     public var observatoryCode: String?
@@ -54,7 +54,7 @@ public struct PolisObservingSite: PolisObserving {
     public var accessRestrictions: String?
 
     public var averageClearNightsYear: UInt?
-    public var averageSeeingConditions: PolisMeasurement? // [arcec]
+    public var averageSeeingConditions: PolisMeasurement? // [arcsec]
     public var averageSkyQuality: Double?                 // [magnitude]
 
     public var traditionalLandOwners: String?
@@ -128,7 +128,7 @@ public extension PolisObservingType {
 
 
 //MARK: - Observing Site
-public extension PolisObservingSite {
+public extension PolisEarthObservingSite {
     enum CodingKeys: String, CodingKey {
         case type
         case item
