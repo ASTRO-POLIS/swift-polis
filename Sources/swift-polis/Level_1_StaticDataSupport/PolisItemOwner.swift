@@ -51,6 +51,12 @@ public struct PolisItemOwner: Codable, Identifiable {
     public let shortName: String?   // e.g. MIT. MONET, BAO, ...
 
     public var id: UUID { identity.id }
+
+    public init(identity: PolisIdentity, type: OwnershipType, shortName: String?) {
+        self.identity  = identity
+        self.type      = type
+        self.shortName = shortName
+    }
 }
 
 //MARK: - Type Extensions -
