@@ -41,6 +41,13 @@ public struct PolisManufacturer: Codable, Identifiable {
 
     /// `id` is needed to make the structure `Identifiable`
     public var id: UUID { identity.id }
+
+    public init(identity: PolisIdentity, uniqueName: String, url: URL? = nil, contact: PolisAdminContact? = nil) {
+        self.identity   = identity
+        self.uniqueName = uniqueName
+        self.url        = url
+        self.contact    = contact
+    }
 }
 
 
