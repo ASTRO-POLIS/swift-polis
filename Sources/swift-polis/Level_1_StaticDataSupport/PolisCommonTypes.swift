@@ -373,6 +373,10 @@ public enum PolisDirection: Codable {
 ///    June - September
 public struct PolisActivityPeriods: Codable {
     var notes: String?
+
+    public init(notes: String?) {
+        self.notes = notes
+    }
 }
 
 //MARK: - Type extensions -
