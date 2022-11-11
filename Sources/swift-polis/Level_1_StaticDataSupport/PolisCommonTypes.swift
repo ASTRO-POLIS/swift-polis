@@ -310,7 +310,7 @@ public struct PolisAdminContact: Identifiable {
                  email:                           String,
                  phone:                           String?         = nil,
                  additionalCommunicationChannels: [Communication] = [Communication](),
-                 notes:                           String?) {
+                 notes:                           String?         = nil) {
         guard email.isValidEmailAddress() else { return nil }
 
         self.id                              = id
