@@ -23,7 +23,6 @@ import Foundation
 /// hardware) must have a `PolisItem` to uniquely identify the object and build the logical and spacial hierarchy between them
 public struct PolisItem: Codable, Identifiable {
     public var identity: PolisIdentity
-    public var parentID: UUID?
     public var manufacturer: PolisManufacturer?
     public var owners: [PolisItemOwner]?
     public var imageLinks: [URL]?
@@ -31,9 +30,8 @@ public struct PolisItem: Codable, Identifiable {
 
     public var id: UUID { identity.id }
 
-    public init(identity: PolisIdentity, parentID: UUID? = nil, manufacturer: PolisManufacturer? = nil, owners: [PolisItemOwner]? = nil, imageLinks: [URL]? = nil) {
+    public init(identity: PolisIdentity, manufacturer: PolisManufacturer? = nil, owners: [PolisItemOwner]? = nil, imageLinks: [URL]? = nil) {
         self.identity     = identity
-        self.parentID     = parentID
         self.manufacturer = manufacturer
         self.owners       = owners
         self.imageLinks   = imageLinks
@@ -45,7 +43,6 @@ public struct PolisItem: Codable, Identifiable {
 public extension PolisItem {
     enum CodingKeys: String, CodingKey {
         case identity
-        case parentID     = "parent_id"
         case manufacturer
         case owners
         case imageLinks   = "image_links"
