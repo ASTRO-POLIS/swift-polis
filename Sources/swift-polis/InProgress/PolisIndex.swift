@@ -16,12 +16,21 @@
 
 import Foundation
 
-public class PolisIndexSite {
+public class PolisIndexNode {
+    var id: UUID
+
+    init(id: UUID) {
+        self.id = id
+    }
+}
+
+public class PolisIndexSite: PolisIndexNode {
 
     init(id: UUID, parent: PolisIndexSite? = nil, assumedSubSiteIDs: [UUID] = [UUID]()) {
-        self.id                = id
         self.parent            = parent
         self.assumedSubSiteIDs = assumedSubSiteIDs
+
+        super.init(id: id)
     }
 
     public func idPath() -> String {
@@ -36,7 +45,6 @@ public class PolisIndexSite {
         return pathComponents.joined(separator: "/")
     }
 
-    var      id: UUID
     weak var parent: PolisIndexSite?
     var      assumedSubSiteIDs: [UUID]
     var      subSites                  = [PolisIndexSite]()
