@@ -20,12 +20,12 @@ import Foundation
 
 /// `PolisMeasurement` is used when a pair of value and a unit is needed.
 ///
-/// Examples include telescope apertures, instrument wavelengths, etc. POLIS only defines means of recording measurements. Client applications using POLIS
+/// Examples include telescope apertures, instrument wavelengths, etc. POLIS only defines the means of recording measurements. Client applications using POLIS
 /// should implement unit conversions (if needed). Currently, a POLIS provider is not expected to make any conversions, but it might check if the units are allowed.
 ///
 /// Apple's Units types are not used here on purpose because of they lack of scientific accuracy and calculus.
 ///
-/// **Note:** This Measurement implementation is very rudimentary. It is a placeholder type. In future implementation it will be replaced by external implementations,
+/// **Note:** This Measurement implementation is very rudimentary. It is a placeholder type. In future implementations it will be replaced by external implementations,
 /// capable of measurement computations and conversions.
 public struct PolisMeasurement: Codable {
 
@@ -38,9 +38,9 @@ public struct PolisMeasurement: Codable {
     public let precision: UInt8?
 
 
-    /// Unit is expected to be in a format that is accepted by the astronomical community (as defined by IAU, FITS Standard, etc).
+    /// The unit is expected to be in a format that is accepted by the astronomical community (as defined by the IAU, FITS Standard, etc).
     ///
-    /// In case no unit is defined, the measurement has no dimension (e.g. counter)
+    /// In the case that no unit is defined, the measurement has no dimension (e.g. counter)
     /// Examples:
     /// - "m"
     /// - "km"
@@ -63,21 +63,21 @@ public struct PolisMeasurement: Codable {
 }
 
 /// `PolisImageSource` defines a source for images related to a single item (observing site, satellite, telescope, camera., ...)
-/// A POLIS client can use an image in many different ways - as thumbnail, full image, a banner, ... A `PolisImageSource` could have multiple `ImageItem`s
+/// A POLIS client can use an image in many different ways - as a thumbnail, a full image, or a banner etc. A `PolisImageSource` could have multiple `ImageItem`s
 /// that fulfil the needs of the client application.
 ///
 /// Each image from the set defines its index within the set (used for sorting), and image attributes (source URL, description and accessibility description, as well as
 /// information about the copyright holder and copyright type).
 ///
-/// **Important note:** POLIS providers should allowed only images that are either open source or the copyright holder transferred explicit rights of use!
+/// **Important note:** POLIS providers should only use images that are either open source or have explicitly requested and recieved rights of use from the copyright holder!
 public struct PolisImageSource: Codable, Identifiable {
 
     //TODO: We need comprehensive documentation! How are we going to use all this stuff?
 
-    /// `CopyrightHolderType` defines the authors copyright claims
+    /// `CopyrightHolderType` defines the author's copyright claims
     public enum CopyrightHolderType: Codable {
 
-        /// POLIS contributor did take the photo
+        /// The POLIS contributor took the photo
         case polisContributor(id: UUID)
 
         /// Someone at Tuparev Technologies' StarCluster team took the photo, and therefore it is public domain.
@@ -86,10 +86,10 @@ public struct PolisImageSource: Codable, Identifiable {
         /// Most photos from Wikipedia etc.
         case creativeCommons(source: URL)
 
-        ///Explicit permission of the copyright holder
+        /// Explicit permission of the copyright holder
         case openSource(source: URL)
 
-        /// POLIS can use such images only with the explicate permission of the copyright holder.
+        /// POLIS can use such images only with the explicit permission of the copyright holder.
         case useWithOwnersPermission(text: String, explanationNotes: String?)
     }
 
@@ -153,13 +153,13 @@ public struct PolisImageSource: Codable, Identifiable {
 /// `PolisIdentity` uniquely identifies and defines the status of almost every POLIS item and defines external
 /// relationships to other items (or POLIS objects of any type).
 ///
-/// The idea of POLIS Identity comes from analogous type that could be found in the `RTML` standard. The
+/// The idea of POLIS Identity comes from the analogous type that could be found in the `RTML` standard. The
 /// RTML references  turned out to be extremely useful for relating items within one RTML document and linking RTML
 /// documents to each other.
 ///
-/// `PolisIdentity` is an essential part of (almost) every POLIS type. They are needed to uniquely identify and
+/// `PolisIdentity` is an essential a part of (almost) every POLIS type. They are needed to uniquely identify and
 /// describe each item (object) and establish parent-child relationships between them, as well as provide enough
-/// informationIn for the syncing of POLIS Providers.
+/// information for the syncing of POLIS Providers.
 ///
 /// Parent - child relationship should be defined by nesting data structures.
 ///
@@ -174,19 +174,19 @@ public struct PolisIdentity: Codable, Identifiable {
     /// ``PolisIdentity``).
     ///
     /// `LifecycleStatus` will determine the syncing policy, as well as visibility of the POLIS items within client
-    /// implementations. Implementations should adopt following behaviours:
+    /// implementations. Implementations should adopt the following behaviours:
     /// - `inactive`  - do not sync, but continue monitoring
     /// - `active`    - must be synced and monitored
     /// - `deleted`   - sync the `PolisItemAttributes` only to prevent secondary propagation of the record and to lock the
     /// UUID of the item
     /// - `delete`    - delete the item
     /// - `suspended` - sync the `PolisItemAttributes`, but do not use the service provider or the observing site. Suspended
-    /// is used to mark that the item does not follow the POLIS standard, or violates community rules. Normally entities first
-    /// will be warned, and if they continue to not follow standards and rules, they will be deleted.
+    /// is used to mark that the item does not follow the POLIS standard, or violates community rules. Normally entities
+    /// will be warned first, and if they continue to break standards and rules, they will be deleted.
     /// - `unknown`   - do not sync, but continue monitoring
     public enum LifecycleStatus: String, Codable {
 
-        /// `inactive` indicates new, being edited, or in process of being upgraded providers.
+        /// `inactive` indicates new, being edited, or in process of being upgraded by the provider(s).
         case inactive
 
         /// `active` indicates a production provider that is publicly accessible.
@@ -195,15 +195,15 @@ public struct PolisIdentity: Codable, Identifiable {
         /// `deleted` is needed to prevent reappearance of disabled providers or sites.
         case deleted
 
-        /// After marking an item for deleted, wait for a year (check `lastUpdate`) and start marking the item as
-        /// `delete`. After 6 months, remove the deleted items. It is assumed, that 1.5 year is enough for all provides
+        /// After marking an item for deletion, wait for a year (check `lastUpdate`) and start marking the item as
+        /// `delete`. After 6 months, remove the deleted items. It is assumed that 1.5 years is enough for all providers
         /// to mark the corresponding item as deleted.
         case delete
 
-        /// `suspended` marks providers violating the standard (temporary or permanently).
+        /// `suspended` indicates providers violating the standard (temporary or permanently).
         case suspended
 
-        /// `unknown` marks a provider with unknown status, and is mostly used when observing site or instrument has
+        /// `unknown` indicates a provider with unknown status, and is mostly used when the observing site or instrument has
         /// unknown status.
         case unknown
     }
@@ -212,7 +212,7 @@ public struct PolisIdentity: Codable, Identifiable {
     /// conformance.
     public let id: UUID
 
-    /// Pointers to externally defined item (IDREF in XML). It is recommended that the references are URIs (e.g.
+    /// Pointers to externally defined items (IDREF in XML). It is recommended that the references are URLs (e.g.
     /// https://monet.org/instruments/12345 or telescope.observer://instriment123456)
     public var references: [String]?
 
@@ -222,19 +222,19 @@ public struct PolisIdentity: Codable, Identifiable {
     /// Latest update time. Used primarily for syncing.
     public var lastUpdate: Date
 
-    /// Human readable name of the item (object). It is recommended to be unique to avoid potential confusions.
+    /// Human readable name of the item (object). It is recommended to assign a unique name to avoid potential confusions.
     public var name: String
 
-    /// Human readable automationLabel of the item (object). If present it is recommended to be unique to avoid
+    /// Human readable automationLabel of the item (object). If present it is recommended to assign a unique label to avoid
     /// potential confusions.
     public var abbreviation: String?
 
     /// The purpose of the optional `automationLabel` is to act as a unique target for scripts and other software
-    /// packages. As an example, the observatory control software could search for an instrument with such label and
+    /// packages. As an example, the observatory control software could search for an instrument with a given label and
     /// set its status or issue commands etc. This could be used to sync with ASCOM or INDI based systems.
     public var automationLabel: String? // For script etc. support (internal to the site use...)
 
-    /// Short optional item (object) description. In XML schema should be max 256 characters for RTML interoperability.
+    /// Short optional item (object) description. In XML schema, this should be max 256 characters for RTML interoperability.
     public var shortDescription: String?
 
     /// Designated initialiser.
@@ -263,10 +263,10 @@ public struct PolisIdentity: Codable, Identifiable {
 
 // Many POLIS types have reference to contact people (owners of sites, admins, project managers). Later we need to add
 // Institutions as well and handle the messiness of addresses, countries, languages, phone numbers and other
-// developer's nightmares. We think it's perhaps the best in the future to rely to external implementation for address
+// developer's nightmares. We think it's perhaps the best in the future to rely on an external implementation for address
 // management.
-// On the other hand the implementation of contact (in order to allow to communicate with POLIS providers site admins)
-// is simple enough task and therefore current implementation of POLIS includes contact-only related types.
+// On the other hand the implementation of contact channels (in order to allow communication with POLIS providers site admins)
+// is a simple enough task and therefore the current implementation of POLIS includes contact-only related types.
 
 
 /// `PolisAdminContact` defines a simple way to contact a provider admin, an observing site owner, or an observatory
@@ -274,8 +274,8 @@ public struct PolisIdentity: Codable, Identifiable {
 ///
 /// It is important to be able to contact the admin of a POLIS service provider or the admin or the owner of an
 /// observing site, however one should not forget that all POLIS data is publicly available and therefore should not
-/// expose private information if possible. It is preferred not to expose private email addresses, phone numbers, or
-/// twitter accounts, but only publicly available organisation contacts.
+/// expose private information if possible. It is preferable not to expose private email addresses, phone numbers, or
+/// twitter accounts, but only publicly available organisation contacts or pages.
 ///
 /// The type implements the `Codable` protocol
 public struct PolisAdminContact: Identifiable {
@@ -285,22 +285,22 @@ public struct PolisAdminContact: Identifiable {
     ///
     /// The current list includes just a handful of popular communication channels. Emerging apps like Signal and Telegram
     /// are not currently included, nor are local Chinese and Russian social media communication channels. If you need
-    /// such channels, please submit a pool request.
+    /// such channels, please submit a pool request to the POLIS developers.
     ///
     /// The type implements the `Codable` protocol
     public enum Communication {
 
-        /// Twitter user id, e.g. @AstroPolis "@" is expected to be part of the id
+        /// Twitter user id, e.g. @AstroPolis. "@" is expected to be part of the id
         case twitter(username: String)
 
-        /// Phone number used by WhatsApp. The phone number should include the country code, start with "+", and contain no
+        /// Phone number used by WhatsApp. The phone number should include the country code, starting with "+", and contain no
         /// spaces, brackets, or other formatting characters. Currently no validation is provided.
         case whatsApp(phone: String)
 
         /// The Facebook user id is only the part of the URL after "www.facebook.com/".
         case facebook(id: String)
 
-        /// Instagram user id, e.g. @AstroPolis "@" is expected to be part of the id
+        /// Instagram user id, e.g. @AstroPolis. "@" is expected to be part of the id
         case instagram(username: String)
 
         /// Skype user id
@@ -310,13 +310,13 @@ public struct PolisAdminContact: Identifiable {
     /// Admin's ID is needed for defining login credentials and identifying sources of data changes and contributions
     public let id: UUID
 
-    /// It is recommended that the admin's name is either omitted, or describes admin's role, e.g. "The managing
+    /// It is recommended that the admin's name is either omitted, or describes the admin's role, e.g. "The managing
     /// director of Mountain Observatory"
     public var name: String?
 
     /// Email is the most reliable and widely adopted communication channel, and therefore a valid email address is
     /// required. To protect privacy, it is recommended that the email address is assigned to the institution,
-    /// e.g. "office@mountain-observatory.org". It is expected the email to be valid.
+    /// e.g. "office@mountain-observatory.org". A valid email is expected.
     public var email: String
 
     /// Consider giving only institution phone numbers - not private ones. The phone number should include the country
@@ -359,14 +359,14 @@ public struct PolisAdminContact: Identifiable {
 /// `PolisDirection` is used to represent either a rough direction (of 16 possibilities) or exact direction in degree
 /// represented as a double number (e.g. 57.349)
 ///
-/// Directions are used to describe things like dominant wind direction of observing site, or direction of doors of
+/// Directions are used to describe information such as dominant wind direction of observing site, or direction of doors of
 /// different types of enclosures.
 public enum PolisDirection: Codable {
 
     /// A list of 16 rough directions
     ///
     /// Rough direction could be used when it is not important to know or impossible to measure the exact direction.
-    /// Examples include the wind direction, or the orientations of the doors of clamshell enclosure.
+    /// Examples include the wind direction, or the orientations of the doors of a clamshell enclosure.
     public enum RoughDirection: String, Codable {
         case north          = "N"
         case northNorthEast = "NNE"
@@ -395,9 +395,9 @@ public enum PolisDirection: Codable {
 
 /// The `PolisActivityPeriods` struct is used to define periods of time when an ``PolisObservingSite`` could be visited, or the working hours of the personal.
 ///
-/// Note that some sites might be opened only during part of the year (e.g. because of difficult winter conditions) or could be visited only during the school vacations.
+/// Note that some sites might only be open during part of the year (e.g. because of difficult winter conditions) or may only be visited during the school vacations.
 ///
-/// The first version of the type defines only an optional `notes` string.  Future versions will add more structured types expressing numerically periods like:
+/// The first version of the type defines only an optional `notes` string.  Future versions will add more structured types expressing numerical periods like:
 ///    Mo-Fr: 16:00-18:00h or
 ///    June - September
 public struct PolisActivityPeriods: Codable {

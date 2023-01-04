@@ -21,13 +21,13 @@ import Foundation
 ///
 /// Files containing owner's info are in general stored within the observing site (or equivalent) static file
 /// hierarchy. For performance reasons it is recommended (but not required by the standard) that the service provider
-/// supports a directory of owners (as this framework does). Such cache of owners has performance and data maintenance
-/// implications. And as we know, ownership is unfortunately politically highly charged issue in astronomy.
+/// supports a directory of owners (as this framework does). Such a cache of owners has performance and data maintenance
+/// implications. Additionally, as we know, ownership is unfortunately a politically highly charged issue in astronomy.
 public struct PolisItemOwner: Codable, Identifiable {
 
     /// `OwnershipType` defines various ownership types
     ///
-    /// `OwnershipType` is used to identify the ownership type of POLIS items (or device) - observing sites, telescopes,
+    /// `OwnershipType` is used to identify the ownership type of POLIS items (or devices) - observing sites, telescopes,
     /// CCD cameras, weather stations, etc. Different cases should be self-explanatory. `private` should be used by
     /// amateurs and hobbyists.
     public enum OwnershipType: String, Codable {
