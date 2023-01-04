@@ -2,7 +2,7 @@
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
-// Copyright (c) 2021-2022 Tuparev Technologies and the ASTRO-POLIS project
+// Copyright (c) 2021-2023 Tuparev Technologies and the ASTRO-POLIS project
 // authors.
 // Licensed under MIT License Modern Variant
 //
@@ -16,15 +16,22 @@
 
 import Foundation
 
-// This file contains several unrelated Swift types that are accessed from different and also mostly unrelated sources.
+// This file contains several unrelated Swift types that are used in different sources.
 
-/// `PolisMeasurement` is used when a pair of value and unit is needed.
+/// `PolisMeasurement` is used when a pair of value and a unit is needed.
 ///
 /// Examples include telescope apertures, instrument wavelengths, etc. POLIS only defines means of recording measurements. Client applications using POLIS
-/// should implement unit conversions (if needed). The POLIS provider is not expected to make any conversions, but it might check is the units are allowed.
+/// should implement unit conversions (if needed). Currently, a POLIS provider is not expected to make any conversions, but it might check if the units are allowed.
+///
+/// Apple's Units types are not used here on purpose because of they lack of scientific accuracy and calculus.
+///
+/// **Note:** This Measurement implementation is very rudimentary. It is a placeholder type. In future implementation it will be replaced by external implementations,
+/// capable of measurement computations and conversions.
 public struct PolisMeasurement: Codable {
+
     /// The value of the measurement
     public let value: Double
+
     /// Standard precision of the measurement
     ///
     /// If precision is 0, the value could be assumed an integer.
@@ -56,21 +63,43 @@ public struct PolisMeasurement: Codable {
 }
 
 /// `PolisImageSource` defines a source for images related to a single item (observing site, satellite, telescope, camera., ...)
+/// A POLIS client can use an image in many different ways - as thumbnail, full image, a banner, ... A `PolisImageSource` could have multiple `ImageItem`s
+/// that fulfil the needs of the client application.
 ///
-/// Each image from the set defines its index within the set (used mainly for naming image data), and image attributes (source URL, description and
-/// accessibility description, as well as information about the copyright holder and copyright type).
+/// Each image from the set defines its index within the set (used for sorting), and image attributes (source URL, description and accessibility description, as well as
+/// information about the copyright holder and copyright type).
 ///
 /// **Important note:** POLIS providers should allowed only images that are either open source or the copyright holder transferred explicit rights of use!
 public struct PolisImageSource: Codable, Identifiable {
 
+    //TODO: We need comprehensive documentation! How are we going to use all this stuff?
+
+    /// `CopyrightHolderType` defines the authors copyright claims
     public enum CopyrightHolderType: Codable {
+
+        /// POLIS contributor did take the photo
         case polisContributor(id: UUID)
+
+        /// Someone at Tuparev Technologies' StarCluster team took the photo, and therefore it is public domain.
         case starClusterImage
+
+        /// Most photos from Wikipedia etc.
         case creativeCommons(source: URL)
+
+        ///Explicit permission of the copyright holder
         case openSource(source: URL)
+
+        /// POLIS can use such images only with the explicate permission of the copyright holder.
         case useWithOwnersPermission(text: String, explanationNotes: String?)
     }
 
+    /// `ImageItem` defines one of potentially multiple images of the same item.
+    ///
+    /// Most properties are self-explanatory.
+    ///
+    /// It is important to understand, that POLIS data can be viewed by children, and therefore all images must be verified before made public. The `lastUpdate`
+    /// attribute can help the curator of the data set to verify new entries.
+    //TODO: Do we need to know the image size and aspect ratio?
     public struct ImageItem: Codable {
         public let index: UInt
         public var lastUpdate: Date
