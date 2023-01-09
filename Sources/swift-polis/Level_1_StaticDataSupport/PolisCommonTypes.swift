@@ -192,6 +192,9 @@ public struct PolisIdentity: Codable, Identifiable {
         /// `active` indicates a production provider that is publicly accessible.
         case active
 
+        /// Item still exists, but is not operational Has a historic value
+        case historic
+
         /// `deleted` is needed to prevent reappearance of disabled providers or sites.
         case deleted
 
