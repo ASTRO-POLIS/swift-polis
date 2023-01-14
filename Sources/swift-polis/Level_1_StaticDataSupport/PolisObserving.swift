@@ -53,7 +53,7 @@ public struct PolisEarthObservingSite: PolisObserving {
     public var openingHours: PolisActivityPeriods?
     public var accessRestrictions: String?
 
-    public var averageClearNightsYear: UInt?
+    public var averageClearNightsPerYear: UInt?
     public var averageSeeingConditions: PolisMeasurement? // [arcsec]
     public var averageSkyQuality: PolisMeasurement?       // [magnitude]
 
@@ -67,7 +67,7 @@ public struct PolisEarthObservingSite: PolisObserving {
     // Miscellaneous properties
     public var dominantWindDirection: PolisDirection.RoughDirection?
 
-    //TODO: We need to add few things
+    //TODO: Add observing site climate information
     // - Min/Max/Average climate parameters / season
 
     public init(type: PolisObservingType                       = .site,
@@ -84,32 +84,32 @@ public struct PolisEarthObservingSite: PolisObserving {
                 workingHours: PolisActivityPeriods?            = nil,
                 openingHours: PolisActivityPeriods?            = nil,
                 accessRestrictions: String?                    = nil,
-                averageClearNightsYear: UInt?                  = nil,
+                averageClearNightsPerYear: UInt?                  = nil,
                 averageSeeingConditions: PolisMeasurement?     = nil,
                 averageSkyQuality: PolisMeasurement?           = nil,
                 traditionalLandOwners: String?                 = nil,
                 history: String?                               = nil,
                 subObservingSiteIDs: Set<UUID>?                = nil) {
-        self.type                    = type
-        self.item                    = item
-        self.observatoryCode         = observatoryCode
-        self.deviceIDs               = deviceIDs
-        self.configurationIDs        = configurationIDs
-        self.siteLocation            = siteLocation
-        self.startDate               = startDate
-        self.endDate                 = endDate
-        self.admins                  = admins
-        self.website                 = website
-        self.scientificObjectives    = scientificObjectives
-        self.workingHours            = workingHours
-        self.openingHours            = openingHours
-        self.accessRestrictions      = accessRestrictions
-        self.averageClearNightsYear  = averageClearNightsYear
-        self.averageSeeingConditions = averageSeeingConditions
-        self.averageSkyQuality       = averageSkyQuality
-        self.traditionalLandOwners   = traditionalLandOwners
-        self.history                 = history
-        self.subObservingSiteIDs     = subObservingSiteIDs
+        self.type                      = type
+        self.item                      = item
+        self.observatoryCode           = observatoryCode
+        self.deviceIDs                 = deviceIDs
+        self.configurationIDs          = configurationIDs
+        self.siteLocation              = siteLocation
+        self.startDate                 = startDate
+        self.endDate                   = endDate
+        self.admins                    = admins
+        self.website                   = website
+        self.scientificObjectives      = scientificObjectives
+        self.workingHours              = workingHours
+        self.openingHours              = openingHours
+        self.accessRestrictions        = accessRestrictions
+        self.averageClearNightsPerYear = averageClearNightsPerYear
+        self.averageSeeingConditions   = averageSeeingConditions
+        self.averageSkyQuality         = averageSkyQuality
+        self.traditionalLandOwners     = traditionalLandOwners
+        self.history                   = history
+        self.subObservingSiteIDs       = subObservingSiteIDs
     }
 }
 

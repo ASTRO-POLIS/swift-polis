@@ -20,7 +20,7 @@ import Foundation
 /// `PolisItem` uniquely identifies almost every POLIS object and defines the hierarchies and references between different objects
 ///
 /// Any `[[PolisDevice]]`,  Observing Source (site, mobile platform, Collaboration, Network, ...), or Resource (e.g. a manufacturer of astronomy related
-/// hardware) must have a `PolisItem` to uniquely identify the object and build the logical and spacial hierarchy between them
+/// hardware) must have a `PolisItem` to uniquely identify the object and build the logical and spacial hierarchy between them.
 public struct PolisItem: Codable, Identifiable {
     public var identity: PolisIdentity
     public var manufacturer: PolisManufacturer?
