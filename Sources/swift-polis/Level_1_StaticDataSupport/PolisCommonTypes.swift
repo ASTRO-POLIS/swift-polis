@@ -18,15 +18,15 @@ import Foundation
 
 // This file contains several unrelated Swift types that are used in different sources.
 
-/// `PolisMeasurement` is used when a pair of value and a unit is needed.
+/// An object that represents a value a value with an accompanying unit.
 ///
 /// Examples include telescope apertures, instrument wavelengths, etc. POLIS only defines the means of recording measurements. Client applications using POLIS
 /// should implement unit conversions (if needed). Currently, a POLIS provider is not expected to make any conversions, but it might check if the units are allowed.
 ///
-/// Apple's Units types are not used here on purpose because of they lack of scientific accuracy and calculus.
+/// Apple's Units types are not used here on purpose because of the lack of scientific accuracy and calculus.
 ///
-/// **Note:** This Measurement implementation is very rudimentary. It is a placeholder type. In future implementations it will be replaced by external implementations,
-/// capable of measurement computations and conversions.
+/// **Note:** This Measurement implementation is very rudimentary. It is a placeholder type. In future implementations, it will be replaced by external
+/// implementations, capable of measurement computations and conversions.
 public struct PolisMeasurement: Codable {
 
     /// The value of the measurement
@@ -34,13 +34,15 @@ public struct PolisMeasurement: Codable {
 
     /// Standard precision of the measurement
     ///
-    /// If precision is 0, the value could be assumed an integer.
+    /// If precision is 0, the value is assumed an integer.
     public let precision: UInt8?
 
-
+    /// Unit of the measurement.
+    ///
     /// The unit is expected to be in a format that is accepted by the astronomical community (as defined by the IAU, FITS Standard, etc).
     ///
-    /// In the case that no unit is defined, the measurement has no dimension (e.g. counter)
+    /// In the case that no unit is defined, the measurement has no dimension (e.g. counter).
+    ///
     /// Examples:
     /// - "m"
     /// - "km"
@@ -51,7 +53,7 @@ public struct PolisMeasurement: Codable {
     /// - "eV"
     public let unit: String
 
-    /// Optional time (in UTC) of the measurement
+    /// Time (in UTC) of the measurement, if applicable.
     public let time: Date?
 
     public init(value: Double, precision: UInt8? = nil, unit: String, time: Date? = nil) {
@@ -62,19 +64,20 @@ public struct PolisMeasurement: Codable {
     }
 }
 
-/// `PolisImageSource` defines a source for images related to a single item (observing site, satellite, telescope, camera., ...)
-/// A POLIS client can use an image in many different ways - as a thumbnail, a full image, or a banner etc. A `PolisImageSource` could have multiple `ImageItem`s
-/// that fulfil the needs of the client application.
+/// A source for images related to a single item, such as an observing site, a satellite, a telescope, or a camera.
+///
+/// A POLIS client can use an image in many different ways—as a thumbnail, a full image, a banner, etc. A `PolisImageSource` could have multiple `ImageItem`s
+/// that fulfill the needs of the client application.
 ///
 /// Each image from the set defines its index within the set (used for sorting), and image attributes (source URL, description and accessibility description, as well as
 /// information about the copyright holder and copyright type).
 ///
-/// **Important note:** POLIS providers should only use images that are either open source or have explicitly requested and recieved rights of use from the copyright holder!
+/// **Important note:** POLIS providers should only use images that are either open source or have explicitly requested and received rights of use from the copyright holder!
 public struct PolisImageSource: Codable, Identifiable {
 
     //TODO: We need comprehensive documentation! How are we going to use all this stuff?
 
-    /// `CopyrightHolderType` defines the author's copyright claims
+    /// A type defining the author's copyright claims on the image.
     public enum CopyrightHolderType: Codable {
 
         /// The POLIS contributor took the photo
@@ -92,13 +95,12 @@ public struct PolisImageSource: Codable, Identifiable {
         /// POLIS can use such images only with the explicit permission of the copyright holder.
         case useWithOwnersPermission(text: String, explanationNotes: String?)
     }
-
+    
+    // TODO: Clarify this documentation. It's unclear what ImageItem is.
     /// `ImageItem` defines one of potentially multiple images of the same item.
     ///
-    /// Most properties are self-explanatory.
-    ///
-    /// It is important to understand, that POLIS data can be viewed by children, and therefore all images must be verified before made public. The `lastUpdate`
-    /// attribute can help the curator of the data set to verify new entries.
+    /// It is important to note that POLIS data may be viewed by kids. Therefore, all images must be verified before made public. The `lastUpdate` attribute
+    /// can help the curator of the data set verify new entries.
     //TODO: Do we need to know the image size and aspect ratio?
     public struct ImageItem: Codable {
         public let index: UInt
@@ -116,11 +118,15 @@ public struct PolisImageSource: Codable, Identifiable {
     }
 
     public let id: UUID
+    
+    /// The metadata of the images associated with this `PolisImageSource`.
     public var imageItems = [ImageItem]()
 
     public init(id: UUID) { self.id = id }
-
-    public mutating func addImage(item: ImageItem) async throws {
+    
+    /// Add an image to this image source.
+    /// - Parameter item: The `ImageItem` associated with the image to be added.
+    public mutating func addImage(_ item: ImageItem) async throws {
         if indexSet.contains(item.index) { throw ImageSourceError.duplicateIndex }
 
         do {
@@ -131,7 +137,10 @@ public struct PolisImageSource: Codable, Identifiable {
         indexSet.insert(item.index)
         imageItems.append(item)
     }
-
+    
+    /// Remove an image from this image source.
+    /// - Parameter index: The index of the image to be removed.
+    /// - Returns: The removed image, if successful.
     public mutating func removeImage(at index: UInt) throws -> ImageItem? {
         if !indexSet.contains(index) { throw ImageSourceError.indexNotFound }
         var item: ImageItem?
@@ -147,33 +156,28 @@ public struct PolisImageSource: Codable, Identifiable {
 
     private var indexSet = Set<UInt>()
 }
+
 //MARK: - POLIS Identity related types -
 
-
-/// `PolisIdentity` uniquely identifies and defines the status of almost every POLIS item and defines external
-/// relationships to other items (or POLIS objects of any type).
+/// `PolisIdentity` uniquely identifies and defines the status of almost every POLIS item and defines external relationships to other items (or POLIS objects of any type).
 ///
-/// The idea of POLIS Identity comes from the analogous type that could be found in the `RTML` standard. The
-/// RTML references  turned out to be extremely useful for relating items within one RTML document and linking RTML
-/// documents to each other.
+/// The idea of `POLISIdentity` comes from the analogous type that could be found in the `RTML` standard. The RTML references turned out to be extremely
+/// useful for relating items within one RTML document and linking RTML documents to each other.
 ///
-/// `PolisIdentity` is an essential a part of (almost) every POLIS type. They are needed to uniquely identify and
-/// describe each item (object) and establish parent-child relationships between them, as well as provide enough
-/// information for the syncing of POLIS Providers.
+/// `PolisIdentity` is an essential a part of nearly every POLIS type. They are needed to uniquely identify and describe each item (object) and to establish
+/// parent-child relationships between them, as well as provide enough information for the syncing of POLIS Providers.
 ///
-/// Parent - child relationship should be defined by nesting data structures.
+/// Parent - child relationships should be defined by nesting data structures.
 ///
-/// If /when XML encoding and decoding is used, it is strongly recommended to implement the `PolisIdentity` as
-/// attributes of the corresponding type (Element).
+/// If and when XML encoding and decoding is used, it is strongly recommended to implement the `PolisIdentity` as attributes of the corresponding type (Element).
 public struct PolisIdentity: Codable, Identifiable {
-
-    /// `LifecycleStatus` defines the current status of the POLIS items (readiness to be used in different
-    /// environments)
+    
+    /// The current status of the POLIS item and its readiness to be used in different environments.
     ///
     /// Each POLIS type (Provider, Observing Site, Device, etc.) should include `LifecycleStatus` (as part of
     /// ``PolisIdentity``).
     ///
-    /// `LifecycleStatus` will determine the syncing policy, as well as visibility of the POLIS items within client
+    /// `LifecycleStatus` will determine the syncing policy as well as the visibility of the POLIS items within client
     /// implementations. Implementations should adopt the following behaviours:
     /// - `inactive`  - do not sync, but continue monitoring
     /// - `active`    - must be synced and monitored
@@ -273,11 +277,11 @@ public struct PolisIdentity: Codable, Identifiable {
 /// admin.
 ///
 /// It is important to be able to contact the admin of a POLIS service provider or the admin or the owner of an
-/// observing site, however one should not forget that all POLIS data is publicly available and therefore should not
+/// observing site, but one should not forget that all POLIS data is publicly available and therefore should not
 /// expose private information if possible. It is preferable not to expose private email addresses, phone numbers, or
 /// twitter accounts, but only publicly available organisation contacts or pages.
 ///
-/// The type implements the `Codable` protocol
+/// The type implements the `Codable` protocol.
 public struct PolisAdminContact: Identifiable {
 
     /// `Communication` defines different types of communication channels in addition to the default email address and
@@ -285,12 +289,12 @@ public struct PolisAdminContact: Identifiable {
     ///
     /// The current list includes just a handful of popular communication channels. Emerging apps like Signal and Telegram
     /// are not currently included, nor are local Chinese and Russian social media communication channels. If you need
-    /// such channels, please submit a pool request to the POLIS developers.
+    /// such channels, please submit a pull request to the POLIS developers.
     ///
-    /// The type implements the `Codable` protocol
+    /// The type implements the `Codable` protocol and is thus JSON-representable.
     public enum Communication {
 
-        /// Twitter user id, e.g. @AstroPolis. "@" is expected to be part of the id
+        /// Twitter user id, e.g. @AstroPolis. "@" is expected to be part of the id.
         case twitter(username: String)
 
         /// Phone number used by WhatsApp. The phone number should include the country code, starting with "+", and contain no
@@ -300,37 +304,48 @@ public struct PolisAdminContact: Identifiable {
         /// The Facebook user id is only the part of the URL after "www.facebook.com/".
         case facebook(id: String)
 
-        /// Instagram user id, e.g. @AstroPolis. "@" is expected to be part of the id
+        /// Instagram user id, e.g. @AstroPolis. "@" is expected to be part of the id.
         case instagram(username: String)
 
         /// Skype user id
         case skype(id: String)
     }
 
-    /// Admin's ID is needed for defining login credentials and identifying sources of data changes and contributions
+    /// The admin's unique identifier.
+    ///
+    /// An administrator needs a unique identifier in order to define login credentials and identify sources of data changes and contributions.
     public let id: UUID
 
-    /// It is recommended that the admin's name is either omitted, or describes the admin's role, e.g. "The managing
-    /// director of Mountain Observatory"
+    /// The admin's name.
+    ///
+    /// It is recommended that an admin's name is either omitted or describes the admin's role, e.g. "Managing
+    /// Director of Mountain Observatory"
     public var name: String?
 
+    /// The admin's email address.
+    ///
     /// Email is the most reliable and widely adopted communication channel, and therefore a valid email address is
     /// required. To protect privacy, it is recommended that the email address is assigned to the institution,
     /// e.g. "office@mountain-observatory.org". A valid email is expected.
     public var email: String
 
+    /// The admin's phone number.
+    ///
     /// Consider giving only institution phone numbers - not private ones. The phone number should include the country
     /// code, starting with "+", and should contain no spaces, brackets, or other formatting characters. No validation
     /// is provided.
     public var phone: String?
 
-    /// Possibly empty list (array) of additional communication channels of type ``PolisCommunication``.
+    /// An array of additional communication channels for contacting the admin, if applicable.
     public var additionalCommunicationChannels: [Communication]
 
-    /// `notes` can contain additional contact info, e.g. "The admin could be contacted only during office hours"
+    /// Miscellaneous information that doesn't fit in any other property.
+    ///
+    /// Notes can contain additional information on how to contact the admin, such as "The admin could be contacted only during office hours," or "The admin is
+    /// on vacation from 01/12 to 20/12."
     public var notes: String?
 
-    /// Designated initialiser
+    /// Designated initialiser.
     ///
     /// Only the `email` is a required parameter. It must contain well formatted email addresses. If the email is not a
     /// valid one, `nil` will be returned.
@@ -363,7 +378,11 @@ public struct PolisAdminContact: Identifiable {
 /// different types of enclosures.
 public enum PolisDirection: Codable {
 
-    /// A list of 16 rough directions
+    /// A list of 16 rough directions.
+    ///
+    /// These 16 directions are comprised of the 4 cardinal directions (north, east, south, west), the 4
+    /// ordinal (also known as intercardinal) directions (northeast, northwest, southeast, southwest), and
+    /// the 8 additional secondary intercardinal directions (ex. ENE, SSW, WSW).
     ///
     /// Rough direction could be used when it is not important to know or impossible to measure the exact direction.
     /// Examples include the wind direction, or the orientations of the doors of a clamshell enclosure.
@@ -393,9 +412,9 @@ public enum PolisDirection: Codable {
     case exact(degree: Double)                  // Clockwise e.g. 157.12
 }
 
-/// The `PolisActivityPeriods` struct is used to define periods of time when an ``PolisObservingSite`` could be visited, or the working hours of the personal.
+/// The `PolisActivityPeriods` struct is used to define periods of time when an ``PolisObservingSite`` could be visited, or the working hours of the personnel.
 ///
-/// Note that some sites might only be open during part of the year (e.g. because of difficult winter conditions) or may only be visited during the school vacations.
+/// Note that some sites might only be open during part of the year (e.g. because of difficult winter conditions) or may only be visited during school vacations.
 ///
 /// The first version of the type defines only an optional `notes` string.  Future versions will add more structured types expressing numerical periods like:
 ///    Mo-Fr: 16:00-18:00h or
