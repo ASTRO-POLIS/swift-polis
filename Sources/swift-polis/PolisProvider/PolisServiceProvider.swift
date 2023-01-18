@@ -38,8 +38,8 @@ public struct PolisDirectoryEntry: Identifiable {
         /// parallel client requests every second.
         case `public`
 
-        /// `private` provider's main purpose is to act as a local cache for larger organisations and should not be accessed
-        /// from outside. Also organisations like amateur clubs might maintain private providers. They might require user
+        /// `private` provider's main purpose is to act as a local cache for a larger organisation and should not be accessed
+        /// from outside. Also an organisation like amateur clubs might maintain private providers. They might require user
         /// authentication.
         case `private`
 
@@ -167,6 +167,7 @@ public struct PolisObservingSiteDirectory: Codable {
 //MARK: - Resources provided by manufacturers -
 
 //TODO: Documentation!
+//WARNING: This here is very wrong! What actually is needed is a list of referred devices. Obviously Georg was drunk while writing this!
 public struct PolisResourceSiteDirectory: Codable {
 
     public struct ResourceReference: Codable, Identifiable {
@@ -291,7 +292,7 @@ extension PolisResourceSiteDirectory {
 extension PolisResourceSiteDirectory.ResourceReference {
     public enum CodingKeys: String, CodingKey {
         case identity
-        case uniqueManufacturerName = "unique_manufacturer_mame"
+        case uniqueManufacturerName = "unique_manufacturer_name"
         case deviceTypes            = "device_types"
     }
 }
