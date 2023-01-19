@@ -27,18 +27,17 @@ public struct PolisItem: Codable, Identifiable {
     public var owners: [PolisItemOwner]?
 
 
-    public var imageLinks: [URL]?
-    //TODO: Image Links should be with description and accessibility description, and copyright notice and rights of use!
+    public var imageSources: [PolisImageSource]?
 
     public var id: UUID { identity.id }
     public var parentID: UUID?
     public var subItemIDs: [UUID]
 
-    public init(identity: PolisIdentity, manufacturer: PolisManufacturer? = nil, owners: [PolisItemOwner]? = nil, imageLinks: [URL]? = nil, parentID: UUID? = nil, subItemIDs: [UUID] = [UUID]()) {
+    public init(identity: PolisIdentity, manufacturer: PolisManufacturer? = nil, owners: [PolisItemOwner]? = nil, imageSources: [PolisImageSource]? = nil, parentID: UUID? = nil, subItemIDs: [UUID] = [UUID]()) {
         self.identity     = identity
         self.manufacturer = manufacturer
         self.owners       = owners
-        self.imageLinks   = imageLinks
+        self.imageSources = imageSources
         self.parentID     = parentID
         self.subItemIDs   = subItemIDs
     }
@@ -51,7 +50,7 @@ public extension PolisItem {
         case identity
         case manufacturer
         case owners
-        case imageLinks   = "image_links"
+        case imageSources = "image_sources"
         case parentID     = "parent_id"
         case subItemIDs   = "sub_item_ids"
     }
