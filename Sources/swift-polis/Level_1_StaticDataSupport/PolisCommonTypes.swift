@@ -18,6 +18,7 @@ import Foundation
 
 // This file contains several unrelated Swift types that are used in different sources.
 
+//MARK: - Measurements -
 /// An object that represents a value a value with an accompanying unit.
 ///
 /// Examples include telescope apertures, instrument wavelengths, etc. POLIS only defines the means of recording measurements. Client applications using POLIS
@@ -64,10 +65,11 @@ public struct PolisMeasurement: Codable {
     }
 }
 
+//MARK: - Images -
 /// A source for images related to a single item, such as an observing site, a satellite, a telescope, or a camera.
 ///
 /// A POLIS client can use an image in many different ways—as a thumbnail, a full image, a banner, etc. A `PolisImageSource` could have multiple `ImageItem`s
-/// that fulfill the needs of the client application.
+/// that fulfil the needs of the client application.
 ///
 /// Each image from the set defines its index within the set (used for sorting), and image attributes (source URL, description and accessibility description, as well as
 /// information about the copyright holder and copyright type).
