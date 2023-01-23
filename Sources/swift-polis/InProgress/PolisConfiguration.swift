@@ -20,17 +20,25 @@ import Foundation
 public struct PolisConfiguration: Codable {
 
     public enum ObservationResultType: String, Codable {
+
+        // 2D Imaging
         case simple2DImage
         case multiFilter2DImage
+
+        // Spectrography
         case singleFibreSpectrography
         case multiFibreSpectrography
         case integralFieldSpectrography
         case singleSlitSpectrography
         case multiSlitSpectrography
-        case fabryPerot
-        case photopolarimetry
-        case spectropolarimetry
-        case radiospectroscopy
+        case radioSpectroscopy
+
+        // Polarimetry
+        case photoPolarimetry
+        case spectrePolarimetry
+
+        // Miscellaneous
+        case fabryPerot          //TODO: What is this? Astronomers, please explain
         case photographicPlate
     }
 
@@ -38,23 +46,33 @@ public struct PolisConfiguration: Codable {
     public var item: PolisItem
     public var deviceIDs: [UUID]
     public var isDefault = true
+    public var isActive  = true
 }
 
 //MARK: - Making types Codable and CustomStringConvertible -
 
 public extension PolisConfiguration.ObservationResultType {
     enum CodingKeys: String, CodingKey {
+
+
+        // 2D Imaging
         case simple2DImage              = "simple_2D_image"
         case multiFilter2DImage         = "multi_filter_2D_image"
+
+        // Spectrography
         case singleFibreSpectrography   = "single_fibre_spectroscopy"
         case multiFibreSpectrography    = "multi_fibre_spectroscopy"
         case integralFieldSpectrography = "integral_field_spectroscopy"
         case singleSlitSpectrography    = "single_slit_spectroscopy"
         case multiSlitSpectrography     = "multi_slit_spectroscopy"
+        case radioSpectroscopy          = "radioSpectroscopy"
+
+        // Polarimetry
+        case photoPolarimetry           = "photo_polarimetry"
+        case spectrePolarimetry         = "spectre_polarimetry"
+
+        // Miscellaneous
         case fabryPerot                 = "fabry_perot"
-        case photopolarimetry           = "photopolarimetry"
-        case spectropolarimetry         = "spectropolarimetry"
-        case radiospectroscopy          = "radiospectroscopy"
         case photographicPlate          = "photographic_plate"
     }
 }

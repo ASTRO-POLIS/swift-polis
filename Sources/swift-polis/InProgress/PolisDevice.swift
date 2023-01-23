@@ -41,7 +41,7 @@ public struct PolisDevice: Codable, Identifiable {
         case grating           = "Grating"
         case prism             = "Prism"
         case bolometer         = "Bolometer"
-        case reciever          = "Reciever"
+        case receiver          = "Receiver"
         case photomultiplier   = "PhotomultiplierTube"
         case photographicPlate = "PhotographicPlate"
         case eyePiece          = "EyePiece"
