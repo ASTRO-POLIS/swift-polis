@@ -24,12 +24,13 @@ import Foundation
 /// Examples include telescope apertures, instrument wavelengths, etc. POLIS only defines the means of recording measurements. Client applications using POLIS
 /// should implement unit conversions (if needed). Currently, a POLIS provider is not expected to make any conversions, but it might check if the units are allowed.
 ///
-/// Apple's Units types are not used here on purpose because of the lack of scientific accuracy and calculus.
+/// Apple's Units types are not used here on purpose because of the lack of scientific accuracy and profound misunderstanding of how science works.
 ///
 /// **Note:** This Measurement implementation is very rudimentary. It is a placeholder type. In future implementations, it will be replaced by external
 /// implementations, capable of measurement computations and conversions.
 public struct PolisMeasurement: Codable {
 
+    //TODO: Make this Equitable and String CustomStringConvertible!
     /// The value of the measurement
     public let value: Double
 
@@ -82,6 +83,9 @@ public struct PolisImageSource: Codable, Identifiable {
     /// A type defining the author's copyright claims on the image.
     public enum CopyrightHolderType: Codable {
 
+        public typealias RawValue = String
+
+
         /// The POLIS contributor took the photo
         case polisContributor(id: UUID)
 
@@ -96,6 +100,9 @@ public struct PolisImageSource: Codable, Identifiable {
 
         /// POLIS can use such images only with the explicit permission of the copyright holder.
         case useWithOwnersPermission(text: String, explanationNotes: String?)
+
+        /// In case the copyright holder is still unknown, this image could NOT be shown in clients or used in any other way!
+        case pendingInformation
     }
     
     // TODO: Clarify this documentation. It's unclear what ImageItem is.
@@ -111,6 +118,20 @@ public struct PolisImageSource: Codable, Identifiable {
         public let description: String?
         public let accessibilityDescription: String?
         public let copyrightHolder: CopyrightHolderType
+
+        public init(index: UInt,
+                    lastUpdate: Date                     = Date.now,
+                    originalSource: URL,
+                    description: String?                 = nil,
+                    accessibilityDescription: String?    = nil,
+                    copyrightHolder: CopyrightHolderType = .pendingInformation) {
+            self.index                    = index
+            self.lastUpdate               = lastUpdate
+            self.originalSource           = originalSource
+            self.description              = description
+            self.accessibilityDescription = accessibilityDescription
+            self.copyrightHolder          = copyrightHolder
+        }
     }
 
     public enum ImageSourceError: Error {
@@ -386,8 +407,8 @@ public enum PolisDirection: Codable {
     /// A list of 16 rough directions.
     ///
     /// These 16 directions are comprised of the 4 cardinal directions (north, east, south, west), the 4
-    /// ordinal (also known as intercardinal) directions (northeast, northwest, southeast, southwest), and
-    /// the 8 additional secondary intercardinal directions (ex. ENE, SSW, WSW).
+    /// ordinal (also known as inter-cardinal) directions (northeast, northwest, southeast, southwest), and
+    /// the 8 additional secondary inter cardinal directions (ex. ENE, SSW, WSW).
     ///
     /// Rough direction could be used when it is not important to know or impossible to measure the exact direction.
     /// Examples include the wind direction, or the orientations of the doors of a clamshell enclosure.
@@ -453,69 +474,69 @@ public extension PolisIdentity {
 //MARK: - ContactType
 extension PolisAdminContact.Communication: Codable, CustomStringConvertible {
 
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        let base      = try container.decode(CommunicationType.self, forKey: .communicationType)
-
-        switch base {
-            case .twitter:
-                let twitterParams = try container.decodeIfPresent(TwitterParams.self, forKey: .twitterParams)
-                self = .twitter(username: twitterParams!.username.mustStartWithAtSign())
-            case .whatsApp:
-                let whatsAppParams = try container.decodeIfPresent(WhatsAppParams.self, forKey: .whatsAppParams)
-                self = .whatsApp(phone: whatsAppParams!.phone)
-            case .facebook:
-                let facebookParams = try container.decodeIfPresent(FacebookParams.self, forKey: .facebookParams)
-                self = .facebook(id: facebookParams!.id)
-            case .instagram:
-                let instagramParams = try container.decodeIfPresent(InstagramParams.self, forKey: .instagramParams)
-                self = .instagram(username: instagramParams!.username.mustStartWithAtSign())
-            case .skype:
-                let skypeParams = try container.decodeIfPresent(SkypeParams.self, forKey: .skypeParams)
-                self = .skype(id: skypeParams!.id)
-        }
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-
-        switch self {
-            case .twitter(let username):
-                try container.encode(CommunicationType.twitter, forKey: .communicationType)
-                try container.encode(TwitterParams(username: username), forKey: .twitterParams)
-            case .whatsApp(let phone):
-                try container.encode(CommunicationType.whatsApp, forKey: .communicationType)
-                try container.encode(WhatsAppParams(phone: phone), forKey: .whatsAppParams)
-            case .facebook(let id):
-                try container.encode(CommunicationType.facebook, forKey: .communicationType)
-                try container.encode(FacebookParams(id: id), forKey: .facebookParams)
-            case .instagram(let username):
-                try container.encode(CommunicationType.instagram, forKey: .communicationType)
-                try container.encode(InstagramParams(username: username), forKey: .instagramParams)
-            case .skype(let id):
-                try container.encode(CommunicationType.skype, forKey: .communicationType)
-                try container.encode(SkypeParams(id: id), forKey: .skypeParams)
-        }
-    }
-
-    public enum CodingKeys: String, CodingKey {
-        case communicationType = "communication_type"
-        case twitterParams     = "twitter"
-        case whatsAppParams    = "whatsapp"
-        case facebookParams    = "facebook"
-        case instagramParams   = "instagram"
-        case skypeParams       = "skype"
-        case username          = "user_name"
-    }
-
-    private enum CommunicationType: String, Codable { case twitter, whatsApp, facebook, instagram, skype }
-
-    private struct TwitterParams: Codable   { let username: String }
-    private struct WhatsAppParams: Codable  { let phone: String }
-    private struct FacebookParams: Codable  { let id: String }
-    private struct InstagramParams: Codable { let username: String }
-    private struct SkypeParams: Codable     { let id: String }
-
+//    public init(from decoder: Decoder) throws {
+//        let container = try decoder.container(keyedBy: CodingKeys.self)
+//        let base      = try container.decode(CommunicationType.self, forKey: .communicationType)
+//
+//        switch base {
+//            case .twitter:
+//                let twitterParams = try container.decodeIfPresent(TwitterParams.self, forKey: .twitterParams)
+//                self = .twitter(username: twitterParams!.username.mustStartWithAtSign())
+//            case .whatsApp:
+//                let whatsAppParams = try container.decodeIfPresent(WhatsAppParams.self, forKey: .whatsAppParams)
+//                self = .whatsApp(phone: whatsAppParams!.phone)
+//            case .facebook:
+//                let facebookParams = try container.decodeIfPresent(FacebookParams.self, forKey: .facebookParams)
+//                self = .facebook(id: facebookParams!.id)
+//            case .instagram:
+//                let instagramParams = try container.decodeIfPresent(InstagramParams.self, forKey: .instagramParams)
+//                self = .instagram(username: instagramParams!.username.mustStartWithAtSign())
+//            case .skype:
+//                let skypeParams = try container.decodeIfPresent(SkypeParams.self, forKey: .skypeParams)
+//                self = .skype(id: skypeParams!.id)
+//        }
+//    }
+//
+//    public func encode(to encoder: Encoder) throws {
+//        var container = encoder.container(keyedBy: CodingKeys.self)
+//
+//        switch self {
+//            case .twitter(let username):
+//                try container.encode(CommunicationType.twitter, forKey: .communicationType)
+//                try container.encode(TwitterParams(username: username), forKey: .twitterParams)
+//            case .whatsApp(let phone):
+//                try container.encode(CommunicationType.whatsApp, forKey: .communicationType)
+//                try container.encode(WhatsAppParams(phone: phone), forKey: .whatsAppParams)
+//            case .facebook(let id):
+//                try container.encode(CommunicationType.facebook, forKey: .communicationType)
+//                try container.encode(FacebookParams(id: id), forKey: .facebookParams)
+//            case .instagram(let username):
+//                try container.encode(CommunicationType.instagram, forKey: .communicationType)
+//                try container.encode(InstagramParams(username: username), forKey: .instagramParams)
+//            case .skype(let id):
+//                try container.encode(CommunicationType.skype, forKey: .communicationType)
+//                try container.encode(SkypeParams(id: id), forKey: .skypeParams)
+//        }
+//    }
+//
+//    public enum CodingKeys: String, CodingKey {
+//        case communicationType = "communication_type"
+//        case twitterParams     = "twitter"
+//        case whatsAppParams    = "whatsapp"
+//        case facebookParams    = "facebook"
+//        case instagramParams   = "instagram"
+//        case skypeParams       = "skype"
+//        case username          = "user_name"
+//    }
+//
+//    private enum CommunicationType: String, Codable { case twitter, whatsApp, facebook, instagram, skype }
+//
+//    private struct TwitterParams: Codable   { let username: String }
+//    private struct WhatsAppParams: Codable  { let phone: String }
+//    private struct FacebookParams: Codable  { let id: String }
+//    private struct InstagramParams: Codable { let username: String }
+//    private struct SkypeParams: Codable     { let id: String }
+//
     public var description: String {
         switch self {
             case .twitter(let username):   return "Twitter: \(username)"

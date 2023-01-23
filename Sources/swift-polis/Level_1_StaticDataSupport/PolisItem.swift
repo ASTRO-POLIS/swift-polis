@@ -33,7 +33,12 @@ public struct PolisItem: Codable, Identifiable {
     public var parentID: UUID?
     public var subItemIDs: [UUID]
 
-    public init(identity: PolisIdentity, manufacturer: PolisManufacturer? = nil, owners: [PolisItemOwner]? = nil, imageSources: [PolisImageSource]? = nil, parentID: UUID? = nil, subItemIDs: [UUID] = [UUID]()) {
+    public init(identity: PolisIdentity,
+                manufacturer: PolisManufacturer?   = nil,
+                owners: [PolisItemOwner]?          = nil,
+                imageSources: [PolisImageSource]?  = nil,
+                parentID: UUID?                    = nil,
+                subItemIDs: [UUID]                 = [UUID]()) {
         self.identity     = identity
         self.manufacturer = manufacturer
         self.owners       = owners
