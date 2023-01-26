@@ -2,7 +2,7 @@
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
-// Copyright (c) 2021-2022 Tuparev Technologies and the ASTRO-POLIS project
+// Copyright (c) 2021-2023 Tuparev Technologies and the ASTRO-POLIS project
 // authors.
 // Licensed under MIT License Modern Variant
 //
@@ -27,20 +27,28 @@ public enum PolisObservingType: String, Codable {
 public protocol PolisObserving: Codable, Identifiable {
     var type: PolisObservingType                      { get }
     var item: PolisItem                               { get set }
+    var parentObservingSiteID: UUID?                  { get set }
+    var subObservingSiteIDs: Set<UUID>                { get set }
     var observatoryCode: String?                      { get set } // IAU or MPC (Minor Planet Center) code
     var deviceIDs: Set<UUID>                          { get set }
+    var suggestedSubDeviceIDs: Set<UUID>              { get set }
     var configurationIDs: Set<UUID>                   { get set }
     var siteLocation: PolisObservingSiteLocationType? { get set }
     var startDate: Date?                              { get set } // Could be nil if unknown
     var endDate: Date?                                { get set } // if != nil -> either closed or temporary created (e.g. solar eclipse monitoring)
     var admins: [PolisAdminContact]?                  { get set }
+    var website: URL?                                 { get set }
+    var scientificObjectives: String?                 { get set }
 }
 
 public struct PolisEarthObservingSite: PolisObserving {
     public var type: PolisObservingType
     public var item: PolisItem
+    public var parentObservingSiteID: UUID?
+    public var subObservingSiteIDs                           = Set<UUID>()
     public var observatoryCode: String?
     public var deviceIDs                                     = Set<UUID>()
+    public var suggestedSubDeviceIDs                         = Set<UUID>()
     public var configurationIDs                              = Set<UUID>()
     public var siteLocation: PolisObservingSiteLocationType?
     public var startDate: Date?
@@ -60,8 +68,6 @@ public struct PolisEarthObservingSite: PolisObserving {
     public var traditionalLandOwners: String?
     public var history: String?
 
-    public var subObservingSiteIDs: Set<UUID>?
-
     public var id: UUID { item.identity.id }
 
     // Miscellaneous properties
@@ -70,30 +76,36 @@ public struct PolisEarthObservingSite: PolisObserving {
     //TODO: Add observing site climate information
     // - Min/Max/Average climate parameters / season
 
-    public init(type: PolisObservingType                       = .site,
+    public init(type: PolisObservingType                               = .site,
                 item: PolisItem,
-                observatoryCode: String?                       = nil,
-                deviceIDs: Set<UUID>                           = Set<UUID>(),
-                configurationIDs: Set<UUID>                    = Set<UUID>(),
-                siteLocation: PolisObservingSiteLocationType?  = nil,
-                startDate: Date?                               = nil,
-                endDate: Date?                                 = nil,
-                admins: [PolisAdminContact]?                   = nil,
-                website: URL?                                  = nil,
-                scientificObjectives: String?                  = nil,
-                workingHours: PolisActivityPeriods?            = nil,
-                openingHours: PolisActivityPeriods?            = nil,
-                accessRestrictions: String?                    = nil,
-                averageClearNightsPerYear: UInt?               = nil,
-                averageSeeingConditions: PolisMeasurement?     = nil,
-                averageSkyQuality: PolisMeasurement?           = nil,
-                traditionalLandOwners: String?                 = nil,
-                history: String?                               = nil,
-                subObservingSiteIDs: Set<UUID>?                = nil) {
+                parentObservingSiteID: UUID?                           = nil,
+                subObservingSiteIDs:  Set<UUID>                        = Set<UUID>(),
+                observatoryCode: String?                               = nil,
+                deviceIDs: Set<UUID>                                   = Set<UUID>(),
+                suggestedSubDeviceIDs: Set<UUID>                       = Set<UUID>(),
+                configurationIDs: Set<UUID>                            = Set<UUID>(),
+                siteLocation: PolisObservingSiteLocationType?          = nil,
+                startDate: Date?                                       = nil,
+                endDate: Date?                                         = nil,
+                admins: [PolisAdminContact]?                           = nil,
+                website: URL?                                          = nil,
+                scientificObjectives: String?                          = nil,
+                workingHours: PolisActivityPeriods?                    = nil,
+                openingHours: PolisActivityPeriods?                    = nil,
+                accessRestrictions: String?                            = nil,
+                averageClearNightsPerYear: UInt?                       = nil,
+                averageSeeingConditions: PolisMeasurement?             = nil,
+                averageSkyQuality: PolisMeasurement?                   = nil,
+                traditionalLandOwners: String?                         = nil,
+                history: String?                                       = nil,
+                dominantWindDirection: PolisDirection.RoughDirection?  = nil) {
         self.type                      = type
         self.item                      = item
+        self.parentObservingSiteID     = parentObservingSiteID
+        self.subObservingSiteIDs       = subObservingSiteIDs
         self.observatoryCode           = observatoryCode
         self.deviceIDs                 = deviceIDs
+        self.suggestedSubDeviceIDs     = suggestedSubDeviceIDs
         self.configurationIDs          = configurationIDs
         self.siteLocation              = siteLocation
         self.startDate                 = startDate
@@ -109,7 +121,6 @@ public struct PolisEarthObservingSite: PolisObserving {
         self.averageSkyQuality         = averageSkyQuality
         self.traditionalLandOwners     = traditionalLandOwners
         self.history                   = history
-        self.subObservingSiteIDs       = subObservingSiteIDs
     }
 }
 
@@ -132,8 +143,11 @@ public extension PolisEarthObservingSite {
     enum CodingKeys: String, CodingKey {
         case type
         case item
+        case parentObservingSiteID      = "paren_observing_site_id"
+        case subObservingSiteIDs        = "subObservingSite_ids"
         case observatoryCode            = "observatory_code"
         case deviceIDs                  = "device_ids"
+        case suggestedSubDeviceIDs      = "suggested_sub_device_ids"
         case configurationIDs           = "configuration_ids"
         case siteLocation               = "site_location"
         case startDate                  = "start_date"
@@ -144,7 +158,6 @@ public extension PolisEarthObservingSite {
         case workingHours               = "working_hours"
         case openingHours               = "opening_hours"
         case accessRestrictions         = "access_restrictions"
-        case subObservingSiteIDs        = "sub_observing_site_ids"
         case averageClearNightsPerYear  = "average_clear_nights_per_year"
         case averageSeeingConditions    = "average_seeing_conditions"
         case averageSkyQuality          = "average_sky_quality"
