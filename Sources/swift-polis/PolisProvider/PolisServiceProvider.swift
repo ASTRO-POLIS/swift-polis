@@ -62,10 +62,20 @@ public struct PolisDirectory  {
             case mirror(id: String) // The `id` of the service provider being mirrored.
         }
 
-        /// `identity` uniquely identifies a POLIS Provider. Only the framework should change the attributes and
-        /// potential changes should be done only at specific moments of the lifespan of the entry. Otherwise syncing could
-        /// be badly broken.
-        public var identity: PolisIdentity
+        //TODO: Add docs!
+        public enum ServiceReachability: String, Codable  {
+            case reachableAndResponsive
+            case reachableButSlow
+            case currentlyUnreachable
+            case permanentlyUnreachable
+        }
+
+        /// `id` should never be changed.
+        public var id: UUID
+        public var reachabilityStatus: ServiceReachability
+        public var name: String
+        public var shortDescription: String?
+        public var lastUpdate: Date
 
         /// The fully qualified URL of the service provider, e.g. https://polis.observer
         public var url: String
@@ -83,8 +93,6 @@ public struct PolisDirectory  {
 
         /// `id` is needed to make the structure `Identifiable`
         ///
-        /// `id` refers to identity's `id` and should never be changed.
-        public var id: UUID { identity.id }
 
         /// Possible errors while creating a `PolisDirectoryEntry`
         public enum DirectoryEntryError: Error {
@@ -93,13 +101,18 @@ public struct PolisDirectory  {
         }
 
         /// Designated initialiser.
-        public init(identity:                 PolisIdentity,
+        public init(id:                       UUID = UUID(),
+                    reachabilityStatus:       ServiceReachability = .currentlyUnreachable,
+                    name:                     String,
+                    shortDescription:         String? = nil,
+                    lastUpdate:               Date = Date(),
                     url:                      String,
                     providerDescription:      String?,
                     supportedImplementations: [PolisImplementationInfo],
                     providerType:             ProviderType,
                     contact:                  PolisAdminContact) throws {
             guard !supportedImplementations.isEmpty else { throw DirectoryEntryError.emptyListOfSupportedImplementations }
+
 
             let suggestedImplementations = Set(supportedImplementations)
             let supportedImplementations = Set(frameworkSupportedImplementation)
@@ -108,7 +121,11 @@ public struct PolisDirectory  {
 
             guard !filtered.isEmpty else { throw DirectoryEntryError.noneOfTheRequestedImplementationsIsSupportedByTheFramework }
 
-            self.identity                 = identity
+            self.id                       = id
+            self.reachabilityStatus       = reachabilityStatus
+            self.name                     = name
+            self.shortDescription         = shortDescription
+            self.lastUpdate               = lastUpdate
             self.url                      = url
             self.supportedImplementations = filtered
             self.providerType             = providerType
@@ -251,10 +268,23 @@ extension PolisDirectory.DirectoryEntry.ProviderType: Codable, CustomStringConve
 
 }
 
+extension PolisDirectory.DirectoryEntry.ServiceReachability {
+    public enum CodingKeys: String, CodingKey {
+        case reachableAndResponsive = "reachable_and_responsive"
+        case reachableButSlow       = "reachable_but_slow"
+        case currentlyUnreachable   = "currently_unreachable"
+        case permanentlyUnreachable = "permanently_unreachable"
+    }
+}
+
 //MARK: - PolisDirectoryEntry
 extension PolisDirectory.DirectoryEntry: Codable {
     public enum CodingKeys: String, CodingKey {
-        case identity
+        case id
+        case reachabilityStatus       = "reachability_status"
+        case name
+        case shortDescription         = "short_description"
+        case lastUpdate               = "last_update"
         case url
         case supportedImplementations = "supported_implementations"
         case providerType             = "provider_type"

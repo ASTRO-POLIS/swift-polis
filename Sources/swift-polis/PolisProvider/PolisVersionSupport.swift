@@ -145,7 +145,7 @@ public var frameworkSupportedImplementation: [PolisImplementationInfo] =
 //MARK: - Type extensions -
 extension PolisImplementationInfo.APILevel: Comparable {
     public static func < (left: PolisImplementationInfo.APILevel, right: PolisImplementationInfo.APILevel) -> Bool {
-        if      (left == .staticData) && (left != right)                  { return true }
+        if      (left == .staticData)    && (left != right)               { return true }
         else if (left == .dynamicStatus) && (right == .dynamicScheduling) { return true }
 
         return false

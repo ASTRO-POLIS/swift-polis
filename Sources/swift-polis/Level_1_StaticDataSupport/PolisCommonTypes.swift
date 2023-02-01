@@ -226,7 +226,7 @@ public struct PolisIdentity: Codable, Identifiable {
         case deleted
 
         /// After marking an item for deletion, wait for a year (check `lastUpdate`) and start marking the item as
-        /// `delete`. After 6 months, remove the deleted items. It is assumed that 1.5 years is enough for all providers
+        /// `delete`. After 18 months, remove the deleted items. It is assumed that 1.5 years is enough for all providers
         /// to mark the corresponding item as deleted.
         case delete
 

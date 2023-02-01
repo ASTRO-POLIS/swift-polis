@@ -38,18 +38,11 @@ final class PolisServiceProviderTests: XCTestCase {
         "type": "experimental"
     },
     "url": "www.telescope.observer",
-    "identity": {
-        "status": "active",
-        "abbreviation": "TO",
-        "short_description": "The original site",
-        "id": "6084D02F-A110-43A1-ACB4-93D32A42E605",
-        "last_update": "2022-02-12T20:59:26Z",
-        "references": [
-
-        ],
-        "automationLabel": "telescope_observer",
-        "name": "Telescope Observer"
-    },
+    "id": "6084D02F-A110-43A1-ACB4-93D32A42E605",
+    "name": "Telescope Observer",
+    "short_description": "The original site",
+    "last_update": "2022-02-12T20:59:26Z",
+    "reachability_status" : "currentlyUnreachable",
     "contact": {
        "id": "6084D02F-A110-43A1-ACB4-93D32A42E606",
        "email": "polis@tuparev.com",
@@ -105,7 +98,7 @@ final class PolisServiceProviderTests: XCTestCase {
 
 
     func testPolisDirectoryEntryCodingSupport() {
-        let sut = try? PolisDirectory.DirectoryEntry(identity: PolisIdentity(name: "polis"),
+        let sut = try? PolisDirectory.DirectoryEntry(name: "Telescope Observer",
                                            url: "https://polis.net",
                                            providerDescription: "Polis test",
                                            supportedImplementations: [frameworkSupportedImplementation.last!],
