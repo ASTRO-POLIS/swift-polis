@@ -86,8 +86,8 @@ final class PolisServiceProviderTests: XCTestCase {
 
     //MARK: - Actual tests -
     func testPolisProviderTypeCodingAndDecoding() {
-        let sut_pub = PolisDirectoryEntry.ProviderType.public
-        let sut_mir = PolisDirectoryEntry.ProviderType.mirror(id: "abc")
+        let sut_pub = PolisDirectory.DirectoryEntry.ProviderType.public
+        let sut_mir = PolisDirectory.DirectoryEntry.ProviderType.mirror(id: "abc")
 
         XCTAssertNotNil(sut_pub)
         XCTAssertNotNil(sut_mir)
@@ -95,21 +95,21 @@ final class PolisServiceProviderTests: XCTestCase {
         data   = try? jsonEncoder.encode(sut_pub)
         string = String(data: data!, encoding: .utf8)
 
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectoryEntry.ProviderType.self, from: string!.data(using: .utf8)!))
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectory.DirectoryEntry.ProviderType.self, from: string!.data(using: .utf8)!))
 
         data   = try? jsonEncoder.encode(sut_mir)
         string = String(data: data!, encoding: .utf8)
 
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectoryEntry.ProviderType.self, from: string!.data(using: .utf8)!))
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectory.DirectoryEntry.ProviderType.self, from: string!.data(using: .utf8)!))
     }
 
 
     func testPolisDirectoryEntryCodingSupport() {
-        let sut = try? PolisDirectoryEntry(identity: PolisIdentity(name: "polis"),
+        let sut = try? PolisDirectory.DirectoryEntry(identity: PolisIdentity(name: "polis"),
                                            url: "https://polis.net",
                                            providerDescription: "Polis test",
                                            supportedImplementations: [frameworkSupportedImplementation.last!],
-                                           providerType: PolisDirectoryEntry.ProviderType.experimental,
+                                           providerType: PolisDirectory.DirectoryEntry.ProviderType.experimental,
                                            contact: PolisAdminContact(name: "polis",
                                                                       email: "polis@observer.net",
                                                                       phone: "+3068452820",
@@ -118,15 +118,15 @@ final class PolisServiceProviderTests: XCTestCase {
 
         data   = try? jsonEncoder.encode(sut)
         string = String(data: data!, encoding: .utf8)
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectoryEntry.self, from: string!.data(using: .utf8)!))
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectory.DirectoryEntry.self, from: string!.data(using: .utf8)!))
     }
 
     func testLoadingPolisDirectoryEntryFromData() {
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectoryEntry.self, from: jsonDataFromDirectoryEntry.data(using: .utf8)!))
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectory.DirectoryEntry.self, from: jsonDataFromDirectoryEntry.data(using: .utf8)!))
     }
 
     func testPolisDirectoryFromStaticData() {
-        let entry   = try? jsonDecoder.decode(PolisDirectoryEntry.self, from: jsonDataFromDirectoryEntry.data(using: .utf8)!)
+        let entry   = try? jsonDecoder.decode(PolisDirectory.DirectoryEntry.self, from: jsonDataFromDirectoryEntry.data(using: .utf8)!)
         let entries = [entry!]
         let sut     = PolisDirectory(lastUpdate: Date(), entries: entries)
 

@@ -38,7 +38,7 @@ public class PolisJSONDecoder: JSONDecoder {
     }
 }
 
-/// `PolisJSONEncoder`is an extension of `JSONEncoder` that adds ISO8601 date conformance and produces more readable JSON files.
+/// `PolisJSONEncoder`is an extension of `JSONEncoder` adds adds ISO8601 date conformance and produces more readable JSON files.
 public class PolisJSONEncoder: JSONEncoder {
     public override init() {
         super.init()
