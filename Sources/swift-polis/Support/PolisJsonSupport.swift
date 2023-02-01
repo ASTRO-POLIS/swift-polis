@@ -2,7 +2,7 @@
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
-// Copyright (c) 2021-2022 Tuparev Technologies and the ASTRO-POLIS project
+// Copyright (c) 2021-2023 Tuparev Technologies and the ASTRO-POLIS project
 // authors.
 // Licensed under MIT License Modern Variant
 //
@@ -19,7 +19,7 @@ import Foundation
 // These are simple subclasses of the system provided JSON Decoder and Encoder that require the dates to be in ISO8601
 // format and produce well formatted and human readable JSON outputs.
 
-/// `PolisJSONDecoder`is an extension of `JSONDecoder` adds adds ISO8601 date conformance.
+/// `PolisJSONDecoder`is an extension of `JSONDecoder` that adds ISO8601 date conformance.
 public class PolisJSONDecoder: JSONDecoder {
 
     let dateFormatter = ISO8601DateFormatter()
@@ -38,7 +38,7 @@ public class PolisJSONDecoder: JSONDecoder {
     }
 }
 
-/// `PolisJSONEncoder`is an extension of `JSONEncoder` adds adds ISO8601 date conformance and produces more readable JSON files.
+/// `PolisJSONEncoder`is an extension of `JSONEncoder` that adds ISO8601 date conformance and produces more readable JSON files.
 public class PolisJSONEncoder: JSONEncoder {
     public override init() {
         super.init()

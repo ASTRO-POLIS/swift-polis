@@ -2,7 +2,7 @@
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
-// Copyright (c) 2021-2022 Tuparev Technologies and the ASTRO-POLIS project
+// Copyright (c) 2021-2023 Tuparev Technologies and the ASTRO-POLIS project
 // authors.
 // Licensed under MIT License Modern Variant
 //
@@ -28,7 +28,7 @@ public let bigBangPolisDomain = "https://polis.observer"
 
 
 
-//MARK: - POLIS version management
+//MARK: - POLIS version management -
 
 /// `PolisImplementationInfo` combines supported data format, API level, and version in a single struct
 ///
@@ -42,7 +42,7 @@ public let bigBangPolisDomain = "https://polis.observer"
 ///  For complete description Semantic Version see [Semantic Versioning](https://semver.org)
 public struct PolisImplementationInfo: Codable, Equatable {
 
-    //MARK: - Supported POLIS Data formats, (e.g. JSON, XML) and levels of API -
+    //MARK: - Supported POLIS Data formats, (e.g. JSON, XML) and levels of API
 
     /// Defines various POLIS data formats
     ///
@@ -78,17 +78,6 @@ public struct PolisImplementationInfo: Codable, Equatable {
         case dynamicScheduling = "dynamic_scheduling"
     }
 
-
-    public var dataFormat: DataFormat
-    public var apiSupport: APILevel
-    public var version: SemanticVersion
-
-    public init(dataFormat: DataFormat, apiSupport: APILevel, version: SemanticVersion) {
-        self.dataFormat = dataFormat
-        self.apiSupport = apiSupport
-        self.version    = version
-    }
-
     //TODO: Need docs
     public static func isValid(deviceType: PolisDevice.DeviceType, for implementationInfo: PolisImplementationInfo) -> Bool {
         guard let possibleDevices = PolisImplementationInfo.devicesSupportedByVersion[implementationInfo.version] else  { return false }
@@ -104,129 +93,25 @@ public struct PolisImplementationInfo: Codable, Equatable {
         return parentDevice.contains(ofType)
     }
 
+    public static func oldestSupportedImplementationInfo() -> PolisImplementationInfo {
+        //TODO: Implement me!
+        return frameworkSupportedImplementation.first!
+    }
+
+    public var dataFormat: DataFormat
+    public var apiSupport: APILevel
+    public var version: SemanticVersion
+
+    public init(dataFormat: DataFormat, apiSupport: APILevel, version: SemanticVersion) {
+        self.dataFormat = dataFormat
+        self.apiSupport = apiSupport
+        self.version    = version
+    }
+
     //MARK: - Private definitions -
     private static var devicesSupportedByVersion = [SemanticVersion(with: "0.1-alpha.1") :[PolisDevice.DeviceType.telescope,]]
 
     private static var subDevicesSupportedByVersion = [SemanticVersion(with: "0.1-alpha.1") : [PolisDevice.DeviceType.telescope :[PolisDevice.DeviceType.telescope,],]]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 /// A list of supported implementations for this concrete framework.
