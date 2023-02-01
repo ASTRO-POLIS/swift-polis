@@ -78,14 +78,14 @@ public struct PolisImplementationInfo: Codable, Equatable {
         case dynamicScheduling = "dynamic_scheduling"
     }
 
-    //TODO: Need docs
+    /// Checks if the Device Type is supported by the given Implementation Info
     public static func isValid(deviceType: PolisDevice.DeviceType, for implementationInfo: PolisImplementationInfo) -> Bool {
         guard let possibleDevices = PolisImplementationInfo.devicesSupportedByVersion[implementationInfo.version] else  { return false }
 
         return possibleDevices.contains(deviceType)
     }
 
-    //TODO: Need docs
+    /// Checks if device hierarchy is supported  by the given Implementation Info
     public static func canDevice(ofType: PolisDevice.DeviceType, beSubDeviceOfType: PolisDevice.DeviceType, for implementationInfo: PolisImplementationInfo) -> Bool {
         guard let possibleVersionCombinations = PolisImplementationInfo.subDevicesSupportedByVersion[implementationInfo.version] else { return false }
         guard let parentDevice                = possibleVersionCombinations[beSubDeviceOfType]                                   else { return false }
@@ -93,9 +93,24 @@ public struct PolisImplementationInfo: Codable, Equatable {
         return parentDevice.contains(ofType)
     }
 
+    /// This is used to select the oldest supported implementation info in order to provide default data whenever needed
+    ///
+    ///  **Note:** The method assumes that the POLIS Service Provider implements at least one ImplementationInfo. Otherwise bad things will happen
     public static func oldestSupportedImplementationInfo() -> PolisImplementationInfo {
-        //TODO: Implement me!
-        return frameworkSupportedImplementation.first!
+        var currentImplementationInfo: PolisImplementationInfo?
+
+        for info in frameworkSupportedImplementation {
+            if currentImplementationInfo != nil {
+                if (currentImplementationInfo!.version > info.version) &&
+                    (currentImplementationInfo!.apiSupport > info.apiSupport) &&
+                    ((currentImplementationInfo!.dataFormat == .xml) && (info.dataFormat == .json)) {
+                    currentImplementationInfo = info
+                }
+            }
+            else { currentImplementationInfo = info }
+        }
+
+        return currentImplementationInfo!
     }
 
     public var dataFormat: DataFormat
@@ -128,6 +143,14 @@ public var frameworkSupportedImplementation: [PolisImplementationInfo] =
 
 
 //MARK: - Type extensions -
+extension PolisImplementationInfo.APILevel: Comparable {
+    public static func < (left: PolisImplementationInfo.APILevel, right: PolisImplementationInfo.APILevel) -> Bool {
+        if      (left == .staticData) && (left != right)                  { return true }
+        else if (left == .dynamicStatus) && (right == .dynamicScheduling) { return true }
+
+        return false
+    }
+}
 
 // This extension is needed for supporting a well formatted JSON API
 public extension PolisImplementationInfo {

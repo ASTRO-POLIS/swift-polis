@@ -26,12 +26,31 @@ class PolisVersionSupportTests: XCTestCase {
     private var jsonDecoder: PolisJSONDecoder!
     private var data: Data!
     private var string: String!
+    private var originalFrameworkSupportedImplementation: [PolisImplementationInfo]!
 
     override func setUp() {
         super.setUp()
 
-        jsonEncoder = PolisJSONEncoder()
-        jsonDecoder = PolisJSONDecoder()
+        jsonEncoder                              = PolisJSONEncoder()
+        jsonDecoder                              = PolisJSONDecoder()
+        originalFrameworkSupportedImplementation = frameworkSupportedImplementation
+
+        frameworkSupportedImplementation =
+        [
+            PolisImplementationInfo(dataFormat: PolisImplementationInfo.DataFormat.xml,
+                                    apiSupport: PolisImplementationInfo.APILevel.staticData,
+                                    version: SemanticVersion(with: "0.8")!
+                                   ),
+            PolisImplementationInfo(dataFormat: PolisImplementationInfo.DataFormat.json,
+                                    apiSupport: PolisImplementationInfo.APILevel.staticData,
+                                    version: SemanticVersion(with: "0.1-alpha.1")!
+                                   ),
+            PolisImplementationInfo(dataFormat: PolisImplementationInfo.DataFormat.json,
+                                    apiSupport: PolisImplementationInfo.APILevel.staticData,
+                                    version: SemanticVersion(with: "0.1-alpha.2")!
+                                   ),
+        ]
+
     }
 
     override func tearDown() {
@@ -39,6 +58,8 @@ class PolisVersionSupportTests: XCTestCase {
         string      = nil
         jsonEncoder = nil
         jsonDecoder = nil
+
+        frameworkSupportedImplementation = originalFrameworkSupportedImplementation
 
         super.tearDown()
     }
@@ -91,7 +112,7 @@ class PolisVersionSupportTests: XCTestCase {
     }
 
     func testDeviceCompatibilityDiscovery() {
-        let version             = frameworkSupportedImplementation.last!.version
+        let version             = frameworkSupportedImplementation[1].version
         let implementationInfo  = PolisImplementationInfo(dataFormat: PolisImplementationInfo.DataFormat.json,
                                                           apiSupport: PolisImplementationInfo.APILevel.staticData,
                                                           version: version)
@@ -101,14 +122,30 @@ class PolisVersionSupportTests: XCTestCase {
         XCTAssertTrue(PolisImplementationInfo.canDevice(ofType: telescopeDeviceType, beSubDeviceOfType: telescopeDeviceType, for: implementationInfo))
     }
 
-    //TODO: Test oldestSupportedImplementationInfo
-    
+    func test_PolisImplementationInfo_oldestSupportedImplementationInfo_shouldSucceed() {
+        // Given
+        let sut = PolisImplementationInfo.oldestSupportedImplementationInfo()
+
+        // When
+        let first   = frameworkSupportedImplementation.first!
+        let version = first.version
+        let api     = first.apiSupport
+        let format  = first.dataFormat
+
+        // Then
+        XCTAssertEqual(sut.version,    version)
+        XCTAssertEqual(sut.apiSupport, api)
+        XCTAssertEqual(sut.dataFormat, format)
+   }
+
+
     //MARK: - Housekeeping -
     static var allTests = [
-        ("testPolisDataFormat",              testPolisDataFormat),
-        ("testPolisAPISupport",              testPolisAPISupport),
-        ("testPolisSupportedImplementation", testPolisSupportedImplementation),
-        ("testDeviceCompatibilityDiscovery", testDeviceCompatibilityDiscovery),
+        ("testPolisDataFormat",                                                          testPolisDataFormat),
+        ("testPolisAPISupport",                                                          testPolisAPISupport),
+        ("testPolisSupportedImplementation",                                             testPolisSupportedImplementation),
+        ("testDeviceCompatibilityDiscovery",                                             testDeviceCompatibilityDiscovery),
+        ("test_PolisImplementationInfo_oldestSupportedImplementationInfo_shouldSucceed", test_PolisImplementationInfo_oldestSupportedImplementationInfo_shouldSucceed),
     ]
 
 }
