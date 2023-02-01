@@ -25,25 +25,27 @@ public enum PolisObservingType: String, Codable {
 }
 
 public protocol PolisObserving: Codable, Identifiable {
-    var type: PolisObservingType                      { get }
-    var item: PolisItem                               { get set }
-    var parentObservingSiteID: UUID?                  { get set }
-    var subObservingSiteIDs: Set<UUID>                { get set }
-    var observatoryCode: String?                      { get set } // IAU or MPC (Minor Planet Center) code
-    var deviceIDs: Set<UUID>                          { get set }
-    var suggestedSubDeviceIDs: Set<UUID>              { get set }
-    var configurationIDs: Set<UUID>                   { get set }
-    var siteLocation: PolisObservingSiteLocationType? { get set }
-    var startDate: Date?                              { get set } // Could be nil if unknown
-    var endDate: Date?                                { get set } // if != nil -> either closed or temporary created (e.g. solar eclipse monitoring)
-    var admins: [PolisAdminContact]?                  { get set }
-    var website: URL?                                 { get set }
-    var scientificObjectives: String?                 { get set }
+    var type: PolisObservingType                       { get }
+    var item: PolisItem                                { get set }
+    var implementationInfo: [PolisImplementationInfo]? { get set }
+    var parentObservingSiteID: UUID?                   { get set }
+    var subObservingSiteIDs: Set<UUID>                 { get set }
+    var observatoryCode: String?                       { get set } // IAU or MPC (Minor Planet Center) code
+    var deviceIDs: Set<UUID>                           { get set }
+    var suggestedSubDeviceIDs: Set<UUID>               { get set }
+    var configurationIDs: Set<UUID>                    { get set }
+    var siteLocation: PolisObservingSiteLocationType?  { get set }
+    var startDate: Date?                               { get set } // Could be nil if unknown
+    var endDate: Date?                                 { get set } // if != nil -> either closed or temporary created (e.g. solar eclipse monitoring)
+    var admins: [PolisAdminContact]?                   { get set }
+    var website: URL?                                  { get set }
+    var scientificObjectives: String?                  { get set }
 }
 
 public struct PolisEarthObservingSite: PolisObserving {
     public var type: PolisObservingType
     public var item: PolisItem
+    public var implementationInfo: [PolisImplementationInfo]?
     public var parentObservingSiteID: UUID?
     public var subObservingSiteIDs                           = Set<UUID>()
     public var observatoryCode: String?
@@ -78,6 +80,7 @@ public struct PolisEarthObservingSite: PolisObserving {
 
     public init(type: PolisObservingType                               = .site,
                 item: PolisItem,
+                implementationInfo: [PolisImplementationInfo]?         = [PolisImplementationInfo.oldestSupportedImplementationInfo()],
                 parentObservingSiteID: UUID?                           = nil,
                 subObservingSiteIDs:  Set<UUID>                        = Set<UUID>(),
                 observatoryCode: String?                               = nil,
