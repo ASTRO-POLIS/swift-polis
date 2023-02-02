@@ -62,19 +62,43 @@ public struct PolisDirectory  {
             case mirror(id: String) // The `id` of the service provider being mirrored.
         }
 
-        //TODO: Add docs!
+        /// `ServiceReachability` indicates the reachability status of other Service Providers
+        ///
+        /// It is recommended not to change the reachability status too often, because this might escalate to excessive updates of Service Providers. Once every
+        /// 24h should be sufficient. Also note, that an external server might be unreachable or slow from one location, but reachable and responsive from another.
+        /// If your Service Provider cannot reach reliably another Service Provider, first check if this is also observed elsewhere, and if this is the case, only then
+        /// change the local reachability status.
+        ///
+        /// During syncing between Service Providers sync only information about reachable hosts!
         public enum ServiceReachability: String, Codable  {
+
+            /// `reachableAndResponsive` identifies stable and fast Service Provider.
             case reachableAndResponsive
+
+            /// `reachableButSlow` marks reachable but somehow sluggish Service Provider.
             case reachableButSlow
+
+            /// `currentlyUnreachable` marks temporary unreachable Service Provider.
             case currentlyUnreachable
+
+            /// `permanentlyUnreachable` marks Service Providers that are down for longer period of time. After ca. 18 months, the data about them could
+            /// be deleted permanently
             case permanentlyUnreachable
         }
 
         /// `id` should never be changed.
         public var id: UUID
+
+        /// The reachability status of a Service Provider entry
         public var reachabilityStatus: ServiceReachability
+
+        /// The name of the Service Provider
         public var name: String
+
+        /// Optional short description of the Service Provider
         public var shortDescription: String?
+
+        /// The last update date. Change this only if the data of the provider is really changed.
         public var lastUpdate: Date
 
         /// The fully qualified URL of the service provider, e.g. https://polis.observer

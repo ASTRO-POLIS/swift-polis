@@ -104,6 +104,7 @@ public struct PolisEarthObservingSite: PolisObserving {
                 dominantWindDirection: PolisDirection.RoughDirection?  = nil) {
         self.type                      = type
         self.item                      = item
+        self.implementationInfo        = implementationInfo
         self.parentObservingSiteID     = parentObservingSiteID
         self.subObservingSiteIDs       = subObservingSiteIDs
         self.observatoryCode           = observatoryCode
@@ -146,6 +147,7 @@ public extension PolisEarthObservingSite {
     enum CodingKeys: String, CodingKey {
         case type
         case item
+        case implementationInfo         = "implementation_info"
         case parentObservingSiteID      = "paren_observing_site_id"
         case subObservingSiteIDs        = "subObservingSite_ids"
         case observatoryCode            = "observatory_code"

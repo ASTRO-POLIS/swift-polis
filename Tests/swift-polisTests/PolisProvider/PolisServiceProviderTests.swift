@@ -126,6 +126,22 @@ final class PolisServiceProviderTests: XCTestCase {
         XCTAssertNotNil(sut)
     }
 
+    func test_PolisObservingSiteDirectory_coding_shouldSucceed() throws {
+        // Given
+        let astroTechIdentity           = PolisIdentity(name: "AstroTech")
+        let astroTechObservingSiteEntry = PolisObservingSiteDirectory.ObservingSiteReference(identity: astroTechIdentity, type: PolisObservingType.site)
+
+        // When
+        let sut = PolisObservingSiteDirectory(lastUpdate: Date(), entries: [astroTechObservingSiteEntry])
+
+        // Then
+        XCTAssertNotNil(sut)
+
+        data   = try? jsonEncoder.encode(sut)
+        string = String(data: data!, encoding: .utf8)
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisObservingSiteDirectory.self, from: string!.data(using: .utf8)!))
+    }
+
     func test_PolisResourceSiteDirectoryResourceReference_coding_shouldSucceed() throws {
         // Given
         let asa_identity = PolisIdentity(name: "ASA")
@@ -148,6 +164,7 @@ final class PolisServiceProviderTests: XCTestCase {
         ("testPolisDirectoryEntryCodingSupport",                                  testPolisDirectoryEntryCodingSupport),
         ("testLoadingPolisDirectoryEntryFromData",                                testLoadingPolisDirectoryEntryFromData),
         ("testPolisDirectoryFromStaticData",                                      testPolisDirectoryFromStaticData),
+        ("test_PolisObservingSiteDirectory_coding_shouldSucceed",                 test_PolisObservingSiteDirectory_coding_shouldSucceed),
         ("test_PolisResourceSiteDirectoryResourceReference_coding_shouldSucceed", test_PolisResourceSiteDirectoryResourceReference_coding_shouldSucceed),
     ]
 }
