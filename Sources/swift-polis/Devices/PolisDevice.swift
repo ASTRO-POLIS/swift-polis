@@ -24,12 +24,17 @@ public struct PolisDevice: Codable, Identifiable {
 
     public enum DeviceType: String, Codable {
 
+        //MARK: POLIS v.1.0.
+        // Optical telescope related (mostly ground-based)
+        case mirror            = "Mirror"
+
+
+        // Suggested device types for future versions of the standard
         case enclosure         = "Enclosure"
         case mount             = "Mount"
         case antenna           = "Antenna"
         case telescope         = "Telescope"
         case ota               = "OTA"
-        case mirror            = "Mirror"
         case lens              = "Lens"
         case camera            = "Camera"
         case shutter           = "Shutter"
@@ -82,7 +87,8 @@ public struct PolisDevice: Codable, Identifiable {
     public var item: PolisItem
     public var type: DeviceType
     public var modeOfOperation: ModeOfOperation
-    public var propertiesID: UUID
+    public var deviceSpecificPropertiesID: UUID
+    public var additionalPropertiesID: UUID?
 
     /// Device administrator's suggested sub-devices
     ///
@@ -97,15 +103,17 @@ public struct PolisDevice: Codable, Identifiable {
     public init(item: PolisItem,
                 type: DeviceType,
                 modeOfOperation: ModeOfOperation  = .unknown,
-                propertiesID: UUID,
+                deviceSpecificPropertiesID: UUID,
+                additionalPropertiesID: UUID?     = nil,
                 suggestedSubDeviceIDs: Set<UUID>  = Set<UUID>(),
                 subDevices: Set<UUID>             = Set<UUID>()) {
-        self.item                  = item
-        self.type                  = type
-        self.modeOfOperation       = modeOfOperation
-        self.propertiesID          = propertiesID
-        self.suggestedSubDeviceIDs = suggestedSubDeviceIDs
-        self.subDevices            = subDevices
+        self.item                       = item
+        self.type                       = type
+        self.modeOfOperation            = modeOfOperation
+        self.deviceSpecificPropertiesID = deviceSpecificPropertiesID
+        self.additionalPropertiesID     = additionalPropertiesID
+        self.suggestedSubDeviceIDs      = suggestedSubDeviceIDs
+        self.subDevices                 = subDevices
     }
 
 }
@@ -130,7 +138,8 @@ public extension PolisDevice {
         case item
         case type
         case modeOfOperation       = "mode_of_operation"
-        case propertiesID          = "properties_id"
+        case deviceSpecificPropertiesID          = "properties_id"
+        case additionalPropertiesID
         case suggestedSubDeviceIDs = "suggested_sub_device_ids"
         case subDevices            = "sub_devices"
     }

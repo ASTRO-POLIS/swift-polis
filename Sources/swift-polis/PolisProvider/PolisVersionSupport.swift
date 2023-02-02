@@ -124,7 +124,7 @@ public struct PolisImplementationInfo: Codable, Equatable {
     }
 
     //MARK: - Private definitions -
-    private static var devicesSupportedByVersion = [SemanticVersion(with: "0.1-alpha.1") :[PolisDevice.DeviceType.telescope,]]
+    private static var devicesSupportedByVersion = [SemanticVersion(with: "0.1-alpha.1") :[PolisDevice.DeviceType.mirror,]]
 
     private static var subDevicesSupportedByVersion = [SemanticVersion(with: "0.1-alpha.1") : [PolisDevice.DeviceType.telescope :[PolisDevice.DeviceType.telescope,],]]
 }
