@@ -22,4 +22,14 @@ public struct MirrorProperties {
 
     public var clearAperture: PolisMeasurement  // in "m"
     public var material: MaterialType?
+
+    // Geometry
+    // Rank order - what about siderostats?
+    // Coating
+
+    // Ups, and what about multi-mirror systems?
+    // Thin vs. classical discussion?
+    // Active vs. passive?
+    // Solid vs. liquid?
+    // Do we need concave vs. convex?
 }
