@@ -73,6 +73,7 @@ public struct PolisDevice: Codable, Identifiable {
 
 
     //MARK: - POLIS mode of operation
+    
     public enum ModeOfOperation: String, Codable {
         case manual
         case manualWithAutomatedDetector

@@ -18,6 +18,8 @@ import Foundation
 
 /// `PolisTelescope` is an instrument to observe astronomical objects composed by a hierarchy of devices with the possiblity of being arranged in different configurations.
 ///
+/// It contains a type defining how the sub devices are set up (e.g. reflector, refractor etc.), the part of the electromagnetic spectrum it covers, along with other properties such as network membership, interferometer capabilities etc. 
+///
 
 public struct PolisTelescope: Codable {
     
@@ -46,6 +48,9 @@ public struct PolisTelescope: Codable {
 
     // item information as defined by POLIS Item
     public var item: PolisItem
+    
+    // The International Astronomical Union (IAU) Minor Planet Centre (MPC) code
+    public var observatoryCode: String?
     
     // type of telescope, i.e. how the combined devices function as an overall system
     public var telescopeType: TelescopeType?
