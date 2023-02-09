@@ -27,10 +27,10 @@ public struct PolisDevice: Codable, Identifiable {
         //MARK: POLIS v.1.0.
         // Optical telescope related (mostly ground-based)
         case mirror            = "Mirror"
+        case enclosure         = "Enclosure"
 
 
         // Suggested device types for future versions of the standard
-        case enclosure         = "Enclosure"
         case mount             = "Mount"
         case antenna           = "Antenna"
         case telescope         = "Telescope"
