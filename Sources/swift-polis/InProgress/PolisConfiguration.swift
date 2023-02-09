@@ -2,7 +2,7 @@
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
-// Copyright (c) 2021-2022 Tuparev Technologies and the ASTRO-POLIS project
+// Copyright (c) 2021-2023 Tuparev Technologies and the ASTRO-POLIS project
 // authors.
 // Licensed under MIT License Modern Variant
 //
@@ -19,13 +19,13 @@ import Foundation
 
 //MARK: - Configurations -
 
-/// A POLIS configuration describes a set of interconnected POLIS devices, the way these devices are set up, the dependent properties of the combination of devices and the resulting data type yielded by this configuration.
+/// A `POLIS configuration` describes a set of interconnected `POLIS devices`, the way these devices are set up, the dependent properties of the combination of devices and the resulting data type yielded by this configuration.
 ///
-/// In the case of a single telescope, this covers properties that are not fixed and depend on the way the systems described by the POLIS framework are set up. Examples may include the focal length of a given focal point and the resulting pixel scale of a camera with a given pixel size attached at that specific focal point.
+/// In the case of a single telescope, this covers properties that are not fixed and depend on the way the systems described by the `POLIS framework` are set up. Examples may include the focal length of a given focal point and the resulting pixel scale of a camera with a given pixel size attached at that specific focal point.
 ///
 /// In the case of homogeneous arrays (e.g. the Very Large Array), a configuration describes the maximum distance between the antennas, the number of antennas etc. and in telescope networks the distance between the telescopes, and the various inhomogeneous parameters etc.
 ///
-/// Therefore, a configuration has a POLIS identity, a configuration type, a resultant data type, devices connected to the configuration, properties of that configuration, and defaults and active labels.
+/// Therefore, a configuration has a `POLIS identity`, a configuration type, a resultant data type, devices connected to the configuration, properties of that configuration, and defaults and active labels.
 ///
 
 public struct PolisConfiguration: Codable {
