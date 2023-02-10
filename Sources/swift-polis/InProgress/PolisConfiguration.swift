@@ -68,6 +68,18 @@ public struct PolisConfiguration: Codable {
         case photographicPlate
     }
     
+    // defines the parts of the electromagnetic spectrum that the observation is made in 
+    public enum ElectromagneticCoverage: String, Codable {
+        case gammaRay
+        case xRay
+        case ultraviolet
+        case optical
+        case infrared
+        case submillimetre
+        case millimetre
+        case radio
+    }
+    
     // Identity information incl. uuid, reference etc.
     public var identity: PolisIdentity
     
@@ -76,6 +88,9 @@ public struct PolisConfiguration: Codable {
     
     // resulting data type produced by the configuration
     public var observationResultType: ObservationResultType
+    
+    // the parts of the electromagnetic spectrum that the telescope is capable of observing
+    public var emCoverage: [ElectromagneticCoverage]?
     
     // uuids of the associated POLIS devices with the configuration
     public var deviceIDs: [UUID]
@@ -109,6 +124,19 @@ public extension PolisConfiguration.ObservationResultType {
     }
 }
 
+public extension PolisConfiguration.ElectromagneticCoverage {
+    enum CodingKeys: String, CodingKey {
+        case gammaRay         = "gamma_ray"
+        case xRay             = "x_ray"
+        case ultraviolet      = "ultraviolet"
+        case optical          = "optical"
+        case infrared         = "infrared"
+        case submillimeter    = "submillimeter"
+        case millimeter       = "millimeter"
+        case radio            = "radio"
+    }
+}
+
 public extension PolisConfiguration.ConfigurationType {
     enum CodingKeys: String, CodingKey {
         case array           = "array"
@@ -116,7 +144,6 @@ public extension PolisConfiguration.ConfigurationType {
         case telescope       = "telescope"
     }
 }
-
 
 public extension PolisConfiguration {
     enum CodingKeys: String, CodingKey {

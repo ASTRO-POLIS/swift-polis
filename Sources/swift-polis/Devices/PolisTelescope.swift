@@ -22,41 +22,12 @@ import Foundation
 ///
 
 public struct PolisTelescope: Codable {
-    
-    // defines the overall type of the telescope, i.e. how the combined devices function together as a system
-    public enum TelescopeType: String, Codable {
-        case reflector
-        case refractor
-        case steerableRadioDish
-        case staticRadioDish
-        case telephotoLens
-        case antenna
-        case other
-    }
-    
-    // defines the parts of the electromagnetic spectrum that the telescope is capable of observing
-    public enum ElectromagneticCoverage: String, Codable {
-        case gammaRay
-        case xRay
-        case ultraviolet
-        case optical
-        case infrared
-        case submillimetre
-        case millimetre
-        case radio
-    }
 
     // item information as defined by POLIS Item
     public var item: PolisItem
     
     // The International Astronomical Union (IAU) Minor Planet Centre (MPC) code
     public var observatoryCode: String?
-    
-    // type of telescope, i.e. how the combined devices function as an overall system
-    public var telescopeType: TelescopeType?
-    
-    // the parts of the electromagnetic spectrum that the telescope is capable of observing
-    public var emCoverage: [ElectromagneticCoverage]?
     
     // root devices of the hierarchy belonging to the telescope
     public var deviceIDs: Set<UUID>
@@ -76,31 +47,4 @@ public struct PolisTelescope: Codable {
     // indication of if the telescope is capable of Interferometry or Very Long Baseline Interferometry (VLBI)
     public var interferometerCapabilities: Bool?
  
-}
-
-//MARK: - Making types Codable and CustomStringConvertible -
-
-public extension PolisTelescope.ElectromagneticCoverage {
-    enum CodingKeys: String, CodingKey {
-        case gammaRay         = "gamma_ray"
-        case xRay             = "x_ray"
-        case ultraviolet      = "ultraviolet"
-        case optical          = "optical"
-        case infrared         = "infrared"
-        case submillimeter    = "submillimeter"
-        case millimeter       = "millimeter"
-        case radio            = "radio"
-    }
-}
-
-public extension PolisTelescope.TelescopeType {
-    enum CodingKeys: String, CodingKey {
-        case reflector             = "reflector"
-        case refractor             = "refractor"
-        case steerableRadioDish    = "steerable_radio_dish"
-        case staticRadioDish       = "static_radio_dish"
-        case telephotoLens         = "telephoto_lens"
-        case antenna               = "antenna"
-        case other                 = "other"
-    }
 }
