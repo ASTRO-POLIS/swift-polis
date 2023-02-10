@@ -32,7 +32,6 @@ public protocol PolisObserving: Codable, Identifiable {
     var subObservingSiteIDs: Set<UUID>                 { get set }
     var observatoryCode: String?                       { get set } // IAU or MPC (Minor Planet Center) code
     var deviceIDs: Set<UUID>                           { get set }
-    var suggestedSubDeviceIDs: Set<UUID>               { get set }
     var configurationIDs: Set<UUID>                    { get set }
     var siteLocation: PolisObservingSiteLocationType?  { get set }
     var startDate: Date?                               { get set } // Could be nil if unknown
@@ -40,6 +39,8 @@ public protocol PolisObserving: Codable, Identifiable {
     var admins: [PolisAdminContact]?                   { get set }
     var website: URL?                                  { get set }
     var scientificObjectives: String?                  { get set }
+
+    func suggestedSubDeviceIDs() -> Set<UUID>
 }
 
 public struct PolisEarthObservingSite: PolisObserving {
@@ -50,7 +51,6 @@ public struct PolisEarthObservingSite: PolisObserving {
     public var subObservingSiteIDs                           = Set<UUID>()
     public var observatoryCode: String?
     public var deviceIDs                                     = Set<UUID>()
-    public var suggestedSubDeviceIDs                         = Set<UUID>()
     public var configurationIDs                              = Set<UUID>()
     public var siteLocation: PolisObservingSiteLocationType?
     public var startDate: Date?
@@ -85,7 +85,6 @@ public struct PolisEarthObservingSite: PolisObserving {
                 subObservingSiteIDs:  Set<UUID>                        = Set<UUID>(),
                 observatoryCode: String?                               = nil,
                 deviceIDs: Set<UUID>                                   = Set<UUID>(),
-                suggestedSubDeviceIDs: Set<UUID>                       = Set<UUID>(),
                 configurationIDs: Set<UUID>                            = Set<UUID>(),
                 siteLocation: PolisObservingSiteLocationType?          = nil,
                 startDate: Date?                                       = nil,
@@ -109,7 +108,6 @@ public struct PolisEarthObservingSite: PolisObserving {
         self.subObservingSiteIDs       = subObservingSiteIDs
         self.observatoryCode           = observatoryCode
         self.deviceIDs                 = deviceIDs
-        self.suggestedSubDeviceIDs     = suggestedSubDeviceIDs
         self.configurationIDs          = configurationIDs
         self.siteLocation              = siteLocation
         self.startDate                 = startDate
@@ -126,6 +124,9 @@ public struct PolisEarthObservingSite: PolisObserving {
         self.traditionalLandOwners     = traditionalLandOwners
         self.history                   = history
     }
+
+    public func suggestedSubDeviceIDs() -> Set<UUID> { Set<UUID>() }
+
 }
 
 
@@ -152,7 +153,6 @@ public extension PolisEarthObservingSite {
         case subObservingSiteIDs        = "subObservingSite_ids"
         case observatoryCode            = "observatory_code"
         case deviceIDs                  = "device_ids"
-        case suggestedSubDeviceIDs      = "suggested_sub_device_ids"
         case configurationIDs           = "configuration_ids"
         case siteLocation               = "site_location"
         case startDate                  = "start_date"
