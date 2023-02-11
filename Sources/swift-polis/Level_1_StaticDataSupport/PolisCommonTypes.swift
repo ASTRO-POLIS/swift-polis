@@ -270,14 +270,14 @@ public struct PolisIdentity: Codable, Identifiable {
     /// Designated initialiser.
     ///
     /// Only the `name` parameter is required. All other parameters have reasonable default values.
-    public init(id: UUID                   = UUID(),
-                references: [String]?      = nil,
-                status: LifecycleStatus    = LifecycleStatus.unknown,
-                lastUpdate: Date           = Date(),
+    public init(id: UUID                  = UUID(),
+                references: [String]?     = nil,
+                status: LifecycleStatus   = LifecycleStatus.unknown,
+                lastUpdate: Date          = Date(),
                 name: String,
-                abbreviation: String?      = nil,
-                automationLabel: String?   = nil,
-                shortDescription: String?  = nil) {
+                abbreviation: String?     = nil,
+                automationLabel: String?  = nil,
+                shortDescription: String? = nil) {
         self.id               = id
         self.references       = references
         self.status           = status

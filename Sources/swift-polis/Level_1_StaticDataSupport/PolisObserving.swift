@@ -150,7 +150,7 @@ public extension PolisEarthObservingSite {
         case item
         case implementationInfo         = "implementation_info"
         case parentObservingSiteID      = "paren_observing_site_id"
-        case subObservingSiteIDs        = "subObservingSite_ids"
+        case subObservingSiteIDs        = "sub_observing_site_ids"
         case observatoryCode            = "observatory_code"
         case deviceIDs                  = "device_ids"
         case configurationIDs           = "configuration_ids"

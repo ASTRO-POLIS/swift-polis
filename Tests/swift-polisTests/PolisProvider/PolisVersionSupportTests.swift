@@ -112,15 +112,15 @@ class PolisVersionSupportTests: XCTestCase {
     }
 
     func testDeviceCompatibilityDiscovery() {
-        let version             = frameworkSupportedImplementation[1].version
-        let implementationInfo  = PolisImplementationInfo(dataFormat: PolisImplementationInfo.DataFormat.json,
+        let version            = frameworkSupportedImplementation[1].version
+        let implementationInfo = PolisImplementationInfo(dataFormat: PolisImplementationInfo.DataFormat.json,
                                                           apiSupport: PolisImplementationInfo.APILevel.staticData,
                                                           version: version)
-        let telescopeDeviceType = PolisDevice.DeviceType.telescope
+        let mirrorDeviceType   = PolisDevice.DeviceType.mirror
 
         //TODO: This need to be reworked!
-//        XCTAssertTrue(PolisImplementationInfo.isValid(deviceType: telescopeDeviceType, for: implementationInfo))
-//        XCTAssertTrue(PolisImplementationInfo.canDevice(ofType: telescopeDeviceType, beSubDeviceOfType: telescopeDeviceType, for: implementationInfo))
+        XCTAssertTrue(PolisImplementationInfo.isValid(deviceType: mirrorDeviceType, for: implementationInfo))
+        XCTAssertTrue(PolisImplementationInfo.canDevice(ofType: mirrorDeviceType, beSubDeviceOfType: mirrorDeviceType, for: implementationInfo))
     }
 
     func test_PolisImplementationInfo_oldestSupportedImplementationInfo_shouldSucceed() {

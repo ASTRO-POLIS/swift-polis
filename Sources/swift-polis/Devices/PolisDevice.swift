@@ -33,7 +33,6 @@ public struct PolisDevice: Codable, Identifiable {
         // Suggested device types for future versions of the standard
         case mount             = "Mount"
         case antennaFrame      = "AntennaFrame"
-        case telescope         = "Telescope"
         case ota               = "OTA"
         case lens              = "Lens"
         case camera            = "Camera"

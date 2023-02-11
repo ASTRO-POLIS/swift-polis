@@ -129,7 +129,7 @@ public struct PolisImplementationInfo: Codable, Equatable {
                                                          PolisDevice.DeviceType.enclosure,
                                                         ]
     ]
-    private static var subDevicesSupportedByVersion = [SemanticVersion(with: "0.1-alpha.1") : [PolisDevice.DeviceType.telescope : [PolisDevice.DeviceType.mirror],]]
+    private static var subDevicesSupportedByVersion = [SemanticVersion(with: "0.1-alpha.1") : [PolisDevice.DeviceType.mirror : [PolisDevice.DeviceType.mirror],]]
 }
 
 /// A list of supported implementations for this concrete framework.
