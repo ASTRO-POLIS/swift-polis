@@ -2,7 +2,7 @@
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
-// Copyright (c) 2021-2022 Tuparev Technologies and the ASTRO-POLIS project
+// Copyright (c) 2021-2023 Tuparev Technologies and the ASTRO-POLIS project
 // authors.
 // Licensed under MIT License Modern Variant
 //
@@ -16,24 +16,35 @@
 
 import Foundation
 
-// This file contains several unrelated Swift types that are accessed from different and also mostly unrelated sources.
+// This file contains several unrelated Swift types that are used in different sources.
 
-/// `PolisMeasurement` is used when a pair of value and unit is needed.
+//MARK: - Measurements -
+/// An object that represents a value a value with an accompanying unit.
 ///
-/// Examples include telescope apertures, instrument wavelengths, etc. POLIS only defines means of recording measurements. Client applications using POLIS
-/// should implement unit conversions (if needed). The POLIS provider is not expected to make any conversions, but it might check is the units are allowed.
+/// Examples include telescope apertures, instrument wavelengths, etc. POLIS only defines the means of recording measurements. Client applications using POLIS
+/// should implement unit conversions (if needed). Currently, a POLIS provider is not expected to make any conversions, but it might check if the units are allowed.
+///
+/// Apple's Units types are not used here on purpose because of the lack of scientific accuracy and profound misunderstanding of how science works.
+///
+/// **Note:** This Measurement implementation is very rudimentary. It is a placeholder type. In future implementations, it will be replaced by external
+/// implementations, capable of measurement computations and conversions.
 public struct PolisMeasurement: Codable {
+
+    //TODO: Make this Equitable and String CustomStringConvertible!
     /// The value of the measurement
     public let value: Double
+
     /// Standard precision of the measurement
     ///
-    /// If precision is 0, the value could be assumed an integer.
+    /// If precision is 0, the value is assumed an integer.
     public let precision: UInt8?
 
-
-    /// Unit is expected to be in a format that is accepted by the astronomical community (as defined by IAU, FITS Standard, etc).
+    /// Unit of the measurement.
     ///
-    /// In case no unit is defined, the measurement has no dimension (e.g. counter)
+    /// The unit is expected to be in a format that is accepted by the astronomical community (as defined by the IAU, FITS Standard, etc).
+    ///
+    /// In the case that no unit is defined, the measurement has no dimension (e.g. counter).
+    ///
     /// Examples:
     /// - "m"
     /// - "km"
@@ -44,7 +55,7 @@ public struct PolisMeasurement: Codable {
     /// - "eV"
     public let unit: String
 
-    /// Optional time (in UTC) of the measurement
+    /// Time (in UTC) of the measurement, if applicable.
     public let time: Date?
 
     public init(value: Double, precision: UInt8? = nil, unit: String, time: Date? = nil) {
@@ -55,22 +66,51 @@ public struct PolisMeasurement: Codable {
     }
 }
 
-/// `PolisImageSource` defines a source for images related to a single item (observing site, satellite, telescope, camera., ...)
+//MARK: - Images -
+/// A source for images related to a single item, such as an observing site, a satellite, a telescope, or a camera.
 ///
-/// Each image from the set defines its index within the set (used mainly for naming image data), and image attributes (source URL, description and
-/// accessibility description, as well as information about the copyright holder and copyright type).
+/// A POLIS client can use an image in many different ways—as a thumbnail, a full image, a banner, etc. A `PolisImageSource` could have multiple `ImageItem`s
+/// that fulfil the needs of the client application.
 ///
-/// **Important note:** POLIS providers should allowed only images that are either open source or the copyright holder transferred explicit rights of use!
+/// Each image from the set defines its index within the set (used for sorting), and image attributes (source URL, description and accessibility description, as well as
+/// information about the copyright holder and copyright type).
+///
+/// **Important note:** POLIS providers should only use images that are either open source or have explicitly requested and received rights of use from the copyright holder!
 public struct PolisImageSource: Codable, Identifiable {
 
-    public enum CopyrightHolderType: Codable {
-        case polisContributor(id: UUID)
-        case starClusterImage
-        case creativeCommons(source: URL)
-        case openSource(source: URL)
-        case useWithOwnersPermission(text: String, explanationNotes: String?)
-    }
+    //TODO: We need comprehensive documentation! How are we going to use all this stuff?
 
+    /// A type defining the author's copyright claims on the image.
+    public enum CopyrightHolderType: Codable {
+
+        public typealias RawValue = String
+
+
+        /// The POLIS contributor took the photo
+        case polisContributor(id: UUID)
+
+        /// Someone at Tuparev Technologies' StarCluster team took the photo, and therefore it is public domain.
+        case starClusterImage
+
+        /// Most photos from Wikipedia etc.
+        case creativeCommons(source: URL)
+
+        /// Explicit permission of the copyright holder
+        case openSource(source: URL)
+
+        /// POLIS can use such images only with the explicit permission of the copyright holder.
+        case useWithOwnersPermission(text: String, explanationNotes: String?)
+
+        /// In case the copyright holder is still unknown, this image could NOT be shown in clients or used in any other way!
+        case pendingInformation
+    }
+    
+    // TODO: Clarify this documentation. It's unclear what ImageItem is.
+    /// `ImageItem` defines one of potentially multiple images of the same item.
+    ///
+    /// It is important to note that POLIS data may be viewed by kids. Therefore, all images must be verified before made public. The `lastUpdate` attribute
+    /// can help the curator of the data set verify new entries.
+    //TODO: Do we need to know the image size and aspect ratio?
     public struct ImageItem: Codable {
         public let index: UInt
         public var lastUpdate: Date
@@ -78,6 +118,20 @@ public struct PolisImageSource: Codable, Identifiable {
         public let description: String?
         public let accessibilityDescription: String?
         public let copyrightHolder: CopyrightHolderType
+
+        public init(index: UInt,
+                    lastUpdate: Date                     = Date.now,
+                    originalSource: URL,
+                    description: String?                 = nil,
+                    accessibilityDescription: String?    = nil,
+                    copyrightHolder: CopyrightHolderType = .pendingInformation) {
+            self.index                    = index
+            self.lastUpdate               = lastUpdate
+            self.originalSource           = originalSource
+            self.description              = description
+            self.accessibilityDescription = accessibilityDescription
+            self.copyrightHolder          = copyrightHolder
+        }
     }
 
     public enum ImageSourceError: Error {
@@ -87,11 +141,15 @@ public struct PolisImageSource: Codable, Identifiable {
     }
 
     public let id: UUID
+    
+    /// The metadata of the images associated with this `PolisImageSource`.
     public var imageItems = [ImageItem]()
 
     public init(id: UUID) { self.id = id }
-
-    public mutating func addImage(item: ImageItem) async throws {
+    
+    /// Add an image to this image source.
+    /// - Parameter item: The `ImageItem` associated with the image to be added.
+    public mutating func addImage(_ item: ImageItem) async throws {
         if indexSet.contains(item.index) { throw ImageSourceError.duplicateIndex }
 
         do {
@@ -102,7 +160,10 @@ public struct PolisImageSource: Codable, Identifiable {
         indexSet.insert(item.index)
         imageItems.append(item)
     }
-
+    
+    /// Remove an image from this image source.
+    /// - Parameter index: The index of the image to be removed.
+    /// - Returns: The removed image, if successful.
     public mutating func removeImage(at index: UInt) throws -> ImageItem? {
         if !indexSet.contains(index) { throw ImageSourceError.indexNotFound }
         var item: ImageItem?
@@ -118,63 +179,61 @@ public struct PolisImageSource: Codable, Identifiable {
 
     private var indexSet = Set<UInt>()
 }
+
 //MARK: - POLIS Identity related types -
 
-
-/// `PolisIdentity` uniquely identifies and defines the status of almost every POLIS item and defines external
-/// relationships to other items (or POLIS objects of any type).
+/// `PolisIdentity` uniquely identifies and defines the status of almost every POLIS item and defines external relationships to other items (or POLIS objects of any type).
 ///
-/// The idea of POLIS Identity comes from analogous type that could be found in the `RTML` standard. The
-/// RTML references  turned out to be extremely useful for relating items within one RTML document and linking RTML
-/// documents to each other.
+/// The idea of `POLISIdentity` comes from the analogous type that could be found in the `RTML` standard. The RTML references turned out to be extremely
+/// useful for relating items within one RTML document and linking RTML documents to each other.
 ///
-/// `PolisIdentity` is an essential part of (almost) every POLIS type. They are needed to uniquely identify and
-/// describe each item (object) and establish parent-child relationships between them, as well as provide enough
-/// informationIn for the syncing of POLIS Providers.
+/// `PolisIdentity` is an essential a part of nearly every POLIS type. They are needed to uniquely identify and describe each item (object) and to establish
+/// parent-child relationships between them, as well as provide enough information for the syncing of POLIS Providers.
 ///
-/// Parent - child relationship should be defined by nesting data structures.
+/// Parent - child relationships should be defined by nesting data structures.
 ///
-/// If /when XML encoding and decoding is used, it is strongly recommended to implement the `PolisIdentity` as
-/// attributes of the corresponding type (Element).
+/// If and when XML encoding and decoding is used, it is strongly recommended to implement the `PolisIdentity` as attributes of the corresponding type (Element).
 public struct PolisIdentity: Codable, Identifiable {
-
-    /// `LifecycleStatus` defines the current status of the POLIS items (readiness to be used in different
-    /// environments)
+    
+    /// The current status of the POLIS item and its readiness to be used in different environments.
     ///
     /// Each POLIS type (Provider, Observing Site, Device, etc.) should include `LifecycleStatus` (as part of
     /// ``PolisIdentity``).
     ///
-    /// `LifecycleStatus` will determine the syncing policy, as well as visibility of the POLIS items within client
-    /// implementations. Implementations should adopt following behaviours:
+    /// `LifecycleStatus` will determine the syncing policy as well as the visibility of the POLIS items within client
+    /// implementations. Implementations should adopt the following behaviours:
     /// - `inactive`  - do not sync, but continue monitoring
     /// - `active`    - must be synced and monitored
     /// - `deleted`   - sync the `PolisItemAttributes` only to prevent secondary propagation of the record and to lock the
     /// UUID of the item
     /// - `delete`    - delete the item
     /// - `suspended` - sync the `PolisItemAttributes`, but do not use the service provider or the observing site. Suspended
-    /// is used to mark that the item does not follow the POLIS standard, or violates community rules. Normally entities first
-    /// will be warned, and if they continue to not follow standards and rules, they will be deleted.
+    /// is used to mark that the item does not follow the POLIS standard, or violates community rules. Normally entities
+    /// will be warned first, and if they continue to break standards and rules, they will be deleted.
     /// - `unknown`   - do not sync, but continue monitoring
     public enum LifecycleStatus: String, Codable {
 
-        /// `inactive` indicates new, being edited, or in process of being upgraded providers.
+        /// `inactive` indicates new, being edited, or in process of being upgraded by the provider(s).
         case inactive
 
         /// `active` indicates a production provider that is publicly accessible.
         case active
 
+        /// Item still exists and has historical value but is not operational.
+        case historic
+
         /// `deleted` is needed to prevent reappearance of disabled providers or sites.
         case deleted
 
-        /// After marking an item for deleted, wait for a year (check `lastUpdate`) and start marking the item as
-        /// `delete`. After 6 months, remove the deleted items. It is assumed, that 1.5 year is enough for all provides
+        /// After marking an item for deletion, wait for a year (check `lastUpdate`) and start marking the item as
+        /// `delete`. After 18 months, remove the deleted items. It is assumed that 1.5 years is enough for all providers
         /// to mark the corresponding item as deleted.
         case delete
 
-        /// `suspended` marks providers violating the standard (temporary or permanently).
+        /// `suspended` indicates providers violating the standard (temporary or permanently).
         case suspended
 
-        /// `unknown` marks a provider with unknown status, and is mostly used when observing site or instrument has
+        /// `unknown` indicates a provider with unknown status, and is mostly used when the observing site or instrument has
         /// unknown status.
         case unknown
     }
@@ -183,7 +242,7 @@ public struct PolisIdentity: Codable, Identifiable {
     /// conformance.
     public let id: UUID
 
-    /// Pointers to externally defined item (IDREF in XML). It is recommended that the references are URIs (e.g.
+    /// Pointers to externally defined items (IDREF in XML). It is recommended that the references are URLs (e.g.
     /// https://monet.org/instruments/12345 or telescope.observer://instriment123456)
     public var references: [String]?
 
@@ -193,32 +252,32 @@ public struct PolisIdentity: Codable, Identifiable {
     /// Latest update time. Used primarily for syncing.
     public var lastUpdate: Date
 
-    /// Human readable name of the item (object). It is recommended to be unique to avoid potential confusions.
+    /// Human readable name of the item (object). It is recommended to assign a unique name to avoid potential confusions.
     public var name: String
 
-    /// Human readable automationLabel of the item (object). If present it is recommended to be unique to avoid
+    /// Human readable automationLabel of the item (object). If present it is recommended to assign a unique label to avoid
     /// potential confusions.
     public var abbreviation: String?
 
     /// The purpose of the optional `automationLabel` is to act as a unique target for scripts and other software
-    /// packages. As an example, the observatory control software could search for an instrument with such label and
+    /// packages. As an example, the observatory control software could search for an instrument with a given label and
     /// set its status or issue commands etc. This could be used to sync with ASCOM or INDI based systems.
     public var automationLabel: String? // For script etc. support (internal to the site use...)
 
-    /// Short optional item (object) description. In XML schema should be max 256 characters for RTML interoperability.
+    /// Short optional item (object) description. In XML schema, this should be max 256 characters for RTML interoperability.
     public var shortDescription: String?
 
     /// Designated initialiser.
     ///
     /// Only the `name` parameter is required. All other parameters have reasonable default values.
-    public init(id: UUID                   = UUID(),
-                references: [String]?      = nil,
-                status: LifecycleStatus    = LifecycleStatus.unknown,
-                lastUpdate: Date           = Date(),
+    public init(id: UUID                  = UUID(),
+                references: [String]?     = nil,
+                status: LifecycleStatus   = LifecycleStatus.unknown,
+                lastUpdate: Date          = Date(),
                 name: String,
-                abbreviation: String?      = nil,
-                automationLabel: String?   = nil,
-                shortDescription: String?  = nil) {
+                abbreviation: String?     = nil,
+                automationLabel: String?  = nil,
+                shortDescription: String? = nil) {
         self.id               = id
         self.references       = references
         self.status           = status
@@ -234,21 +293,21 @@ public struct PolisIdentity: Codable, Identifiable {
 
 // Many POLIS types have reference to contact people (owners of sites, admins, project managers). Later we need to add
 // Institutions as well and handle the messiness of addresses, countries, languages, phone numbers and other
-// developer's nightmares. We think it's perhaps the best in the future to rely to external implementation for address
+// developer's nightmares. We think it's perhaps the best in the future to rely on an external implementation for address
 // management.
-// On the other hand the implementation of contact (in order to allow to communicate with POLIS providers site admins)
-// is simple enough task and therefore current implementation of POLIS includes contact-only related types.
+// On the other hand the implementation of contact channels (in order to allow communication with POLIS providers site admins)
+// is a simple enough task and therefore the current implementation of POLIS includes contact-only related types.
 
 
 /// `PolisAdminContact` defines a simple way to contact a provider admin, an observing site owner, or an observatory
 /// admin.
 ///
 /// It is important to be able to contact the admin of a POLIS service provider or the admin or the owner of an
-/// observing site, however one should not forget that all POLIS data is publicly available and therefore should not
-/// expose private information if possible. It is preferred not to expose private email addresses, phone numbers, or
-/// twitter accounts, but only publicly available organisation contacts.
+/// observing site, but one should not forget that all POLIS data is publicly available and therefore should not
+/// expose private information if possible. It is preferable not to expose private email addresses, phone numbers, or
+/// twitter accounts, but only publicly available organisation contacts or pages.
 ///
-/// The type implements the `Codable` protocol
+/// The type implements the `Codable` protocol.
 public struct PolisAdminContact: Identifiable {
 
     /// `Communication` defines different types of communication channels in addition to the default email address and
@@ -256,52 +315,63 @@ public struct PolisAdminContact: Identifiable {
     ///
     /// The current list includes just a handful of popular communication channels. Emerging apps like Signal and Telegram
     /// are not currently included, nor are local Chinese and Russian social media communication channels. If you need
-    /// such channels, please submit a pool request.
+    /// such channels, please submit a pull request to the POLIS developers.
     ///
-    /// The type implements the `Codable` protocol
+    /// The type implements the `Codable` protocol and is thus JSON-representable.
     public enum Communication {
 
-        /// Twitter user id, e.g. @AstroPolis "@" is expected to be part of the id
+        /// Twitter user id, e.g. @AstroPolis. "@" is expected to be part of the id.
         case twitter(username: String)
 
-        /// Phone number used by WhatsApp. The phone number should include the country code, start with "+", and contain no
+        /// Phone number used by WhatsApp. The phone number should include the country code, starting with "+", and contain no
         /// spaces, brackets, or other formatting characters. Currently no validation is provided.
         case whatsApp(phone: String)
 
         /// The Facebook user id is only the part of the URL after "www.facebook.com/".
         case facebook(id: String)
 
-        /// Instagram user id, e.g. @AstroPolis "@" is expected to be part of the id
+        /// Instagram user id, e.g. @AstroPolis. "@" is expected to be part of the id.
         case instagram(username: String)
 
         /// Skype user id
         case skype(id: String)
     }
 
-    /// Admin's ID is needed for defining login credentials and identifying sources of data changes and contributions
+    /// The admin's unique identifier.
+    ///
+    /// An administrator needs a unique identifier in order to define login credentials and identify sources of data changes and contributions.
     public let id: UUID
 
-    /// It is recommended that the admin's name is either omitted, or describes admin's role, e.g. "The managing
-    /// director of Mountain Observatory"
+    /// The admin's name.
+    ///
+    /// It is recommended that an admin's name is either omitted or describes the admin's role, e.g. "Managing
+    /// Director of Mountain Observatory"
     public var name: String?
 
+    /// The admin's email address.
+    ///
     /// Email is the most reliable and widely adopted communication channel, and therefore a valid email address is
     /// required. To protect privacy, it is recommended that the email address is assigned to the institution,
-    /// e.g. "office@mountain-observatory.org". It is expected the email to be valid.
+    /// e.g. "office@mountain-observatory.org". A valid email is expected.
     public var email: String
 
+    /// The admin's phone number.
+    ///
     /// Consider giving only institution phone numbers - not private ones. The phone number should include the country
     /// code, starting with "+", and should contain no spaces, brackets, or other formatting characters. No validation
     /// is provided.
     public var phone: String?
 
-    /// Possibly empty list (array) of additional communication channels of type ``PolisCommunication``.
+    /// An array of additional communication channels for contacting the admin, if applicable.
     public var additionalCommunicationChannels: [Communication]
 
-    /// `notes` can contain additional contact info, e.g. "The admin could be contacted only during office hours"
+    /// Miscellaneous information that doesn't fit in any other property.
+    ///
+    /// Notes can contain additional information on how to contact the admin, such as "The admin could be contacted only during office hours," or "The admin is
+    /// on vacation from 01/12 to 20/12."
     public var notes: String?
 
-    /// Designated initialiser
+    /// Designated initialiser.
     ///
     /// Only the `email` is a required parameter. It must contain well formatted email addresses. If the email is not a
     /// valid one, `nil` will be returned.
@@ -330,14 +400,18 @@ public struct PolisAdminContact: Identifiable {
 /// `PolisDirection` is used to represent either a rough direction (of 16 possibilities) or exact direction in degree
 /// represented as a double number (e.g. 57.349)
 ///
-/// Directions are used to describe things like dominant wind direction of observing site, or direction of doors of
+/// Directions are used to describe information such as dominant wind direction of observing site, or direction of doors of
 /// different types of enclosures.
 public enum PolisDirection: Codable {
 
-    /// A list of 16 rough directions
+    /// A list of 16 rough directions.
+    ///
+    /// These 16 directions are comprised of the 4 cardinal directions (north, east, south, west), the 4
+    /// ordinal (also known as inter-cardinal) directions (northeast, northwest, southeast, southwest), and
+    /// the 8 additional secondary inter cardinal directions (ex. ENE, SSW, WSW).
     ///
     /// Rough direction could be used when it is not important to know or impossible to measure the exact direction.
-    /// Examples include the wind direction, or the orientations of the doors of clamshell enclosure.
+    /// Examples include the wind direction, or the orientations of the doors of a clamshell enclosure.
     public enum RoughDirection: String, Codable {
         case north          = "N"
         case northNorthEast = "NNE"
@@ -364,11 +438,11 @@ public enum PolisDirection: Codable {
     case exact(degree: Double)                  // Clockwise e.g. 157.12
 }
 
-/// The `PolisActivityPeriods` struct is used to define periods of time when an ``PolisObservingSite`` could be visited, or the working hours of the personal.
+/// The `PolisActivityPeriods` struct is used to define periods of time when an ``PolisObservingSite`` could be visited, or the working hours of the personnel.
 ///
-/// Note that some sites might be opened only during part of the year (e.g. because of difficult winter conditions) or could be visited only during the school vacations.
+/// Note that some sites might only be open during part of the year (e.g. because of difficult winter conditions) or may only be visited during school vacations.
 ///
-/// The first version of the type defines only an optional `notes` string.  Future versions will add more structured types expressing numerically periods like:
+/// The first version of the type defines only an optional `notes` string.  Future versions will add more structured types expressing numerical periods like:
 ///    Mo-Fr: 16:00-18:00h or
 ///    June - September
 public struct PolisActivityPeriods: Codable {
@@ -400,69 +474,69 @@ public extension PolisIdentity {
 //MARK: - ContactType
 extension PolisAdminContact.Communication: Codable, CustomStringConvertible {
 
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        let base      = try container.decode(CommunicationType.self, forKey: .communicationType)
-
-        switch base {
-            case .twitter:
-                let twitterParams = try container.decodeIfPresent(TwitterParams.self, forKey: .twitterParams)
-                self = .twitter(username: twitterParams!.username.mustStartWithAtSign())
-            case .whatsApp:
-                let whatsAppParams = try container.decodeIfPresent(WhatsAppParams.self, forKey: .whatsAppParams)
-                self = .whatsApp(phone: whatsAppParams!.phone)
-            case .facebook:
-                let facebookParams = try container.decodeIfPresent(FacebookParams.self, forKey: .facebookParams)
-                self = .facebook(id: facebookParams!.id)
-            case .instagram:
-                let instagramParams = try container.decodeIfPresent(InstagramParams.self, forKey: .instagramParams)
-                self = .instagram(username: instagramParams!.username.mustStartWithAtSign())
-            case .skype:
-                let skypeParams = try container.decodeIfPresent(SkypeParams.self, forKey: .skypeParams)
-                self = .skype(id: skypeParams!.id)
-        }
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-
-        switch self {
-            case .twitter(let username):
-                try container.encode(CommunicationType.twitter, forKey: .communicationType)
-                try container.encode(TwitterParams(username: username), forKey: .twitterParams)
-            case .whatsApp(let phone):
-                try container.encode(CommunicationType.whatsApp, forKey: .communicationType)
-                try container.encode(WhatsAppParams(phone: phone), forKey: .whatsAppParams)
-            case .facebook(let id):
-                try container.encode(CommunicationType.facebook, forKey: .communicationType)
-                try container.encode(FacebookParams(id: id), forKey: .facebookParams)
-            case .instagram(let username):
-                try container.encode(CommunicationType.instagram, forKey: .communicationType)
-                try container.encode(InstagramParams(username: username), forKey: .instagramParams)
-            case .skype(let id):
-                try container.encode(CommunicationType.skype, forKey: .communicationType)
-                try container.encode(SkypeParams(id: id), forKey: .skypeParams)
-        }
-    }
-
-    public enum CodingKeys: String, CodingKey {
-        case communicationType = "communication_type"
-        case twitterParams     = "twitter"
-        case whatsAppParams    = "whatsapp"
-        case facebookParams    = "facebook"
-        case instagramParams   = "instagram"
-        case skypeParams       = "skype"
-        case username          = "user_name"
-    }
-
-    private enum CommunicationType: String, Codable { case twitter, whatsApp, facebook, instagram, skype }
-
-    private struct TwitterParams: Codable   { let username: String }
-    private struct WhatsAppParams: Codable  { let phone: String }
-    private struct FacebookParams: Codable  { let id: String }
-    private struct InstagramParams: Codable { let username: String }
-    private struct SkypeParams: Codable     { let id: String }
-
+//    public init(from decoder: Decoder) throws {
+//        let container = try decoder.container(keyedBy: CodingKeys.self)
+//        let base      = try container.decode(CommunicationType.self, forKey: .communicationType)
+//
+//        switch base {
+//            case .twitter:
+//                let twitterParams = try container.decodeIfPresent(TwitterParams.self, forKey: .twitterParams)
+//                self = .twitter(username: twitterParams!.username.mustStartWithAtSign())
+//            case .whatsApp:
+//                let whatsAppParams = try container.decodeIfPresent(WhatsAppParams.self, forKey: .whatsAppParams)
+//                self = .whatsApp(phone: whatsAppParams!.phone)
+//            case .facebook:
+//                let facebookParams = try container.decodeIfPresent(FacebookParams.self, forKey: .facebookParams)
+//                self = .facebook(id: facebookParams!.id)
+//            case .instagram:
+//                let instagramParams = try container.decodeIfPresent(InstagramParams.self, forKey: .instagramParams)
+//                self = .instagram(username: instagramParams!.username.mustStartWithAtSign())
+//            case .skype:
+//                let skypeParams = try container.decodeIfPresent(SkypeParams.self, forKey: .skypeParams)
+//                self = .skype(id: skypeParams!.id)
+//        }
+//    }
+//
+//    public func encode(to encoder: Encoder) throws {
+//        var container = encoder.container(keyedBy: CodingKeys.self)
+//
+//        switch self {
+//            case .twitter(let username):
+//                try container.encode(CommunicationType.twitter, forKey: .communicationType)
+//                try container.encode(TwitterParams(username: username), forKey: .twitterParams)
+//            case .whatsApp(let phone):
+//                try container.encode(CommunicationType.whatsApp, forKey: .communicationType)
+//                try container.encode(WhatsAppParams(phone: phone), forKey: .whatsAppParams)
+//            case .facebook(let id):
+//                try container.encode(CommunicationType.facebook, forKey: .communicationType)
+//                try container.encode(FacebookParams(id: id), forKey: .facebookParams)
+//            case .instagram(let username):
+//                try container.encode(CommunicationType.instagram, forKey: .communicationType)
+//                try container.encode(InstagramParams(username: username), forKey: .instagramParams)
+//            case .skype(let id):
+//                try container.encode(CommunicationType.skype, forKey: .communicationType)
+//                try container.encode(SkypeParams(id: id), forKey: .skypeParams)
+//        }
+//    }
+//
+//    public enum CodingKeys: String, CodingKey {
+//        case communicationType = "communication_type"
+//        case twitterParams     = "twitter"
+//        case whatsAppParams    = "whatsapp"
+//        case facebookParams    = "facebook"
+//        case instagramParams   = "instagram"
+//        case skypeParams       = "skype"
+//        case username          = "user_name"
+//    }
+//
+//    private enum CommunicationType: String, Codable { case twitter, whatsApp, facebook, instagram, skype }
+//
+//    private struct TwitterParams: Codable   { let username: String }
+//    private struct WhatsAppParams: Codable  { let phone: String }
+//    private struct FacebookParams: Codable  { let id: String }
+//    private struct InstagramParams: Codable { let username: String }
+//    private struct SkypeParams: Codable     { let id: String }
+//
     public var description: String {
         switch self {
             case .twitter(let username):   return "Twitter: \(username)"

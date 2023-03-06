@@ -2,7 +2,7 @@
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
-// Copyright (c) 2021-2022 Tuparev Technologies and the ASTRO-POLIS project
+// Copyright (c) 2021-2023 Tuparev Technologies and the ASTRO-POLIS project
 // authors.
 // Licensed under MIT License Modern Variant
 //
@@ -24,12 +24,16 @@ public struct PolisDevice: Codable, Identifiable {
 
     public enum DeviceType: String, Codable {
 
-        case enclosure         = "Enclosure"
-        case mount             = "Mount"
-        case antenna           = "Antenna"
-        case telescope         = "Telescope"
-        case ota               = "OTA"
+        //MARK: POLIS v.1.0.
+        // Optical telescope related (mostly ground-based)
         case mirror            = "Mirror"
+        case enclosure         = "Enclosure"
+
+
+        // Suggested device types for future versions of the standard
+        case mount             = "Mount"
+        case antennaFrame      = "AntennaFrame"
+        case ota               = "OTA"
         case lens              = "Lens"
         case camera            = "Camera"
         case shutter           = "Shutter"
@@ -41,7 +45,7 @@ public struct PolisDevice: Codable, Identifiable {
         case grating           = "Grating"
         case prism             = "Prism"
         case bolometer         = "Bolometer"
-        case reciever          = "Reciever"
+        case receiver          = "Receiver"
         case photomultiplier   = "PhotomultiplierTube"
         case photographicPlate = "PhotographicPlate"
         case eyePiece          = "EyePiece"
@@ -68,6 +72,7 @@ public struct PolisDevice: Codable, Identifiable {
 
 
     //MARK: - POLIS mode of operation
+    
     public enum ModeOfOperation: String, Codable {
         case manual
         case manualWithAutomatedDetector
@@ -82,30 +87,33 @@ public struct PolisDevice: Codable, Identifiable {
     public var item: PolisItem
     public var type: DeviceType
     public var modeOfOperation: ModeOfOperation
-    public var propertiesID: UUID
+    public var deviceSpecificPropertiesID: UUID
+    public var additionalPropertiesID: UUID?
 
     /// Device administrator's suggested sub-devices
     ///
     /// It is the responsibility of the client software to decide to load or reject these sub-devices. ``PolisImplementationInfo`` implements methods to
     /// support the client software to make the loading decision, but the POLIS standard just recommends a device hierarchy without strictly requiring it. There are
     /// legit cases when the suggested hierarchy does not fit complexity of astronomical observing stations.
-    public var proposedSubDeviceIDs: Set<UUID>?
+    public var suggestedSubDeviceIDs: Set<UUID>
     public var subDevices: Set<UUID>
 
     public var id: UUID { item.identity.id }
 
     public init(item: PolisItem,
                 type: DeviceType,
-                modeOfOperation: ModeOfOperation = .unknown,
-                propertiesID: UUID,
-                proposedSubDeviceIDs: Set<UUID>? = nil,
-                subDevices: Set<UUID>            = Set<UUID>()) {
-        self.item                 = item
-        self.type                 = type
-        self.modeOfOperation      = modeOfOperation
-        self.propertiesID         = propertiesID
-        self.proposedSubDeviceIDs = proposedSubDeviceIDs
-        self.subDevices           = subDevices
+                modeOfOperation: ModeOfOperation  = .unknown,
+                deviceSpecificPropertiesID: UUID,
+                additionalPropertiesID: UUID?     = nil,
+                suggestedSubDeviceIDs: Set<UUID>  = Set<UUID>(),
+                subDevices: Set<UUID>             = Set<UUID>()) {
+        self.item                       = item
+        self.type                       = type
+        self.modeOfOperation            = modeOfOperation
+        self.deviceSpecificPropertiesID = deviceSpecificPropertiesID
+        self.additionalPropertiesID     = additionalPropertiesID
+        self.suggestedSubDeviceIDs      = suggestedSubDeviceIDs
+        self.subDevices                 = subDevices
     }
 
 }
@@ -129,9 +137,10 @@ public extension PolisDevice {
     enum CodingKeys: String, CodingKey {
         case item
         case type
-        case modeOfOperation      = "mode_of_operation"
-        case propertiesID         = "properties_id"
-        case proposedSubDeviceIDs = "proposed_sub_device_ids"
-        case subDevices           = "sub_devices"
+        case modeOfOperation       = "mode_of_operation"
+        case deviceSpecificPropertiesID          = "properties_id"
+        case additionalPropertiesID
+        case suggestedSubDeviceIDs = "suggested_sub_device_ids"
+        case subDevices            = "sub_devices"
     }
 }

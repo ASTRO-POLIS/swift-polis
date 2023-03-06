@@ -27,7 +27,8 @@ tests += PolisItemOwnerTests.allTests()
 tests += PolisItemTests.allTests()
 tests += PolisManufacturerTests.allTests()
 tests += PolisStaticResourceFinderTests.allTests()
-tests += PolisVersionSupportTests.allTests(),
-tests += PolisObservingTests.allTests(),
+tests += PolisVersionSupportTests.allTests()
+tests += PolisObservingTests.allTests()
+tests += PolisIndexSiteTests.allTests()
 
 XCTMain(tests)

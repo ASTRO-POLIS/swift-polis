@@ -2,7 +2,7 @@
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
-// Copyright (c) 2021-2022 Tuparev Technologies and the ASTRO-POLIS project
+// Copyright (c) 2021-2023 Tuparev Technologies and the ASTRO-POLIS project
 // authors.
 // Licensed under MIT License Modern Variant
 //
@@ -38,18 +38,11 @@ final class PolisServiceProviderTests: XCTestCase {
         "type": "experimental"
     },
     "url": "www.telescope.observer",
-    "identity": {
-        "status": "active",
-        "abbreviation": "TO",
-        "short_description": "The original site",
-        "id": "6084D02F-A110-43A1-ACB4-93D32A42E605",
-        "last_update": "2022-02-12T20:59:26Z",
-        "references": [
-
-        ],
-        "automationLabel": "telescope_observer",
-        "name": "Telescope Observer"
-    },
+    "id": "6084D02F-A110-43A1-ACB4-93D32A42E605",
+    "name": "Telescope Observer",
+    "short_description": "The original site",
+    "last_update": "2022-02-12T20:59:26Z",
+    "reachability_status" : "currentlyUnreachable",
     "contact": {
        "id": "6084D02F-A110-43A1-ACB4-93D32A42E606",
        "email": "polis@tuparev.com",
@@ -86,8 +79,8 @@ final class PolisServiceProviderTests: XCTestCase {
 
     //MARK: - Actual tests -
     func testPolisProviderTypeCodingAndDecoding() {
-        let sut_pub = PolisDirectoryEntry.ProviderType.public
-        let sut_mir = PolisDirectoryEntry.ProviderType.mirror(id: "abc")
+        let sut_pub = PolisDirectory.DirectoryEntry.ProviderType.public
+        let sut_mir = PolisDirectory.DirectoryEntry.ProviderType.mirror(id: "abc")
 
         XCTAssertNotNil(sut_pub)
         XCTAssertNotNil(sut_mir)
@@ -95,21 +88,21 @@ final class PolisServiceProviderTests: XCTestCase {
         data   = try? jsonEncoder.encode(sut_pub)
         string = String(data: data!, encoding: .utf8)
 
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectoryEntry.ProviderType.self, from: string!.data(using: .utf8)!))
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectory.DirectoryEntry.ProviderType.self, from: string!.data(using: .utf8)!))
 
         data   = try? jsonEncoder.encode(sut_mir)
         string = String(data: data!, encoding: .utf8)
 
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectoryEntry.ProviderType.self, from: string!.data(using: .utf8)!))
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectory.DirectoryEntry.ProviderType.self, from: string!.data(using: .utf8)!))
     }
 
 
     func testPolisDirectoryEntryCodingSupport() {
-        let sut = try? PolisDirectoryEntry(identity: PolisIdentity(name: "polis"),
+        let sut = try? PolisDirectory.DirectoryEntry(name: "Telescope Observer",
                                            url: "https://polis.net",
                                            providerDescription: "Polis test",
                                            supportedImplementations: [frameworkSupportedImplementation.last!],
-                                           providerType: PolisDirectoryEntry.ProviderType.experimental,
+                                           providerType: PolisDirectory.DirectoryEntry.ProviderType.experimental,
                                            contact: PolisAdminContact(name: "polis",
                                                                       email: "polis@observer.net",
                                                                       phone: "+3068452820",
@@ -118,19 +111,35 @@ final class PolisServiceProviderTests: XCTestCase {
 
         data   = try? jsonEncoder.encode(sut)
         string = String(data: data!, encoding: .utf8)
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectoryEntry.self, from: string!.data(using: .utf8)!))
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectory.DirectoryEntry.self, from: string!.data(using: .utf8)!))
     }
 
     func testLoadingPolisDirectoryEntryFromData() {
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectoryEntry.self, from: jsonDataFromDirectoryEntry.data(using: .utf8)!))
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectory.DirectoryEntry.self, from: jsonDataFromDirectoryEntry.data(using: .utf8)!))
     }
 
     func testPolisDirectoryFromStaticData() {
-        let entry   = try? jsonDecoder.decode(PolisDirectoryEntry.self, from: jsonDataFromDirectoryEntry.data(using: .utf8)!)
+        let entry   = try? jsonDecoder.decode(PolisDirectory.DirectoryEntry.self, from: jsonDataFromDirectoryEntry.data(using: .utf8)!)
         let entries = [entry!]
         let sut     = PolisDirectory(lastUpdate: Date(), entries: entries)
 
         XCTAssertNotNil(sut)
+    }
+
+    func test_PolisObservingSiteDirectory_coding_shouldSucceed() throws {
+        // Given
+        let astroTechIdentity           = PolisIdentity(name: "AstroTech")
+        let astroTechObservingSiteEntry = PolisObservingSiteDirectory.ObservingSiteReference(identity: astroTechIdentity, type: PolisObservingType.site)
+
+        // When
+        let sut = PolisObservingSiteDirectory(lastUpdate: Date(), entries: [astroTechObservingSiteEntry])
+
+        // Then
+        XCTAssertNotNil(sut)
+
+        data   = try? jsonEncoder.encode(sut)
+        string = String(data: data!, encoding: .utf8)
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisObservingSiteDirectory.self, from: string!.data(using: .utf8)!))
     }
 
     func test_PolisResourceSiteDirectoryResourceReference_coding_shouldSucceed() throws {
@@ -155,6 +164,7 @@ final class PolisServiceProviderTests: XCTestCase {
         ("testPolisDirectoryEntryCodingSupport",                                  testPolisDirectoryEntryCodingSupport),
         ("testLoadingPolisDirectoryEntryFromData",                                testLoadingPolisDirectoryEntryFromData),
         ("testPolisDirectoryFromStaticData",                                      testPolisDirectoryFromStaticData),
+        ("test_PolisObservingSiteDirectory_coding_shouldSucceed",                 test_PolisObservingSiteDirectory_coding_shouldSucceed),
         ("test_PolisResourceSiteDirectoryResourceReference_coding_shouldSucceed", test_PolisResourceSiteDirectoryResourceReference_coding_shouldSucceed),
     ]
 }

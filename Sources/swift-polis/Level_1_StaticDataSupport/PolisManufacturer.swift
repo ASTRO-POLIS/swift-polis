@@ -19,28 +19,27 @@ import Foundation
 
 //MARK: - Manufacturer information -
 
-/// `PolisManufacturer` encapsulates basic information about manufacturer.
+/// A type that encapsulates basic information about the manufacturer.
 ///
-/// Every provider is free to implement it's own handling of list of manufacturers, but we highly recommend that all manufacturer information is managed in a single,
-/// possibly manually maintained cache. This will help client application to display unique information and avoid "almost the same" information to be found multiple
-/// times. It is best if manufacturers maintain their product catalogues themselves.
+/// Every provider is free to implement it's own handling of lists of manufacturers, but we highly recommend that all manufacturer information is managed in a single,
+/// possibly manually maintained, cache. This will help client applications to display unique information and avoid "almost the same" information being found multiple
+/// times. It is preferable and better for the community as a whole if manufacturers maintain their product catalogues themselves.
 ///
 /// It is important that POLIS Providers guarantee the uniqueness of manufacturers and their products. This is not required by the standard, but it is strongly
-/// recommended.
+/// recommended and makes the experience better for everyone.
 public struct PolisManufacturer: Codable, Identifiable {
-    /// Makes `PolisManufacturer` uniquely identifiable
+    /// Makes `PolisManufacturer` uniquely identifiable.
     public var identity: PolisIdentity
+    
+    public var id: UUID { identity.id }
 
-    public var uniqueName: String     // e.g. asa, mead, ... used for statically grouping reusable resources
+    public var uniqueName: String     // e.g. asa, meade, ... used for statically grouping reusable resources
 
     /// The fully qualified URL of the service provider, e.g. https://www.celestron.com
     public var url: URL?
 
-    /// The person (or email address) you can contact.
+    /// The point-of-contact for the manufacturer.
     public var contact: PolisAdminContact?
-
-    /// `id` is needed to make the structure `Identifiable`
-    public var id: UUID { identity.id }
 
     public init(identity: PolisIdentity, uniqueName: String, url: URL? = nil, contact: PolisAdminContact? = nil) {
         self.identity   = identity

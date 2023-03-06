@@ -2,7 +2,7 @@
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
-// Copyright (c) 2021-2022 Tuparev Technologies and the ASTRO-POLIS project
+// Copyright (c) 2021-2023 Tuparev Technologies and the ASTRO-POLIS project
 // authors.
 // Licensed under MIT License Modern Variant
 //
@@ -28,7 +28,7 @@ public let bigBangPolisDomain = "https://polis.observer"
 
 
 
-//MARK: - POLIS version management
+//MARK: - POLIS version management -
 
 /// `PolisImplementationInfo` combines supported data format, API level, and version in a single struct
 ///
@@ -42,7 +42,7 @@ public let bigBangPolisDomain = "https://polis.observer"
 ///  For complete description Semantic Version see [Semantic Versioning](https://semver.org)
 public struct PolisImplementationInfo: Codable, Equatable {
 
-    //MARK: - Supported POLIS Data formats, (e.g. JSON, XML) and levels of API -
+    //MARK: - Supported POLIS Data formats, (e.g. JSON, XML) and levels of API
 
     /// Defines various POLIS data formats
     ///
@@ -78,6 +78,40 @@ public struct PolisImplementationInfo: Codable, Equatable {
         case dynamicScheduling = "dynamic_scheduling"
     }
 
+    /// Checks if the Device Type is supported by the given Implementation Info
+    public static func isValid(deviceType: PolisDevice.DeviceType, for implementationInfo: PolisImplementationInfo) -> Bool {
+        guard let possibleDevices = PolisImplementationInfo.devicesSupportedByVersion[implementationInfo.version] else  { return false }
+
+        return possibleDevices.contains(deviceType)
+    }
+
+    /// Checks if device hierarchy is supported  by the given Implementation Info
+    public static func canDevice(ofType: PolisDevice.DeviceType, beSubDeviceOfType: PolisDevice.DeviceType, for implementationInfo: PolisImplementationInfo) -> Bool {
+        guard let possibleVersionCombinations = PolisImplementationInfo.subDevicesSupportedByVersion[implementationInfo.version] else { return false }
+        guard let parentDevice                = possibleVersionCombinations[beSubDeviceOfType]                                   else { return false }
+
+        return parentDevice.contains(ofType)
+    }
+
+    /// This is used to select the oldest supported implementation info in order to provide default data whenever needed
+    ///
+    ///  **Note:** The method assumes that the POLIS Service Provider implements at least one ImplementationInfo. Otherwise bad things will happen
+    public static func oldestSupportedImplementationInfo() -> PolisImplementationInfo {
+        var currentImplementationInfo: PolisImplementationInfo?
+
+        for info in frameworkSupportedImplementation {
+            if currentImplementationInfo != nil {
+                if (currentImplementationInfo!.version > info.version) &&
+                    (currentImplementationInfo!.apiSupport > info.apiSupport) &&
+                    ((currentImplementationInfo!.dataFormat == .xml) && (info.dataFormat == .json)) {
+                    currentImplementationInfo = info
+                }
+            }
+            else { currentImplementationInfo = info }
+        }
+
+        return currentImplementationInfo!
+    }
 
     public var dataFormat: DataFormat
     public var apiSupport: APILevel
@@ -89,34 +123,13 @@ public struct PolisImplementationInfo: Codable, Equatable {
         self.version    = version
     }
 
-    //TODO: Need docs
-    public static func isValid(deviceType: PolisDevice.DeviceType, for implementationInfo: PolisImplementationInfo) -> Bool {
-        guard let possibleDevices = PolisImplementationInfo.devicesSupportedByVersion[implementationInfo.version] else  { return false }
-
-        return possibleDevices.contains(deviceType)
-    }
-
-    //TODO: Need docs
-    public static func canDevice(ofType: PolisDevice.DeviceType, beSubDeviceOfType: PolisDevice.DeviceType, for implementationInfo: PolisImplementationInfo) -> Bool {
-        guard let possibleVersionCombinations = PolisImplementationInfo.subDevicesSupportedByVersion[implementationInfo.version] else { return false }
-        guard let parentDevice                = possibleVersionCombinations[beSubDeviceOfType]                                   else { return false }
-
-        return parentDevice.contains(ofType)
-    }
-
     //MARK: - Private definitions -
     private static var devicesSupportedByVersion = [SemanticVersion(with: "0.1-alpha.1") :
-                                                        [PolisDevice.DeviceType.telescope,
+                                                        [PolisDevice.DeviceType.mirror,
+                                                         PolisDevice.DeviceType.enclosure,
                                                         ]
     ]
-
-    private static var subDevicesSupportedByVersion = [SemanticVersion(with: "0.1-alpha.1") :
-                                                        [PolisDevice.DeviceType.telescope :
-                                                            [PolisDevice.DeviceType.telescope,
-                                                            ],
-                                                        ]
-    ]
-
+    private static var subDevicesSupportedByVersion = [SemanticVersion(with: "0.1-alpha.1") : [PolisDevice.DeviceType.mirror : [PolisDevice.DeviceType.mirror],]]
 }
 
 /// A list of supported implementations for this concrete framework.
@@ -133,6 +146,14 @@ public var frameworkSupportedImplementation: [PolisImplementationInfo] =
 
 
 //MARK: - Type extensions -
+extension PolisImplementationInfo.APILevel: Comparable {
+    public static func < (left: PolisImplementationInfo.APILevel, right: PolisImplementationInfo.APILevel) -> Bool {
+        if      (left == .staticData)    && (left != right)               { return true }
+        else if (left == .dynamicStatus) && (right == .dynamicScheduling) { return true }
+
+        return false
+    }
+}
 
 // This extension is needed for supporting a well formatted JSON API
 public extension PolisImplementationInfo {

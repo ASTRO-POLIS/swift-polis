@@ -48,9 +48,6 @@ class PolisObservingTests: XCTestCase {
         data   = try? jsonEncoder.encode(sut)
         string = String(data: data!, encoding: .utf8)
 
-        print("///////////////")
-        print(string!)
-
         XCTAssertNoThrow(try jsonDecoder.decode(PolisEarthObservingSite.self, from: string!.data(using: .utf8)!))
     }
 

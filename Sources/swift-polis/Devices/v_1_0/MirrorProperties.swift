@@ -13,19 +13,23 @@
 //
 //===----------------------------------------------------------------------===//
 
-
 import Foundation
 
+public struct MirrorProperties {
+    public enum MaterialType {
+        case fusedSilica
+    }
 
-/// A String extension that is used only in swift-polis (as far as we know)
-extension String {
-    /// Adds `@` prefix if already does not exist
-    public func mustStartWithAtSign() -> String { self.hasPrefix("@") ? self : "@\(self)" }
-}
+    public var clearAperture: PolisMeasurement  // in "m"
+    public var material: MaterialType?
 
-/// This is for internal use only! Without this the URL returned by the utility functions for some strange reason has no
-/// URL schema!
-func normalisedPath(_ path: String) -> String {
-    if path.hasSuffix("/") { return path }
-    else                   { return "\(path)/" }
+    // Geometry
+    // Rank order - what about siderostats?
+    // Coating
+
+    // Ups, and what about multi-mirror systems?
+    // Thin vs. classical discussion?
+    // Active vs. passive?
+    // Solid vs. liquid?
+    // Do we need concave vs. convex?
 }

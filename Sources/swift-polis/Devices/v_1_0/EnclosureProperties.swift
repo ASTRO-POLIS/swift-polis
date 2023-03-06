@@ -13,19 +13,16 @@
 //
 //===----------------------------------------------------------------------===//
 
-
 import Foundation
 
+public struct EnclosureProperties {
 
-/// A String extension that is used only in swift-polis (as far as we know)
-extension String {
-    /// Adds `@` prefix if already does not exist
-    public func mustStartWithAtSign() -> String { self.hasPrefix("@") ? self : "@\(self)" }
-}
+    public enum EnclosureType {
+        case dome
+        case rollOverRoof
+        case clamshell
+        case platform
+    }
 
-/// This is for internal use only! Without this the URL returned by the utility functions for some strange reason has no
-/// URL schema!
-func normalisedPath(_ path: String) -> String {
-    if path.hasSuffix("/") { return path }
-    else                   { return "\(path)/" }
+    public var type: EnclosureType
 }

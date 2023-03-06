@@ -27,7 +27,6 @@ public protocol PolisLocationClassificationProtocol {
     func isStatic()                           -> Bool
 }
 
-//TODO: Make this stuff Codable and Equitable! Uf what a pain :-(
 //TODO: Make the type a PolisLocationClassificationProtocol
 public enum PolisObservingSiteLocationType: Codable {
 
@@ -152,7 +151,7 @@ public extension PolisObservingSiteLocationType.SurfaceLocationType {
 public extension PolisObservingSiteLocationType.OrbitalType {
     enum CodingKeys: String, CodingKey {
         case keplerian    = "Keplerian"
-        case nonKeplerian = "non Keplerian"
+        case nonKeplerian = "non-Keplerian"
         case transitional
         case chaotic
         case unknown

@@ -108,3 +108,16 @@ public extension PolisTelescopeType {
         case antenna
     }
 }
+
+
+
+// defines the overall type of the telescope, i.e. how the combined devices function together as a system
+// public enum TelescopeType: String, Codable {
+//     case reflector
+//     case refractor
+//     case steerableRadioDish
+//     case staticRadioDish
+//     case telephotoLens
+//     case antenna
+//     case other
+// }

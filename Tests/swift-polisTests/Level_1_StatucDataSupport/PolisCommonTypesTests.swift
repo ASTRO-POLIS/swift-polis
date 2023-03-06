@@ -42,6 +42,17 @@ final class PolisCommonTypesTests: XCTestCase {
     }
 
     //MARK: - Actual tests -
+
+    //TODO: Check creation + Encoding / Decoding
+    //TODO: Check Equitable
+
+    
+    //MARK: Measurements
+
+    //MARK: Images
+
+    //MARK: POLIS Identity related types
+
     func testPolisIdentityCodingSupport() {
         let sut = PolisIdentity(references: ["1234", "6539"],
                                 status: PolisIdentity.LifecycleStatus.active,
@@ -58,6 +69,8 @@ final class PolisCommonTypesTests: XCTestCase {
 
         XCTAssertNoThrow(try jsonDecoder.decode(PolisIdentity.self, from: string!.data(using: .utf8)!))
     }
+
+    //MARK: Communication related types
 
     func testPolisAdminContactCodingSupport() {
         let sut_twitter   = PolisAdminContact.Communication.twitter(username: "@polis")
@@ -94,6 +107,8 @@ final class PolisCommonTypesTests: XCTestCase {
         XCTAssertNoThrow(try jsonDecoder.decode(PolisAdminContact.Communication.self, from: string!.data(using: .utf8)!))
     }
 
+    //MARK: Directions
+
     func testPolisDirectionsCodingSupport() {
         let sut_rough = PolisDirection.rough(direction: .southEast)
         let sut_exact = PolisDirection.exact(degree: 16.63)
@@ -125,6 +140,10 @@ final class PolisCommonTypesTests: XCTestCase {
 
     //MARK: - Housekeeping -
     static var allTests = [
+
+
+
+
         ("testPolisIdentityCodingSupport",     testPolisIdentityCodingSupport),
         ("testPolisAdminContactCodingSupport", testPolisAdminContactCodingSupport),
         ("testPolisDirectionsCodingSupport",   testPolisDirectionsCodingSupport),
