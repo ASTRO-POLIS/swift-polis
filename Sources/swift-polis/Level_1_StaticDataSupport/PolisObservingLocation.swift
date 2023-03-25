@@ -137,6 +137,7 @@ public enum PolisObservingSiteLocationType: Codable {
     case solarSystemBodyOrbital(type: OrbitalType)
 }
 
+
 //MARK: - Making types Codable and CustomStringConvertible -
 // These extensions do not need any additional documentation.
 
