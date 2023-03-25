@@ -87,6 +87,7 @@ public enum PolisObservingSiteLocationType: Codable {
         public let eastLongitude: PolisMeasurement? // degrees
         public let latitude: PolisMeasurement?      // degrees
         public let altitude: PolisMeasurement?      // m
+        public var timeZoneIdentifier: String?      // .. as defined with `TimeZone.knownTimeZoneIdentifiers`
         public var continent: EarthContinent?
         public let place: String?                   // e.g. Mount Wilson
         public let regionOrState: String?           // e.g. California
@@ -183,17 +184,18 @@ public extension PolisObservingSiteLocationType.SolarSystemBodyType {
 
 public extension PolisObservingSiteLocationType.EarthBasedLocation {
     enum CodingKeys: String, CodingKey {
-        case eastLongitude     = "east_longitude"
+        case eastLongitude      = "east_longitude"
         case latitude
         case altitude
+        case timeZoneIdentifier = "time_zone_dentifier"
         case continent
         case place
-        case regionOrState     = "region_or_state"
-        case regionOrStateCode = "region_or_state_code"
-        case zipCode           = "zip_code"
+        case regionOrState      = "region_or_state"
+        case regionOrStateCode  = "region_or_state_code"
+        case zipCode            = "zip_code"
         case country
-        case countryCode       = "country_code"
-        case surfaceSize       = "surface_size"
+        case countryCode        = "country_code"
+        case surfaceSize        = "surface_size"
     }
 }
 
