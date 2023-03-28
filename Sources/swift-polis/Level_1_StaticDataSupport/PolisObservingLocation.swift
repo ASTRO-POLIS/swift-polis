@@ -188,7 +188,7 @@ public extension PolisObservingSiteLocationType.EarthBasedLocation {
         case eastLongitude      = "east_longitude"
         case latitude
         case altitude
-        case timeZoneIdentifier = "time_zone_dentifier"
+        case timeZoneIdentifier = "time_zone_identifier"
         case continent
         case place
         case regionOrState      = "region_or_state"
