@@ -446,7 +446,7 @@ public enum PolisDirection: Codable {
 ///    Mo-Fr: 16:00-18:00h or
 ///    June - September
 public struct PolisActivityPeriods: Codable {
-    var notes: String?
+    public var notes: String?
 
     public init(notes: String?) {
         self.notes = notes
