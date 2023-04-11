@@ -23,14 +23,28 @@ import Foundation
 
 public struct PolisTelescope: Codable {
 
+    // Defines how the telescope works together with it's instruments as a combined system
+    public enum PolisTelescopeType: String, Codable {
+        case reflector
+        case refractor
+        case steerableRadioDish
+        case staticRadioDish
+        case telephotoLens
+        case cherenkov
+        case other
+    }
+    
     // item information as defined by POLIS Item
     public var item: PolisItem
     
     // The International Astronomical Union (IAU) Minor Planet Centre (MPC) code
     public var observatoryCode: String?
     
+    // the type of the telescope, i.e. how the telescope functions in a general sense
+    public var telescopeType: PolisTelescopeType?
+    
     // root devices of the hierarchy belonging to the telescope
-    public var deviceIDs: Set<UUID>
+    public var deviceIDs: Set<UUID>?
     
     // any POLIS configurations associated with the telescope
     public var configurationIDs: Set<UUID>?
@@ -47,4 +61,18 @@ public struct PolisTelescope: Codable {
     // indication of if the telescope is capable of Interferometry or Very Long Baseline Interferometry (VLBI)
     public var interferometerCapabilities: Bool?
  
+}
+
+//MARK: - Making types Codable and CustomStringConvertible -
+
+public extension PolisTelescope.PolisTelescopeType {
+    enum CodingKeys: String, CodingKey {
+        case reflector           = "reflector"
+        case refractor           = "refractor"
+        case steerableRadioDish  = "steerable_radio_dish"
+        case staticRadioDish     = "static_radio_dish"
+        case telephotoLens       = "telephoto_lens"
+        case cherenkov           = "cherenkov"
+        case other               = "other"
+    }
 }
