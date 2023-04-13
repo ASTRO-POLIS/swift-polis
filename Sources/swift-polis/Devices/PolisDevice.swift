@@ -99,6 +99,9 @@ public struct PolisDevice: Codable, Identifiable {
     public var subDevices: Set<UUID>
 
     public var id: UUID { item.identity.id }
+    
+    // POLIS configurations associated with the device
+    public var configurationIDs: Set<UUID>?
 
     public init(item: PolisItem,
                 type: DeviceType,
