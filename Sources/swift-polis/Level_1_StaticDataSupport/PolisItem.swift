@@ -24,6 +24,7 @@ import Foundation
 public struct PolisItem: Codable, Identifiable {
     public var identity: PolisIdentity
     public var manufacturer: PolisManufacturer?
+    public var manufacturerRefID: UUID?
     public var owners: [PolisItemOwner]?
 
 
@@ -33,12 +34,14 @@ public struct PolisItem: Codable, Identifiable {
 
     public init(identity: PolisIdentity,
                 manufacturer: PolisManufacturer?   = nil,
+                manufacturerRefID: UUID?           = nil,
                 owners: [PolisItemOwner]?          = nil,
                 imageSources: [PolisImageSource]?  = nil ) {
-        self.identity     = identity
-        self.manufacturer = manufacturer
-        self.owners       = owners
-        self.imageSources = imageSources
+        self.identity          = identity
+        self.manufacturer      = manufacturer
+        self.manufacturerRefID = manufacturerRefID
+        self.owners            = owners
+        self.imageSources      = imageSources
     }
 }
 
@@ -48,7 +51,8 @@ public extension PolisItem {
     enum CodingKeys: String, CodingKey {
         case identity
         case manufacturer
+        case manufacturerRefID = "manufacturer_ref_id"
         case owners
-        case imageSources = "image_sources"
+        case imageSources      = "image_sources"
     }
 }

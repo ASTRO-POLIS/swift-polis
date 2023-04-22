@@ -33,7 +33,7 @@ public struct PolisManufacturer: Codable, Identifiable {
     
     public var id: UUID { identity.id }
 
-    public var uniqueName: String     // e.g. asa, meade, ... used for statically grouping reusable resources
+    public var uniqueName: String     // e.g. ASA, Meade, ... used for statically grouping reusable resources
 
     /// The fully qualified URL of the service provider, e.g. https://www.celestron.com
     public var url: URL?
