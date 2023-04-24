@@ -58,6 +58,9 @@ public struct PolisTelescope: Codable {
     // networks that the telescope belongs to (VLBI or otherwise)
     public var networks: [String]?
     
+    // The fully URL of the telescope, e.g. https://subarutelescope.org/en/
+    public var url: URL?
+    
     // indication of if the telescope is capable of Interferometry or Very Long Baseline Interferometry (VLBI)
     public var interferometerCapabilities: Bool?
  

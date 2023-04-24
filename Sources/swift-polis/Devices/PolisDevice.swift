@@ -89,6 +89,7 @@ public struct PolisDevice: Codable, Identifiable {
     public var modeOfOperation: ModeOfOperation
     public var deviceSpecificPropertiesID: UUID
     public var additionalPropertiesID: UUID?
+    public var url: URL?
 
     /// Device administrator's suggested sub-devices
     ///
