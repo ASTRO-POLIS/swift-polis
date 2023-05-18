@@ -8,6 +8,7 @@ source code and / or ideas to ASTRO-POLIS project.
 
 - Tuparev Technologies (all contributors with '@tuparev.com')
 - Frederic Hessman
+- Tomi Engel
 
 ## Contributors
 
@@ -18,3 +19,4 @@ source code and / or ideas to ASTRO-POLIS project.
 - Hunter Wiliam Holland <hunterholland@tuparev.com>
 - Philip Tuparev <patupar@tuparev.com>
 - Thomas Jackson <tmjackson@tuparev.com>
+- Tomi Engel <tomi@objectfarm.org>
