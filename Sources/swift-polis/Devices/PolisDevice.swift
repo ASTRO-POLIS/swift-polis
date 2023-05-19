@@ -71,22 +71,9 @@ public struct PolisDevice: Codable, Identifiable {
     }
 
 
-    //MARK: - POLIS mode of operation
-    
-    public enum ModeOfOperation: String, Codable {
-        case manual
-        case manualWithAutomatedDetector
-        case manualWithAutomatedDetectorAndScheduling
-        case autonomous
-        case remote
-        case mixed                                       // e.g. in case of Network
-        case other
-        case unknown
-    }
 
     public var item: PolisItem
     public var type: DeviceType
-    public var modeOfOperation: ModeOfOperation
     public var deviceSpecificPropertiesID: UUID
     public var additionalPropertiesID: UUID?
     public var url: URL?
@@ -106,14 +93,12 @@ public struct PolisDevice: Codable, Identifiable {
 
     public init(item: PolisItem,
                 type: DeviceType,
-                modeOfOperation: ModeOfOperation  = .unknown,
                 deviceSpecificPropertiesID: UUID,
                 additionalPropertiesID: UUID?     = nil,
                 suggestedSubDeviceIDs: Set<UUID>  = Set<UUID>(),
                 subDevices: Set<UUID>             = Set<UUID>()) {
         self.item                       = item
         self.type                       = type
-        self.modeOfOperation            = modeOfOperation
         self.deviceSpecificPropertiesID = deviceSpecificPropertiesID
         self.additionalPropertiesID     = additionalPropertiesID
         self.suggestedSubDeviceIDs      = suggestedSubDeviceIDs
@@ -125,23 +110,10 @@ public struct PolisDevice: Codable, Identifiable {
 
 //MARK: - Type extensions -
 
-public extension PolisDevice.ModeOfOperation {
-    enum CodingKeys: String, CodingKey {
-        case manual
-        case manualWithAutomatedDetector              = "manual_with_automated_detector"
-        case manualWithAutomatedDetectorAndScheduling = "manual_with_automated_detector_and_scheduling"
-        case autonomous
-        case mixed
-        case other
-        case unknown
-    }
-}
-
 public extension PolisDevice {
     enum CodingKeys: String, CodingKey {
         case item
         case type
-        case modeOfOperation       = "mode_of_operation"
         case deviceSpecificPropertiesID          = "properties_id"
         case additionalPropertiesID
         case suggestedSubDeviceIDs = "suggested_sub_device_ids"
