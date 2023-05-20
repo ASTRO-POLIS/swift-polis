@@ -37,7 +37,7 @@ public struct PolisItem: Codable, Identifiable {
     }
 
     public var identity: PolisIdentity
-    public var modeOfOperation: ModeOfOperation
+    public var modeOfOperation: ModeOfOperation?
     public var manufacturer: PolisManufacturer?
     public var manufacturerRefID: UUID?
     public var owners: [PolisItemOwner]?
