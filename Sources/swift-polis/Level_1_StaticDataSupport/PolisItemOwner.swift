@@ -47,14 +47,16 @@ public struct PolisItemOwner: Codable, Identifiable {
 
     public let identity: PolisIdentity
     public let type: OwnershipType
+    public var contact: PolisAdminContact?
     public let shortName: String?   // e.g. MIT. MONET, BAO, ...
 
     public var id: UUID { identity.id }
 
-    public init(identity: PolisIdentity, type: OwnershipType, shortName: String?) {
+    public init(identity: PolisIdentity, type: OwnershipType, shortName: String?, contact: PolisAdminContact? = nil) {
         self.identity  = identity
         self.type      = type
         self.shortName = shortName
+        self.contact   = contact
     }
 }
 
@@ -65,5 +67,6 @@ public extension PolisItemOwner {
         case identity
         case type
         case shortName = "short_name"
+        case contact
     }
 }

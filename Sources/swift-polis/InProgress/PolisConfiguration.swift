@@ -121,6 +121,7 @@ public extension PolisConfiguration.ObservationResultType {
         case photoPolarimetry           = "photo_polarimetry"
         case spectroPolarimetry         = "spectro_polarimetry"
         case photographicPlate          = "photographic_plate"
+        case radiometry                 = "radiometry"
     }
 }
 

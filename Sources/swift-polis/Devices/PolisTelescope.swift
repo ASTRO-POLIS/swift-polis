@@ -31,6 +31,7 @@ public struct PolisTelescope: Codable {
         case staticRadioDish
         case telephotoLens
         case cherenkov
+        case radioAntenna
         case other
     }
     
@@ -76,6 +77,7 @@ public extension PolisTelescope.PolisTelescopeType {
         case staticRadioDish     = "static_radio_dish"
         case telephotoLens       = "telephoto_lens"
         case cherenkov           = "cherenkov"
+        case radioAntenna        = "radio_antenna"
         case other               = "other"
     }
 }
