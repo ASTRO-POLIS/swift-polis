@@ -25,7 +25,7 @@ public enum PolisObservingType: String, Codable {
 }
 
 public protocol PolisObserving: Codable, Identifiable {
-    var type: PolisObservingType                       { get }
+    var type: PolisObservingType                       { get set }
     var item: PolisItem                                { get set }
     var implementationInfo: [PolisImplementationInfo]? { get set }
     var parentObservingSiteID: UUID?                   { get set }

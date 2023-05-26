@@ -23,8 +23,8 @@ import Foundation
 
 public struct PolisTelescope: Codable {
 
-    // Defines how the telescope works together with it's instruments as a combined system
-    public enum PolisTelescopeType: String, Codable {
+    /// Defines how the telescope works together with it's instruments as a combined system
+    public enum `Type`: String, Codable {
         case reflector
         case refractor
         case steerableRadioDish
@@ -34,42 +34,66 @@ public struct PolisTelescope: Codable {
         case radioAntenna
         case other
     }
+
+    /// Documentation is needed
+    public enum ObservingGrade: String, Codable {
+        case amateur
+        case professional
+        case other
+    }
+
+    /// Documentation is needed
+    public enum CollaborationCapability: String, Codable {
+        case interferometer
+        case vlbi
+    }
     
-    // item information as defined by POLIS Item
+    /// Item information as defined by `PolisItem`
     public var item: PolisItem
     
-    // The International Astronomical Union (IAU) Minor Planet Centre (MPC) code
+    /// The International Astronomical Union (IAU) Minor Planet Centre (MPC) code
     public var observatoryCode: String?
     
-    // the type of the telescope, i.e. how the telescope functions in a general sense
-    public var telescopeType: PolisTelescopeType?
-    
-    // root devices of the hierarchy belonging to the telescope
+    /// The type of the telescope, i.e. how the telescope functions in a general sense
+    public var type: `Type`
+
+    /// Is the telescope mostly professional or used for amateur observations
+    public var observingGrade: ObservingGrade?
+
+    /// Root devices of the hierarchy belonging to the telescope
     public var deviceIDs: Set<UUID>?
     
-    // any POLIS configurations associated with the telescope
+    /// `PolisConfiguration`s associated with the telescope
     public var configurationIDs: Set<UUID>?
     
-    // the parent device of the telescope (if applicable)
-    public var parentDevice: UUID?
-    
-    // the parent observatory of the telescope (if applicable)
-    public var parentObservatory: UUID?
-    
-    // networks that the telescope belongs to (VLBI or otherwise)
-    public var networks: [String]?
-    
-    // The fully URL of the telescope, e.g. https://subarutelescope.org/en/
+    /// The URL of the telescope, e.g. https://subarutelescope.org/en/
     public var url: URL?
     
-    // indication of if the telescope is capable of Interferometry or Very Long Baseline Interferometry (VLBI)
-    public var interferometerCapabilities: Bool?
- 
+    /// Indication of if the telescope is capable of Interferometry or Very Long Baseline Interferometry (VLBI)
+    public var collaborationCapabilities: [CollaborationCapability]?
+
+    public init(item: PolisItem,
+                observatoryCode: String?                               = nil,
+                type: `Type`,
+                observingGrade: ObservingGrade?                        = nil,
+                deviceIDs: Set<UUID>?                                  = nil,
+                configurationIDs: Set<UUID>?                           = nil,
+                url: URL?                                              = nil,
+                collaborationCapabilities: [CollaborationCapability]?  = nil) {
+        self.item                      = item
+        self.observatoryCode           = observatoryCode
+        self.type                      = type
+        self.observingGrade            = observingGrade
+        self.deviceIDs                 = deviceIDs
+        self.configurationIDs          = configurationIDs
+        self.url                       = url
+        self.collaborationCapabilities = collaborationCapabilities
+    }
 }
 
 //MARK: - Making types Codable and CustomStringConvertible -
 
-public extension PolisTelescope.PolisTelescopeType {
+public extension PolisTelescope.`Type` {
     enum CodingKeys: String, CodingKey {
         case reflector           = "reflector"
         case refractor           = "refractor"
@@ -79,5 +103,18 @@ public extension PolisTelescope.PolisTelescopeType {
         case cherenkov           = "cherenkov"
         case radioAntenna        = "radio_antenna"
         case other               = "other"
+    }
+}
+
+public extension PolisTelescope {
+    enum CodingKeys: String, CodingKey {
+        case item
+        case observatoryCode           = "observatory_code"
+        case type
+        case observingGrade            = "observing_grade"
+        case deviceIDs                 = "device_ids"
+        case configurationIDs          = "configuration_ids"
+        case url
+        case collaborationCapabilities = "collaboration_capabilities"
     }
 }
