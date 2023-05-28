@@ -363,7 +363,7 @@ public struct PolisAdminContact: Identifiable {
     public var phone: String?
 
     /// An array of additional communication channels for contacting the admin, if applicable.
-    public var additionalCommunicationChannels: [Communication]
+    public var additionalCommunicationChannels: [Communication]?
 
     /// Miscellaneous information that doesn't fit in any other property.
     ///
@@ -375,12 +375,12 @@ public struct PolisAdminContact: Identifiable {
     ///
     /// Only the `email` is a required parameter. It must contain well formatted email addresses. If the email is not a
     /// valid one, `nil` will be returned.
-    public init?(id:                              UUID            = UUID(),
+    public init?(id:                              UUID             = UUID(),
                  name:                            String?,
                  email:                           String,
-                 phone:                           String?         = nil,
-                 additionalCommunicationChannels: [Communication] = [Communication](),
-                 notes:                           String?         = nil) {
+                 phone:                           String?          = nil,
+                 additionalCommunicationChannels: [Communication]? = nil,
+                 notes:                           String?          = nil) {
         guard email.isValidEmailAddress() else { return nil }
 
         self.id                              = id

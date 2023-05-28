@@ -83,8 +83,8 @@ public struct PolisDevice: Codable, Identifiable {
     /// It is the responsibility of the client software to decide to load or reject these sub-devices. ``PolisImplementationInfo`` implements methods to
     /// support the client software to make the loading decision, but the POLIS standard just recommends a device hierarchy without strictly requiring it. There are
     /// legit cases when the suggested hierarchy does not fit complexity of astronomical observing stations.
-    public var suggestedSubDeviceIDs: Set<UUID>
-    public var subDevices: Set<UUID>
+    public var suggestedSubDeviceIDs: Set<UUID>?
+    public var subDevices: Set<UUID>?
 
     public var id: UUID { item.identity.id }
     
@@ -95,8 +95,8 @@ public struct PolisDevice: Codable, Identifiable {
                 type: DeviceType,
                 deviceSpecificPropertiesID: UUID,
                 additionalPropertiesID: UUID?     = nil,
-                suggestedSubDeviceIDs: Set<UUID>  = Set<UUID>(),
-                subDevices: Set<UUID>             = Set<UUID>()) {
+                suggestedSubDeviceIDs: Set<UUID>? = nil,
+                subDevices: Set<UUID>?            = nil) {
         self.item                       = item
         self.type                       = type
         self.deviceSpecificPropertiesID = deviceSpecificPropertiesID
@@ -104,7 +104,6 @@ public struct PolisDevice: Codable, Identifiable {
         self.suggestedSubDeviceIDs      = suggestedSubDeviceIDs
         self.subDevices                 = subDevices
     }
-
 }
 
 

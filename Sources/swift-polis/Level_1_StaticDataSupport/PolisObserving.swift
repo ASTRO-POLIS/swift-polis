@@ -39,6 +39,7 @@ public protocol PolisObserving: Codable, Identifiable {
     var admins: [PolisAdminContact]?                   { get set }
     var website: URL?                                  { get set }
     var scientificObjectives: String?                  { get set }
+    var history: String?                               { get set }
 
     func suggestedSubDeviceIDs() -> Set<UUID>
 }
@@ -58,6 +59,7 @@ public struct PolisEarthObservingSite: PolisObserving {
     public var admins: [PolisAdminContact]?
     public var website: URL?
     public var scientificObjectives: String?
+    public var history: String?
 
     public var workingHours: PolisActivityPeriods?
     public var openingHours: PolisActivityPeriods?
@@ -68,7 +70,6 @@ public struct PolisEarthObservingSite: PolisObserving {
     public var averageSkyQuality: PolisMeasurement?       // [magnitude]
 
     public var traditionalLandOwners: String?
-    public var history: String?
 
     public var id: UUID { item.identity.id }
 
@@ -92,6 +93,7 @@ public struct PolisEarthObservingSite: PolisObserving {
                 admins: [PolisAdminContact]?                           = nil,
                 website: URL?                                          = nil,
                 scientificObjectives: String?                          = nil,
+                history: String?                                       = nil,
                 workingHours: PolisActivityPeriods?                    = nil,
                 openingHours: PolisActivityPeriods?                    = nil,
                 accessRestrictions: String?                            = nil,
@@ -99,7 +101,6 @@ public struct PolisEarthObservingSite: PolisObserving {
                 averageSeeingConditions: PolisMeasurement?             = nil,
                 averageSkyQuality: PolisMeasurement?                   = nil,
                 traditionalLandOwners: String?                         = nil,
-                history: String?                                       = nil,
                 dominantWindDirection: PolisDirection.RoughDirection?  = nil) {
         self.type                      = type
         self.item                      = item
@@ -115,6 +116,7 @@ public struct PolisEarthObservingSite: PolisObserving {
         self.admins                    = admins
         self.website                   = website
         self.scientificObjectives      = scientificObjectives
+        self.history                   = history
         self.workingHours              = workingHours
         self.openingHours              = openingHours
         self.accessRestrictions        = accessRestrictions
@@ -122,7 +124,6 @@ public struct PolisEarthObservingSite: PolisObserving {
         self.averageSeeingConditions   = averageSeeingConditions
         self.averageSkyQuality         = averageSkyQuality
         self.traditionalLandOwners     = traditionalLandOwners
-        self.history                   = history
     }
 
     public func suggestedSubDeviceIDs() -> Set<UUID> { Set<UUID>() }
@@ -160,6 +161,7 @@ public extension PolisEarthObservingSite {
         case admins
         case website
         case scientificObjectives       = "scientific_objectives"
+        case history
         case workingHours               = "working_hours"
         case openingHours               = "opening_hours"
         case accessRestrictions         = "access_restrictions"
@@ -167,7 +169,6 @@ public extension PolisEarthObservingSite {
         case averageSeeingConditions    = "average_seeing_conditions"
         case averageSkyQuality          = "average_sky_quality"
         case traditionalLandOwners      = "traditional_land_owners"
-        case history
         case dominantWindDirection      = "dominant_wind_direction"
     }
 }

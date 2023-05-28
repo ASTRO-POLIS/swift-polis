@@ -79,7 +79,14 @@ public struct PolisConfiguration: Codable {
         case millimetre
         case radio
     }
-    
+
+    public enum Status: String, Codable {
+        case active
+        case inactive
+        case scheduled
+        case unknown
+    }
+
     // Identity information incl. uuid, reference etc.
     public var identity: PolisIdentity
     
@@ -98,11 +105,8 @@ public struct PolisConfiguration: Codable {
     // uuid link to the dependent properties on the configuration
     public var configurationSpecificPropertiesID: UUID
     
-    // indication of if the configuration is the default configuration or not
-    public var isDefault = true
-    
     // indiction of if the configuration is currently active
-    public var isActive  = true
+    public var status: Status = .unknown
 }
 
 //MARK: - Making types Codable and CustomStringConvertible -
@@ -133,7 +137,7 @@ public extension PolisConfiguration.ElectromagneticCoverage {
         case optical          = "optical"
         case infrared         = "infrared"
         case submillimeter    = "submillimeter"
-        case millimeter       = "millimeter"
+        case millimetre       = "millimetre"
         case radio            = "radio"
     }
 }
@@ -153,7 +157,6 @@ public extension PolisConfiguration {
         case observationResultType               = "observation_result_type"
         case deviceIDs                           = "device_ids"
         case configurationSpecificPropertiesID   = "configuration_ids"
-        case isDefault                           = "is_default"
-        case isActive
+        case status
     }
 }
