@@ -193,8 +193,8 @@ public struct PolisObservingSiteDirectory: Codable {
         public var id: UUID { identity.id }
 
         public init(identity: PolisIdentity, type: PolisObservingType, parentObservingSiteID: UUID? = nil) {
-            self.identity = identity
-            self.type     = type
+            self.identity              = identity
+            self.type                  = type
             self.parentObservingSiteID = parentObservingSiteID
         }
     }
