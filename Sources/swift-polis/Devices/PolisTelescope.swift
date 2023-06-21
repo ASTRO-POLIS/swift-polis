@@ -46,6 +46,8 @@ public struct PolisTelescope: Codable {
     public enum CollaborationCapability: String, Codable {
         case interferometer
         case vlbi
+        case оpenForObservationRequests
+        case none                       // default
     }
     
     /// Item information as defined by `PolisItem`
@@ -103,6 +105,15 @@ public extension PolisTelescope.`Type` {
         case cherenkov           = "cherenkov"
         case radioAntenna        = "radio_antenna"
         case other               = "other"
+    }
+}
+
+public extension PolisTelescope.CollaborationCapability {
+    enum CodingKeys: String, CodingKey {
+        case interferometer
+        case vlbi
+        case оpenForObservationRequests = "оpen_for_observation_requests"
+        case none
     }
 }
 
