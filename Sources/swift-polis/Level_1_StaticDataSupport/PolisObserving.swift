@@ -40,6 +40,8 @@ public protocol PolisObserving: Codable, Identifiable {
     var website: URL?                                  { get set }
     var scientificObjectives: String?                  { get set }
     var history: String?                               { get set }
+    var polisRegistrationDate: Date?                   { get set } // Used to show new observing sites
+    var polisDisconnectionDate: Date?                  { get set } // Helps to hide deleted sites
 
     func suggestedSubDeviceIDs() -> Set<UUID>
 }
@@ -60,6 +62,8 @@ public struct PolisEarthObservingSite: PolisObserving {
     public var website: URL?
     public var scientificObjectives: String?
     public var history: String?
+    public var polisRegistrationDate: Date?
+    public var polisDisconnectionDate: Date?
 
     public var workingHours: PolisActivityPeriods?
     public var openingHours: PolisActivityPeriods?
@@ -94,6 +98,8 @@ public struct PolisEarthObservingSite: PolisObserving {
                 website: URL?                                          = nil,
                 scientificObjectives: String?                          = nil,
                 history: String?                                       = nil,
+                polisRegistrationDate: Date?                           = nil,
+                polisDisconnectionDate: Date?                          = nil,
                 workingHours: PolisActivityPeriods?                    = nil,
                 openingHours: PolisActivityPeriods?                    = nil,
                 accessRestrictions: String?                            = nil,
@@ -117,6 +123,8 @@ public struct PolisEarthObservingSite: PolisObserving {
         self.website                   = website
         self.scientificObjectives      = scientificObjectives
         self.history                   = history
+        self.polisRegistrationDate     = polisRegistrationDate
+        self.polisDisconnectionDate    = polisDisconnectionDate
         self.workingHours              = workingHours
         self.openingHours              = openingHours
         self.accessRestrictions        = accessRestrictions
@@ -126,7 +134,7 @@ public struct PolisEarthObservingSite: PolisObserving {
         self.traditionalLandOwners     = traditionalLandOwners
     }
 
-    public func suggestedSubDeviceIDs() -> Set<UUID> { Set<UUID>() }
+    public func suggestedSubDeviceIDs() -> Set<UUID> { Set<UUID>() } //TODO: Implement me!
 
 }
 
@@ -160,8 +168,10 @@ public extension PolisEarthObservingSite {
         case endDate                    = "end_date"
         case admins
         case website
-        case scientificObjectives       = "scientific_objectives"
         case history
+        case polisRegistrationDate      = "polis_registration_date"
+        case polisDisconnectionDate     = "polis_disconnection_date"
+        case scientificObjectives       = "scientific_objectives"
         case workingHours               = "working_hours"
         case openingHours               = "opening_hours"
         case accessRestrictions         = "access_restrictions"
