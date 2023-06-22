@@ -43,6 +43,8 @@ public protocol PolisObserving: Codable, Identifiable {
     var polisRegistrationDate: Date?                   { get set } // Used to show new observing sites
     var polisDisconnectionDate: Date?                  { get set } // Helps to hide deleted sites
 
+    // Explanation: the version of POLIS or the ServiceProvider implementation might not support all device types. and therefore suggestedSubDeviceIDs
+    // might be a subset of deviceIDs.
     func suggestedSubDeviceIDs() -> Set<UUID>
 }
 
