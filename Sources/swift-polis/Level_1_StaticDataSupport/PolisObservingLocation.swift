@@ -122,6 +122,11 @@ public enum PolisObservingSiteLocationType: Codable {
         }
     }
 
+    //TODO:
+    // - Orbital location
+    // - Lander location
+    // - Airborne location
+
     /// Anything but the Earth
     public struct GravitationalObjectBasedLocation: Codable {
         public let solarSystemBody: SolarSystemBodyType

@@ -78,14 +78,6 @@ public struct PolisDevice: Codable, Identifiable {
         case receiver          = "Receiver"
         case detector          = "Detector"
         case sensor            = "Sensor"
-
-        // These are types of observing sites?
-        case satellitePlatform = "SatellitePlatform"
-        case rover             = "Rover"
-        case lander            = "Lander"
-        case balloon           = "Balloon"
-        case spaceStation      = "SpaceStation"
-        case plane             = "Plane"
     }
 
 

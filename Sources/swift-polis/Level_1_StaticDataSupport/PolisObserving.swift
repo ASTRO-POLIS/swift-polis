@@ -140,6 +140,13 @@ public struct PolisEarthObservingSite: PolisObserving {
 
 }
 
+//TODO: - For version 1 we need also to implement:
+// - satellite platform 
+// - lander
+// - Do we need ISS and other stations? Are there observing sites?
+// - rover - is it also not a mobile lander?
+// - ballon - could be around Venus too
+// - airplane
 
 //MARK: - Type extensions -
 

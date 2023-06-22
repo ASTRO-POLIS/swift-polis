@@ -30,7 +30,10 @@ import Foundation
 
 public struct PolisConfiguration: Codable {
     
+    // What type - imaging, redo ...
+    // When
     
+
     public enum ConfigurationType: String, Codable {
         
         // Configuration is for an array of connected telescopes
