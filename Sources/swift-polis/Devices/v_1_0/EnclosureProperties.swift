@@ -15,14 +15,25 @@
 
 import Foundation
 
+// TODO: Make everything codable!
 public struct EnclosureProperties {
 
     public enum EnclosureType {
-        case dome
-        case rollOverRoof
-        case clamshell
-        case platform
+        case dome(diameter: PolisMeasurement?, slitSize: PolisMeasurement?)
+        case rollOverRoof(length: PolisMeasurement?, width: PolisMeasurement?, hight: PolisMeasurement?)
+        case clamshell(diameter: PolisMeasurement, door1: PolisDirection, door2: PolisDirection)
+        case platform   // Open, no roof
+    }
+
+    public enum Status {
+        case closed
+        case opening
+        case open
+        case closing
+        case partiallyOpened(doorNumber: Int?)
     }
 
     public var type: EnclosureType
+    public var status: Status?
+
 }

@@ -15,17 +15,25 @@
 
 import Foundation
 
+// TODO: Make everything codable!
+
 public struct MirrorProperties {
     public enum MaterialType {
         case fusedSilica
     }
 
+    public enum Coating: String, Codable {
+        case silver
+        case aluminium
+        case other
+    }
+
     public var clearAperture: PolisMeasurement  // in "m"
     public var material: MaterialType?
+    public var coating: Coating
 
     // Geometry
     // Rank order - what about siderostats?
-    // Coating
 
     // Ups, and what about multi-mirror systems?
     // Thin vs. classical discussion?
