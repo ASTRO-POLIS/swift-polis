@@ -25,62 +25,36 @@ public struct PolisDevice: Codable, Identifiable {
     public enum DeviceType: String, Codable {
 
         //MARK: POLIS v.1.0.
-        case antennaFrame      = "antenna_frame"      // And what about just an antenna?
+        case adaptiveOpticsSystem = "adaptive_optics_system"
+        case antenna
         case autoguider                               // RTML
-        case battery
-        case beamSplitter      = "beam_splitter"
+        case beamSplitter         = "beam_splitter"
         case bolometer
         case camera                                   // RTML
         case derotator
-        case dimm                                     // RTML - What is this?
-        case etalon                                   // RTML
+        case dimm                                     // RTML
         case enclosure
-        case eyePiece          = "eye_piece"
-        case filterWheel       = "filter_wheel"       // RTML
+        case eyePiece             = "eye_piece"
+        case filterWheel          = "filter_wheel"    // RTML
         case filter                                   // RTML
-        case grating                                  // RTML - What is this?
-        case grism                                    // RTML
-        case halfWavePlate     = "half_wave_plate"    // RTML - What is this?
-        case interferometer                           // RTML - Do we need this? Compatibility?
+        case wavePlate            = "wave_plate"      // RTML
         case laser
         case lens                                     // RTML
-        case mask                                     // RTML
         case mirror                                   // RTML
         case mount
-        case optics                                   // RTML - Do we need this? Compatibility?
         case ota
         case other                                    // RTML - no device specific properties
-        case prism                                    // RTML
-        case photometer                               // RTML
-        case photographicPlate = "photographic_plate"
         case photomultiplier
         case polarimeter                              // RTML
-        case quarterWavePlate  = "quarter_wave_plate" // RTML - Do we need this?
-        case screen
+        case radioReceiver        = "radio_receiver"
+        case screen                                   // No device specific properties
         case shutter                                  // RTML
-        case skyMonitor        = "sky_monitor"        // RTML
-        case slit                                     // RTML
-        case solarPanel        = "solar_panel"
+        case skyMonitor           = "sky_monitor"     // RTML
         case spectrograph                             // RTML
-        case spectropolarimeter                       // RTML
-        case ups
-        case wavefrontSensor   = "wavefront_sensor"
-        case webCamera         = "web_camera"         // RTML
-        case weatherStation    = "weather_station"    // RTML
-
-
-
-
-        // Suggested device types for future versions of the standard or questions
-
-        case aoSystem          = "AOSystem"    // What is this?
-        case generator         = "Generator"   // Huh?
-        case receiver          = "Receiver"
-        case detector          = "Detector"
-        case sensor            = "Sensor"
+        case upsSystem            = "ups_system"
+        case webCamera            = "web_camera"      // RTML
+        case weatherStation       = "weather_station" // RTML
     }
-
-
 
     public var item: PolisItem
     public var type: DeviceType

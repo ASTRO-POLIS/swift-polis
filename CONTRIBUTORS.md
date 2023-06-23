@@ -1,13 +1,14 @@
-# Contributors to the ASTRO-POLIS project
+# Contributors to the SWIFT-POLIS project
 
 For the purpose of tracking copyright, this is the list of individuals and organisations who have contributed 
-source code and / or ideas to ASTRO-POLIS project.
+source code and / or ideas to SWIFT-POLIS project.
 
 
 ## COPYRIGHT HOLDERS
 
 - Tuparev Technologies (all contributors with '@tuparev.com')
 - Frederic Hessman
+- Stefan Kreutter
 - Tomi Engel
 
 ## Contributors
@@ -18,5 +19,6 @@ source code and / or ideas to ASTRO-POLIS project.
 - Hasmik Mirzakhanyan <h.mirzakhanyan@tuparev.com>
 - Hunter Wiliam Holland <hunterholland@tuparev.com>
 - Philip Tuparev <patupar@tuparev.com>
+- Stefan Kreutter <sklists@objectfarm.org>
 - Thomas Jackson <tmjackson@tuparev.com>
 - Tomi Engel <tomi@objectfarm.org>

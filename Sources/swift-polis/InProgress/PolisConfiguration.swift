@@ -129,12 +129,12 @@ public struct PolisConfiguration: Codable {
 public extension PolisConfiguration {
     enum CodingKeys: String, CodingKey {
         case identity
-        case configurationType                   = "configuration_type"
-        case observationResultType               = "observation_result_type"
-        case emCoverage                          = "em_coverage"
-        case deviceIDs                           = "device_ids"
-        case configurationSpecificPropertiesID   = "configuration_ids"
-        case availabilityStartTime               = "availability_start_time"
-        case availabilityEndTime                 = "availability_end_time"
+        case configurationType                 = "configuration_type"
+        case observationResultType             = "observation_result_type"
+        case emCoverage                        = "em_coverage"
+        case deviceIDs                         = "device_ids"
+        case configurationSpecificPropertiesID = "configuration_ids"
+        case availabilityStartTime             = "availability_start_time"
+        case availabilityEndTime               = "availability_end_time"
     }
 }
