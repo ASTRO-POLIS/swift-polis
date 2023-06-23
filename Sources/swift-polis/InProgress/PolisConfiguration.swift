@@ -29,10 +29,6 @@ import Foundation
 ///
 
 public struct PolisConfiguration: Codable {
-    
-    // What type - imaging, redo ...
-    // When
-    
 
     public enum ConfigurationType: String, Codable {
         
@@ -51,44 +47,39 @@ public struct PolisConfiguration: Codable {
     public enum ObservationResultType: String, Codable {
 
         // 2D Imaging
-        case simple2DImage
-        case multiFilter2DImage
+        case simple2DImage             = "simple_2D_image"
+        case multiFilter2DImage        = "multi_filter_2D_image"
 
         // Spectroscopy
-        case singleFibreSpectroscopy
-        case multiFibreSpectroscopy
-        case integralFieldSpectroscopy
-        case singleSlitSpectroscopy
-        case multiSlitSpectroscopy
-        case radioSpectroscopy
-        case fabryPerotSpectroscopy
+        case singleFibreSpectroscopy   = "single_fibre_spectroscopy"
+        case multiFibreSpectroscopy    = "multi_fibre_spectroscopy"
+        case integralFieldSpectroscopy = "integral_field_spectroscopy"
+        case singleSlitSpectroscopy    = "single_slit_spectroscopy"
+        case multiSlitSpectroscopy     = "multi_slit_spectroscopy"
+        case radioSpectroscopy         = "radio_spectroscopy"
+        case fabryPerotSpectroscopy    = "fabry_perot_spectroscopy"
 
         // Polarimetry
-        case photoPolarimetry
-        case spectroPolarimetry
+        case photoPolarimetry          = "photo_polarimetry"
+        case spectroPolarimetry        = "spectro_polarimetry"
 
         // Miscellaneous
-        case photographicPlate
+        case photographicPlate         = "photographic_plate"
+        case radiometry                = "radiometry"
     }
-    
-    // defines the parts of the electromagnetic spectrum that the observation is made in 
+
+    // defines the parts of the electromagnetic spectrum that the observation is made in
     public enum ElectromagneticCoverage: String, Codable {
-        case gammaRay
-        case xRay
+        case gammaRay      = "gamma_ray"
+        case xRay          = "x_ray"
         case ultraviolet
         case optical
         case infrared
-        case submillimetre
+        case subMillimetre = "sub_millimetre"
         case millimetre
         case radio
     }
 
-    public enum Status: String, Codable {
-        case active
-        case inactive
-        case scheduled
-        case unknown
-    }
 
     // Identity information incl. uuid, reference etc.
     public var identity: PolisIdentity
@@ -107,59 +98,43 @@ public struct PolisConfiguration: Codable {
     
     // uuid link to the dependent properties on the configuration
     public var configurationSpecificPropertiesID: UUID
-    
-    // indiction of if the configuration is currently active
-    public var status: Status = .unknown
+
+    public var availabilityStartTime: Date?
+    public var availabilityEndTime: Date?
+
+    public init(identity: PolisIdentity,
+                configurationType: ConfigurationType,
+                observationResultType: ObservationResultType,
+                emCoverage: [ElectromagneticCoverage]?  = nil,
+                deviceIDs: [UUID],
+                configurationSpecificPropertiesID: UUID,
+                availabilityStartTime: Date?            = nil,
+                availabilityEndTime: Date?              = nil) {
+        self.identity                          = identity
+        self.configurationType                 = configurationType
+        self.observationResultType             = observationResultType
+        self.emCoverage                        = emCoverage
+        self.deviceIDs                         = deviceIDs
+        self.configurationSpecificPropertiesID = configurationSpecificPropertiesID
+        self.availabilityStartTime             = availabilityStartTime
+        self.availabilityEndTime               = availabilityEndTime
+    }
+
+    public func suggesteдDeviceIDs() -> Set<UUID> { Set<UUID>() } //TODO: Implement me!
+
 }
 
 //MARK: - Making types Codable and CustomStringConvertible -
-
-public extension PolisConfiguration.ObservationResultType {
-    enum CodingKeys: String, CodingKey {
-        case simple2DImage              = "simple_2D_image"
-        case multiFilter2DImage         = "multi_filter_2D_image"
-        case singleFibreSpectroscopy    = "single_fibre_spectroscopy"
-        case multiFibreSpectroscopy     = "multi_fibre_spectroscopy"
-        case integralFieldSpectroscopy  = "integral_field_spectroscopy"
-        case singleSlitSpectroscopy     = "single_slit_spectroscopy"
-        case multiSlitSpectroscopy      = "multi_slit_spectroscopy"
-        case radioSpectroscopy          = "radio_spectroscopy"
-        case fabryPerotSpectroscopy     = "fabry_perot_spectroscopy"
-        case photoPolarimetry           = "photo_polarimetry"
-        case spectroPolarimetry         = "spectro_polarimetry"
-        case photographicPlate          = "photographic_plate"
-        case radiometry                 = "radiometry"
-    }
-}
-
-public extension PolisConfiguration.ElectromagneticCoverage {
-    enum CodingKeys: String, CodingKey {
-        case gammaRay         = "gamma_ray"
-        case xRay             = "x_ray"
-        case ultraviolet      = "ultraviolet"
-        case optical          = "optical"
-        case infrared         = "infrared"
-        case submillimeter    = "submillimeter"
-        case millimetre       = "millimetre"
-        case radio            = "radio"
-    }
-}
-
-public extension PolisConfiguration.ConfigurationType {
-    enum CodingKeys: String, CodingKey {
-        case array           = "array"
-        case network         = "network"
-        case telescope       = "telescope"
-    }
-}
 
 public extension PolisConfiguration {
     enum CodingKeys: String, CodingKey {
         case identity
         case configurationType                   = "configuration_type"
         case observationResultType               = "observation_result_type"
+        case emCoverage                          = "em_coverage"
         case deviceIDs                           = "device_ids"
         case configurationSpecificPropertiesID   = "configuration_ids"
-        case status
+        case availabilityStartTime               = "availability_start_time"
+        case availabilityEndTime                 = "availability_end_time"
     }
 }
