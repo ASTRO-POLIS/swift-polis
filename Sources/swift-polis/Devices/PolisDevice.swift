@@ -48,17 +48,48 @@ public struct PolisDevice: Codable, Identifiable {
         case polarimeter                              // RTML
         case radioReceiver        = "radio_receiver"
         case screen                                   // No device specific properties
-        case shutter                                  // RTML
+        case shutter                                  // RTML - no device specific properties
         case skyMonitor           = "sky_monitor"     // RTML
         case spectrograph                             // RTML
         case upsSystem            = "ups_system"
-        case webCamera            = "web_camera"      // RTML
+        case webCamera            = "web_camera"      // RTML - no device specific properties
         case weatherStation       = "weather_station" // RTML
     }
 
+    /*
+     - Keep Antenna separate to Radio dish, however no difference in antenna and antenna frame (get rid of antennaFrame)
+     - Antenna properties: Antenna length, Antenna height (all others covered by configurations)
+     - Autoguider: There are different modes (single star, multi-star, MLPT), these are probably covered by configurations. There may be the option of modelling one of the properties as follows: having one option that uses the camera itself, rather than a beamsplitter and an extra camera, probably via an enum.
+     - Beamsplitter: More research needed. Properties until now: transmission percentage, reflection percentage, material
+     - Bolometer: Properties same as for a camera
+     - Camera: Add readout without binning to the properties
+     - Derotator: Automatic or manual? (does it have a memory)
+     - Etalon: Take out (no additional properties needed in
+     - Dome: Opening width needs adding for classical domes, clamshell needs door directions for protection from winds, roration rate for classical domes
+     - Eyepiece: Magnification factor, focal length
+     - Filterwheel: Dimensions, slotNumber, filterSize
+     - Filter: Diameter, wavelength, Name, transmissionCurveLink (URL)
+     - Grating: TransmissionRate, groovesMM, (Tom to talk to Rob)
+     - Dispersive element will cover Grating, Prism, Grism, Etalon
+     - Waveplate: re-named from wavelplate -> Wants an enum with polarisation (half-wave or quarterwave)
+     - Laser: Wavelength, power, and distances in the atmosphere it can go
+     - Lens: Dimaeter, transmission, lensPosition (primary, secondary etc.)
+     - Mask: remove this from devices, add to configurations -> solar mask, moon mask, bright object mask
+     - Mirror: add all properties from
+     - Mount: Maximum slewing speed plus what we already have
+     - OTA: NumberOfFocii
+     - PhotomultiplierTube: Tom to look into parameters and to send these later
+     - polarimeter: Hasmik to suggest the parameters
+     - screen: no parameters needed
+     - Sky monitor: SpatialResolution, UpdateRate
+     - Solar panel: remove after speaking to Tomi
+     - UPS: hoursOfOperation, sustainedOperation, sustainedShutdown (Tomi to send information to power requirements)
+     - Weather station: Array of sensors, update frequency
+     */
+
     public var item: PolisItem
     public var type: DeviceType
-    public var deviceSpecificPropertiesID: UUID
+    public var deviceSpecificPropertiesID: UUID?  // There are simple devices without any specific parameters
     public var additionalPropertiesID: UUID?
     public var url: URL?
     public var scientificObjectives: String?
@@ -79,7 +110,7 @@ public struct PolisDevice: Codable, Identifiable {
 
     public init(item: PolisItem,
                 type: DeviceType,
-                deviceSpecificPropertiesID: UUID,
+                deviceSpecificPropertiesID: UUID? = nil,
                 additionalPropertiesID: UUID?     = nil,
                 suggestedSubDeviceIDs: Set<UUID>? = nil,
                 url: URL?                         = nil,
