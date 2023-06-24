@@ -18,22 +18,14 @@ import Foundation
 // TODO: Make everything codable!
 public struct EnclosureProperties {
 
+    //TODO: I implemented this as a parametrised enum. Does it make sense?
     public enum EnclosureType {
-        case dome(diameter: PolisMeasurement?, slitSize: PolisMeasurement?)
-        case rollOverRoof(length: PolisMeasurement?, width: PolisMeasurement?, hight: PolisMeasurement?)
-        case clamshell(diameter: PolisMeasurement, door1: PolisDirection, door2: PolisDirection)
-        case platform   // Open, no roof
-    }
-
-    public enum Status {
-        case closed
-        case opening
-        case open
-        case closing
-        case partiallyOpened(doorNumber: Int?)
+        case dome(diameter: PolisMeasurement?, slitSize: PolisMeasurement?, maximumSlewingRate: PolisMeasurement?)  // [m], [m], [deg s^-1]
+        case rollOverR(length: PolisMeasurement?, width: PolisMeasurement?, hight: PolisMeasurement?)               // [m], [m], [m]
+        case clamshell(diameter: PolisMeasurement, door1: PolisDirection, door2: PolisDirection)                    // [m]
+        case platform(length: PolisMeasurement?, width: PolisMeasurement?)                                          // [m], [m] - Open, no roof
+        case other
     }
 
     public var type: EnclosureType
-    public var status: Status?
-
 }
