@@ -8,6 +8,6 @@
 import Foundation
 
 public struct SkyMonitorProperties: Codable {
-    public var spatialResolution: PolisMeasurement // [degree]
-    public var updateRate: PolisMeasurement        // [s]
+    public var spatialResolution: PolisMeasurement? // [degree]
+    public var updateRate: PolisMeasurement?        // [s]
 }

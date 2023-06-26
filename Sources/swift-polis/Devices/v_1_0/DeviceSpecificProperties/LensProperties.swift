@@ -20,7 +20,7 @@ public struct LensProperties: Codable {
     }
 
     public var type: LensType
-    public var position: UInt              //TODO: Originally, it was suggested as enum, but perhaps UInt is better?
-    public var transmittance: Double       //TODO: Double (0.0 ... 1.0)?
-    public var diameter: PolisMeasurement  // [m]
+    public var position: UInt
+    public var transmittance: Double?
+    public var diameter: PolisMeasurement?  // [m]
 }

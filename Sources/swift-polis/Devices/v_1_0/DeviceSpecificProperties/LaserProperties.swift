@@ -9,7 +9,7 @@ import Foundation
 
 public struct LaserProperties: Codable {
 
-    public var power: PolisMeasurement               // [watt]
-    public var wavelength: PolisMeasurement          // [m]
-    public var atmosphericDistance: PolisMeasurement // [km]
+    public var power: PolisMeasurement?               // [watt]
+    public var wavelength: PolisMeasurement?          // [m]
+    public var atmosphericDistance: PolisMeasurement? // [km]
 }

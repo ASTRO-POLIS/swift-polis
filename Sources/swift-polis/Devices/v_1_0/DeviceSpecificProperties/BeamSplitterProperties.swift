@@ -9,7 +9,7 @@ import Foundation
 
 public struct BeamSplitterProperties: Codable {
 
-    public var transmissionPercentage: Double  //TODO: Originally suggested type is Int, but is it not better to have Double (0.0 ... 1.0)?
-    public var reflectionPercentage: Double    //TODO: Originally suggested type is Int, but is it not better to have Double (0.0 ... 1.0)?
-    public var material: String?               //TODO: Why not Enum?
+    public var transmissionPercentage: Double?  // [%]
+    public var reflectionPercentage: Double?    // [%]
+    public var material: String?               //TODO: Why not Enum? -> There are way too many possible materials for us to provide a huge list, better just to keep it as a string
 }

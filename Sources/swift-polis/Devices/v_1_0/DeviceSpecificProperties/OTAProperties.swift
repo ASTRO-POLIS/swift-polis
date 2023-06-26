@@ -18,7 +18,7 @@ public struct OTAProperties: Codable {
     public enum OpticalDesign: String, Codable {
         case newtonian
         case cassegrain
-        case ritcheyChreiten = "ritchey_chreiten"
+        case ritcheyChretien = "ritchey_chretien"
         case gregorian
         case maksutov
         case schmidt

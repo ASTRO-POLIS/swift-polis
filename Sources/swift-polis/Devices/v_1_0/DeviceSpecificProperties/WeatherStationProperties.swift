@@ -9,7 +9,6 @@ import Foundation
 
 public struct WeatherStationProperties: Codable {
 
-    //TODO: This list is different (enhanced) compared to the suggested. OK?
     public enum SensorType: String, Codable {
         case temperature
         case windSpeed
@@ -19,11 +18,10 @@ public struct WeatherStationProperties: Codable {
         case pressure
         case dust
         case skyBrightness
-        case uvIndex        //TODO: Do we need this?
     }
 
     public var sensors = [SensorType]()
-    public var updateFrequency: PolisMeasurement // [s]
+    public var updateFrequency: PolisMeasurement? // [s]
     
 }
 

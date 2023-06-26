@@ -25,31 +25,41 @@ public struct MirrorProperties {
         case dish
     }
 
-    //TODO: More types needed
     public enum MaterialType {
         case fusedSilica
+        case pyrex
+        case aluminium
+        case zerodur
+        case astroSitall
+        case suprax
         case other
     }
 
     public enum Coating: String, Codable {
         case silver
         case aluminium
+        case gold
+        case other
+    }
+    
+    public enum MirrorGeometry: String, Codable {
+        case convex
+        case concave
+        case flat
         case other
     }
 
     public var type: MirrorType
-
-
-    public var clearAperture: PolisMeasurement  // [m]
-    public var material: MaterialType?          //TODO: This was not in the original proposal
-    public var coating: Coating                 //TODO: It was suggested as String. Is enum not better?
-    public var position: UInt                   //TODO: Is it not better to be UInt 1.. ?
-    public var reflectivity: Double             //TODO: Double (0.0 ... 1.0)?
-    public var diameter: PolisMeasurement       // [m]
-    public var aperture: PolisMeasurement       // [m]
-    public var collectingArea: PolisMeasurement // [m^2]
+    public var clearAperture: PolisMeasurement? // [m]
+    public var material: MaterialType?
+    public var coating: Coating?
+    public var position: UInt
+    public var reflectivity: Double?            // [%]
+    public var diameter: PolisMeasurement?      // [m]
+    public var aperture: PolisMeasurement?      // [m]
+    public var collectingArea: PolisMeasurement?// [m^2]
     public var segmentCount: UInt = 1
+    public var geometry: MirrorGeometry?
 
-    //TODO: Do we need  Geometry? concave vs. convex?
-    //TODO: Do we need Thin vs. Classical discussion?
+    //TODO: Do we need Thin vs. Classical discussion? -> Probably yes
 }

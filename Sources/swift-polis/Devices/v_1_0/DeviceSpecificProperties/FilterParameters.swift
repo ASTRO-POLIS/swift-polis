@@ -66,9 +66,9 @@ public struct FilterParameters: Codable {
         case other
     }
 
-    public var type = FilterType.other       //TODO: Originally this was `name: String`, but I replace it with enum that I borrowed from RTML and filter providers. OK?
-    public var diameter: PolisMeasurement    // [mm]
-    public var waveLength: PolisMeasurement? // [m]
-    public var transmissionCurve: URL?       // Points to external site
+    public var type = FilterType.other       
+    public var diameter: PolisMeasurement?     // [mm]
+    public var waveLength: [PolisMeasurement?] // [m]
+    public var transmissionCurve: URL?         // Points to external site
 }
 

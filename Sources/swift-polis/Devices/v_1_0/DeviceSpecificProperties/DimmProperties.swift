@@ -8,6 +8,6 @@
 import Foundation
 
 public struct DimmProperties: Codable {
-    public var updateRate: PolisMeasurement         // [s^-1]
-    public var apertureSeparation: PolisMeasurement // [m]
+    public var updateRate: PolisMeasurement?         // [s^-1]
+    public var apertureSeparation: PolisMeasurement? // [m]
 }

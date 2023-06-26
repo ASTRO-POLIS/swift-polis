@@ -9,10 +9,9 @@ import Foundation
 
 public struct AdaptiveOpticsSystemProperties: Codable {
 
-    public enum GuideStartType: String, Codable {
+    public enum GuideStarType: String, Codable {
         case natural
         case artificial
-        case other
     }
 
     public enum AdaptiveOpticsSensorType: String, Codable {
@@ -22,10 +21,9 @@ public struct AdaptiveOpticsSystemProperties: Codable {
         case other
     }
 
-    //TODO: Mark optionals?
-    public var fieldSizeX: Int //TODO: How it is possible not to have units?
-    public var fieldSizeY: Int //TODO: See above
-    public var guideStarType = GuideStartType.other
-    public var updateRate: Int //TODO: How it is possible not to have units? Rate?
+    public var fieldSizeX: PolisMeasurement? // [degree]
+    public var fieldSizeY: PolisMeasurement? // [degree]
+    public var guideStarType = GuideStarType.natural
+    public var updateRate: PolisMeasurement? // [s^-1]
     public var adaptiveOpticsSensorType = AdaptiveOpticsSensorType.other
 }
