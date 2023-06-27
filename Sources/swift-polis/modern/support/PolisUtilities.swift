@@ -1,4 +1,6 @@
 //===----------------------------------------------------------------------===//
+//  PolisUtilities.swift
+//===----------------------------------------------------------------------===//
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
@@ -13,19 +15,23 @@
 //
 //===----------------------------------------------------------------------===//
 
-
 import Foundation
-
 
 /// A String extension that is used only in swift-polis (as far as we know)
 extension String {
+
     /// Adds `@` prefix if already does not exist
+    ///
+    /// This function is used in cases we need IDs (mostly for social media) that start with `@`, e.g. Twitter ID.
     public func mustStartWithAtSign() -> String { self.hasPrefix("@") ? self : "@\(self)" }
+
+    /// This is for internal use only! Without this the URL returned by the utility functions for some strange reason has no
+    /// URL schema!
+    func normalisedPath() -> String {
+        if self.hasSuffix("/") { return self }
+        else                   { return "\(self)/" }
+    }
+
+    //TODO: Make a copy of these methoda that is more abstract and add it to SoftwareEtudes
 }
 
-/// This is for internal use only! Without this the URL returned by the utility functions for some strange reason has no
-/// URL schema!
-func normalisedPath(_ path: String) -> String {
-    if path.hasSuffix("/") { return path }
-    else                   { return "\(path)/" }
-}

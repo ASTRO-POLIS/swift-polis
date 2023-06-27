@@ -20,16 +20,6 @@ import XCTest
 public func allTests() -> [XCTestCaseEntry] {
     return [
         XCTestCase(PolisUtilitiesTests),
-        XCTestCase(PolisCommonTypesTests),
-        XCTestCase(PolisServiceProviderTests.allTests),
-        XCTestCase(PolisItemOwnerTests),
-        XCTestCase(PolisItemTests),
-        XCTestCase(PolisManufacturerTests),
-        XCTestCase(PolisVersionSupportTests),
-        XCTestCase(PolisObservingTests),
-        XCTestCase(PolisIndexSiteTests),
-        
-        XCTestCase(PolisStaticResourceFinderTests),
     ]
 }
 #endif

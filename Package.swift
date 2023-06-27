@@ -30,7 +30,7 @@ let package = Package(
             ]
         ),
         .testTarget(
-            name: "swift-polisTests",
+            name: "swift-polis-tests",
             dependencies: ["swift-polis"]),
     ]
 )

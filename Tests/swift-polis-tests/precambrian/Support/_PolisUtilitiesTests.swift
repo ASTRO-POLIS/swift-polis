@@ -17,7 +17,7 @@
 import XCTest
 @testable import swift_polis
 
-class PolisUtilitiesTests: XCTestCase {
+class _PolisUtilitiesTests: XCTestCase {
 
     // This is a set of very simple test cases that do not need special setup and do not change the outcome of other
     // tests.
@@ -32,8 +32,8 @@ class PolisUtilitiesTests: XCTestCase {
     }
 
     func testNormalisedPath() throws {
-        XCTAssertEqual("/a/b/c/", normalisedPath("/a/b/c"))
-        XCTAssertEqual("/a/b/c/", normalisedPath("/a/b/c/"))
+        XCTAssertEqual("/a/b/c/", "/a/b/c".normalisedPath())
+        XCTAssertEqual("/a/b/c/", "/a/b/c/".normalisedPath())
     }
 
     static var allTests = [
