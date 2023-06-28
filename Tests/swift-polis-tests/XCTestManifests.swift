@@ -20,6 +20,7 @@ import XCTest
 public func allTests() -> [XCTestCaseEntry] {
     return [
         XCTestCase(PolisUtilitiesTests),
+        XCTestCase(PolisImplementationTests),
     ]
 }
 #endif

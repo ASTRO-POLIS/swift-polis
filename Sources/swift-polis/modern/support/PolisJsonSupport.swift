@@ -1,4 +1,6 @@
 //===----------------------------------------------------------------------===//
+//  PolisJsonSupport.swift
+//===----------------------------------------------------------------------===//
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
@@ -22,15 +24,13 @@ import Foundation
 /// `PolisJSONDecoder`is an extension of `JSONDecoder` that adds ISO8601 date conformance.
 public class PolisJSONDecoder: JSONDecoder {
 
-    let dateFormatter = ISO8601DateFormatter()
-
     public override init() {
         super.init()
 
         dateDecodingStrategy = .custom{ (decoder) -> Date in
             let container  = try decoder.singleValueContainer()
             let dateString = try container.decode(String.self)
-            let date       = self.dateFormatter.date(from: dateString)
+            let date       = polisDateFormatter.date(from: dateString)
 
             if let date = date { return date }
             else               { throw DecodingError.dataCorruptedError(in: container, debugDescription: "Date values must be ISO8601 formatted") }
@@ -47,4 +47,7 @@ public class PolisJSONEncoder: JSONEncoder {
         self.outputFormatting     = .prettyPrinted
     }
 }
+
+/// This date formatter should be used for all POLIS dates
+let polisDateFormatter = ISO8601DateFormatter()
 

@@ -105,7 +105,7 @@ public struct PolisDirectory  {
         public var url: String
 
         /// A list of one or more supported implementations
-        public var supportedImplementations: [PolisImplementationInfo]
+        public var supportedImplementations: [PolisImplementation]
 
         /// Defines the type of the POLIS service provider e.g. public, experimental, mirror, ...
         public var providerType: ProviderType
@@ -132,14 +132,14 @@ public struct PolisDirectory  {
                     lastUpdate:               Date = Date(),
                     url:                      String,
                     providerDescription:      String?,
-                    supportedImplementations: [PolisImplementationInfo],
+                    supportedImplementations: [PolisImplementation],
                     providerType:             ProviderType,
                     contact:                  PolisAdminContact) throws {
             guard !supportedImplementations.isEmpty else { throw DirectoryEntryError.emptyListOfSupportedImplementations }
 
 
             let suggestedImplementations = Set(supportedImplementations)
-            let supportedImplementations = Set(frameworkSupportedImplementation)
+            let supportedImplementations = Set(PolisConstants.frameworkSupportedImplementation)
             let intersection             = supportedImplementations.intersection(suggestedImplementations)
             let filtered                 = Array(intersection)
 

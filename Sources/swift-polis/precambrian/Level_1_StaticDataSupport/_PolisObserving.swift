@@ -27,7 +27,7 @@ public enum PolisObservingType: String, Codable {
 public protocol PolisObserving: Codable, Identifiable {
     var type: PolisObservingType                       { get set }
     var item: PolisItem                                { get set }
-    var implementationInfo: [PolisImplementationInfo]? { get set }
+    var implementation: [PolisImplementation]? { get set }
     var parentObservingSiteID: UUID?                   { get set }
     var subObservingSiteIDs: Set<UUID>                 { get set }
     var observatoryCode: String?                       { get set } // IAU or MPC (Minor Planet Center) code
@@ -51,7 +51,7 @@ public protocol PolisObserving: Codable, Identifiable {
 public struct PolisEarthObservingSite: PolisObserving {
     public var type: PolisObservingType
     public var item: PolisItem
-    public var implementationInfo: [PolisImplementationInfo]?
+    public var implementation: [PolisImplementation]?
     public var parentObservingSiteID: UUID?
     public var subObservingSiteIDs                           = Set<UUID>()
     public var observatoryCode: String?
@@ -87,7 +87,7 @@ public struct PolisEarthObservingSite: PolisObserving {
 
     public init(type: PolisObservingType                               = .site,
                 item: PolisItem,
-                implementationInfo: [PolisImplementationInfo]?         = [PolisImplementationInfo.oldestSupportedImplementationInfo()],
+                implementation: [PolisImplementation]?         = [PolisImplementation.oldestSupportedImplementation()],
                 parentObservingSiteID: UUID?                           = nil,
                 subObservingSiteIDs:  Set<UUID>                        = Set<UUID>(),
                 observatoryCode: String?                               = nil,
@@ -112,7 +112,7 @@ public struct PolisEarthObservingSite: PolisObserving {
                 dominantWindDirection: PolisDirection.RoughDirection?  = nil) {
         self.type                      = type
         self.item                      = item
-        self.implementationInfo        = implementationInfo
+        self.implementation        = implementation
         self.parentObservingSiteID     = parentObservingSiteID
         self.subObservingSiteIDs       = subObservingSiteIDs
         self.observatoryCode           = observatoryCode
@@ -166,7 +166,7 @@ public extension PolisEarthObservingSite {
     enum CodingKeys: String, CodingKey {
         case type
         case item
-        case implementationInfo         = "implementation_info"
+        case implementation         = "implementation_info"
         case parentObservingSiteID      = "paren_observing_site_id"
         case subObservingSiteIDs        = "sub_observing_site_ids"
         case observatoryCode            = "observatory_code"

@@ -101,7 +101,7 @@ final class PolisServiceProviderTests: XCTestCase {
         let sut = try? PolisDirectory.DirectoryEntry(name: "Telescope Observer",
                                            url: "https://polis.net",
                                            providerDescription: "Polis test",
-                                           supportedImplementations: [frameworkSupportedImplementation.last!],
+                                                     supportedImplementations: [PolisConstants.frameworkSupportedImplementation.last!],
                                            providerType: PolisDirectory.DirectoryEntry.ProviderType.experimental,
                                            contact: PolisAdminContact(name: "polis",
                                                                       email: "polis@observer.net",

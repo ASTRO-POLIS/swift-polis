@@ -77,7 +77,7 @@ public struct PolisDevice: Codable, Identifiable {
         
     /// Device administrator's suggested sub-devices
     ///
-    /// It is the responsibility of the client software to decide to load or reject these sub-devices. ``PolisImplementationInfo`` implements methods to
+    /// It is the responsibility of the client software to decide to load or reject these sub-devices. ``PolisImplementation`` implements methods to
     /// support the client software to make the loading decision, but the POLIS standard just recommends a device hierarchy without strictly requiring it. There are
     /// legit cases when the suggested hierarchy does not fit complexity of astronomical observing stations.
     public var subDevices: Set<UUID>?

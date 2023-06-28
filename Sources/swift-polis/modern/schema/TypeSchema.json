@@ -1,3 +1,21 @@
 {
-
+    "polis_implementation": {
+        "mandatory_properties": [
+            {
+                "property": "api_support",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "data_format",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "version",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            }
+        ]
+    }
 }
