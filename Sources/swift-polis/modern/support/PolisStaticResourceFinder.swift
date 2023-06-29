@@ -1,4 +1,6 @@
 //===----------------------------------------------------------------------===//
+//  PolisStaticResourceFinder.swift
+//===----------------------------------------------------------------------===//
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
@@ -136,6 +138,5 @@ fileprivate struct RelativePaths {
     func providerSitesDirectoryFilePath() -> String       { "\(basePath)\(PolisStaticResourceFinder.PredefinedPaths.serviceProviderSitesDirectoryFileName).\(fileExtension)" }
     func polisObservingSitesDirectoryFilePath() -> String { "\(basePath)\(versionString)/\(PolisStaticResourceFinder.PredefinedPaths.sitesDirectoryFileName).\(fileExtension)" }
     func polisResourcesDirectoryFilePath() -> String { "\(basePath)\(versionString)/\(PolisStaticResourceFinder.PredefinedPaths.polisResourcesDirectoryFileName).\(fileExtension)" }
-
 }
 

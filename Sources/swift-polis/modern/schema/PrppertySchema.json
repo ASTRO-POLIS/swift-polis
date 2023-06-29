@@ -2,6 +2,7 @@
     "api_support": {
         "description": "Defines the three levels of POLOS API support",
         "value_type": "a_string",
+        "default_value": "static_data",
         "value_set": [
             "static_data",
             "dynamic_status",
@@ -17,7 +18,7 @@
         ]
     },
     "version": {
-        "description": "Semantic Version of the POLIS Implementation (see: Semantic Versioning: https://semver.org",
+        "description": "Semantic Version of the POLIS implementation (see: SemanticVersioning: https: //semver.org)",
         "value_type": "a_string"
     }
 }
