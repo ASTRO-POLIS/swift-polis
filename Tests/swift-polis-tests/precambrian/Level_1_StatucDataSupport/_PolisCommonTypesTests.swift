@@ -17,7 +17,7 @@
 import XCTest
 @testable import swift_polis
 
-final class PolisCommonTypesTests: XCTestCase {
+final class _PolisCommonTypesTests: XCTestCase {
 
     //MARK: - Initialisation -
     private var jsonEncoder: PolisJSONEncoder!

@@ -17,6 +17,10 @@
             "xml"
         ]
     },
+    "note": {
+        "description": "Free text string, that could be formatted with new lines, tabs. etc. and has no size limit. Nevertheless. Too long notes should be avoided.",
+        "value_type": "a_string"
+    },
     "version": {
         "description": "Semantic Version of the POLIS implementation (see: SemanticVersioning: https: //semver.org)",
         "value_type": "a_string"

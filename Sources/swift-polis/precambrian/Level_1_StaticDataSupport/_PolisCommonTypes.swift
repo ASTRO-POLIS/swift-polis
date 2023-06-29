@@ -1,4 +1,4 @@
-//===----------------------------------------------------------------------===//
+                                                                             //===----------------------------------------------------------------------===//
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
@@ -438,20 +438,6 @@ public enum PolisDirection: Codable {
     case exact(degree: Double)                  // Clockwise e.g. 157.12
 }
 
-/// The `PolisActivityPeriods` struct is used to define periods of time when an ``PolisObservingSite`` could be visited, or the working hours of the personnel.
-///
-/// Note that some sites might only be open during part of the year (e.g. because of difficult winter conditions) or may only be visited during school vacations.
-///
-/// The first version of the type defines only an optional `notes` string.  Future versions will add more structured types expressing numerical periods like:
-///    Mo-Fr: 16:00-18:00h or
-///    June - September
-public struct PolisActivityPeriods: Codable {
-    public var notes: String?
-
-    public init(notes: String?) {
-        self.notes = notes
-    }
-}
 
 //MARK: - Type extensions -
 

@@ -27,7 +27,7 @@ public enum PolisObservingType: String, Codable {
 public protocol PolisObserving: Codable, Identifiable {
     var type: PolisObservingType                       { get set }
     var item: PolisItem                                { get set }
-    var implementation: [PolisImplementation]? { get set }
+    var implementation: [PolisImplementation]?         { get set }
     var parentObservingSiteID: UUID?                   { get set }
     var subObservingSiteIDs: Set<UUID>                 { get set }
     var observatoryCode: String?                       { get set } // IAU or MPC (Minor Planet Center) code
@@ -51,7 +51,7 @@ public protocol PolisObserving: Codable, Identifiable {
 public struct PolisEarthObservingSite: PolisObserving {
     public var type: PolisObservingType
     public var item: PolisItem
-    public var implementation: [PolisImplementation]?
+    public var implementations: [PolisImplementation]?
     public var parentObservingSiteID: UUID?
     public var subObservingSiteIDs                           = Set<UUID>()
     public var observatoryCode: String?
@@ -67,8 +67,7 @@ public struct PolisEarthObservingSite: PolisObserving {
     public var polisRegistrationDate: Date?
     public var polisDisconnectionDate: Date?
 
-    public var workingHours: PolisActivityPeriods?
-    public var openingHours: PolisActivityPeriods?
+    public var openingHours: PolisVisitingHours?
     public var accessRestrictions: String?
 
     public var averageClearNightsPerYear: UInt?
@@ -87,7 +86,7 @@ public struct PolisEarthObservingSite: PolisObserving {
 
     public init(type: PolisObservingType                               = .site,
                 item: PolisItem,
-                implementation: [PolisImplementation]?         = [PolisImplementation.oldestSupportedImplementation()],
+                implementations: [PolisImplementation]?                = [PolisImplementation.oldestSupportedImplementation()],
                 parentObservingSiteID: UUID?                           = nil,
                 subObservingSiteIDs:  Set<UUID>                        = Set<UUID>(),
                 observatoryCode: String?                               = nil,
@@ -102,8 +101,7 @@ public struct PolisEarthObservingSite: PolisObserving {
                 history: String?                                       = nil,
                 polisRegistrationDate: Date?                           = nil,
                 polisDisconnectionDate: Date?                          = nil,
-                workingHours: PolisActivityPeriods?                    = nil,
-                openingHours: PolisActivityPeriods?                    = nil,
+                openingHours: PolisVisitingHours?                      = nil,
                 accessRestrictions: String?                            = nil,
                 averageClearNightsPerYear: UInt?                       = nil,
                 averageSeeingConditions: PolisMeasurement?             = nil,
@@ -112,7 +110,7 @@ public struct PolisEarthObservingSite: PolisObserving {
                 dominantWindDirection: PolisDirection.RoughDirection?  = nil) {
         self.type                      = type
         self.item                      = item
-        self.implementation        = implementation
+        self.implementations           = implementations
         self.parentObservingSiteID     = parentObservingSiteID
         self.subObservingSiteIDs       = subObservingSiteIDs
         self.observatoryCode           = observatoryCode
@@ -127,7 +125,6 @@ public struct PolisEarthObservingSite: PolisObserving {
         self.history                   = history
         self.polisRegistrationDate     = polisRegistrationDate
         self.polisDisconnectionDate    = polisDisconnectionDate
-        self.workingHours              = workingHours
         self.openingHours              = openingHours
         self.accessRestrictions        = accessRestrictions
         self.averageClearNightsPerYear = averageClearNightsPerYear
@@ -181,7 +178,6 @@ public extension PolisEarthObservingSite {
         case polisRegistrationDate      = "polis_registration_date"
         case polisDisconnectionDate     = "polis_disconnection_date"
         case scientificObjectives       = "scientific_objectives"
-        case workingHours               = "working_hours"
         case openingHours               = "opening_hours"
         case accessRestrictions         = "access_restrictions"
         case averageClearNightsPerYear  = "average_clear_nights_per_year"

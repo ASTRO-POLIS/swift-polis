@@ -1,5 +1,9 @@
 {
-    "polis_implementation": {
+    "implementation": {
+        "aliases": [
+            "originalFramework_supported_implementation",
+            "supported_mplementation"
+        ],
         "mandatory_properties": [
             {
                 "property": "api_support",
@@ -14,6 +18,15 @@
             {
                 "property": "version",
                 "minCardinality": 1,
+                "maxCardinality": 1
+            }
+        ]
+    },
+    "visiting_hours": {
+        "standart_properties": [
+            {
+                "property": "note",
+                "minCardinality": 0,
                 "maxCardinality": 1
             }
         ]
