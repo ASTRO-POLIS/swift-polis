@@ -27,7 +27,7 @@ public enum PolisObservingType: String, Codable {
 public protocol PolisObserving: Codable, Identifiable {
     var type: PolisObservingType                       { get set }
     var item: PolisItem                                { get set }
-    var implementation: [PolisImplementation]?         { get set }
+    var implementations: [PolisImplementation]?        { get set }
     var parentObservingSiteID: UUID?                   { get set }
     var subObservingSiteIDs: Set<UUID>                 { get set }
     var observatoryCode: String?                       { get set } // IAU or MPC (Minor Planet Center) code
@@ -131,6 +131,7 @@ public struct PolisEarthObservingSite: PolisObserving {
         self.averageSeeingConditions   = averageSeeingConditions
         self.averageSkyQuality         = averageSkyQuality
         self.traditionalLandOwners     = traditionalLandOwners
+        self.dominantWindDirection     = dominantWindDirection
     }
 
     public func suggestedSubDeviceIDs() -> Set<UUID> { Set<UUID>() } //TODO: Implement me!
@@ -163,7 +164,7 @@ public extension PolisEarthObservingSite {
     enum CodingKeys: String, CodingKey {
         case type
         case item
-        case implementation         = "implementation_info"
+        case implementations         = "implementation_info"
         case parentObservingSiteID      = "paren_observing_site_id"
         case subObservingSiteIDs        = "sub_observing_site_ids"
         case observatoryCode            = "observatory_code"
