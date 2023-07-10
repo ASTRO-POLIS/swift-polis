@@ -84,9 +84,9 @@ public enum PolisObservingSiteLocationType: Codable {
             case antarctica   = "Antarctica"
         }
 
-        public let eastLongitude: PolisMeasurement? // degrees
-        public let latitude: PolisMeasurement?      // degrees
-        public let altitude: PolisMeasurement?      // m
+        public let eastLongitude: PolisPropertyValue? // degrees
+        public let latitude: PolisPropertyValue?      // degrees
+        public let altitude: PolisPropertyValue?      // m
         public var timeZoneIdentifier: String?      // .. as defined with `TimeZone.knownTimeZoneIdentifiers`
         public var continent: EarthContinent?
         public let place: String?                   // e.g. Mount Wilson
@@ -95,19 +95,19 @@ public enum PolisObservingSiteLocationType: Codable {
         public let zipCode: String?                 // e.g. 12345
         public let country: String?                 // e.g. Armenia
         public let countryCode: String?             // 2-letter code.
-        public let surfaceSize: PolisMeasurement?   // in m^2
+        public let surfaceSize: PolisPropertyValue?   // in m^2
 
-        public init(eastLongitude: PolisMeasurement? = nil,
-                    latitude: PolisMeasurement?      = nil,
-                    altitude: PolisMeasurement?      = nil,
-                    continent: EarthContinent?       = nil,
-                    place: String?                   = nil,
-                    regionOrState: String?           = nil,
-                    regionOrStateCode: String?       = nil,
-                    zipCode: String?                 = nil,
-                    country: String?                 = nil,
-                    countryCode: String?             = nil,
-                    surfaceSize: PolisMeasurement?   = nil) {
+        public init(eastLongitude: PolisPropertyValue? = nil,
+                    latitude: PolisPropertyValue?      = nil,
+                    altitude: PolisPropertyValue?      = nil,
+                    continent: EarthContinent?         = nil,
+                    place: String?                     = nil,
+                    regionOrState: String?             = nil,
+                    regionOrStateCode: String?         = nil,
+                    zipCode: String?                   = nil,
+                    country: String?                   = nil,
+                    countryCode: String?               = nil,
+                    surfaceSize: PolisPropertyValue?   = nil) {
             self.eastLongitude     = eastLongitude
             self.latitude          = latitude
             self.altitude          = altitude
@@ -130,9 +130,9 @@ public enum PolisObservingSiteLocationType: Codable {
     /// Anything but the Earth
     public struct GravitationalObjectBasedLocation: Codable {
         public let solarSystemBody: SolarSystemBodyType
-        public let eastLongitude: PolisMeasurement?     // degrees
-        public let latitude: PolisMeasurement?          // degrees
-        public let altitude: PolisMeasurement?          // m
+        public let eastLongitude: PolisPropertyValue?     // degrees
+        public let latitude: PolisPropertyValue?          // degrees
+        public let altitude: PolisPropertyValue?          // m
         public let region: String?                      // e.g. the Tranquility crater
     }
 

@@ -21,7 +21,7 @@ public struct WeatherStationProperties: Codable {
     }
 
     public var sensors = [SensorType]()
-    public var updateFrequency: PolisMeasurement? // [s]
+    public var updateFrequency: PolisPropertyValue? // [s]
     
 }
 

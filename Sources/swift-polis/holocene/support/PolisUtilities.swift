@@ -32,6 +32,6 @@ extension String {
         else                   { return "\(self)/" }
     }
 
-    //TODO: Make a copy of these methoda that is more abstract and add it to SoftwareEtudes
+    //TODO: Make a copy of these methods that is more abstract and add it to SoftwareEtudes
 }
 

@@ -50,14 +50,14 @@ public struct MirrorProperties {
     }
 
     public var type: MirrorType
-    public var clearAperture: PolisMeasurement? // [m]
+    public var clearAperture: PolisPropertyValue? // [m]
     public var material: MaterialType?
     public var coating: Coating?
     public var position: UInt
     public var reflectivity: Double?            // [%]
-    public var diameter: PolisMeasurement?      // [m]
-    public var aperture: PolisMeasurement?      // [m]
-    public var collectingArea: PolisMeasurement?// [m^2]
+    public var diameter: PolisPropertyValue?      // [m]
+    public var aperture: PolisPropertyValue?      // [m]
+    public var collectingArea: PolisPropertyValue?// [m^2]
     public var segmentCount: UInt = 1
     public var geometry: MirrorGeometry?
 

@@ -9,8 +9,8 @@ import Foundation
 
 public struct FilterWheelProperties {
 
-    public var dimensions: [PolisMeasurement]?
+    public var dimensions: [PolisPropertyValue]?
     public var slotCount: Int?
-    public var filerSize: PolisMeasurement?  // [mm]
+    public var filerSize: PolisPropertyValue?  // [mm]
     
 }

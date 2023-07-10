@@ -18,53 +18,6 @@ import Foundation
 
 // This file contains several unrelated Swift types that are used in different sources.
 
-//MARK: - Measurements -
-/// An object that represents a value a value with an accompanying unit.
-///
-/// Examples include telescope apertures, instrument wavelengths, etc. POLIS only defines the means of recording measurements. Client applications using POLIS
-/// should implement unit conversions (if needed). Currently, a POLIS provider is not expected to make any conversions, but it might check if the units are allowed.
-///
-/// Apple's Units types are not used here on purpose because of the lack of scientific accuracy and profound misunderstanding of how science works.
-///
-/// **Note:** This Measurement implementation is very rudimentary. It is a placeholder type. In future implementations, it will be replaced by external
-/// implementations, capable of measurement computations and conversions.
-public struct PolisMeasurement: Codable {
-
-    //TODO: Make this Equitable and String CustomStringConvertible!
-    /// The value of the measurement
-    public let value: Double
-
-    /// Standard precision of the measurement
-    ///
-    /// If precision is 0, the value is assumed an integer.
-    public let precision: UInt8?
-
-    /// Unit of the measurement.
-    ///
-    /// The unit is expected to be in a format that is accepted by the astronomical community (as defined by the IAU, FITS Standard, etc).
-    ///
-    /// In the case that no unit is defined, the measurement has no dimension (e.g. counter).
-    ///
-    /// Examples:
-    /// - "m"
-    /// - "km"
-    /// - "in"
-    /// - "m^2"
-    /// - "µm"
-    /// - "solMass"
-    /// - "eV"
-    public let unit: String
-
-    /// Time (in UTC) of the measurement, if applicable.
-    public let time: Date?
-
-    public init(value: Double, precision: UInt8? = nil, unit: String, time: Date? = nil) {
-        self.value     = value
-        self.precision = precision
-        self.unit      = unit
-        self.time      = time
-    }
-}
 
 //MARK: - Images -
 /// A source for images related to a single item, such as an observing site, a satellite, a telescope, or a camera.

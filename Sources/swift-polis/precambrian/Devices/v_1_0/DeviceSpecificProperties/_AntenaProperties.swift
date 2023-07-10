@@ -8,6 +8,6 @@
 import Foundation
 
 public struct AntenaProperties: Codable {
-    public var length: PolisMeasurement? // [m]
-    public var height: PolisMeasurement? // [m]
+    public var length: PolisPropertyValue? // [m]
+    public var height: PolisPropertyValue? // [m]
 }

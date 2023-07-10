@@ -19,10 +19,10 @@ import Foundation
 public struct EnclosureProperties {
 
     public enum EnclosureType {
-        case dome(diameter: PolisMeasurement?, slitSize: PolisMeasurement?, maximumSlewingRate: PolisMeasurement?)  // [m], [m], [deg s^-1]
-        case rollOffRoof(length: PolisMeasurement?, width: PolisMeasurement?, hight: PolisMeasurement?)               // [m], [m], [m]
-        case clamshell(diameter: PolisMeasurement?, door1: PolisDirection?, door2: PolisDirection?)                    // [m]
-        case platform(length: PolisMeasurement?, width: PolisMeasurement?)                                          // [m], [m] - Open, no roof
+        case dome(diameter: PolisPropertyValue?, slitSize: PolisPropertyValue?, maximumSlewingRate: PolisPropertyValue?)  // [m], [m], [deg s^-1]
+        case rollOffRoof(length: PolisPropertyValue?, width: PolisPropertyValue?, hight: PolisPropertyValue?)               // [m], [m], [m]
+        case clamshell(diameter: PolisPropertyValue?, door1: PolisDirection?, door2: PolisDirection?)                    // [m]
+        case platform(length: PolisPropertyValue?, width: PolisPropertyValue?)                                          // [m], [m] - Open, no roof
         case other
     }
 

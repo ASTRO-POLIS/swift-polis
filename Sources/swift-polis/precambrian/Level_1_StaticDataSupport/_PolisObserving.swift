@@ -71,8 +71,8 @@ public struct PolisEarthObservingSite: PolisObserving {
     public var accessRestrictions: String?
 
     public var averageClearNightsPerYear: UInt?
-    public var averageSeeingConditions: PolisMeasurement? // [arcsec]
-    public var averageSkyQuality: PolisMeasurement?       // [magnitude]
+    public var averageSeeingConditions: PolisPropertyValue? // [arcsec]
+    public var averageSkyQuality: PolisPropertyValue?       // [magnitude]
 
     public var traditionalLandOwners: String?
 
@@ -104,8 +104,8 @@ public struct PolisEarthObservingSite: PolisObserving {
                 openingHours: PolisVisitingHours?                      = nil,
                 accessRestrictions: String?                            = nil,
                 averageClearNightsPerYear: UInt?                       = nil,
-                averageSeeingConditions: PolisMeasurement?             = nil,
-                averageSkyQuality: PolisMeasurement?                   = nil,
+                averageSeeingConditions: PolisPropertyValue?             = nil,
+                averageSkyQuality: PolisPropertyValue?                   = nil,
                 traditionalLandOwners: String?                         = nil,
                 dominantWindDirection: PolisDirection.RoughDirection?  = nil) {
         self.type                      = type

@@ -17,8 +17,8 @@ public struct CameraProperties: Codable {
     public var sensorType: SensorType
     public var numberOfPixelsX: Int?
     public var numberOfPixelsY: Int?
-    public var pixelSizeX: PolisMeasurement?                // [µm]
-    public var pixelSizeY: PolisMeasurement?                // [µm]
+    public var pixelSizeX: PolisPropertyValue?                // [µm]
+    public var pixelSizeY: PolisPropertyValue?                // [µm]
     public var material: String?                            //TODO: Why not Enum? Is it optional? -> Same as all the other materials, yes optional
-    public var readoutTimeWithoutBinning: PolisMeasurement? // [s]
+    public var readoutTimeWithoutBinning: PolisPropertyValue? // [s]
 }

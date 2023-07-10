@@ -22,5 +22,5 @@ public struct LensProperties: Codable {
     public var type: LensType
     public var position: UInt
     public var transmittance: Double?
-    public var diameter: PolisMeasurement?  // [m]
+    public var diameter: PolisPropertyValue?  // [m]
 }

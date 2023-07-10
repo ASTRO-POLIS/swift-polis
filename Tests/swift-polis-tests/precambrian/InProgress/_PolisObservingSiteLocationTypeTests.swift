@@ -46,9 +46,9 @@ final class PolisObservingSiteLocationTypeTests: XCTestCase {
     //MARK: - Tests -
     func test_PolisObservingSiteLocationType_earthBasedLocationCodable_shouldSucceed() throws {
         // Given
-        let eastLongitude     = PolisMeasurement(value: 14.15, unit: "degree")
-        let latitude          = PolisMeasurement(value: 48.51, unit: "degree")
-        let altitude          = PolisMeasurement(value: 896.0, unit: "m")
+        let eastLongitude     = PolisPropertyValue(valueKind: .double, value: "14.15", unit: "degree")
+        let latitude          = PolisPropertyValue(valueKind: .double, value: "48.51", unit: "degree")
+        let altitude          = PolisPropertyValue(valueKind: .double, value: "896.0", unit: "m")
         let continent         = PolisObservingSiteLocationType.EarthBasedLocation.EarthContinent.europe
         let place             = "Sandl"
         let regionOrState     = "Ober Östereich"
@@ -56,7 +56,7 @@ final class PolisObservingSiteLocationTypeTests: XCTestCase {
         let zipCode           = "1234"
         let country           = "Austria"
         let countryCode       = "OS"
-        let surfaceSize       = PolisMeasurement(value: 453.2, unit: "m^2")
+        let surfaceSize       = PolisPropertyValue(valueKind: .double, value: "453.2", unit: "m^2")
 
         // When
         let sut = PolisObservingSiteLocationType.EarthBasedLocation(eastLongitude: eastLongitude,

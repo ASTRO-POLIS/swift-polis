@@ -1,7 +1,7 @@
 {
     "api_support": {
         "description": "Defines the three levels of POLOS API support",
-        "value_type": "a_string",
+        "value_type": "string",
         "default_value": "static_data",
         "value_set": [
             "static_data",
@@ -11,7 +11,7 @@
     },
     "data_format": {
         "description": "Defines various POLIS data formats",
-        "value_type": "a_string",
+        "value_type": "string",
         "value_set": [
             "json",
             "xml"
@@ -19,10 +19,28 @@
     },
     "note": {
         "description": "Free text string, that could be formatted with new lines, tabs. etc. and has no size limit. Nevertheless. Too long notes should be avoided.",
-        "value_type": "a_string"
+        "value_type": "string"
+    },
+    "unit": {
+        "description": "The unit of a PolisPropertyValue as a string.",
+        "value_type": "string"
+    },
+    "value": {
+        "description": "The value of a PolisPropertyValue as a string.",
+        "value_type": "string"
+    },
+    "value_kind": {
+        "description": "Defines the value type of the property, e.g. Int, Double, ...",
+        "value_type": "string",
+        "value_set": [
+            "string",
+            "int",
+            "float",
+            "double"
+        ]
     },
     "version": {
         "description": "Semantic Version of the POLIS implementation (see: SemanticVersioning: https: //semver.org)",
-        "value_type": "a_string"
+        "value_type": "string"
     }
 }

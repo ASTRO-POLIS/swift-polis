@@ -67,8 +67,8 @@ public struct FilterParameters: Codable {
     }
 
     public var type = FilterType.other       
-    public var diameter: PolisMeasurement?     // [mm]
-    public var waveLength: [PolisMeasurement?] // [m]
+    public var diameter: PolisPropertyValue?     // [mm]
+    public var waveLength: [PolisPropertyValue?] // [m]
     public var transmissionCurve: URL?         // Points to external site
 }
 

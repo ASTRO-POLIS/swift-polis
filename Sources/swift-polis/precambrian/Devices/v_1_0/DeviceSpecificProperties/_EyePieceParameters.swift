@@ -9,5 +9,5 @@ import Foundation
 
 public struct EyePieceParameters: Codable {
     public var magnificationFactor: Double?
-    public var focalLength: PolisMeasurement? // [mm]
+    public var focalLength: PolisPropertyValue? // [mm]
 }

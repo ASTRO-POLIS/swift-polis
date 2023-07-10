@@ -11,7 +11,7 @@ public struct PhotomultiplierTubeProperties: Codable {
 
     public var numberOfPixelsX: Int?
     public var numberOfPixelsY: Int?
-    public var pixelSizeX: PolisMeasurement?                // [µ]
-    public var pixelSizeY: PolisMeasurement?                // [µ]
+    public var pixelSizeX: PolisPropertyValue?                // [µ]
+    public var pixelSizeY: PolisPropertyValue?                // [µ]
 
 }

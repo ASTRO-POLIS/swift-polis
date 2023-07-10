@@ -22,6 +22,25 @@
             }
         ]
     },
+    "property_value": {
+        "mandatory_properties": [
+            {
+                "property": "value_kind",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "value",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "unit",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            }
+        ]
+    },
     "visiting_hours": {
         "standart_properties": [
             {

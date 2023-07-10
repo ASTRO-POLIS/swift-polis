@@ -21,9 +21,9 @@ public struct AdaptiveOpticsSystemProperties: Codable {
         case other
     }
 
-    public var fieldSizeX: PolisMeasurement? // [degree]
-    public var fieldSizeY: PolisMeasurement? // [degree]
+    public var fieldSizeX: PolisPropertyValue? // [degree]
+    public var fieldSizeY: PolisPropertyValue? // [degree]
     public var guideStarType = GuideStarType.natural
-    public var updateRate: PolisMeasurement? // [s^-1]
+    public var updateRate: PolisPropertyValue? // [s^-1]
     public var adaptiveOpticsSensorType = AdaptiveOpticsSensorType.other
 }

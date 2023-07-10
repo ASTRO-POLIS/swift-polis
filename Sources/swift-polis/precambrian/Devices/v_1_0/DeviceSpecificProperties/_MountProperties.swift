@@ -27,5 +27,5 @@ public struct MountProperties: Codable {
 
     public var type: MountType
     public var design: DesignType?
-    public var maximumSlewingSpeed: PolisMeasurement? // [deg s^-1]
+    public var maximumSlewingSpeed: PolisPropertyValue? // [deg s^-1]
 }

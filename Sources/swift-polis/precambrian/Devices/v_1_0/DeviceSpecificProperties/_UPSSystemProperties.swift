@@ -21,7 +21,7 @@ public struct UPSSystemProperties: Codable {
     }
 
     public var modeOfOperation: OperatingMode
-    public var guaranteeOperationDuration: PolisMeasurement?
+    public var guaranteeOperationDuration: PolisPropertyValue?
     public var rechargeSupplyOption: [RechargeSupplyOption]?
 
     //TODO: Implement public initialiser!
