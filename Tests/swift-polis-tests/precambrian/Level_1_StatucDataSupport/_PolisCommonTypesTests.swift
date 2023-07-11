@@ -107,24 +107,6 @@ final class _PolisCommonTypesTests: XCTestCase {
         XCTAssertNoThrow(try jsonDecoder.decode(PolisAdminContact.Communication.self, from: string!.data(using: .utf8)!))
     }
 
-    //MARK: Directions
-
-    func testPolisDirectionsCodingSupport() {
-        let sut_rough = PolisDirection.rough(direction: .southEast)
-        let sut_exact = PolisDirection.exact(degree: 16.63)
-
-        XCTAssertNotNil(sut_rough)
-        XCTAssertNotNil(sut_exact)
-
-        data   = try? jsonEncoder.encode(sut_rough)
-        string = String(data: data!, encoding: .utf8)
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirection.self, from: string!.data(using: .utf8)!))
-
-        data   = try? jsonEncoder.encode(sut_exact)
-        string = String(data: data!, encoding: .utf8)
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirection.self, from: string!.data(using: .utf8)!))
-    }
-
     func testPolisContactCodingSupport() {
         let c = PolisAdminContact(name: "polis",
                                   email: "polis@observer.net",
@@ -140,13 +122,8 @@ final class _PolisCommonTypesTests: XCTestCase {
 
     //MARK: - Housekeeping -
     static var allTests = [
-
-
-
-
         ("testPolisIdentityCodingSupport",     testPolisIdentityCodingSupport),
         ("testPolisAdminContactCodingSupport", testPolisAdminContactCodingSupport),
-        ("testPolisDirectionsCodingSupport",   testPolisDirectionsCodingSupport),
         ("testPolisContactCodingSupport",      testPolisContactCodingSupport),
     ]
 }

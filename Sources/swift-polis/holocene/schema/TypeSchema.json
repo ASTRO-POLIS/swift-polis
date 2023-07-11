@@ -1,8 +1,22 @@
 {
+    "direction": {
+        "mandatory_properties": [
+            {
+                "property": "exact_direction",
+                "minCardinality": 0,
+                "maxCardinality": 1
+            },
+            {
+                "property": "rough_direction",
+                "minCardinality": 0,
+                "maxCardinality": 1
+            }
+        ]
+    },
     "implementation": {
         "aliases": [
             "originalFramework_supported_implementation",
-            "supported_mplementation"
+            "supported_implementation"
         ],
         "mandatory_properties": [
             {

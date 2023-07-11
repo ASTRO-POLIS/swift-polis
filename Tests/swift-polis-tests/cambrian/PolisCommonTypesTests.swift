@@ -67,6 +67,7 @@ final class PolisCommonTypesTests: XCTestCase {
         string = String(data: data!, encoding: .utf8)
 
         // Then
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisVisitingHours.self, from: data))
         XCTAssertNoThrow(try jsonDecoder.decode(PolisVisitingHours.self, from: string!.data(using: .utf8)!))
     }
 
@@ -81,7 +82,8 @@ final class PolisCommonTypesTests: XCTestCase {
 
         // Then
         XCTAssertNoThrow(try jsonDecoder.decode(PolisPropertyValue.self, from: data))
-    }
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisPropertyValue.self, from: string!.data(using: .utf8)!))
+   }
 
     func test_PolisPropertyValue_equatable_shouldSucceed() throws {
         // Given
@@ -104,13 +106,54 @@ final class PolisCommonTypesTests: XCTestCase {
         XCTAssertEqual(sut_double.doubleValue(), Double(123.4))
     }
 
+    //MARK: Directions
+    func test_PolisDirection_exactCodingSupport_shouldSucceed() throws {
+        // Given
+        let sut_exact = try PolisDirection(exactDirection: 16.63)
 
+        // When
+        data   = try? jsonEncoder.encode(sut_exact)
+        string = String(data: data!, encoding: .utf8)
+
+        // Then
+        XCTAssertNotNil(sut_exact)
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirection.self, from: data))
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirection.self, from: string!.data(using: .utf8)!))
+   }
+
+    func test_PolisDirection_roughCodingSupport_shouldSucceed() throws {
+        // Given
+        let sut_rough = try PolisDirection(roughDirection: PolisDirection.RoughDirection.eastNorthEast)
+
+        // When
+        data   = try? jsonEncoder.encode(sut_rough)
+        string = String(data: data!, encoding: .utf8)
+
+
+        // Then
+        XCTAssertNotNil(sut_rough)
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirection.self, from: data))
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirection.self, from: string!.data(using: .utf8)!))
+  }
+
+    func test_PolisDirection_calculations_shouldSucceed() throws {
+        // Given
+        let sut_exact = try PolisDirection(exactDirection: 16.63)
+        let sut_rough = try PolisDirection(roughDirection: PolisDirection.RoughDirection.eastNorthEast)
+
+        // Then
+        XCTAssertEqual(sut_exact.direction(), 16.63)
+        XCTAssertEqual(sut_rough.direction(), 67.5)
+  }
 
     static var allTests = [
-        ("test_PolisVisitingHours_creation_shouldSucceed",  test_PolisVisitingHours_creation_shouldSucceed),
-        ("test_PolisVisitingHours_creation_shouldSucceed",  test_PolisVisitingHours_creation_shouldSucceed),
-        ("test_PolisPropertyValue_codingSupport_shouldSucceed", test_PolisPropertyValue_codingSupport_shouldSucceed),
-        ("test_PolisPropertyValue_equatable_shouldSucceed", test_PolisPropertyValue_equatable_shouldSucceed),
+        ("test_PolisVisitingHours_creation_shouldSucceed",       test_PolisVisitingHours_creation_shouldSucceed),
+        ("test_PolisVisitingHours_creation_shouldSucceed",       test_PolisVisitingHours_creation_shouldSucceed),
+        ("test_PolisPropertyValue_codingSupport_shouldSucceed",  test_PolisPropertyValue_codingSupport_shouldSucceed),
+        ("test_PolisPropertyValue_equatable_shouldSucceed",      test_PolisPropertyValue_equatable_shouldSucceed),
+        ("test_PolisDirection_exactCodingSupport_shouldSucceed", test_PolisDirection_exactCodingSupport_shouldSucceed),
+        ("test_PolisDirection_roughCodingSupport_shouldSucceed", test_PolisDirection_roughCodingSupport_shouldSucceed),
+        ("test_PolisDirection_calculations_shouldSucceed",       test_PolisDirection_calculations_shouldSucceed),
     ]
 
 

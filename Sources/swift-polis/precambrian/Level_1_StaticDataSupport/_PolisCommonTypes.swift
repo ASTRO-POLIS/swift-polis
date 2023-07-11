@@ -348,48 +348,6 @@ public struct PolisAdminContact: Identifiable {
 
 
 
-//MARK: - Directions -
-
-/// `PolisDirection` is used to represent either a rough direction (of 16 possibilities) or exact direction in degree
-/// represented as a double number (e.g. 57.349)
-///
-/// Directions are used to describe information such as dominant wind direction of observing site, or direction of doors of
-/// different types of enclosures.
-public enum PolisDirection: Codable {
-
-    /// A list of 16 rough directions.
-    ///
-    /// These 16 directions are comprised of the 4 cardinal directions (north, east, south, west), the 4
-    /// ordinal (also known as inter-cardinal) directions (northeast, northwest, southeast, southwest), and
-    /// the 8 additional secondary inter cardinal directions (ex. ENE, SSW, WSW).
-    ///
-    /// Rough direction could be used when it is not important to know or impossible to measure the exact direction.
-    /// Examples include the wind direction, or the orientations of the doors of a clamshell enclosure.
-    public enum RoughDirection: String, Codable {
-        case north          = "N"
-        case northNorthEast = "NNE"
-        case northEast      = "NE"
-        case eastNorthEast  = "ENE"
-
-        case east           = "E"
-        case eastSouthEast  = "ESE"
-        case southEast      = "SE"
-        case southSouthEast = "SSE"
-
-        case south          = "S"
-        case southSouthWest = "SSW"
-        case southWest      = "SW"
-        case westSouthWest  = "WSW"
-
-        case west           = "W"
-        case westNorthWest  = "WNW"
-        case northWest      = "NW"
-        case northNorthWest = "NNW"
-    }
-
-    case rough(direction: RoughDirection)
-    case exact(degree: Double)                  // Clockwise e.g. 157.12
-}
 
 
 //MARK: - Type extensions -

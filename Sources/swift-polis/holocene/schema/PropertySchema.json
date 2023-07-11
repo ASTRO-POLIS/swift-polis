@@ -17,9 +17,37 @@
             "xml"
         ]
     },
+    "exact_direction": {
+        "description": "Exact direction represented as double.",
+        "value_type": "double",
+        "min_value": 0.0,
+        "max_value": 360.0
+    },
     "note": {
         "description": "Free text string, that could be formatted with new lines, tabs. etc. and has no size limit. Nevertheless. Too long notes should be avoided.",
         "value_type": "string"
+    },
+    "rough_direction": {
+        "description": "Rough direction represented as a string.",
+        "value_type": "string",
+        "value_set": [
+            "N",
+            "NNE",
+            "NE",
+            "ENE",
+            "E",
+            "ESE",
+            "SE",
+            "SSE",
+            "S",
+            "SSW",
+            "SW",
+            "WSW",
+            "W",
+            "WNW",
+            "NW",
+            "NNW"
+        ]
     },
     "unit": {
         "description": "The unit of a PolisPropertyValue as a string.",
