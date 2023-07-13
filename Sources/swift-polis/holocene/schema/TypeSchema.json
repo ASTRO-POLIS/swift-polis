@@ -56,7 +56,7 @@
         ]
     },
     "visiting_hours": {
-        "standart_properties": [
+        "standard_properties": [
             {
                 "property": "note",
                 "minCardinality": 0,
