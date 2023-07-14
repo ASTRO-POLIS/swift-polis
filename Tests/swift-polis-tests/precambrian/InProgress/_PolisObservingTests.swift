@@ -35,7 +35,7 @@ class PolisObservingTests: XCTestCase {
     //MARK: - Actual tests -
     func testPolisObservingSiteCodingSupport() {
         let identity = PolisIdentity(id: UUID(),
-                                     status: PolisIdentity.LifecycleStatus.inactive,
+                                     lifecycleStatus: PolisIdentity.LifecycleStatus.inactive,
                                      lastUpdate: Date(),
                                      name: "testing",
                                      abbreviation: "tst",

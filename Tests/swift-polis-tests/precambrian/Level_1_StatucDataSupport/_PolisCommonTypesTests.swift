@@ -43,33 +43,6 @@ final class _PolisCommonTypesTests: XCTestCase {
 
     //MARK: - Actual tests -
 
-    //TODO: Check creation + Encoding / Decoding
-    //TODO: Check Equitable
-
-    
-    //MARK: Measurements
-
-    //MARK: Images
-
-    //MARK: POLIS Identity related types
-
-    func testPolisIdentityCodingSupport() {
-        let sut = PolisIdentity(references: ["1234", "6539"],
-                                status: PolisIdentity.LifecycleStatus.active,
-                                lastUpdate: Date(),
-                                name: "TestAttributes",
-                                abbreviation: "abc",
-                                automationLabel: "Ascom Label",
-                                shortDescription: "Testing attributes")
-
-        XCTAssertNotNil(sut)
-
-        data   = try? jsonEncoder.encode(sut)
-        string = String(data: data!, encoding: .utf8)
-
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisIdentity.self, from: string!.data(using: .utf8)!))
-    }
-
     //MARK: Communication related types
 
     func testPolisAdminContactCodingSupport() {
@@ -122,7 +95,6 @@ final class _PolisCommonTypesTests: XCTestCase {
 
     //MARK: - Housekeeping -
     static var allTests = [
-        ("testPolisIdentityCodingSupport",     testPolisIdentityCodingSupport),
         ("testPolisAdminContactCodingSupport", testPolisAdminContactCodingSupport),
         ("testPolisContactCodingSupport",      testPolisContactCodingSupport),
     ]

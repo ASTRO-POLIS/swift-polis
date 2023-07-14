@@ -50,8 +50,8 @@ class PolisItemOwnerTests: XCTestCase {
     }
 
     func testPolisItemOwnerCodingSupport() {
-        let identity = PolisIdentity(references: ["1234"],
-                                     status: PolisIdentity.LifecycleStatus.active,
+        let identity = PolisIdentity(externalReferences: ["1234"],
+                                     lifecycleStatus: PolisIdentity.LifecycleStatus.active,
                                      lastUpdate: Date(),
                                      name: "Test identity",
                                      abbreviation: "abc",

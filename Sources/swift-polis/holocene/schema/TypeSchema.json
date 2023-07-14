@@ -13,6 +13,52 @@
             }
         ]
     },
+    "identity": {
+        "mandatory_properties": [
+            {
+                "property": "id",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "lifecycle_status",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "last_update",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "name",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            }
+        ],
+        "standard_properties": [
+            {
+                "property": "abbreviation",
+                "minCardinality": 0,
+                "maxCardinality": 1
+            },
+            {
+                "property": "automation_label",
+                "minCardinality": 0,
+                "maxCardinality": 1
+            },
+            {
+                "property": "external_references",
+                "minCardinality": 0,
+                "maxCardinality": 1
+            },
+            {
+                "property": "short_description",
+                "minCardinality": 0,
+                "maxCardinality": 1
+            }
+        ]
+    },
     "implementation": {
         "aliases": [
             "originalFramework_supported_implementation",

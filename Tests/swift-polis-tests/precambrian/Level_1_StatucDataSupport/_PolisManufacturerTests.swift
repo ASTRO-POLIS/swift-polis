@@ -34,8 +34,8 @@ class PolisManufacturerTests: XCTestCase {
 
     //MARK: - Actual tests -
     func testPolisManufacturerCodingSupport() {
-        let identity = PolisIdentity(references: ["6539"],
-                                     status: PolisIdentity.LifecycleStatus.active,
+        let identity = PolisIdentity(externalReferences: ["6539"],
+                                     lifecycleStatus: PolisIdentity.LifecycleStatus.active,
                                      lastUpdate: Date(),
                                      name: "asa",
                                      abbreviation: "asa",

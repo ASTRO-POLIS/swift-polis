@@ -34,8 +34,8 @@ final class PolisItemTests: XCTestCase {
 
     //MARK: - Actual tests -
     func testPolisItemCodingSupport() {
-        let identity = PolisIdentity(references: ["6539"],
-                                     status: PolisIdentity.LifecycleStatus.inactive,
+        let identity = PolisIdentity(externalReferences: ["6539"],
+                                     lifecycleStatus: PolisIdentity.LifecycleStatus.inactive,
                                      lastUpdate: Date(),
                                      name: "TestItem",
                                      abbreviation: "item",
