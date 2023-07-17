@@ -25,6 +25,11 @@
             "xml"
         ]
     },
+    "email_address": {
+        "description": "Welldefined valid email address",
+        "value_type": "string",
+        "validation": "[A-Z0-9a-z.\\-_]+@[A-Za-z0-9.\\-]+\\.[A-Za-z]{2,}"
+    },
     "exact_direction": {
         "description": "Exact direction represented as double.",
         "value_type": "double",
@@ -37,9 +42,21 @@
             "string"
         ]
     },
+    "facebook_ids": {
+        "description": "Array of valid facebook IDs as strings. The IDs represent only the part after the www.facebook.com base URL.",
+        "value_type": [
+            "string"
+        ]
+    },
     "id": {
         "description": "Unique ID in the formal of a standard UUID",
         "value_type": "string"
+    },
+    "Instagram_ids": {
+        "description": "Array of valid instagram IDs as strings",
+        "value_type": [
+            "string"
+        ]
     },
     "last_update": {
         "description": "Date and time of the last change of the item in an ISO format, e.g. 2023-07-11T01:17:32Z represented as a string",
@@ -92,6 +109,19 @@
         "description": "Short description of the item.",
         "value_type": "string"
     },
+    "skype_ids": {
+        "description": "Array of valid skype IDs as strings",
+        "value_type": [
+            "string"
+        ]
+    },
+    "twitter_ids": {
+        "description": "Array of valid twitter IDs as strings",
+        "value_type": [
+            "string"
+        ],
+        "validation": "/@([A-Za-z0-9_]{1,15})/"
+    },
     "unit": {
         "description": "The unit of a PolisPropertyValue as a string.",
         "value_type": "string"
@@ -113,5 +143,11 @@
     "version": {
         "description": "Semantic Version of the POLIS implementation (see: SemanticVersioning: https: //semver.org)",
         "value_type": "string"
+    },
+    "whatsapp_ids": {
+        "description": "Array of valid WhatsApp IDs as strings",
+        "value_type": [
+            "string"
+        ]
     }
 }

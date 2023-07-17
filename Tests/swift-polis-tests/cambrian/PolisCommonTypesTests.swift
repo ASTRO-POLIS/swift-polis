@@ -156,26 +156,69 @@ final class PolisCommonTypesTests: XCTestCase {
                                 abbreviation: "abc",
                                 automationLabel: "Ascom Label",
                                 shortDescription: "Testing attributes")
-        
-        
+
+
         // When
         data   = try? jsonEncoder.encode(sut)
         string = String(data: data!, encoding: .utf8)
-        
+
         // Then
         XCTAssertNotNil(sut)
         XCTAssertNoThrow(try jsonDecoder.decode(PolisIdentity.self, from: string!.data(using: .utf8)!))
     }
 
+    //MARK: - Communication
+    func test_PolisAdminContactCommunication_codingSupport_shouldSucceed() throws {
+        // Given
+        let sut = PolisAdminContact.Communication(twitterIDs: ["@polis"],
+                                                  whatsappPhoneNumbers: ["+305482049"],
+                                                  facebookIDs: ["super_astronomers"],
+                                                  instagramIDs: ["super_astro"],
+                                                  skypeIDs: ["super_duper_astro"])
+
+
+        // When
+        data   = try? jsonEncoder.encode(sut)
+        string = String(data: data!, encoding: .utf8)
+
+        // Then
+        XCTAssertNotNil(sut)
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisAdminContact.Communication.self, from: string!.data(using: .utf8)!))
+    }
+
+    func test_PolisAdminContact_codingSupport_shouldSucceed() throws {
+        // Given
+        let communication = PolisAdminContact.Communication(twitterIDs: ["@polis"],
+                                                            whatsappPhoneNumbers: ["+305482049"],
+                                                            facebookIDs: ["super_astronomers"],
+                                                            instagramIDs: ["super_astro"],
+                                                            skypeIDs: ["super_duper_astro"])
+        let sut = PolisAdminContact(name: "polis",
+                                    emailAddress: "polis@observer.net",
+                                    phoneNumber: nil,
+                                    additionalCommunication: communication,
+                                    note: nil)
+
+
+        // When
+        data   = try? jsonEncoder.encode(sut)
+        string = String(data: data!, encoding: .utf8)
+
+        // Then
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisAdminContact.self, from: string!.data(using: .utf8)!))
+   }
+
     static var allTests = [
-        ("test_PolisVisitingHours_creation_shouldSucceed",       test_PolisVisitingHours_creation_shouldSucceed),
-        ("test_PolisVisitingHours_creation_shouldSucceed",       test_PolisVisitingHours_creation_shouldSucceed),
-        ("test_PolisPropertyValue_codingSupport_shouldSucceed",  test_PolisPropertyValue_codingSupport_shouldSucceed),
-        ("test_PolisPropertyValue_equatable_shouldSucceed",      test_PolisPropertyValue_equatable_shouldSucceed),
-        ("test_PolisDirection_exactCodingSupport_shouldSucceed", test_PolisDirection_exactCodingSupport_shouldSucceed),
-        ("test_PolisDirection_roughCodingSupport_shouldSucceed", test_PolisDirection_roughCodingSupport_shouldSucceed),
-        ("test_PolisDirection_calculations_shouldSucceed",       test_PolisDirection_calculations_shouldSucceed),
-        ("test_PolisIdentity_codingSupport_shouldSucceed",       test_PolisIdentity_codingSupport_shouldSucceed),
+        ("test_PolisVisitingHours_creation_shouldSucceed",                  test_PolisVisitingHours_creation_shouldSucceed),
+        ("test_PolisVisitingHours_creation_shouldSucceed",                  test_PolisVisitingHours_creation_shouldSucceed),
+        ("test_PolisPropertyValue_codingSupport_shouldSucceed",             test_PolisPropertyValue_codingSupport_shouldSucceed),
+        ("test_PolisPropertyValue_equatable_shouldSucceed",                 test_PolisPropertyValue_equatable_shouldSucceed),
+        ("test_PolisDirection_exactCodingSupport_shouldSucceed",            test_PolisDirection_exactCodingSupport_shouldSucceed),
+        ("test_PolisDirection_roughCodingSupport_shouldSucceed",            test_PolisDirection_roughCodingSupport_shouldSucceed),
+        ("test_PolisDirection_calculations_shouldSucceed",                  test_PolisDirection_calculations_shouldSucceed),
+        ("test_PolisIdentity_codingSupport_shouldSucceed",                  test_PolisIdentity_codingSupport_shouldSucceed),
+        ("test_PolisAdminContactCommunication_codingSupport_shouldSucceed", test_PolisAdminContactCommunication_codingSupport_shouldSucceed),
+        ("test_PolisAdminContact_codingSupport_shouldSucceed",              test_PolisAdminContact_codingSupport_shouldSucceed),
     ]
 
 

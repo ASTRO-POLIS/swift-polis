@@ -1,4 +1,50 @@
 {
+    "admin_contact": {
+        "mandatory_properties": [
+            {
+                "property": "id",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "email_address",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "name",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            }
+        ]
+        "standard_properties": [
+            {
+                "property": "skype_ids",
+                "minCardinality": 0,
+                "maxCardinality": 1
+            },
+            {
+                "property": "facebook_ids",
+                "minCardinality": 0,
+                "maxCardinality": 1
+            },
+            {
+                "property": "whatsapp_ids",
+                "minCardinality": 0,
+                "maxCardinality": 1
+            },
+            {
+                "property": "instagram_ids",
+                "minCardinality": 0,
+                "maxCardinality": 1
+            },
+            {
+                "property": "twitter_ids",
+                "minCardinality": 0,
+                "maxCardinality": 1
+            }
+       ]
+    },
     "direction": {
         "mandatory_properties": [
             {
