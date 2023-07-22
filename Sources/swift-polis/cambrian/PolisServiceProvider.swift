@@ -37,7 +37,7 @@ public struct PolisDirectory  {
         ///
         /// In general, only `public` and `mirror` types should be used by clients. Astro clubs and other communities might
         /// access `private` providers, but they probably will allow only a restricted access to members only.
-        public enum ProviderType {
+        public enum ProviderType: String, Codable {
 
             /// Only `public` provider should be used in production or by publicly available client apps or websites. Public
             /// providers should run on servers with enough bandwidth and computational power capable of accommodating multiple
@@ -59,7 +59,7 @@ public struct PolisDirectory  {
 
             /// Only when a `public` provider is unreachable, its `mirror` (if available) should be accessed while the main server
             /// is down.
-            case mirror(id: String) // The `id` of the service provider being mirrored.
+            case mirror // The `id` of the service provider being mirrored.
         }
 
         /// `ServiceReachability` indicates the reachability status of other Service Providers
@@ -73,21 +73,23 @@ public struct PolisDirectory  {
         public enum ServiceReachability: String, Codable  {
 
             /// `reachableAndResponsive` identifies stable and fast Service Provider.
-            case reachableAndResponsive
+            case reachableAndResponsive = "reachable_and_responsive"
 
             /// `reachableButSlow` marks reachable but somehow sluggish Service Provider.
-            case reachableButSlow
+            case reachableButSlow       = "reachable_but_slow"
 
             /// `currentlyUnreachable` marks temporary unreachable Service Provider.
-            case currentlyUnreachable
+            case currentlyUnreachable   = "currently_unreachable"
 
             /// `permanentlyUnreachable` marks Service Providers that are down for longer period of time. After ca. 18 months, the data about them could
             /// be deleted permanently
-            case permanentlyUnreachable
+            case permanentlyUnreachable = "permanently_unreachable"
         }
 
         /// `id` should never be changed.
         public var id: UUID
+
+        public var mirrorID: UUID?
 
         /// The reachability status of a Service Provider entry
         public var reachabilityStatus: ServiceReachability
@@ -113,7 +115,7 @@ public struct PolisDirectory  {
         /// POLIS service provider's admin contact
         ///
         /// It is recommended that the contact information exposes no or very limited personal information
-        public var contact: PolisAdminContact
+        public var adminContact: PolisAdminContact
 
         /// `id` is needed to make the structure `Identifiable`
         ///
@@ -122,21 +124,22 @@ public struct PolisDirectory  {
         public enum DirectoryEntryError: Error {
             case emptyListOfSupportedImplementations
             case noneOfTheRequestedImplementationsIsSupportedByTheFramework
+            case mirrorIdNotAssigned
         }
 
         /// Designated initialiser.
-        public init(id:                       UUID = UUID(),
+        public init(id:                       UUID                = UUID(),
+                    mirrorID:                 UUID?               = nil,
                     reachabilityStatus:       ServiceReachability = .currentlyUnreachable,
                     name:                     String,
-                    shortDescription:         String? = nil,
-                    lastUpdate:               Date = Date(),
+                    shortDescription:         String?             = nil,
+                    lastUpdate:               Date                = Date(),
                     url:                      String,
-                    providerDescription:      String?,
                     supportedImplementations: [PolisImplementation],
                     providerType:             ProviderType,
-                    contact:                  PolisAdminContact) throws {
-            guard !supportedImplementations.isEmpty else { throw DirectoryEntryError.emptyListOfSupportedImplementations }
-
+                    adminContact:             PolisAdminContact) throws {
+            if supportedImplementations.isEmpty               { throw DirectoryEntryError.emptyListOfSupportedImplementations }
+            if (providerType == .mirror) && (mirrorID == nil) { throw DirectoryEntryError.mirrorIdNotAssigned }
 
             let suggestedImplementations = Set(supportedImplementations)
             let supportedImplementations = Set(PolisConstants.frameworkSupportedImplementation)
@@ -146,6 +149,7 @@ public struct PolisDirectory  {
             guard !filtered.isEmpty else { throw DirectoryEntryError.noneOfTheRequestedImplementationsIsSupportedByTheFramework }
 
             self.id                       = id
+            self.mirrorID                 = mirrorID
             self.reachabilityStatus       = reachabilityStatus
             self.name                     = name
             self.shortDescription         = shortDescription
@@ -153,13 +157,13 @@ public struct PolisDirectory  {
             self.url                      = url
             self.supportedImplementations = filtered
             self.providerType             = providerType
-            self.contact                  = contact
+            self.adminContact             = adminContact
         }
     }
 
 
 
-    public var lastUpdate: Date                // Used for syncing
+    public var lastUpdate: Date           // Used for syncing
     public var entries: [DirectoryEntry]  // List of all known providers, including it's own provider entry
 
     /// Designated initialiser.
@@ -240,71 +244,12 @@ public struct PolisResourceSiteDirectory: Codable {
 
 //MARK: - Making types Codable and CustomStringConvertible -
 
-//MARK: PolisProviderType
-extension PolisDirectory.DirectoryEntry.ProviderType: Codable, CustomStringConvertible {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        let base      = try container.decode(ProviderType.self, forKey: .providerType)
-
-        switch base {
-            case .public:       self = .public
-            case .private:      self = .private
-            case .local:        self = .local
-            case .experimental: self = .experimental
-            case .mirror:
-                let mirrorParams = try container.decode(MirrorParams.self, forKey: .mirrorParams)
-                self = .mirror(id: mirrorParams.id)
-        }
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-
-        switch self {
-            case .public:       try container.encode(ProviderType.public,       forKey: .providerType)
-            case .private:      try container.encode(ProviderType.private,      forKey: .providerType)
-            case .local:        try container.encode(ProviderType.local,        forKey: .providerType)
-            case .experimental: try container.encode(ProviderType.experimental, forKey: .providerType)
-            case .mirror(let id):
-                try container.encode(ProviderType.mirror, forKey: .providerType)
-                try container.encode(MirrorParams(id: id), forKey: .mirrorParams)
-        }
-    }
-
-    public var description: String {
-        switch self {
-            case .public:         return "public"
-            case .private:        return "private"
-            case .local:          return "local"
-            case .experimental:   return "experimental"
-            case .mirror(let id): return "mirror(id: \(id)"
-        }
-    }
-
-    enum CodingKeys: String, CodingKey {
-        case providerType = "type"
-        case mirrorParams = "mirror"
-    }
-
-    private enum ProviderType: String, Codable { case `public`, `private`, local, experimental, mirror }
-
-    private struct MirrorParams: Codable { let id: String }
-
-}
-
-extension PolisDirectory.DirectoryEntry.ServiceReachability {
-    public enum CodingKeys: String, CodingKey {
-        case reachableAndResponsive = "reachable_and_responsive"
-        case reachableButSlow       = "reachable_but_slow"
-        case currentlyUnreachable   = "currently_unreachable"
-        case permanentlyUnreachable = "permanently_unreachable"
-    }
-}
 
 //MARK: - PolisDirectoryEntry
 extension PolisDirectory.DirectoryEntry: Codable {
     public enum CodingKeys: String, CodingKey {
         case id
+        case mirrorID                 = "mirror_id"
         case reachabilityStatus       = "reachability_status"
         case name
         case shortDescription         = "short_description"
@@ -312,7 +257,7 @@ extension PolisDirectory.DirectoryEntry: Codable {
         case url
         case supportedImplementations = "supported_implementations"
         case providerType             = "provider_type"
-        case contact
+        case adminContact             = "admin_contact"
     }
 }
 

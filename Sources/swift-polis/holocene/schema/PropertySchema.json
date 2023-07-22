@@ -75,6 +75,10 @@
             "unknown"
         ]
     },
+    "mirror_id": {
+        "description": "Unique ID in the formal of a standard UUID, similar to id",
+        "value_type": "string"
+    },
     "name": {
         "description": "The name of the item. Recommended to be (semi) unique, but this is not required",
         "value_type": "string"
@@ -105,6 +109,27 @@
             "NNW"
         ]
     },
+    "provider_type": {
+        "description": "Defines the type of the POLIS Service Provider.",
+        "value_type": "string",
+        "value_set": [
+            "public",
+            "private",
+            "local",
+            "experimental",
+            "mirror"
+        ]
+    },
+    "reachability_status": {
+        "description": "Defines how reachable is the POLIS Service Provider.",
+        "value_type": "string",
+        "value_set": [
+            "reachable_and_responsive",
+            "reachable_but_slow",
+            "currently_unreachable",
+            "permanently_unreachable"
+        ]
+    },
     "short_description": {
         "description": "Short description of the item.",
         "value_type": "string"
@@ -124,6 +149,10 @@
     },
     "unit": {
         "description": "The unit of a PolisPropertyValue as a string.",
+        "value_type": "string"
+    },
+    "url": {
+        "description": "Well formated URL including the protocol, e.g. https://polis.net .",
         "value_type": "string"
     },
     "value": {

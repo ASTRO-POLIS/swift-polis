@@ -16,7 +16,7 @@
                 "minCardinality": 1,
                 "maxCardinality": 1
             }
-        ]
+        ],
         "standard_properties": [
             {
                 "property": "skype_ids",
@@ -43,10 +43,10 @@
                 "minCardinality": 0,
                 "maxCardinality": 1
             }
-       ]
+        ]
     },
     "direction": {
-        "mandatory_properties": [
+        "standard_properties": [
             {
                 "property": "exact_direction",
                 "minCardinality": 0,
@@ -54,6 +54,57 @@
             },
             {
                 "property": "rough_direction",
+                "minCardinality": 0,
+                "maxCardinality": 1
+            }
+        ]
+    },
+    "directory_entry": {
+        "mandatory_properties": [
+            {
+                "property": "id",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "reachability_status",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "last_update",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "url",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "supported_implementations",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "provider_type",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "admin_contact",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            }
+        ],
+        "standard_properties": [
+            {
+                "property": "mirror_id",
+                "minCardinality": 0,
+                "maxCardinality": 1
+            },
+            {
+                "property": "short_description",
                 "minCardinality": 0,
                 "maxCardinality": 1
             }
