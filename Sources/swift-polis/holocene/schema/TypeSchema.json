@@ -59,8 +59,7 @@
             }
         ]
     },
-    "directory_entry": {
-        "mandatory_properties": [
+    "provider_directory_entries": {
             {
                 "property": "id",
                 "minCardinality": 1,
@@ -176,6 +175,19 @@
                 "property": "version",
                 "minCardinality": 1,
                 "maxCardinality": 1
+            }
+        ]
+    },
+    "polis": {
+        "mandatory_properties": [
+            {
+                "property": "last_update",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "provider_directory_entries",
+                "minCardinality": 1,
             }
         ]
     },

@@ -24,6 +24,32 @@ final class PolisServiceProviderTests: XCTestCase {
     private var jsonDecoder: PolisJSONDecoder!
     private var data: Data!
     private var string: String!
+    private let jsonDataFromDirectoryEntry = """
+{
+    "short_description": "The Big Bank Source",
+    "reachability_status": "reachable_and_responsive",
+    "id": "090E3F63-EF2A-4123-8518-77D5664EAA01",
+    "last_update": "2023-07-22T12:10:06Z",
+    "supported_implementations": [
+        {
+            "api_support": "static_data",
+            "version": "0.2.0-alpha.1",
+            "data_format": "json"
+        }
+    ],
+    "provider_type": "mirror",
+    "mirror_id": "62B5E7C7-4A90-4569-9B13-4AEF324441E4",
+    "admin_contact": {
+        "id": "4C8C99D5-1E44-4069-B30D-7DE18B76336F",
+        "email_address": "polis@observer.net",
+        "name": "polis",
+        "phone_number": "+3068452820",
+        "note": "The admin works only on Sunday"
+    },
+    "name": "Telescope Observer",
+    "url": "https://polis.net"
+}
+"""
 
     //MARK: - Setup & Teardown -
 
@@ -57,9 +83,9 @@ final class PolisServiceProviderTests: XCTestCase {
     }
 
     //MARK: - Tests -
-    func test_ProviderType_codingSupport_shouldSucceed() throws {
+    func test_ProviderDirectoryEntry_codingSupport_shouldSucceed() throws {
         // Given
-        let sut = try? PolisDirectory.DirectoryEntry(mirrorID: UUID(),
+        let sut = try? PolisDirectory.ProviderDirectoryEntry(mirrorID: UUID(),
                                                      reachabilityStatus: .reachableAndResponsive,
                                                      name: "Telescope Observer",
                                                      shortDescription: "The Big Bank Source",
@@ -71,17 +97,47 @@ final class PolisServiceProviderTests: XCTestCase {
                                                                                      phoneNumber: "+3068452820",
                                                                                      additionalCommunication: nil,
                                                                                      note: "The admin works only on Sunday")!)
-        
+
         // When
         data   = try? jsonEncoder.encode(sut)
         string = String(data: data!, encoding: .utf8)
 
         // Then
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectory.DirectoryEntry.self, from: string!.data(using: .utf8)!))
-
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectory.ProviderDirectoryEntry.self, from: string!.data(using: .utf8)!))
     }
+
+    func test_DirectoryEntry_loadingPolisDirectoryEntryFromData_shouldSucceed() throws {
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectory.ProviderDirectoryEntry.self, from: jsonDataFromDirectoryEntry.data(using: .utf8)!))
+   }
+
+    func test_PolisDirectory_codingSupport_shouldSucceed() throws {
+        // Given
+        let sut_entry = try? PolisDirectory.ProviderDirectoryEntry(mirrorID: UUID(),
+                                                                   reachabilityStatus: .reachableAndResponsive,
+                                                                   name: "Telescope Observer",
+                                                                   shortDescription: "The Big Bank Source",
+                                                                   url: "https://polis.net",
+                                                                   supportedImplementations: [PolisConstants.frameworkSupportedImplementation.last!],
+                                                                   providerType: .mirror,
+                                                                   adminContact: PolisAdminContact(name: "polis",
+                                                                                                   emailAddress: "polis@observer.net",
+                                                                                                   phoneNumber: "+3068452820",
+                                                                                                   additionalCommunication: nil,
+                                                                                                   note: "The admin works only on Sunday")!)
+        let sut = PolisDirectory(providerDirectoryEntries: [sut_entry!])
+
+        // When
+        data   = try? jsonEncoder.encode(sut)
+        string = String(data: data!, encoding: .utf8)
+
+        // Then
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectory.self, from: string!.data(using: .utf8)!))
+    }
+
     static var allTests = [
-        ("test_ProviderType_codingSupport_shouldSucceed", test_ProviderType_codingSupport_shouldSucceed),
+        ("test_ProviderDirectoryEntry_codingSupport_shouldSucceed",              test_ProviderDirectoryEntry_codingSupport_shouldSucceed),
+        ("test_DirectoryEntry_loadingPolisDirectoryEntryFromData_shouldSucceed", test_DirectoryEntry_loadingPolisDirectoryEntryFromData_shouldSucceed),
+        ("test_PolisDirectory_codingSupport_shouldSucceed",                      test_PolisDirectory_codingSupport_shouldSucceed),
     ]
 
     //MARK: - Templates

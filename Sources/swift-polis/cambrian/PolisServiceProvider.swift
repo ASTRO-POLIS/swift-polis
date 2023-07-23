@@ -31,7 +31,7 @@ public struct PolisDirectory  {
     ///
     /// `PolisDirectoryEntry` is used to define the Polis provider itself, as well as as an entry in the list of known Polis
     /// providers.
-    public struct DirectoryEntry: Identifiable {
+    public struct ProviderDirectoryEntry: Identifiable {
 
         /// `ProviderType` defines different types of POLIS Providers.
         ///
@@ -163,20 +163,20 @@ public struct PolisDirectory  {
 
 
 
-    public var lastUpdate: Date           // Used for syncing
-    public var entries: [DirectoryEntry]  // List of all known providers, including it's own provider entry
+    public var lastUpdate: Date                            // Used for syncing
+    public var providerDirectoryEntries: [ProviderDirectoryEntry]  // List of all known providers, including it's own provider entry
 
     /// Designated initialiser.
     /// - Parameters:
     ///   - lastUpdate: if omitted, the current date and time will be used
-    ///   - entries: possibly empty list of known POSIL service providers. `entries` must contain at least the
+    ///   - directoryEntries: possibly empty list of known POSIL service providers. `entries` must contain at least the
     ///   `PolisDirectoryEntry` for its own provider. Otherwise the method returns `nil`.
     public init?(lastUpdate: Date = Date(),
-                entries: [DirectoryEntry]) {
-        guard !entries.isEmpty else { return nil }
+                 providerDirectoryEntries: [ProviderDirectoryEntry]) {
+        guard !providerDirectoryEntries.isEmpty else { return nil }
 
-        self.lastUpdate = lastUpdate
-        self.entries    = entries
+        self.lastUpdate               = lastUpdate
+        self.providerDirectoryEntries = providerDirectoryEntries
     }
 }
 
@@ -246,7 +246,7 @@ public struct PolisResourceSiteDirectory: Codable {
 
 
 //MARK: - PolisDirectoryEntry
-extension PolisDirectory.DirectoryEntry: Codable {
+extension PolisDirectory.ProviderDirectoryEntry: Codable {
     public enum CodingKeys: String, CodingKey {
         case id
         case mirrorID                 = "mirror_id"
@@ -264,15 +264,15 @@ extension PolisDirectory.DirectoryEntry: Codable {
 //MARK: - PolisDirectory
 extension PolisDirectory: Codable {
     public enum CodingKeys: String, CodingKey {
-        case lastUpdate = "last_updated"
-        case entries
+        case lastUpdate               = "last_updated"
+        case providerDirectoryEntries = "provider_directory_entries"
     }
 }
 
 extension PolisObservingSiteDirectory {
     public enum CodingKeys: String, CodingKey {
-        case lastUpdate = "last_updated"
-        case entries
+        case lastUpdate       = "last_updated"
+        case entries = "directory_entries"
     }
 }
 
