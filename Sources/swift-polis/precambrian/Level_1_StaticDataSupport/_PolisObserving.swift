@@ -18,7 +18,7 @@ import Foundation
 
 public enum PolisObservingType: String, Codable {
     case site
-    case mobilePlatform
+    case mobilePlatform = "mobile_platform"
     case collaboration
     case network
     case array
@@ -147,16 +147,6 @@ public struct PolisEarthObservingSite: PolisObserving {
 // - airplane
 
 //MARK: - Type extensions -
-
-public extension PolisObservingType {
-    enum CodingKeys: String, CodingKey {
-        case site
-        case mobilePlatform = "mobile_platform"
-        case collaboration
-        case network
-        case array
-    }
-}
 
 
 //MARK: - Observing Site

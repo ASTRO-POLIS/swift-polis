@@ -27,8 +27,8 @@ public struct PolisItem: Codable, Identifiable {
 
     public enum ModeOfOperation: String, Codable {
         case manual
-        case manualWithAutomatedDetector
-        case manualWithAutomatedDetectorAndScheduling
+        case manualWithAutomatedDetector              = "manual_with_automated_detector"
+        case manualWithAutomatedDetectorAndScheduling = "manual_with_automated_detector_and_scheduling"
         case autonomous
         case remote
         case mixed                                       // e.g. in case of Network
@@ -63,18 +63,6 @@ public struct PolisItem: Codable, Identifiable {
 }
 
 //MARK: - Type Extensions -
-public extension PolisItem.ModeOfOperation {
-    enum CodingKeys: String, CodingKey {
-        case manual
-        case manualWithAutomatedDetector              = "manual_with_automated_detector"
-        case manualWithAutomatedDetectorAndScheduling = "manual_with_automated_detector_and_scheduling"
-        case autonomous
-        case mixed
-        case other
-        case unknown
-    }
-}
-
 public extension PolisItem {
     enum CodingKeys: String, CodingKey {
         case identity

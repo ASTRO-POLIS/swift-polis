@@ -191,24 +191,24 @@ public struct PolisObservingSiteDirectory: Codable {
     /// invalidated (e.g. lastUpdate is changed).
     public struct ObservingSiteReference: Codable, Identifiable {
         public var identity: PolisIdentity
-        public var type: PolisObservingType
+        public var observingType: PolisObservingType
         public var parentObservingSiteID: UUID?
 
         public var id: UUID { identity.id }
 
-        public init(identity: PolisIdentity, type: PolisObservingType, parentObservingSiteID: UUID? = nil) {
+        public init(identity: PolisIdentity, observingType: PolisObservingType, parentObservingSiteID: UUID? = nil) {
             self.identity              = identity
-            self.type                  = type
+            self.observingType         = observingType
             self.parentObservingSiteID = parentObservingSiteID
         }
     }
 
-    public var lastUpdate: Date                   // UTC
-    public var entries: [ObservingSiteReference]
+    public var lastUpdate: Date                                   // UTC
+    public var observingSiteReferences: [ObservingSiteReference]
 
-    public init(lastUpdate: Date, entries: [ObservingSiteReference]) {
-        self.lastUpdate = lastUpdate
-        self.entries = entries
+    public init(lastUpdate: Date, observingSiteReferences: [ObservingSiteReference]) {
+        self.lastUpdate              = lastUpdate
+        self.observingSiteReferences = observingSiteReferences
     }
 }
 
@@ -271,15 +271,15 @@ extension PolisDirectory: Codable {
 
 extension PolisObservingSiteDirectory {
     public enum CodingKeys: String, CodingKey {
-        case lastUpdate       = "last_updated"
-        case entries = "directory_entries"
+        case lastUpdate              = "last_updated"
+        case observingSiteReferences = "observing_site_references"
     }
 }
 
 extension PolisObservingSiteDirectory.ObservingSiteReference {
     public enum CodingKeys: String, CodingKey {
         case identity
-        case type
+        case observingType         = "observing_type"
         case parentObservingSiteID = "parent_observing_site_id"
     }
 }
