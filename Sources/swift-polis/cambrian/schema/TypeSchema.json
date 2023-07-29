@@ -156,6 +156,19 @@
             }
         ]
     },
+    "polis_resources": {
+        "mandatory_properties": [
+            {
+                "property": "last_update",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "resource_reference",
+                "minCardinality": 0
+            }
+        ]
+    },
     "polis_sites": {
         "mandatory_properties": [
             {
@@ -165,8 +178,7 @@
             },
             {
                 "property": "observing_site_references",
-                "minCardinality": 1,
-                "maxCardinality": 1
+                "minCardinality": 0
             }
         ]
     },
@@ -238,6 +250,27 @@
                 "minCardinality": 0,
                 "maxCardinality": 1
             }
+        ]
+    },
+    "resource_reference": {
+        "mandatory_properties": [
+            {
+                "property": "identity",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "unique_manufacturer_name",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "device_types",
+                "minCardinality": 0
+            }
+        ],
+        "standard_properties": [
+            
         ]
     },
     "visiting_hours": {

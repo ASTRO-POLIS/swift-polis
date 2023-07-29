@@ -33,7 +33,7 @@ final class _PolisServiceProviderTests: XCTestCase {
         let asa          = PolisResourceSiteDirectory.ResourceReference(identity: asa_identity, uniqueName: "asa", deviceTypes: [.mount])
 
         // When
-        let sut = PolisResourceSiteDirectory(lastUpdate: Date(), entries: [asa])
+        let sut = PolisResourceSiteDirectory(lastUpdate: Date(), resourceReferences: [asa])
 
         // Then
         XCTAssertNotNil(sut)

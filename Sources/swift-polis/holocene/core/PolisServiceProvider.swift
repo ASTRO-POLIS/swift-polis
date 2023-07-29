@@ -230,12 +230,12 @@ public struct PolisResourceSiteDirectory: Codable {
         }
     }
 
-    public var lastUpdate: Date                   // UTC
-    public var entries: [ResourceReference]
+    public var lastUpdate: Date                        // UTC
+    public var resourceReferences: [ResourceReference]
 
-    public init(lastUpdate: Date, entries: [ResourceReference]) {
-        self.lastUpdate = lastUpdate
-        self.entries = entries
+    public init(lastUpdate: Date, resourceReferences: [ResourceReference]) {
+        self.lastUpdate         = lastUpdate
+        self.resourceReferences = resourceReferences
     }
 
 }
@@ -284,8 +284,8 @@ extension PolisObservingSiteDirectory.ObservingSiteReference {
 
 extension PolisResourceSiteDirectory {
     public enum CodingKeys: String, CodingKey {
-        case lastUpdate = "last_updated"
-        case entries
+        case lastUpdate         = "last_updated"
+        case resourceReferences = "resource_references"
     }
 }
 

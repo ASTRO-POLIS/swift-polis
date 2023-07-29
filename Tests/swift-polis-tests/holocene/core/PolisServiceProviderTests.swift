@@ -180,12 +180,32 @@ final class PolisServiceProviderTests: XCTestCase {
         XCTAssertNoThrow(try jsonDecoder.decode(PolisObservingSiteDirectory.self, from: string!.data(using: .utf8)!))
     }
 
+    func test_PolisResourceSiteDirectory_codingSupport_shouldSucceed() throws {
+        // Given
+        let identity  = PolisIdentity(lifecycleStatus: PolisIdentity.LifecycleStatus.active,
+                                      lastUpdate: Date(),
+                                      name: "AstroSystemeAustria",
+                                      abbreviation: "ASA",
+                                      automationLabel: "asa",
+                                      shortDescription: "Austrian major telescope producer")
+        let reference = PolisResourceSiteDirectory.ResourceReference(identity: identity, uniqueName: "ASA")
+        let sut       = PolisResourceSiteDirectory(lastUpdate: Date(), resourceReferences: [reference])
+
+        // When
+        data   = try? jsonEncoder.encode(sut)
+        string = String(data: data!, encoding: .utf8)
+
+        // Then
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisResourceSiteDirectory.self, from: string!.data(using: .utf8)!))
+    }
+
     static var allTests = [
         ("test_ProviderDirectoryEntry_codingSupport_shouldSucceed",              test_ProviderDirectoryEntry_codingSupport_shouldSucceed),
         ("test_DirectoryEntry_loadingPolisDirectoryEntryFromData_shouldSucceed", test_DirectoryEntry_loadingPolisDirectoryEntryFromData_shouldSucceed),
         ("test_PolisDirectory_codingSupport_shouldSucceed",                      test_PolisDirectory_codingSupport_shouldSucceed),
         ("test_ObservingSiteReference_codingSupport_shouldSucceed",              test_ObservingSiteReference_codingSupport_shouldSucceed),
         ("test_PolisObservingSiteDirectory_codingSupport_shouldSucceed",         test_PolisObservingSiteDirectory_codingSupport_shouldSucceed),
+        ("test_PolisResourceSiteDirectory_codingSupport_shouldSucceed",          test_PolisResourceSiteDirectory_codingSupport_shouldSucceed),
     ]
 
     //MARK: - Templates
