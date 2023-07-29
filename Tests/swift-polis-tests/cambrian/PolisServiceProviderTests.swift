@@ -134,10 +134,30 @@ final class PolisServiceProviderTests: XCTestCase {
         XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectory.self, from: string!.data(using: .utf8)!))
     }
 
+    func test_ObservingSiteReference_codingSupport_shouldSucceed() throws {
+        // Given
+        let identity = PolisIdentity(externalReferences: ["1234", "6539"],
+                                     lifecycleStatus: PolisIdentity.LifecycleStatus.active,
+                                     lastUpdate: Date(),
+                                     name: "TestAttributes",
+                                     abbreviation: "abc",
+                                     automationLabel: "Ascom Label",
+                                     shortDescription: "Testing attributes")
+        let sut      = PolisObservingSiteDirectory.ObservingSiteReference(identity: identity, observingType: PolisObservingType.site)
+
+        // When
+        data   = try? jsonEncoder.encode(sut)
+        string = String(data: data!, encoding: .utf8)
+
+        // Then
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisObservingSiteDirectory.ObservingSiteReference.self, from: string!.data(using: .utf8)!))
+    }
+
     static var allTests = [
         ("test_ProviderDirectoryEntry_codingSupport_shouldSucceed",              test_ProviderDirectoryEntry_codingSupport_shouldSucceed),
         ("test_DirectoryEntry_loadingPolisDirectoryEntryFromData_shouldSucceed", test_DirectoryEntry_loadingPolisDirectoryEntryFromData_shouldSucceed),
         ("test_PolisDirectory_codingSupport_shouldSucceed",                      test_PolisDirectory_codingSupport_shouldSucceed),
+        ("test_ObservingSiteReference_codingSupport_shouldSucceed",              test_ObservingSiteReference_codingSupport_shouldSucceed),
     ]
 
     //MARK: - Templates

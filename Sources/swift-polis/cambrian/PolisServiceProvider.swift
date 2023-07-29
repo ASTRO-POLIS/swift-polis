@@ -86,6 +86,13 @@ public struct PolisDirectory  {
             case permanentlyUnreachable = "permanently_unreachable"
         }
 
+        /// Possible errors while creating a `PolisDirectoryEntry`
+        public enum DirectoryEntryError: Error {
+            case emptyListOfSupportedImplementations
+            case noneOfTheRequestedImplementationsIsSupportedByTheFramework
+            case mirrorIdNotAssigned
+        }
+
         /// `id` should never be changed.
         public var id: UUID
 
@@ -119,13 +126,6 @@ public struct PolisDirectory  {
 
         /// `id` is needed to make the structure `Identifiable`
         ///
-
-        /// Possible errors while creating a `PolisDirectoryEntry`
-        public enum DirectoryEntryError: Error {
-            case emptyListOfSupportedImplementations
-            case noneOfTheRequestedImplementationsIsSupportedByTheFramework
-            case mirrorIdNotAssigned
-        }
 
         /// Designated initialiser.
         public init(id:                       UUID                = UUID(),
@@ -161,10 +161,8 @@ public struct PolisDirectory  {
         }
     }
 
-
-
-    public var lastUpdate: Date                            // Used for syncing
-    public var providerDirectoryEntries: [ProviderDirectoryEntry]  // List of all known providers, including it's own provider entry
+    public var lastUpdate: Date                                   // Used for syncing
+    public var providerDirectoryEntries: [ProviderDirectoryEntry] // List of all known providers, including it's own provider entry
 
     /// Designated initialiser.
     /// - Parameters:

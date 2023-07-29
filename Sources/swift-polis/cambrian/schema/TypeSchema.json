@@ -60,6 +60,7 @@
         ]
     },
     "provider_directory_entries": {
+        "mandatory_properties": [
             {
                 "property": "id",
                 "minCardinality": 1,
@@ -178,6 +179,20 @@
             }
         ]
     },
+    "observing_site_reference": {
+        "mandatory_properties": [
+            {
+                "property": "identity",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "observing_type",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            }
+        ]
+    },
     "polis": {
         "mandatory_properties": [
             {
@@ -188,6 +203,7 @@
             {
                 "property": "provider_directory_entries",
                 "minCardinality": 1,
+                "maxCardinality": 1
             }
         ]
     },

@@ -49,8 +49,7 @@ public class PolisStaticResourceFinder {
 
         self.dataFormatString = supportedImplementation.dataFormat.rawValue
         self.versionString    = supportedImplementation.version.description
-
-        self.relativePaths     = RelativePaths(versionString: versionString, fileExtension: dataFormatString)
+        self.relativePaths    = RelativePaths(versionString: versionString, fileExtension: dataFormatString)
     }
 
     func fileExtension() -> String { ".\(self.dataFormatString)" }    // e.g. ".json"

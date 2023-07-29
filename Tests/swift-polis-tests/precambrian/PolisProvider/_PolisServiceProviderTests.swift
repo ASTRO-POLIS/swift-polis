@@ -14,10 +14,10 @@ final class _PolisServiceProviderTests: XCTestCase {
         //TODO: Fix me! 
         // Given
         let astroTechIdentity           = PolisIdentity(name: "AstroTech")
-        let astroTechObservingSiteEntry = PolisObservingSiteDirectory.ObservingSiteReference(identity: astroTechIdentity, type: PolisObservingType.site)
+        let astroTechObservingSiteEntry = PolisObservingSiteDirectory.ObservingSiteReference(identity: astroTechIdentity, observingType: PolisObservingType.site)
 
         // When
-        let sut = PolisObservingSiteDirectory(lastUpdate: Date(), entries: [astroTechObservingSiteEntry])
+        let sut = PolisObservingSiteDirectory(lastUpdate: Date(), observingSiteReferences: [astroTechObservingSiteEntry])
 
         // Then
         XCTAssertNotNil(sut)

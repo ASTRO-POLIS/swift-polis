@@ -87,6 +87,28 @@
         "description": "Free text string, that could be formatted with new lines, tabs. etc. and has no size limit. Nevertheless. Too long notes should be avoided.",
         "value_type": "string"
     },
+    "observing_type": {
+        "description": "Defines the type of the POLIS Service Provider.",
+        "value_type": "string",
+        "value_set": [
+            "site",
+            "mobile_platform",
+            "collaboration",
+            "network",
+            "mirror"
+        ]
+    },
+    "provider_type": {
+        "description": "Defines the type of the POLIS Service Provider.",
+        "value_type": "string",
+        "value_set": [
+            "public",
+            "private",
+            "local",
+            "experimental",
+            "array"
+        ]
+    },
     "rough_direction": {
         "description": "Rough direction represented as a string.",
         "value_type": "string",
@@ -107,17 +129,6 @@
             "WNW",
             "NW",
             "NNW"
-        ]
-    },
-    "provider_type": {
-        "description": "Defines the type of the POLIS Service Provider.",
-        "value_type": "string",
-        "value_set": [
-            "public",
-            "private",
-            "local",
-            "experimental",
-            "mirror"
         ]
     },
     "reachability_status": {
