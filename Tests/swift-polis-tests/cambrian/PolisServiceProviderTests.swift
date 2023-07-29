@@ -153,11 +153,39 @@ final class PolisServiceProviderTests: XCTestCase {
         XCTAssertNoThrow(try jsonDecoder.decode(PolisObservingSiteDirectory.ObservingSiteReference.self, from: string!.data(using: .utf8)!))
     }
 
+    func test_PolisObservingSiteDirectory_codingSupport_shouldSucceed() throws {
+        // Given
+        let i1 = PolisIdentity(externalReferences: ["1234", "6539"],
+                               lifecycleStatus: PolisIdentity.LifecycleStatus.active,
+                               lastUpdate: Date(),
+                               name: "TestAttributes",
+                               abbreviation: "abc",
+                               automationLabel: "Ascom Label",
+                               shortDescription: "Testing attributes")
+        let i2 = PolisIdentity(externalReferences: ["1234"],
+                               lifecycleStatus: PolisIdentity.LifecycleStatus.suspended,
+                               lastUpdate: Date(),
+                               name: "OldStuff",
+                               abbreviation: "old",
+                               shortDescription: "Very old junk")
+        let osd1 = PolisObservingSiteDirectory.ObservingSiteReference(identity: i1, observingType: PolisObservingType.site)
+        let osd2 = PolisObservingSiteDirectory.ObservingSiteReference(identity: i2, observingType: PolisObservingType.site)
+        let sut  = PolisObservingSiteDirectory(lastUpdate: Date(), observingSiteReferences: [osd1, osd2])
+
+        // When
+        data   = try? jsonEncoder.encode(sut)
+        string = String(data: data!, encoding: .utf8)
+
+        // Then
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisObservingSiteDirectory.self, from: string!.data(using: .utf8)!))
+    }
+
     static var allTests = [
         ("test_ProviderDirectoryEntry_codingSupport_shouldSucceed",              test_ProviderDirectoryEntry_codingSupport_shouldSucceed),
         ("test_DirectoryEntry_loadingPolisDirectoryEntryFromData_shouldSucceed", test_DirectoryEntry_loadingPolisDirectoryEntryFromData_shouldSucceed),
         ("test_PolisDirectory_codingSupport_shouldSucceed",                      test_PolisDirectory_codingSupport_shouldSucceed),
         ("test_ObservingSiteReference_codingSupport_shouldSucceed",              test_ObservingSiteReference_codingSupport_shouldSucceed),
+        ("test_PolisObservingSiteDirectory_codingSupport_shouldSucceed",         test_PolisObservingSiteDirectory_codingSupport_shouldSucceed),
     ]
 
     //MARK: - Templates

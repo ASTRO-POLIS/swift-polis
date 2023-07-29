@@ -59,57 +59,6 @@
             }
         ]
     },
-    "provider_directory_entries": {
-        "mandatory_properties": [
-            {
-                "property": "id",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "reachability_status",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "last_update",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "url",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "supported_implementations",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "provider_type",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "admin_contact",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            }
-        ],
-        "standard_properties": [
-            {
-                "property": "mirror_id",
-                "minCardinality": 0,
-                "maxCardinality": 1
-            },
-            {
-                "property": "short_description",
-                "minCardinality": 0,
-                "maxCardinality": 1
-            }
-        ]
-    },
     "identity": {
         "mandatory_properties": [
             {
@@ -207,6 +156,20 @@
             }
         ]
     },
+    "polis_sites": {
+        "mandatory_properties": [
+            {
+                "property": "last_update",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "observing_site_references",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            }
+        ]
+    },
     "property_value": {
         "mandatory_properties": [
             {
@@ -222,6 +185,57 @@
             {
                 "property": "unit",
                 "minCardinality": 1,
+                "maxCardinality": 1
+            }
+        ]
+    },
+    "provider_directory_entries": {
+        "mandatory_properties": [
+            {
+                "property": "id",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "reachability_status",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "last_update",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "url",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "supported_implementations",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "provider_type",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "admin_contact",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            }
+        ],
+        "standard_properties": [
+            {
+                "property": "mirror_id",
+                "minCardinality": 0,
+                "maxCardinality": 1
+            },
+            {
+                "property": "short_description",
+                "minCardinality": 0,
                 "maxCardinality": 1
             }
         ]
