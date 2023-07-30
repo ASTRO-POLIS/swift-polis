@@ -3,6 +3,10 @@
         "description": "The abbreviation used by astronomers for the item",
         "value_type": "string"
     },
+    "accessibility_description": {
+        "description": "Description of an item in a way, that accessible software like VoiceOver can describe the item for visually impaired users.",
+        "value_type": "string"
+    },
     "api_support": {
         "description": "Defines the three levels of POLOS API support",
         "value_type": "string",
@@ -16,6 +20,26 @@
     "automation_label": {
         "description": "The automation level is used to synchronise POLIS data sets with external systems (e.g. ASCOM",
         "value_type": "string"
+    },
+    "copyright_holder_note": {
+        "description": "Complete copy of the text that a copyright holder gives his/her permission an information item (e.g. image) to be use by the POLIS Service providers.",
+        "value_type": "string"
+    },
+    "copyright_holder_reference": {
+        "description": "The name and the email address of the copyright holder.",
+        "value_type": "string"
+    },
+    "copyright_holder_type": {
+        "description": "Defines the type of the copyright permission for usage of an item (e.g. an image).",
+        "value_type": "string",
+        "value_set": [
+            "polis_contributor",
+            "star_cluster_image",
+            "creative_commons",
+            "open_source",
+            "use_with_owners_permission",
+            "pending_information"
+        ]
     },
     "data_format": {
         "description": "Defines various POLIS data formats",
@@ -97,6 +121,10 @@
             "network",
             "mirror"
         ]
+    },
+    "original_source": {
+        "description": "The source of external information. Most often it represents an URL",
+        "value_type": "string"
     },
     "provider_type": {
         "description": "Defines the type of the POLIS Service Provider.",

@@ -199,7 +199,6 @@ final class PolisCommonTypesTests: XCTestCase {
                                     additionalCommunication: communication,
                                     note: nil)
 
-
         // When
         data   = try? jsonEncoder.encode(sut)
         string = String(data: data!, encoding: .utf8)
@@ -207,6 +206,24 @@ final class PolisCommonTypesTests: XCTestCase {
         // Then
         XCTAssertNoThrow(try jsonDecoder.decode(PolisAdminContact.self, from: string!.data(using: .utf8)!))
    }
+
+    func test_PolisImageSourceImageItem_codingSupport_shouldSucceed() throws {
+        // Given
+        let sut = try PolisImageSource.ImageItem( originalSource: URL(string: PolisConstants.testBigBangPolisDomain)!,
+                                                  shortDescription: "Very interesting image",
+                                                  accessibilityDescription: "Image of a beautiful observatory on the topa high mountain",
+                                                  copyrightHolderType: .useWithOwnersPermission,
+                                                  copyrightHolderReference: "Contributor <contributor@example.com",
+                                                  copyrightHolderNote: "I agree this image to be used in POLIS")
+
+        // When
+        data   = try? jsonEncoder.encode(sut)
+        string = String(data: data!, encoding: .utf8)
+
+        // Then
+        XCTAssertNotNil(sut)
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisImageSource.ImageItem.self, from: string!.data(using: .utf8)!))
+    }
 
     static var allTests = [
         ("test_PolisVisitingHours_creation_shouldSucceed",                  test_PolisVisitingHours_creation_shouldSucceed),
@@ -219,6 +236,7 @@ final class PolisCommonTypesTests: XCTestCase {
         ("test_PolisIdentity_codingSupport_shouldSucceed",                  test_PolisIdentity_codingSupport_shouldSucceed),
         ("test_PolisAdminContactCommunication_codingSupport_shouldSucceed", test_PolisAdminContactCommunication_codingSupport_shouldSucceed),
         ("test_PolisAdminContact_codingSupport_shouldSucceed",              test_PolisAdminContact_codingSupport_shouldSucceed),
+        ("test_PolisImageSourceImageItem_codingSupport_shouldSucceed",      test_PolisImageSourceImageItem_codingSupport_shouldSucceed),
     ]
 
 

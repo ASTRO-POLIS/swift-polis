@@ -105,6 +105,52 @@
             }
         ]
     },
+    "image_item": {
+        "mandatory_properties": [
+            {
+                "property": "id",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "last_update",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "original_source",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            },
+            {
+                "property": "copyright_holder_type",
+                "minCardinality": 1,
+                "maxCardinality": 1
+            }
+        ],
+        "standard_properties": [
+            {
+                "property": "copyright_holder_reference",
+                "minCardinality": 0,
+                "maxCardinality": 1
+            },
+            {
+                "property": "copyright_holder_note",
+                "minCardinality": 0,
+                "maxCardinality": 1
+            },
+            {
+                "property": "short_description",
+                "minCardinality": 0,
+                "maxCardinality": 1
+            },
+            {
+                "property": "accessibility_description",
+                "minCardinality": 0,
+                "maxCardinality": 1
+            }
+        ]
+    },
     "implementation": {
         "aliases": [
             "originalFramework_supported_implementation",
