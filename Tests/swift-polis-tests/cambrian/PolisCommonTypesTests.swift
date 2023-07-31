@@ -225,6 +225,55 @@ final class PolisCommonTypesTests: XCTestCase {
         XCTAssertNoThrow(try jsonDecoder.decode(PolisImageSource.ImageItem.self, from: string!.data(using: .utf8)!))
     }
 
+    func test_PolisImageSource_codingSupport_shouldSucceed() async throws {
+        // Given
+        let item = try PolisImageSource.ImageItem( originalSource: URL(string: PolisConstants.testBigBangPolisDomain)!,
+                                                   shortDescription: "Very interesting image",
+                                                   accessibilityDescription: "Image of a beautiful observatory on the topa high mountain",
+                                                   copyrightHolderType: .useWithOwnersPermission,
+                                                   copyrightHolderReference: "Contributor <contributor@example.com",
+                                                   copyrightHolderNote: "I agree this image to be used in POLIS")
+        var sut  = PolisImageSource()
+
+        // When
+        sut.addImage(item)
+
+        data   = try? jsonEncoder.encode(sut)
+        string = String(data: data!, encoding: .utf8)
+
+
+        // Then
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisImageSource.self, from: string!.data(using: .utf8)!))
+        XCTAssertEqual(sut.imageItems.count, 1)
+ }
+
+    func test_PolisImageSource_addingAndRemovingItems_shouldSucceed() async throws {
+        // Given
+        let item1 = try PolisImageSource.ImageItem( originalSource: URL(string: PolisConstants.testBigBangPolisDomain)!,
+                                                    shortDescription: "Very interesting image",
+                                                    accessibilityDescription: "Image of a beautiful observatory on the topa high mountain",
+                                                    copyrightHolderType: .useWithOwnersPermission,
+                                                    copyrightHolderReference: "Contributor <contributor@example.com",
+                                                    copyrightHolderNote: "I agree this image to be used in POLIS")
+        let item2 = try PolisImageSource.ImageItem( originalSource: URL(string: PolisConstants.testBigBangPolisDomain)!,
+                                                    shortDescription: "Horrible image image",
+                                                    accessibilityDescription: "Image of a beautiful observatory on the topa high mountain",
+                                                    copyrightHolderType: .openSource,
+                                                    copyrightHolderReference: "Contributor <contributor@example.com")
+        var sut  = PolisImageSource()
+
+        // Then
+        sut.addImage(item1)
+        XCTAssertEqual(sut.imageItems.count, 1)
+        sut.addImage(item1)
+        XCTAssertEqual(sut.imageItems.count, 1)
+        sut.removeImageWith(id: item1.id)
+        XCTAssertEqual(sut.imageItems.count, 0)
+        sut.addImage(item1)
+        sut.addImage(item2)
+        XCTAssertEqual(sut.imageItems.count, 2)
+    }
+
     static var allTests = [
         ("test_PolisVisitingHours_creation_shouldSucceed",                  test_PolisVisitingHours_creation_shouldSucceed),
         ("test_PolisVisitingHours_creation_shouldSucceed",                  test_PolisVisitingHours_creation_shouldSucceed),
@@ -237,6 +286,8 @@ final class PolisCommonTypesTests: XCTestCase {
         ("test_PolisAdminContactCommunication_codingSupport_shouldSucceed", test_PolisAdminContactCommunication_codingSupport_shouldSucceed),
         ("test_PolisAdminContact_codingSupport_shouldSucceed",              test_PolisAdminContact_codingSupport_shouldSucceed),
         ("test_PolisImageSourceImageItem_codingSupport_shouldSucceed",      test_PolisImageSourceImageItem_codingSupport_shouldSucceed),
+        ("test_PolisImageSource_codingSupport_shouldSucceed",               test_PolisImageSource_codingSupport_shouldSucceed),
+        ("test_PolisImageSource_addingAndRemovingItems_shouldSucceed",      test_PolisImageSource_addingAndRemovingItems_shouldSucceed),
     ]
 
 

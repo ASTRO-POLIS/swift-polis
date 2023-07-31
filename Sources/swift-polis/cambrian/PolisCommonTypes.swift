@@ -504,32 +504,33 @@ public struct PolisImageSource: Identifiable {
     /// The metadata of the images associated with this `PolisImageSource`.
     public var imageItems = [ImageItem]()
 
-    public init(id: UUID) { self.id = id }
+    public init(id: UUID = UUID()) { self.id = id }
 
     /// Add an image to this image source.
     /// - Parameter item: The `ImageItem` associated with the image to be added.
-    public mutating func addImage(_ item: ImageItem) async throws {
+    public mutating func addImage(_ item: ImageItem) {
         for (index, imageItem) in imageItems.enumerated() {
             if imageItem.id == item.id {
                 if imageItem.lastUpdate < item.lastUpdate {
                     imageItems.remove(at: index)
                     imageItems.append(item)
-                    break
+                    return
                 }
-                else { continue }
+                else { return }
             }
-            imageItems.append(item)
         }
-    }
+        imageItems.append(item)
+  }
 
-    /// Remove an image from this image source.
-    /// - Parameter index: The index of the image to be removed.
-    /// - Returns: The removed image, if successful.
-    public mutating func removeImageWith(id: UUID) -> ImageItem? {
-        for imageItem in imageItems {
-            if imageItem.id == id { return imageItem }
+    /// Remove an image item from this image source.
+    /// - Parameter id: The id of the `ImageItem`.
+    public mutating func removeImageWith(id: UUID) {
+        for (index, imageItem) in imageItems.enumerated() {
+            if imageItem.id == id {
+                imageItems.remove(at: index)
+                break
+            }
         }
-        return nil
     }
 }
 
