@@ -103,6 +103,20 @@
         "description": "Unique ID in the formal of a standard UUID, similar to id",
         "value_type": "string"
     },
+    "mode_of_operation": {
+        "description": "Defines the mode of operation (and therefore, the level of authomation) of corresponding POLIS Item.",
+        "value_type": "string",
+        "value_set": [
+            "manual",
+            "manual_with_automated_detector",
+            "manual_with_automated_detector_and_scheduling",
+            "autonomous",
+            "remote",
+            "mixed",
+            "other",
+            "unknown"
+        ]
+    },
     "name": {
         "description": "The name of the item. Recommended to be (semi) unique, but this is not required",
         "value_type": "string"

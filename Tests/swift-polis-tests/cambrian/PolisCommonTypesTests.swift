@@ -193,18 +193,41 @@ final class PolisCommonTypesTests: XCTestCase {
     //MARK: - POLIS Item
     func test_PolisItem_codingSupport_shouldSucceed() throws {
         // Given
-        let identity = PolisIdentity(externalReferences: ["1234", "6539"],
-                                     lifecycleStatus: PolisIdentity.LifecycleStatus.active,
-                                     lastUpdate: Date(),
-                                     name: "TestAttributes",
-                                     abbreviation: "abc",
-                                     automationLabel: "Ascom Label",
-                                     shortDescription: "Testing attributes")
+        let communication = PolisAdminContact.Communication(twitterIDs: ["@polis"],
+                                                            whatsappPhoneNumbers: ["+305482049"],
+                                                            facebookIDs: ["super_astronomers"],
+                                                            instagramIDs: ["super_astro"],
+                                                            skypeIDs: ["super_duper_astro"])
+        let admin         = PolisAdminContact(name: "polis",
+                                              emailAddress: "polis@observer.net",
+                                              phoneNumber: nil,
+                                              additionalCommunication: communication,
+                                              note: nil)
+        let owner         = PolisItemOwner(ownershipType: PolisItemOwner.OwnershipType.research, abbreviation: "SAO", adminContact: admin)
+        let identity      = PolisIdentity(externalReferences: ["1234", "6539"],
+                                          lifecycleStatus: PolisIdentity.LifecycleStatus.active,
+                                          lastUpdate: Date(),
+                                          name: "TestAttributes",
+                                          abbreviation: "abc",
+                                          automationLabel: "Ascom Label",
+                                          shortDescription: "Testing attributes")
+        let imageItem     = try PolisImageSource.ImageItem( originalSource: URL(string: PolisConstants.testBigBangPolisDomain)!,
+                                                            shortDescription: "Very interesting image",
+                                                            accessibilityDescription: "Image of a beautiful observatory on the topa high mountain",
+                                                            copyrightHolderType: .useWithOwnersPermission,
+                                                            copyrightHolderReference: "Contributor <contributor@example.com",
+                                                            copyrightHolderNote: "I agree this image to be used in POLIS")
+        var imageSource   = PolisImageSource()
+        imageSource.addImage(imageItem)
+
+        let sut           = PolisItem(identity: identity, manufacturerID: UUID(), owners: [owner], imageSources: [imageSource])
 
         // When
+        data   = try? jsonEncoder.encode(sut)
+        string = String(data: data!, encoding: .utf8)
 
         // Then
-
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisItem.self, from: string!.data(using: .utf8)!))
     }
 
 

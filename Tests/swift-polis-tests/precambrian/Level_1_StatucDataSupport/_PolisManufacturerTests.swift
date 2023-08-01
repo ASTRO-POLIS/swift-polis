@@ -41,7 +41,7 @@ class PolisManufacturerTests: XCTestCase {
                                      abbreviation: "asa",
                                      automationLabel: "asa mounts",
                                      shortDescription: "ASA Mount")
-        let sut      = PolisManufacturer(identity: identity, uniqueName: "asa")
+        let sut      = PolisManufacturer(identity: identity, name: "asa")
 
         XCTAssertNotNil(identity)
         XCTAssertNotNil(sut)
