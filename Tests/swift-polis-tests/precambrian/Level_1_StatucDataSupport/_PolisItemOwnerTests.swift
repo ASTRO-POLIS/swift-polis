@@ -57,7 +57,7 @@ class PolisItemOwnerTests: XCTestCase {
                                      abbreviation: "abc",
                                      automationLabel: "Ascom Label",
                                      shortDescription: "Testing ownership")
-        let sut      = PolisItemOwner(identity: identity, type: PolisItemOwner.OwnershipType.club, shortName: "AstroClubBAO")
+        let sut      = PolisItemOwner(ownershipType: PolisItemOwner.OwnershipType.club, abbreviation: "AstroClubBAO")
 
         XCTAssertNotNil(identity)
         XCTAssertNotNil(sut)

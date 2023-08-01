@@ -126,6 +126,25 @@
         "description": "The source of external information. Most often it represents an URL",
         "value_type": "string"
     },
+    "ownership_type": {
+        "description": "Defines the type of the POLIS Service Provider.",
+        "value_type": "string",
+        "value_set": [
+            "university",
+            "research",
+            "commercial",
+            "school",
+            "network",
+            "government",
+            "ngo",
+            "club",
+            "consortium",
+            "cooperative",
+            "collaboration",
+            "private",
+            "other"
+        ]
+    },
     "provider_type": {
         "description": "Defines the type of the POLIS Service Provider.",
         "value_type": "string",

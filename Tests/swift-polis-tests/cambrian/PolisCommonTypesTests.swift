@@ -157,7 +157,6 @@ final class PolisCommonTypesTests: XCTestCase {
                                 automationLabel: "Ascom Label",
                                 shortDescription: "Testing attributes")
 
-
         // When
         data   = try? jsonEncoder.encode(sut)
         string = String(data: data!, encoding: .utf8)
@@ -166,6 +165,48 @@ final class PolisCommonTypesTests: XCTestCase {
         XCTAssertNotNil(sut)
         XCTAssertNoThrow(try jsonDecoder.decode(PolisIdentity.self, from: string!.data(using: .utf8)!))
     }
+
+    //MARK: - Item Owner
+    func test_PolisItemOwner_codingSupport_shouldSucceed() throws {
+        // Given
+        let communication = PolisAdminContact.Communication(twitterIDs: ["@polis"],
+                                                            whatsappPhoneNumbers: ["+305482049"],
+                                                            facebookIDs: ["super_astronomers"],
+                                                            instagramIDs: ["super_astro"],
+                                                            skypeIDs: ["super_duper_astro"])
+        let admin         = PolisAdminContact(name: "polis",
+                                              emailAddress: "polis@observer.net",
+                                              phoneNumber: nil,
+                                              additionalCommunication: communication,
+                                              note: nil)
+        let sut           = PolisItemOwner(ownershipType: PolisItemOwner.OwnershipType.research, abbreviation: "SAO", adminContact: admin)
+
+        // When
+        data   = try? jsonEncoder.encode(sut)
+        string = String(data: data!, encoding: .utf8)
+
+        // Then
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisItemOwner.self, from: string!.data(using: .utf8)!))
+    }
+
+
+    //MARK: - POLIS Item
+    func test_PolisItem_codingSupport_shouldSucceed() throws {
+        // Given
+        let identity = PolisIdentity(externalReferences: ["1234", "6539"],
+                                     lifecycleStatus: PolisIdentity.LifecycleStatus.active,
+                                     lastUpdate: Date(),
+                                     name: "TestAttributes",
+                                     abbreviation: "abc",
+                                     automationLabel: "Ascom Label",
+                                     shortDescription: "Testing attributes")
+
+        // When
+
+        // Then
+
+    }
+
 
     //MARK: - Communication
     func test_PolisAdminContactCommunication_codingSupport_shouldSucceed() throws {
@@ -283,6 +324,8 @@ final class PolisCommonTypesTests: XCTestCase {
         ("test_PolisDirection_roughCodingSupport_shouldSucceed",            test_PolisDirection_roughCodingSupport_shouldSucceed),
         ("test_PolisDirection_calculations_shouldSucceed",                  test_PolisDirection_calculations_shouldSucceed),
         ("test_PolisIdentity_codingSupport_shouldSucceed",                  test_PolisIdentity_codingSupport_shouldSucceed),
+        ("test_PolisItemOwner_codingSupport_shouldSucceed",                 test_PolisItemOwner_codingSupport_shouldSucceed),
+        ("test_PolisItem_codingSupport_shouldSucceed",                      test_PolisItem_codingSupport_shouldSucceed),
         ("test_PolisAdminContactCommunication_codingSupport_shouldSucceed", test_PolisAdminContactCommunication_codingSupport_shouldSucceed),
         ("test_PolisAdminContact_codingSupport_shouldSucceed",              test_PolisAdminContact_codingSupport_shouldSucceed),
         ("test_PolisImageSourceImageItem_codingSupport_shouldSucceed",      test_PolisImageSourceImageItem_codingSupport_shouldSucceed),

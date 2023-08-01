@@ -296,6 +296,90 @@ public struct PolisIdentity: Codable, Identifiable {
     }
 }
 
+//MARK: - POLIS Item -
+
+/// `PolisItem` uniquely identifies almost every POLIS object and defines the hierarchies and references between different objects
+///
+/// Any `[[PolisDevice]]`,  Observing Source (site, mobile platform, Collaboration, Network, ...), or Resource (e.g. a manufacturer of astronomy related
+/// hardware) must have a `PolisItem` to uniquely identify the object and build the logical and spacial hierarchy between them.
+public struct PolisItem: Codable, Identifiable {
+
+
+    /// `ModeOfOperation` ....
+    public enum ModeOfOperation: String, Codable {
+        case manual
+        case manualWithAutomatedDetector              = "manual_with_automated_detector"
+        case manualWithAutomatedDetectorAndScheduling = "manual_with_automated_detector_and_scheduling"
+        case autonomous
+        case remote
+        case mixed                                       // e.g. in case of Network
+        case other
+        case unknown
+    }
+
+    public var identity: PolisIdentity
+    public var modeOfOperation: ModeOfOperation?
+    public var manufacturerID: UUID?
+    public var owners: [PolisItemOwner]?
+
+    public var imageSources: [PolisImageSource]?
+
+    public var id: UUID { identity.id }
+
+    public init(identity: PolisIdentity,
+                modeOfOperation: ModeOfOperation  = .unknown,
+                manufacturerID: UUID?             = nil,
+                owners: [PolisItemOwner]?         = nil,
+                imageSources: [PolisImageSource]? = nil ) {
+        self.identity          = identity
+        self.modeOfOperation   = modeOfOperation
+        self.manufacturerID    = manufacturerID
+        self.owners            = owners
+        self.imageSources      = imageSources
+    }
+}
+
+//MARK: - Item Ownership -
+
+/// A type that defines the owner of an observing site or a device.
+///
+/// Files containing an owner's information are in general stored within the static file hierarchy of the observing site (or equivalent).
+/// For performance reasons, it is recommended (but not required by the standard) that the service provider supports a directory of owners
+/// (as this framework does). Such a cache of owners would of course have performance and data maintenance implications as well.
+public struct PolisItemOwner: Codable {
+
+    /// A type that describes the different kinds of owners of a POLIS item.
+    ///
+    /// `OwnershipType` is used to identify the ownership type of POLIS items (or devices) such as observing sites, telescopes,
+    /// CCD cameras, weather stations, etc. Different cases should be self-explanatory. The `private` type should be utilised by
+    /// amateurs and hobbyists.
+    public enum OwnershipType: String, Codable {
+        case university
+        case research
+        case commercial
+        case school
+        case network
+        case government
+        case ngo
+        case club
+        case consortium
+        case cooperative
+        case collaboration
+        case `private`
+        case other
+    }
+
+    public let ownershipType: OwnershipType
+    public var adminContact: PolisAdminContact?
+    public let abbreviation: String?   // e.g. MIT. MONET, BAO, ...
+
+    public init(ownershipType: OwnershipType, abbreviation: String?, adminContact: PolisAdminContact? = nil) {
+        self.ownershipType = ownershipType
+        self.abbreviation  = abbreviation
+        self.adminContact  = adminContact
+    }
+}
+
 
 //MARK: - Communication related types -
 
@@ -569,6 +653,25 @@ public extension PolisIdentity {
     }
 }
 
+//MARK: - Item Owner
+public extension PolisItemOwner {
+    enum CodingKeys: String, CodingKey {
+        case ownershipType = "ownership_type"
+        case abbreviation
+        case adminContact  = "admin_contact"
+    }
+}
+
+//MARK: - Item
+public extension PolisItem {
+    enum CodingKeys: String, CodingKey {
+        case identity
+        case modeOfOperation   = "mode_of_operation"
+        case manufacturerID    = "manufacturer_id"
+        case owners
+        case imageSources      = "image_sources"
+    }
+}
 
 //MARK: - Communication related types
 extension PolisAdminContact.Communication {
