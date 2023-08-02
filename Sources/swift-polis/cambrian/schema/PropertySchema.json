@@ -76,7 +76,7 @@
         "description": "Unique ID in the formal of a standard UUID",
         "value_type": "string"
     },
-    "Instagram_ids": {
+    "instagram_ids": {
         "description": "Array of valid instagram IDs as strings",
         "value_type": [
             "string"
