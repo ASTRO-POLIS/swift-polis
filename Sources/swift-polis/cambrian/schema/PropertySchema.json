@@ -50,7 +50,7 @@
         ]
     },
     "email_address": {
-        "description": "Welldefined valid email address",
+        "description": "Well defined valid email address",
         "value_type": "string",
         "validation": "[A-Z0-9a-z.\\-_]+@[A-Za-z0-9.\\-]+\\.[A-Za-z]{2,}"
     },
@@ -76,7 +76,7 @@
         "description": "Unique ID in the formal of a standard UUID",
         "value_type": "string"
     },
-    "Instagram_ids": {
+    "instagram_ids": {
         "description": "Array of valid instagram IDs as strings",
         "value_type": [
             "string"
@@ -174,22 +174,10 @@
         "description": "Rough direction represented as a string.",
         "value_type": "string",
         "value_set": [
-            "N",
-            "NNE",
-            "NE",
-            "ENE",
-            "E",
-            "ESE",
-            "SE",
-            "SSE",
-            "S",
-            "SSW",
-            "SW",
-            "WSW",
-            "W",
-            "WNW",
-            "NW",
-            "NNW"
+            "N", "NNE", "NE", "ENE",
+            "E", "ESE", "SE", "SSE",
+            "S", "SSW", "SW", "WSW",
+            "W", "WNW", "NW", "NNW"
         ]
     },
     "reachability_status": {
