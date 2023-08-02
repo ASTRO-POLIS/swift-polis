@@ -1,381 +1,54 @@
 {
     "admin_contact": {
-        "mandatory_properties": [
-            {
-                "property": "id",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "email_address",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "name",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            }
-        ],
-        "standard_properties": [
-            {
-                "property": "skype_ids",
-                "minCardinality": 0,
-                "maxCardinality": 1
-            },
-            {
-                "property": "facebook_ids",
-                "minCardinality": 0,
-                "maxCardinality": 1
-            },
-            {
-                "property": "whatsapp_ids",
-                "minCardinality": 0,
-                "maxCardinality": 1
-            },
-            {
-                "property": "instagram_ids",
-                "minCardinality": 0,
-                "maxCardinality": 1
-            },
-            {
-                "property": "twitter_ids",
-                "minCardinality": 0,
-                "maxCardinality": 1
-            }
-        ]
+        "mandatory_properties": [ "id", "email_address", "name" ],
+        "standard_properties": [ "skype_ids", "facebook_ids", "whatsapp_ids", "instagram_ids", "twitter_ids" ]
     },
     "direction": {
-        "standard_properties": [
-            {
-                "property": "exact_direction",
-                "minCardinality": 0,
-                "maxCardinality": 1
-            },
-            {
-                "property": "rough_direction",
-                "minCardinality": 0,
-                "maxCardinality": 1
-            }
-        ]
+        "standard_properties": [ "exact_direction", "rough_direction" ]
     },
     "identity": {
-        "mandatory_properties": [
-            {
-                "property": "id",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "lifecycle_status",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "last_update",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "name",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            }
-        ],
-        "standard_properties": [
-            {
-                "property": "abbreviation",
-                "minCardinality": 0,
-                "maxCardinality": 1
-            },
-            {
-                "property": "automation_label",
-                "minCardinality": 0,
-                "maxCardinality": 1
-            },
-            {
-                "property": "external_references",
-                "minCardinality": 0,
-                "maxCardinality": 1
-            },
-            {
-                "property": "short_description",
-                "minCardinality": 0,
-                "maxCardinality": 1
-            }
-        ]
+        "mandatory_properties": [ "id", "minCardinality", "lifecycle_status", "last_update", "name" ],
+        "standard_properties": [ "abbreviation", "automation_label", "external_references", "short_description" ]
     },
     "image_item": {
-        "mandatory_properties": [
-            {
-                "property": "id",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "last_update",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "original_source",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "copyright_holder_type",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            }
-        ],
-        "standard_properties": [
-            {
-                "property": "copyright_holder_reference",
-                "minCardinality": 0,
-                "maxCardinality": 1
-            },
-            {
-                "property": "copyright_holder_note",
-                "minCardinality": 0,
-                "maxCardinality": 1
-            },
-            {
-                "property": "short_description",
-                "minCardinality": 0,
-                "maxCardinality": 1
-            },
-            {
-                "property": "accessibility_description",
-                "minCardinality": 0,
-                "maxCardinality": 1
-            }
-        ]
+        "mandatory_properties": [ "id", "last_update", "original_source", "copyright_holder_type" ],
+        "standard_properties": [ "copyright_holder_reference", "copyright_holder_note", "short_description", "accessibility_description" ]
     },
     "implementation": {
-        "aliases": [
-            "originalFramework_supported_implementation",
-            "supported_implementation"
-        ],
-        "mandatory_properties": [
-            {
-                "property": "api_support",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "data_format",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "version",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            }
-        ]
+        "aliases": [ "supported_implementation" ],
+        "mandatory_properties": [ "api_support", "data_format", "version" ]
     },
     "item": {
-        "mandatory_properties": [
-            {
-                "property": "identity",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            }
-        ],
-        "standard_properties": [
-            {
-                "property": "mode_of_operation",
-                "minCardinality": 0,
-                "maxCardinality": 1
-            },
-            {
-                "property": "manufacturer_id",
-                "minCardinality": 0,
-                "maxCardinality": 1
-            },
-            {
-                "property": "owners",
-                "minCardinality": 0
-            },
-            {
-                "property": "image_sources",
-                "minCardinality": 0
-            }
-        ]
+        "mandatory_properties": [ "identity" ],
+        "standard_properties": [ "mode_of_operation", "manufacturer_id", "owners", "image_sources" ]
     },
     "item_owner": {
-        "mandatory_properties": [
-            {
-                "property": "ownership_type",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            }
-        ],
-        "standard_properties": [
-            {
-                "property": "admin_contact",
-                "minCardinality": 0,
-                "maxCardinality": 1
-            },
-            {
-                "property": "abbreviation",
-                "minCardinality": 0,
-                "maxCardinality": 1
-            }
-        ]
+        "mandatory_properties": [ "ownership_type" ],
+        "standard_properties": [ "admin_contact", "abbreviation" ]
     },
     "observing_site_reference": {
-        "mandatory_properties": [
-            {
-                "property": "identity",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "observing_type",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            }
-        ]
+        "mandatory_properties": [ "identity", "observing_type" ]
     },
     "polis": {
-        "mandatory_properties": [
-            {
-                "property": "last_update",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "provider_directory_entries",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            }
-        ]
+        "mandatory_properties": [ "last_update", "provider_directory_entries" ]
     },
     "polis_resources": {
-        "mandatory_properties": [
-            {
-                "property": "last_update",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "resource_reference",
-                "minCardinality": 0
-            }
-        ]
+        "mandatory_properties": [ "last_update", "resource_reference" ]
     },
     "polis_sites": {
-        "mandatory_properties": [
-            {
-                "property": "last_update",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "observing_site_references",
-                "minCardinality": 0
-            }
-        ]
+        "mandatory_properties": [ "last_update", "observing_site_references" ]
     },
     "property_value": {
-        "mandatory_properties": [
-            {
-                "property": "value_kind",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "value",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "unit",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            }
-        ]
+        "mandatory_properties": [ "value_kind", "value", "unit" ]
     },
     "provider_directory_entries": {
-        "mandatory_properties": [
-            {
-                "property": "id",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "reachability_status",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "last_update",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "url",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "supported_implementations",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "provider_type",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "admin_contact",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            }
-        ],
-        "standard_properties": [
-            {
-                "property": "mirror_id",
-                "minCardinality": 0,
-                "maxCardinality": 1
-            },
-            {
-                "property": "short_description",
-                "minCardinality": 0,
-                "maxCardinality": 1
-            }
-        ]
+        "mandatory_properties": [ "id", "reachability_status", "last_update", "url", "supported_implementations", "provider_type", "admin_contact" ],
+        "standard_properties": [ "mirror_id", "short_description" ]
     },
     "resource_reference": {
-        "mandatory_properties": [
-            {
-                "property": "identity",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "unique_manufacturer_name",
-                "minCardinality": 1,
-                "maxCardinality": 1
-            },
-            {
-                "property": "device_types",
-                "minCardinality": 0
-            }
-        ],
-        "standard_properties": [
-            
-        ]
+        "mandatory_properties": [ "identity", "unique_manufacturer_name", "device_types" ]
     },
     "visiting_hours": {
-        "standard_properties": [
-            {
-                "property": "note",
-                "minCardinality": 0,
-                "maxCardinality": 1
-            }
-        ]
+        "standard_properties": [ "note" ]
     }
 }
