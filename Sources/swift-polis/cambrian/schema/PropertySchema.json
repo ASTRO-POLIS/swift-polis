@@ -62,15 +62,13 @@
     },
     "external_references": {
         "description": "External references connecting the item with external source of data, e.g. RTML or VO IDs, or URLs to describing documentation",
-        "value_type": [
-            "string"
-        ]
-    },
+        "value_type": "string",
+        "is_array": true
+  },
     "facebook_ids": {
         "description": "Array of valid facebook IDs as strings. The IDs represent only the part after the www.facebook.com base URL.",
-        "value_type": [
-            "string"
-        ]
+        "value_type": "string",
+        "is_array": true
     },
     "id": {
         "description": "Unique ID in the formal of a standard UUID",
@@ -78,9 +76,8 @@
     },
     "instagram_ids": {
         "description": "Array of valid instagram IDs as strings",
-        "value_type": [
-            "string"
-        ]
+        "value_type": "string",
+        "is_array": true
     },
     "last_update": {
         "description": "Date and time of the last change of the item in an ISO format, e.g. 2023-07-11T01:17:32Z represented as a string",
@@ -196,15 +193,13 @@
     },
     "skype_ids": {
         "description": "Array of valid skype IDs as strings",
-        "value_type": [
-            "string"
-        ]
+        "value_type": "string",
+        "is_array": true
     },
     "twitter_ids": {
         "description": "Array of valid twitter IDs as strings",
-        "value_type": [
-            "string"
-        ],
+        "value_type": "string",
+        "is_array": true,
         "validation": "/@([A-Za-z0-9_]{1,15})/"
     },
     "unit": {
@@ -235,8 +230,7 @@
     },
     "whatsapp_ids": {
         "description": "Array of valid WhatsApp IDs as strings",
-        "value_type": [
-            "string"
-        ]
+        "value_type": "string",
+        "is_array": true
     }
 }
