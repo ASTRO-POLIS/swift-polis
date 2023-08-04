@@ -49,7 +49,7 @@ final class PolisObservingSiteLocationTypeTests: XCTestCase {
         let eastLongitude     = PolisPropertyValue(valueKind: .double, value: "14.15", unit: "degree")
         let latitude          = PolisPropertyValue(valueKind: .double, value: "48.51", unit: "degree")
         let altitude          = PolisPropertyValue(valueKind: .double, value: "896.0", unit: "m")
-        let continent         = PolisObservingSiteLocationType.EarthBasedLocation.EarthContinent.europe
+//        let continent         = PolisObservingSiteLocationType.EarthBasedLocation.EarthContinent.europe
         let place             = "Sandl"
         let regionOrState     = "Ober Östereich"
         let regionOrStateCode = "OÖ"
@@ -62,7 +62,7 @@ final class PolisObservingSiteLocationTypeTests: XCTestCase {
         let sut = PolisObservingSiteLocationType.EarthBasedLocation(eastLongitude: eastLongitude,
                                                                     latitude: latitude,
                                                                     altitude: altitude,
-                                                                    continent: continent,
+//                                                                    continent: continent,
                                                                     place: place,
                                                                     regionOrState: regionOrState,
                                                                     regionOrStateCode: regionOrStateCode,

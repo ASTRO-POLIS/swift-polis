@@ -143,7 +143,7 @@ final class PolisServiceProviderTests: XCTestCase {
                                      abbreviation: "abc",
                                      automationLabel: "Ascom Label",
                                      shortDescription: "Testing attributes")
-        let sut      = PolisObservingSiteDirectory.ObservingSiteReference(identity: identity, observingType: PolisObservingType.site)
+        let sut      = PolisObservingSiteDirectory.ObservingSiteReference(identity: identity)
 
         // When
         data   = try? jsonEncoder.encode(sut)
@@ -168,8 +168,8 @@ final class PolisServiceProviderTests: XCTestCase {
                                name: "OldStuff",
                                abbreviation: "old",
                                shortDescription: "Very old junk")
-        let osd1 = PolisObservingSiteDirectory.ObservingSiteReference(identity: i1, observingType: PolisObservingType.site)
-        let osd2 = PolisObservingSiteDirectory.ObservingSiteReference(identity: i2, observingType: PolisObservingType.site)
+        let osd1 = PolisObservingSiteDirectory.ObservingSiteReference(identity: i1)
+        let osd2 = PolisObservingSiteDirectory.ObservingSiteReference(identity: i2)
         let sut  = PolisObservingSiteDirectory(lastUpdate: Date(), observingSiteReferences: [osd1, osd2])
 
         // When

@@ -19,9 +19,14 @@ import XCTest
 
 @testable import swift_polis
 
-final class PolisObservingFacility: XCTestCase {
+final class PolisObservingFacilityTests: XCTestCase {
 
     //MARK: - Setup & Teardown -
+    private var jsonEncoder: PolisJSONEncoder!
+    private var jsonDecoder: PolisJSONDecoder!
+    private var data: Data!
+    private var string: String!
+
 
     override class func setUp() {
         print("In class setUp.")
@@ -34,20 +39,94 @@ final class PolisObservingFacility: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
         print("In setUp.")
-    }
+        jsonEncoder = PolisJSONEncoder()
+        jsonDecoder = PolisJSONDecoder()
+   }
 
     override func tearDownWithError() throws {
         print("In tearDown.")
-        try super.tearDownWithError()
+        data        = nil
+        string      = nil
+        jsonEncoder = nil
+        jsonDecoder = nil
+
+       try super.tearDownWithError()
     }
 
     //MARK: - Tests -
-    func testZero() {
-        XCTFail()
+
+    func test_PolisObservingFacility_codingSupport_shouldSucceed() throws {
+        // Given
+        let communication = PolisAdminContact.Communication(twitterIDs: ["@polis"],
+                                                            whatsappPhoneNumbers: ["+305482049"],
+                                                            facebookIDs: ["super_astronomers"],
+                                                            instagramIDs: ["super_astro"],
+                                                            skypeIDs: ["super_duper_astro"])
+        let admin         = PolisAdminContact(name: "polis",
+                                              emailAddress: "polis@observer.net",
+                                              phoneNumber: nil,
+                                              additionalCommunication: communication,
+                                              note: nil)
+        let owner         = PolisItemOwner(ownershipType: PolisItemOwner.OwnershipType.research, abbreviation: "SAO", adminContact: admin)
+        let identity      = PolisIdentity(externalReferences: ["1234", "6539"],
+                                          lifecycleStatus: PolisIdentity.LifecycleStatus.active,
+                                          lastUpdate: Date(),
+                                          name: "TestAttributes",
+                                          abbreviation: "abc",
+                                          automationLabel: "Ascom Label",
+                                          shortDescription: "Testing attributes")
+        let imageItem     = try PolisImageSource.ImageItem( originalSource: URL(string: PolisConstants.testBigBangPolisDomain)!,
+                                                            shortDescription: "Very interesting image",
+                                                            accessibilityDescription: "Image of a beautiful observatory on the topa high mountain",
+                                                            copyrightHolderType: .useWithOwnersPermission,
+                                                            copyrightHolderReference: "Contributor <contributor@example.com",
+                                                            copyrightHolderNote: "I agree this image to be used in POLIS")
+        var imageSource   = PolisImageSource()
+        imageSource.addImage(imageItem)
+
+        let item          = PolisItem(identity: identity, manufacturerID: UUID(), owners: [owner], imageSources: [imageSource])
+
+
+        let sut           = PolisObservingFacility(item: item,
+                                                   gravitationalBodyRelationship: PolisObservingFacility.ObservingFacilityLocationType.surfaceFixed,
+                                                   placeInTheSolarSystem: .earth,
+                                                   observingFacilityCode: "EARTH-SAO",
+                                                   solarSystemBodyName: "Earth",
+                                                   astronomicalCode: "SAO",
+                                                   orbitingAroundPlaceInTheSolarSystemNamed: "Sun",
+                                                   facilityLocationID: UUID(),
+                                                   parentObservingFacilityID: nil,
+                                                   subObservingFacilityIDs:  nil,
+                                                   observatoryIDs: nil,
+                                                   deviceIDs:  nil, startDate: Date(),
+                                                   endDate: Date(),
+                                                   polisRegistrationDate: Date(),
+                                                   polisDisconnectionDate: Date(),
+                                                   adminContact: admin,
+                                                   website:URL(string: "https://sau.sa"),
+                                                   scientificObjectives: "To make cool observations",
+                                                   history: "Somewhere on the table Mountains people built an observatory",
+                                                   openingHours: PolisVisitingHours(note: "From time to time"),
+                                                   accessRestrictions: "Might meet lions",
+                                                   averageClearNightsPerYear: 311,
+                                                   averageSeeingConditions: PolisPropertyValue(valueKind: .double, value: "31", unit: "magnitude"),
+                                                   averageSkyQuality: PolisPropertyValue(valueKind: .double, value: "0.9", unit: "magnitude / arcsec^2"),
+                                                   traditionalLandOwners: "Lions and giraffes",
+                                                   dominantWindDirection: PolisDirection.RoughDirection.eastNorthEast)
+        // When
+        data   = try? jsonEncoder.encode(sut)
+        string = String(data: data!, encoding: .utf8)
+
+        // Then
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisObservingFacility.self, from: string!.data(using: .utf8)!))
+
+        // Then
+
     }
 
+
     static var allTests = [
-        ("testZero", testZero),
+        ("test_PolisObservingFacility_codingSupport_shouldSucceed", test_PolisObservingFacility_codingSupport_shouldSucceed),
     ]
 
 

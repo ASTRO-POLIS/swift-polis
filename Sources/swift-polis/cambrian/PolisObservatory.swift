@@ -19,5 +19,7 @@
 import Foundation
 
 public struct PolisObservatory {
-    
+
+    public var configurationIDs: Set<UUID>?
+
 }

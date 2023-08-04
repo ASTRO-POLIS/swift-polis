@@ -27,7 +27,7 @@
         "standard_properties": [ "admin_contact", "abbreviation" ]
     },
     "observing_site_reference": {
-        "mandatory_properties": [ "identity", "observing_type" ]
+        "mandatory_properties": [ "identity" ]
     },
     "polis": {
         "mandatory_properties": [ "last_update", "provider_directory_entries" ]

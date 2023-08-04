@@ -189,14 +189,12 @@ public struct PolisObservingSiteDirectory: Codable {
     /// invalidated (e.g. lastUpdate is changed).
     public struct ObservingSiteReference: Codable, Identifiable {
         public var identity: PolisIdentity
-        public var observingType: PolisObservingType
         public var parentObservingSiteID: UUID?
 
         public var id: UUID { identity.id }
 
-        public init(identity: PolisIdentity, observingType: PolisObservingType, parentObservingSiteID: UUID? = nil) {
+        public init(identity: PolisIdentity, parentObservingSiteID: UUID? = nil) {
             self.identity              = identity
-            self.observingType         = observingType
             self.parentObservingSiteID = parentObservingSiteID
         }
     }
@@ -277,7 +275,6 @@ extension PolisObservingSiteDirectory {
 extension PolisObservingSiteDirectory.ObservingSiteReference {
     public enum CodingKeys: String, CodingKey {
         case identity
-        case observingType         = "observing_type"
         case parentObservingSiteID = "parent_observing_site_id"
     }
 }

@@ -14,7 +14,7 @@ final class _PolisServiceProviderTests: XCTestCase {
         //TODO: Fix me! 
         // Given
         let astroTechIdentity           = PolisIdentity(name: "AstroTech")
-        let astroTechObservingSiteEntry = PolisObservingSiteDirectory.ObservingSiteReference(identity: astroTechIdentity, observingType: PolisObservingType.site)
+        let astroTechObservingSiteEntry = PolisObservingSiteDirectory.ObservingSiteReference(identity: astroTechIdentity)
 
         // When
         let sut = PolisObservingSiteDirectory(lastUpdate: Date(), observingSiteReferences: [astroTechObservingSiteEntry])
