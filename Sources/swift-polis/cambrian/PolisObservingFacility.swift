@@ -77,7 +77,7 @@ public struct PolisObservingFacility: Identifiable, Codable {
     public var astronomicalCode: String?                                   // Minor planet codes, etc.
     public var orbitingAroundPlaceInTheSolarSystem: PlaceInTheSolarSystem? // Optional only in the case of the Sun!
     public var orbitingAroundPlaceInTheSolarSystemNamed: String?           // Optional only in the case of the Sun! Derived, perhaps function?
-    public var facilityLocationID: String?                                 // Pints to dictionary with some predefined (standard) keys
+    public var facilityLocationID: String?                                 // Points to dictionary with some predefined (standard) keys
 
     // Relationship to other facilities
     public var parentObservingSiteID: UUID?

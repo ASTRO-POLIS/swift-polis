@@ -17,7 +17,7 @@
 
 import Foundation
 
-/// The `PolisVisitingHours` struct is used to define periods of time when an ``PolisObservingSite`` could be visited, or the
+/// The `PolisVisitingHours` struct is used to define periods of time when a ``PolisObservingSite`` could be visited, or the
 /// working hours of the personnel.
 ///
 /// Note that some sites might only be open during part of the year (e.g. because of difficult winter conditions) or may only be visited during
@@ -44,7 +44,7 @@ public struct PolisVisitingHours: Codable {
 /// using POLIS should implement unit conversions (if needed). Currently, a POLIS provider is not expected to make any conversions, but it might
 /// check if the units are allowed.
 ///
-/// Apple's Units types are not used here on purpose because of the lack of scientific accuracy and profound misunderstanding of how science works.
+/// Apple's Units types are purposely not used here because of the lack of scientific accuracy and profound misunderstanding of how science works.
 ///
 /// **Note:** This Measurement implementation is very rudimentary. It is a placeholder type. In future implementations, it will be replaced by external
 /// implementations, capable of measurement computations and conversions.
@@ -213,6 +213,7 @@ public struct PolisIdentity: Codable, Identifiable {
     /// - `active`    - must be synced and monitored
     /// - `deleted`   - sync the `PolisItemAttributes` only to prevent secondary propagation of the record and to lock the
     /// UUID of the item
+    ///  - `historic` - do not sync, but continue monitoring
     /// - `delete`    - delete the item
     /// - `suspended` - sync the `PolisItemAttributes`, but do not use the service provider or the observing site. Suspended
     /// is used to mark that the item does not follow the POLIS standard, or violates community rules. Normally entities

@@ -23,10 +23,10 @@ public struct PolisConstants {
     /// This is the first and only POLIS service provider (and domain) that is (almost) guaranteed to be a valid public POLIS service provider.
     ///
     /// This constant defines the URL to the initial POLIS Service Provider. `testBigBangPolisDomain` is an experimental domain that is used to test new
-    /// POLIS development and is guarantied to exit as well.
+    /// POLIS development and is guaranteed to exit as well.
     ///
     /// Software packages trying for the first time to connect to a POLIS service provider should use these constants. In the future there might be (hopefully) many
-    /// more service providers, but initial search is mostly guaranteed to be successful if `bigBangPolisDomain` is used.
+    /// more service providers, but an initial search is mostly guaranteed to be successful if `bigBangPolisDomain` is used.
     public static let bigBangPolisDomain     = "https://polis.observer"
     public static let testBigBangPolisDomain = "https://test.polis.observer"
 

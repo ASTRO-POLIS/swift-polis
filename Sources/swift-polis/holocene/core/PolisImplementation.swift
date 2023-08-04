@@ -27,14 +27,14 @@ import SoftwareEtudesUtilities
 /// `public` or `mirror` provider. Only `experimental` Service Providers should be allowed to implement unsupported
 /// implementations.
 ///
-/// For complete description Semantic Version see [Semantic Versioning](https://semver.org)
+/// For a complete description Semantic Version see [Semantic Versioning](https://semver.org)
 public struct PolisImplementation: Codable, Equatable  {
 
     /// Defines various POLIS data formats
     ///
     /// POLIS APIs are encoded either in XML or in JSON format. For reasons stated elsewhere in the documentation, XML APIs
     /// are preferred for production-ready code. In contrast, JSON is often easier to use for new development (no need of
-    /// schema support) and is often easier to be used within a mobile or a web applications. Due to its fragility
+    /// schema support) and is often easier to be used within a mobile or a web application. Due to its fragility
     /// JSON-based implementation should be avoided in stable production systems.
     public enum DataFormat: String, Codable, Equatable, Hashable {
         /// The provider implements JSON APIs

@@ -15,7 +15,7 @@
 
 import Foundation
 
-// **Note for Swift developers:** COURAGEOUS and IMPORTANT ASSUMPTION: Types defined in this file and in should not have
+// **Note for Swift developers:** COURAGEOUS and IMPORTANT ASSUMPTION: Types defined in this file should not have
 // incompatible coding/decoding and API changes in future versions of the standard! All other types could evolve.
 // The types defined here are only simple lists of IDs and last update dates.
 
@@ -36,7 +36,7 @@ public struct PolisDirectory  {
         /// `ProviderType` defines different types of POLIS Providers.
         ///
         /// In general, only `public` and `mirror` types should be used by clients. Astro clubs and other communities might
-        /// access `private` providers, but they probably will allow only a restricted access to members only.
+        /// access `private` providers, but they will probably only allow restricted access to members only.
         public enum ProviderType: String, Codable {
 
             /// Only `public` provider should be used in production or by publicly available client apps or websites. Public
@@ -44,12 +44,12 @@ public struct PolisDirectory  {
             /// parallel client requests every second.
             case `public`
 
-            /// `private` provider's main purpose is to act as a local cache for a larger organisation and should not be accessed
-            /// from outside. Also an organisation like amateur clubs might maintain private providers. They might require user
+            /// A `private` provider's main purpose is to act as a local cache for a larger organisation and should not be accessed
+            /// from outside. An organisation like amateur clubs might also maintain private providers. They might require user
             /// authentication.
             case `private`
 
-            /// `local` could be used for clients running on mobile devices or desktop apps. It is a disposable local (often
+            /// `local` could be used for clients running on mobile devices or desktop apps. It is a disposable, local (often
             /// offline) cache.
             case local
 
@@ -66,7 +66,7 @@ public struct PolisDirectory  {
         ///
         /// It is recommended not to change the reachability status too often, because this might escalate to excessive updates of Service Providers. Once every
         /// 24h should be sufficient. Also note, that an external server might be unreachable or slow from one location, but reachable and responsive from another.
-        /// If your Service Provider cannot reach reliably another Service Provider, first check if this is also observed elsewhere, and if this is the case, only then
+        /// If your Service Provider cannot reach another Service Provider reliably, first check if this is also observed elsewhere, and if this is the case, only then
         /// change the local reachability status.
         ///
         /// During syncing between Service Providers sync only information about reachable hosts!
@@ -81,7 +81,7 @@ public struct PolisDirectory  {
             /// `currentlyUnreachable` marks temporary unreachable Service Provider.
             case currentlyUnreachable   = "currently_unreachable"
 
-            /// `permanentlyUnreachable` marks Service Providers that are down for longer period of time. After ca. 18 months, the data about them could
+            /// `permanentlyUnreachable` marks Service Providers that are down for longer period of time. After ca. 18 months, the data could
             /// be deleted permanently
             case permanentlyUnreachable = "permanently_unreachable"
         }
@@ -183,7 +183,7 @@ public struct PolisDirectory  {
 /// A compact list of all known Observing Sites
 public struct PolisObservingSiteDirectory: Codable {
 
-    /// It is expected, that the list of observatory sites is long and each site's data could be way over 1MB. Therefore a
+    /// It is expected that the list of observatory sites is long and each site's data could be way over 1MB. Therefore a
     /// compact list of site references is maintained separately containing only site UUIDs and last update time. It is
     /// recommended that clients cache this list and update the observatory data only in case the cache needs to be
     /// invalidated (e.g. lastUpdate is changed).
