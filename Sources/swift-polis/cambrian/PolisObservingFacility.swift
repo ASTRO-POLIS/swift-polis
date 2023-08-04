@@ -18,15 +18,15 @@
 
 import Foundation
 
-public struct PolisObservingFacility: Identifiable {
+public struct PolisObservingFacility: Identifiable, Codable {
 
     // Are Collaborations and Networks not applicable only for observatories? And Arrays? Perhaps this should be called a Facility Type?
-    public enum ObservingType: String, Codable {
+    public enum ObservingFacilityType: String, Codable {
         case site
         case mobilePlatform = "mobile_platform"
-        case collaboration
-        case network
-        case array
+//        case collaboration  // config
+//        case network        // config
+//        case array          // -> observatory
     }
 
     public enum GravitationalBodyRelationship: String, Codable {
@@ -36,37 +36,38 @@ public struct PolisObservingFacility: Identifiable {
         case other
     }
 
-    public enum PlaceInTheSolarSystem {
-        case sun
+    public enum PlaceInTheSolarSystem: String, Codable {
+        case sun                = "Sun"
 
         // Planets
-        case mercury
-        case venus
-        case earth
-        case mars
-        case jupiter
-        case saturn
-        case uranus
-        case neptune
+        case mercury            = "Mercury"
+        case venus              = "Venus"
+        case earth              = "earth"
+        case mars               = "Mars"
+        case jupiter            = "Jupiter"
+        case saturn             = "Saturn"
+        case uranus             = "Uranus"
+        case neptune            = "Neptune"
 
         // Kuiper and Asteroid belt
-        case pluto
-        case ceres
-        case haumea
-        case makemake
-        case eris
-        case asteroidBeltObject
-        case kuiperBeltObject
+        case pluto              = "Pluto"
+        case ceres              = "Ceres"
+        case haumea             = "Humea"
+        case makemake           = "Mamemake"
+        case eris               = "Eris"
+        case asteroidBeltObject = "asteroid_belt_object"
+        case kuiperBeltObject   = "kuiper_belt_object"
 
         // Miscellaneous
         case moon
         case comet
-        case oortCloudObject
+        case oortCloudObject    = "oort_cloud_object"
     }
 
+    //MARK: - Common properties -
     // Identification and type
     public var item: PolisItem
-    public var observingType: ObservingType
+    public var observingFacilityType: ObservingFacilityType
     public var gravitationalBodyRelationship: GravitationalBodyRelationship
     public var placeInTheSolarSystem: PlaceInTheSolarSystem
     public var observingFacilityCode: String?
@@ -95,7 +96,7 @@ public struct PolisObservingFacility: Identifiable {
     public var polisDisconnectionDate: Date?
 
     // Info
-    public var admins: [PolisAdminContact]?
+    public var adminContact: PolisAdminContact?
     public var website: URL?
     public var scientificObjectives: String?
     public var history: String?
@@ -103,4 +104,54 @@ public struct PolisObservingFacility: Identifiable {
     // Identifiable protocol compliance
     public var id: UUID { item.identity.id }
 
+    //MARK: Earth-based site properties
+    public var openingHours: PolisVisitingHours?
+    public var accessRestrictions: String?
+
+    public var averageClearNightsPerYear: UInt?
+    public var averageSeeingConditions: PolisPropertyValue? // [arcsec]
+    public var averageSkyQuality: PolisPropertyValue?       // [magnitude]
+
+    public var traditionalLandOwners: String?
+
+}
+
+
+public extension PolisObservingFacility {
+    enum CodingKeys: String, CodingKey {
+        case item
+        case observingFacilityType
+        case gravitationalBodyRelationship
+        case placeInTheSolarSystem
+        case observingFacilityCode
+
+        // Where in the Solar system
+        case solarSystemBodyName
+        case astronomicalCode
+        case orbitingAroundPlaceInTheSolarSystem
+        case orbitingAroundPlaceInTheSolarSystemNamed
+        case facilityLocationID
+
+        // Relationship to other facilities
+        case parentObservingSiteID
+        case subObservingSiteIDs
+        case collaborationObservingSiteIDs
+
+        // Contains
+        case observatoryIDs
+        case deviceIDs
+        case configurationIDs
+
+        // When
+        case startDate
+        case endDate
+        case polisRegistrationDate
+        case polisDisconnectionDate
+
+        // Info
+        case adminContact
+        case website
+        case scientificObjectives
+        case history
+    }
 }
