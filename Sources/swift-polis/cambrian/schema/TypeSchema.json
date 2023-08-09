@@ -39,6 +39,7 @@
         "mandatory_properties": [ "last_update", "observing_site_references" ]
     },
     "property_value": {
+        "aliases": [ "altitude", "east_longitude", "latitude" ],
         "mandatory_properties": [ "value_kind", "value", "unit" ]
     },
     "provider_directory_entries": {

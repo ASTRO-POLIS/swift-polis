@@ -49,6 +49,36 @@
             "xml"
         ]
     },
+    "earth_continent": {
+        "description": "The name of the continent.",
+        "value_type": "string"
+    },
+    "earth_country": {
+        "description": "Country name like France or Nepal).",
+        "value_type": "string"
+    },
+    "earth_country_code": {
+        "description": "Ywo letter international country code).",
+        "value_type": "string",
+        "min_length": 2,
+        "max_length": 2
+    },
+    "earth_region_or_state_code": {
+        "description": "Depends on the country",
+        "value_type": "string"
+    },
+    "earth_region_or_state_name": {
+        "description": "Depends on the country",
+        "value_type": "string"
+    },
+    "earth_time_zone_identifier": {
+        "description": "International time zone identifiar (e.g. Europe/Berlin).",
+        "value_type": "string"
+    },
+    "earth_zip_code": {
+        "description": "Depends on the country",
+        "value_type": "string"
+    },
     "email_address": {
         "description": "Well defined valid email address",
         "value_type": "string",
@@ -145,6 +175,10 @@
             "other"
         ]
     },
+    "place": {
+        "description": "The name of the place on Earth or any other Solar system body",
+        "value_type": "string"
+    },
     "provider_type": {
         "description": "Defines the type of the POLIS Service Provider.",
         "value_type": "string",
@@ -155,6 +189,10 @@
             "experimental",
             "array"
         ]
+    },
+    "region_name": {
+        "description": "Defines the name of the region (either Earth or another Solar system body).",
+        "value_type": "string"
     },
     "rough_direction": {
         "description": "Rough direction represented as a string.",

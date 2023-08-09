@@ -44,28 +44,38 @@ final class PolisObservingFacilityLocationTests: XCTestCase {
     //MARK: - Tests -
     func test_PolisObservingFacilityLocation_codingSupport_shouldSucceed() throws {
         // Given
-        let eastLongitude     = PolisPropertyValue(valueKind: .double, value: "23.21", unit: "degree")
-        let latitude          = PolisPropertyValue(valueKind: .double, value: "42.53", unit: "degree")
-        let altitude          = PolisPropertyValue(valueKind: .double, value: "610.0", unit: "m")
+        // Given
+        let eastLongitude     = PolisPropertyValue(valueKind: .double, value: "14.15", unit: "degree")
+        let latitude          = PolisPropertyValue(valueKind: .double, value: "48.51", unit: "degree")
+        let altitude          = PolisPropertyValue(valueKind: .double, value: "896.0", unit: "m")
+        let continent         = PolisObservingFacilityLocation.EarthContinent.europe
+        let place             = "Sandl"
+        let regionOrState     = "Ober Östereich"
+        let regionOrStateCode = "OÖ"
+        let zipCode           = "1234"
+        let country           = "Austria"
+        let countryCode       = "OS"
 
         let sut = PolisObservingFacilityLocation(eastLongitude: eastLongitude,
                                                  latitude: latitude,
                                                  altitude: altitude,
                                                  regionName: "Rodopi mountains",
-                                                 place: "Rozhen",
+                                                 place: place,
                                                  earthTimeZoneIdentifier: "Europe/Sofia",
-                                                 earthContinent: PolisObservingFacilityLocation.EarthContinent.europe,
-                                                 earthRegionOrStateName: "Smolyan",
-                                                 earthRegionOrStateCode: "Smolyan",
-                                                 earthZipCode: "4513",
-                                                 earthCountry: "Bulgaria",
-                                                 earthCountryCode: "BG")
+                                                 earthContinent: continent,
+                                                 earthRegionOrStateName: regionOrState,
+                                                 earthRegionOrStateCode: regionOrState,
+                                                 earthZipCode: zipCode,
+                                                 earthCountry: country,
+                                                 earthCountryCode: countryCode)
+
         // When
         data   = try? jsonEncoder.encode(sut)
         string = String(data: data!, encoding: .utf8)
 
         // Then
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisObservingFacilityLocation.self, from: string!.data(using: .utf8)!))
+        XCTAssertNotNil(sut)
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisObservingSiteLocationType.EarthBasedLocation.self, from: string!.data(using: .utf8)!))
     }
 
     static var allTests = [

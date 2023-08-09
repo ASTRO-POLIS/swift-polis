@@ -81,6 +81,7 @@ final class PolisObservingFacilityTests: XCTestCase {
                                                             copyrightHolderType: .useWithOwnersPermission,
                                                             copyrightHolderReference: "Contributor <contributor@example.com",
                                                             copyrightHolderNote: "I agree this image to be used in POLIS")
+        let surfaceSize   = PolisPropertyValue(valueKind: .double, value: "2453.2", unit: "m^2")
         var imageSource   = PolisImageSource()
         imageSource.addImage(imageItem)
 
@@ -112,16 +113,14 @@ final class PolisObservingFacilityTests: XCTestCase {
                                                    averageSeeingConditions: PolisPropertyValue(valueKind: .double, value: "31", unit: "magnitude"),
                                                    averageSkyQuality: PolisPropertyValue(valueKind: .double, value: "0.9", unit: "magnitude / arcsec^2"),
                                                    traditionalLandOwners: "Lions and giraffes",
-                                                   dominantWindDirection: PolisDirection.RoughDirection.eastNorthEast)
+                                                   dominantWindDirection: PolisDirection.RoughDirection.eastNorthEast,
+                                                   surfaceSize: surfaceSize)
         // When
         data   = try? jsonEncoder.encode(sut)
         string = String(data: data!, encoding: .utf8)
 
         // Then
         XCTAssertNoThrow(try jsonDecoder.decode(PolisObservingFacility.self, from: string!.data(using: .utf8)!))
-
-        // Then
-
     }
 
 

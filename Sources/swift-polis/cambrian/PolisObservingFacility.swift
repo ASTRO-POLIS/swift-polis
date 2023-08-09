@@ -109,35 +109,37 @@ public struct PolisObservingFacility: Identifiable, Codable {
     public var traditionalLandOwners: String?
 
     public var dominantWindDirection: PolisDirection.RoughDirection?
+    public var surfaceSize: PolisPropertyValue?
 
-    init(item: PolisItem, gravitationalBodyRelationship: ObservingFacilityLocationType, placeInTheSolarSystem: PlaceInTheSolarSystem, observingFacilityCode: String? = nil, solarSystemBodyName: String? = nil, astronomicalCode: String? = nil, orbitingAroundPlaceInTheSolarSystemNamed: String? = nil, facilityLocationID: UUID? = nil, parentObservingFacilityID: UUID? = nil, subObservingFacilityIDs: Set<UUID>? = nil, observatoryIDs: Set<UUID>? = nil, deviceIDs: Set<UUID>? = nil, startDate: Date? = nil, endDate: Date? = nil, polisRegistrationDate: Date? = nil, polisDisconnectionDate: Date? = nil, adminContact: PolisAdminContact? = nil, website: URL? = nil, scientificObjectives: String? = nil, history: String? = nil, openingHours: PolisVisitingHours? = nil, accessRestrictions: String? = nil, averageClearNightsPerYear: UInt? = nil, averageSeeingConditions: PolisPropertyValue? = nil, averageSkyQuality: PolisPropertyValue? = nil, traditionalLandOwners: String? = nil, dominantWindDirection: PolisDirection.RoughDirection? = nil) {
-        self.item = item
-        self.gravitationalBodyRelationship = gravitationalBodyRelationship
-        self.placeInTheSolarSystem = placeInTheSolarSystem
-        self.observingFacilityCode = observingFacilityCode
-        self.solarSystemBodyName = solarSystemBodyName
-        self.astronomicalCode = astronomicalCode
+    init(item: PolisItem, gravitationalBodyRelationship: ObservingFacilityLocationType, placeInTheSolarSystem: PlaceInTheSolarSystem, observingFacilityCode: String? = nil, solarSystemBodyName: String? = nil, astronomicalCode: String? = nil, orbitingAroundPlaceInTheSolarSystemNamed: String? = nil, facilityLocationID: UUID? = nil, parentObservingFacilityID: UUID? = nil, subObservingFacilityIDs: Set<UUID>? = nil, observatoryIDs: Set<UUID>? = nil, deviceIDs: Set<UUID>? = nil, startDate: Date? = nil, endDate: Date? = nil, polisRegistrationDate: Date? = nil, polisDisconnectionDate: Date? = nil, adminContact: PolisAdminContact? = nil, website: URL? = nil, scientificObjectives: String? = nil, history: String? = nil, openingHours: PolisVisitingHours? = nil, accessRestrictions: String? = nil, averageClearNightsPerYear: UInt? = nil, averageSeeingConditions: PolisPropertyValue? = nil, averageSkyQuality: PolisPropertyValue? = nil, traditionalLandOwners: String? = nil, dominantWindDirection: PolisDirection.RoughDirection? = nil, surfaceSize: PolisPropertyValue? = nil) {
+        self.item                                     = item
+        self.gravitationalBodyRelationship            = gravitationalBodyRelationship
+        self.placeInTheSolarSystem                    = placeInTheSolarSystem
+        self.observingFacilityCode                    = observingFacilityCode
+        self.solarSystemBodyName                      = solarSystemBodyName
+        self.astronomicalCode                         = astronomicalCode
         self.orbitingAroundPlaceInTheSolarSystemNamed = orbitingAroundPlaceInTheSolarSystemNamed
-        self.facilityLocationID = facilityLocationID
-        self.parentObservingFacilityID = parentObservingFacilityID
-        self.subObservingFacilityIDs = subObservingFacilityIDs
-        self.observatoryIDs = observatoryIDs
-        self.deviceIDs = deviceIDs
-        self.startDate = startDate
-        self.endDate = endDate
-        self.polisRegistrationDate = polisRegistrationDate
-        self.polisDisconnectionDate = polisDisconnectionDate
-        self.adminContact = adminContact
-        self.website = website
-        self.scientificObjectives = scientificObjectives
-        self.history = history
-        self.openingHours = openingHours
-        self.accessRestrictions = accessRestrictions
-        self.averageClearNightsPerYear = averageClearNightsPerYear
-        self.averageSeeingConditions = averageSeeingConditions
-        self.averageSkyQuality = averageSkyQuality
-        self.traditionalLandOwners = traditionalLandOwners
-        self.dominantWindDirection = dominantWindDirection
+        self.facilityLocationID                       = facilityLocationID
+        self.parentObservingFacilityID                = parentObservingFacilityID
+        self.subObservingFacilityIDs                  = subObservingFacilityIDs
+        self.observatoryIDs                           = observatoryIDs
+        self.deviceIDs                                = deviceIDs
+        self.startDate                                = startDate
+        self.endDate                                  = endDate
+        self.polisRegistrationDate                    = polisRegistrationDate
+        self.polisDisconnectionDate                   = polisDisconnectionDate
+        self.adminContact                             = adminContact
+        self.website                                  = website
+        self.scientificObjectives                     = scientificObjectives
+        self.history                                  = history
+        self.openingHours                             = openingHours
+        self.accessRestrictions                       = accessRestrictions
+        self.averageClearNightsPerYear                = averageClearNightsPerYear
+        self.averageSeeingConditions                  = averageSeeingConditions
+        self.averageSkyQuality                        = averageSkyQuality
+        self.traditionalLandOwners                    = traditionalLandOwners
+        self.dominantWindDirection                    = dominantWindDirection
+        self.surfaceSize                              = surfaceSize
     }
 }
 
@@ -182,6 +184,7 @@ public extension PolisObservingFacility {
         case averageSkyQuality                        = "average_sky_quality"
         case traditionalLandOwners                    = "traditional_land_owners"
         case dominantWindDirection                    = "dominant_wind_direction"
+        case surfaceSize                              = "surface_size"
     }
 }
 
