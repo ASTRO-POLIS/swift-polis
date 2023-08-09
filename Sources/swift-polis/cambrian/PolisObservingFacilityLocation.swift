@@ -46,7 +46,7 @@ public struct PolisObservingFacilityLocation: Codable {
     public let earthCountry: String?              // e.g. Armenia
     public let earthCountryCode: String?          // 2-letter code.
 
-    init(eastLongitude: PolisPropertyValue?, latitude: PolisPropertyValue?, altitude: PolisPropertyValue?, regionName: String? = nil, place: String?, earthTimeZoneIdentifier: String? = nil, earthContinent: EarthContinent? = nil, earthRegionOrStateName: String?, earthRegionOrStateCode: String?, earthZipCode: String?, earthCountry: String?, earthCountryCode: String?) {
+    public init(eastLongitude: PolisPropertyValue?, latitude: PolisPropertyValue?, altitude: PolisPropertyValue?, regionName: String? = nil, place: String?, earthTimeZoneIdentifier: String? = nil, earthContinent: EarthContinent? = nil, earthRegionOrStateName: String?, earthRegionOrStateCode: String?, earthZipCode: String?, earthCountry: String?, earthCountryCode: String?) {
         self.eastLongitude = eastLongitude
         self.latitude = latitude
         self.altitude = altitude
