@@ -46,19 +46,30 @@ public struct PolisObservingFacilityLocation: Codable {
     public let earthCountry: String?              // e.g. Armenia
     public let earthCountryCode: String?          // 2-letter code.
 
-    public init(eastLongitude: PolisPropertyValue?, latitude: PolisPropertyValue?, altitude: PolisPropertyValue?, regionName: String? = nil, place: String?, earthTimeZoneIdentifier: String? = nil, earthContinent: EarthContinent? = nil, earthRegionOrStateName: String?, earthRegionOrStateCode: String?, earthZipCode: String?, earthCountry: String?, earthCountryCode: String?) {
-        self.eastLongitude = eastLongitude
-        self.latitude = latitude
-        self.altitude = altitude
-        self.regionName = regionName
-        self.place = place
+    public init(eastLongitude: PolisPropertyValue?  = nil,
+                latitude: PolisPropertyValue?       = nil,
+                altitude: PolisPropertyValue?       = nil,
+                regionName: String?                 = nil,
+                place: String?                      = nil,
+                earthTimeZoneIdentifier: String?    = nil,
+                earthContinent: EarthContinent?     = nil,
+                earthRegionOrStateName: String?     = nil,
+                earthRegionOrStateCode: String?     = nil,
+                earthZipCode: String?               = nil,
+                earthCountry: String?               = nil,
+                earthCountryCode: String?           = nil) {
+        self.eastLongitude           = eastLongitude
+        self.latitude                = latitude
+        self.altitude                = altitude
+        self.regionName              = regionName
+        self.place                   = place
         self.earthTimeZoneIdentifier = earthTimeZoneIdentifier
-        self.earthContinent = earthContinent
-        self.earthRegionOrStateName = earthRegionOrStateName
-        self.earthRegionOrStateCode = earthRegionOrStateCode
-        self.earthZipCode = earthZipCode
-        self.earthCountry = earthCountry
-        self.earthCountryCode = earthCountryCode
+        self.earthContinent          = earthContinent
+        self.earthRegionOrStateName  = earthRegionOrStateName
+        self.earthRegionOrStateCode  = earthRegionOrStateCode
+        self.earthZipCode            = earthZipCode
+        self.earthCountry            = earthCountry
+        self.earthCountryCode        = earthCountryCode
     }
 
 }
