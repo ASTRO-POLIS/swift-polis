@@ -64,7 +64,7 @@ final class PolisObservingFacilityLocationTests: XCTestCase {
                                                  earthTimeZoneIdentifier: "Europe/Sofia",
                                                  earthContinent: continent,
                                                  earthRegionOrStateName: regionOrState,
-                                                 earthRegionOrStateCode: regionOrState,
+                                                 earthRegionOrStateCode: regionOrStateCode,
                                                  earthZipCode: zipCode,
                                                  earthCountry: country,
                                                  earthCountryCode: countryCode)

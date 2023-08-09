@@ -398,17 +398,14 @@ public struct PolisManufacturer: Codable, Identifiable {
 
     public var id: UUID { identity.id }
 
-    public var name: String     // e.g. ASA, Meade, ...
-
     /// The fully qualified URL of the service provider, e.g. https://www.celestron.com
     public var url: URL?
 
     /// The point-of-contact for the manufacturer.
     public var adminContact: PolisAdminContact?
 
-    public init(identity: PolisIdentity, name: String, url: URL? = nil, adminContact: PolisAdminContact? = nil) {
+    public init(identity: PolisIdentity, url: URL? = nil, adminContact: PolisAdminContact? = nil) {
         self.identity     = identity
-        self.name         = name
         self.url          = url
         self.adminContact = adminContact
     }
@@ -702,7 +699,6 @@ public extension PolisItemOwner {
 extension PolisManufacturer {
     enum CodingKeys: String, CodingKey {
         case identity
-        case name
         case url
         case adminContact = "admin_contact"
     }
