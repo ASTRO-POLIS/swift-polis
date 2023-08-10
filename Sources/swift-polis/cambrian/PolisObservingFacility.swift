@@ -154,11 +154,11 @@ public extension PolisObservingFacility {
         // Where in the Solar system
         case solarSystemBodyName                      = "solar_system_body_name"
         case orbitingAroundPlaceInTheSolarSystemNamed = "orbiting_around_place_in_the_solar_system_named"
-        case facilityLocationID                       = "facilityLocation_id"
+        case facilityLocationID                       = "facility_location_id"
         case astronomicalCode                         = "astronomical_code"
 
         // Relationship to other facilities
-        case parentObservingFacilityID                = "paren_observing_facility_id"
+        case parentObservingFacilityID                = "parent_observing_facility_id"
         case subObservingFacilityIDs                  = "sub_observing_facility_ids"
 
         // Contains
