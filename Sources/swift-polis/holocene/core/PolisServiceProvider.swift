@@ -178,33 +178,33 @@ public struct PolisDirectory  {
     }
 }
 
-//MARK: - Observing Site Directory -
+//MARK: - Observing Facility Directory -
 
-/// A compact list of all known Observing Sites
-public struct PolisObservingSiteDirectory: Codable {
+/// A compact list of all known Observing Facilities
+public struct PolisObservingFacilityDirectory: Codable {
 
-    /// It is expected that the list of observatory sites is long and each site's data could be way over 1MB. Therefore a
-    /// compact list of site references is maintained separately containing only site UUIDs and last update time. It is
+    /// It is expected that the list of observatory facilities is long and each facility's data could be way over 1MB. Therefore a
+    /// compact list of facilities references is maintained separately containing only facility's UUIDs and last update time. It is
     /// recommended that clients cache this list and update the observatory data only in case the cache needs to be
     /// invalidated (e.g. lastUpdate is changed).
-    public struct ObservingSiteReference: Codable, Identifiable {
+    public struct ObservingFacilityReference: Codable, Identifiable {
         public var identity: PolisIdentity
-        public var parentObservingSiteID: UUID?
+        public var parentObservingFacilityID: UUID?
 
         public var id: UUID { identity.id }
 
-        public init(identity: PolisIdentity, parentObservingSiteID: UUID? = nil) {
-            self.identity              = identity
-            self.parentObservingSiteID = parentObservingSiteID
+        public init(identity: PolisIdentity, parentObservingFacilityID: UUID? = nil) {
+            self.identity                  = identity
+            self.parentObservingFacilityID = parentObservingFacilityID
         }
     }
 
     public var lastUpdate: Date                                   // UTC
-    public var observingSiteReferences: [ObservingSiteReference]
+    public var observingFacilityReferences: [ObservingFacilityReference]
 
-    public init(lastUpdate: Date, observingSiteReferences: [ObservingSiteReference]) {
-        self.lastUpdate              = lastUpdate
-        self.observingSiteReferences = observingSiteReferences
+    public init(lastUpdate: Date, observingFacilityReferences: [ObservingFacilityReference]) {
+        self.lastUpdate                  = lastUpdate
+        self.observingFacilityReferences = observingFacilityReferences
     }
 }
 
@@ -212,7 +212,7 @@ public struct PolisObservingSiteDirectory: Codable {
 
 //TODO: Documentation!
 //WARNING: This here is very wrong! What actually is needed is a list of referred devices. Obviously Georg was drunk while writing this!
-public struct PolisResourceSiteDirectory: Codable {
+public struct PolisResourceDirectory: Codable {
 
     public struct ResourceReference: Codable, Identifiable {
         public var identity: PolisIdentity
@@ -265,28 +265,28 @@ extension PolisDirectory: Codable {
     }
 }
 
-extension PolisObservingSiteDirectory {
+extension PolisObservingFacilityDirectory {
     public enum CodingKeys: String, CodingKey {
-        case lastUpdate              = "last_updated"
-        case observingSiteReferences = "observing_site_references"
+        case lastUpdate                  = "last_updated"
+        case observingFacilityReferences = "observing_facility_references"
     }
 }
 
-extension PolisObservingSiteDirectory.ObservingSiteReference {
+extension PolisObservingFacilityDirectory.ObservingFacilityReference {
     public enum CodingKeys: String, CodingKey {
         case identity
-        case parentObservingSiteID = "parent_observing_site_id"
+        case parentObservingFacilityID = "parent_observing_facility_id"
     }
 }
 
-extension PolisResourceSiteDirectory {
+extension PolisResourceDirectory {
     public enum CodingKeys: String, CodingKey {
         case lastUpdate         = "last_updated"
         case resourceReferences = "resource_references"
     }
 }
 
-extension PolisResourceSiteDirectory.ResourceReference {
+extension PolisResourceDirectory.ResourceReference {
     public enum CodingKeys: String, CodingKey {
         case identity
         case uniqueManufacturerName = "unique_manufacturer_name"

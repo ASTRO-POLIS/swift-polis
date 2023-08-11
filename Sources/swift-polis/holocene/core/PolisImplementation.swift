@@ -55,11 +55,11 @@ public struct PolisImplementation: Codable, Equatable  {
         /// The service provider hosts only static data
         case staticData        = "static_data"
 
-        /// If the status of observing sites is updated manually (e.g. by the admin) or automatically (by using POLIS-defined
+        /// If the status of observing facilities is updated manually (e.g. by the admin) or automatically (by using POLIS-defined
         /// APIs), the service provider dynamically propagates the status information.
         case dynamicStatus     = "dynamic_status"
 
-        /// The service provider can dynamically schedule observations (for sites that implement this functionality) and
+        /// The service provider can dynamically schedule observations (for observing facilities that implement this functionality) and
         /// manage complex observation scheduling.
         case dynamicScheduling = "dynamic_scheduling"
     }

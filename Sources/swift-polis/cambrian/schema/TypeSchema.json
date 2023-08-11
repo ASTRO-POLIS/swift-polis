@@ -29,7 +29,7 @@
     "observing_facility_location": {
         "standard_properties": [ "altitude", "earth_continent", "earth_country", "earth_country_code", "earth_region_or_state_name", "earth_region_or_state_code", "earth_time_zone_identifier", "earth_zip_code", "east_longitude", "latitude", "place", "region_name" ]
     },
-    "observing_site_reference": {
+    "observing_facility_reference": {
         "mandatory_properties": [ "identity" ]
     },
     "polis": {
@@ -38,8 +38,8 @@
     "polis_resources": {
         "mandatory_properties": [ "last_update", "resource_reference" ]
     },
-    "polis_sites": {
-        "mandatory_properties": [ "last_update", "observing_site_references" ]
+    "polis_observing_facility": {
+        "mandatory_properties": [ "last_update", "observing_facility_references" ]
     },
     "property_value": {
         "aliases": [ "altitude", "east_longitude", "latitude" ],

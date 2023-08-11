@@ -17,10 +17,10 @@
 
 import Foundation
 
-/// The `PolisVisitingHours` struct is used to define periods of time when a ``PolisObservingSite`` could be visited, or the
+/// The `PolisVisitingHours` struct is used to define periods of time when a ``PolisObservingFacility`` could be visited, or the
 /// working hours of the personnel.
 ///
-/// Note that some sites might only be open during part of the year (e.g. because of difficult winter conditions) or may only be visited during
+/// Note that some facilities might only be open during part of the year (e.g. because of difficult winter conditions) or may only be visited during
 /// school vacations.
 ///
 /// The first version of the the POLIS standard defines only an optional `note` string.  Future versions will add more structured types
@@ -98,7 +98,7 @@ public struct PolisPropertyValue: Codable, Equatable {
 /// `PolisDirection` is used to represent either a rough direction (of 16 possibilities) or exact direction in degree
 /// represented as a double number (e.g. 57.349)
 ///
-/// Directions are used to describe information such as dominant wind direction of observing site, or direction of doors of
+/// Directions are used to describe information such as dominant wind direction of observing facilities, or direction of doors of
 /// different types of enclosures.
 public struct PolisDirection: Codable {
 
@@ -204,7 +204,7 @@ public struct PolisIdentity: Codable, Identifiable {
 
     /// The current status of the POLIS item and its readiness to be used in different environments.
     ///
-    /// Each POLIS type (Provider, Observing Site, Device, etc.) should include `LifecycleStatus` (as part of
+    /// Each POLIS type (Provider, Observing Facility, Device, etc.) should include `LifecycleStatus` (as part of
     /// ``PolisIdentity``).
     ///
     /// `LifecycleStatus` will determine the syncing policy as well as the visibility of the POLIS items within client
@@ -215,7 +215,7 @@ public struct PolisIdentity: Codable, Identifiable {
     /// UUID of the item
     ///  - `historic` - do not sync, but continue monitoring
     /// - `delete`    - delete the item
-    /// - `suspended` - sync the `PolisItemAttributes`, but do not use the service provider or the observing site. Suspended
+    /// - `suspended` - sync the `PolisItemAttributes`, but do not use the service provider or the observing facility. Suspended
     /// is used to mark that the item does not follow the POLIS standard, or violates community rules. Normally entities
     /// will be warned first, and if they continue to break standards and rules, they will be deleted.
     /// - `unknown`   - do not sync, but continue monitoring
@@ -230,7 +230,7 @@ public struct PolisIdentity: Codable, Identifiable {
         /// Item still exists and has historical value but is not operational.
         case historic
 
-        /// `deleted` is needed to prevent reappearance of disabled providers or sites.
+        /// `deleted` is needed to prevent reappearance of disabled providers or facilities.
         case deleted
 
         /// After marking an item for deletion, wait for a year (check `lastUpdate`) and start marking the item as
@@ -241,7 +241,7 @@ public struct PolisIdentity: Codable, Identifiable {
         /// `suspended` indicates providers violating the standard (temporary or permanently).
         case suspended
 
-        /// `unknown` indicates a provider with unknown status, and is mostly used when the observing site or instrument has
+        /// `unknown` indicates a provider with unknown status, and is mostly used when the observing facility or instrument has
         /// unknown status.
         case unknown
     }
@@ -301,7 +301,7 @@ public struct PolisIdentity: Codable, Identifiable {
 
 /// `PolisItem` uniquely identifies almost every POLIS object and defines the hierarchies and references between different objects
 ///
-/// Any `[[PolisDevice]]`,  Observing Source (site, mobile platform, Collaboration, Network, ...), or Resource (e.g. a manufacturer of astronomy related
+/// Any `[[PolisDevice]]`,  Observing Source (e.g. various observing facilities) or Resource (e.g. a manufacturer of astronomy related
 /// hardware) must have a `PolisItem` to uniquely identify the object and build the logical and spacial hierarchy between them.
 public struct PolisItem: Codable, Identifiable {
 
@@ -342,16 +342,16 @@ public struct PolisItem: Codable, Identifiable {
 
 //MARK: - Item Ownership -
 
-/// A type that defines the owner of an observing site or a device.
+/// A type that defines the owner of an observing facility or a device.
 ///
-/// Files containing an owner's information are in general stored within the static file hierarchy of the observing site (or equivalent).
+/// Files containing an owner's information are in general stored within the static file hierarchy of the observing facilities (or equivalent).
 /// For performance reasons, it is recommended (but not required by the standard) that the service provider supports a directory of owners
 /// (as this framework does). Such a cache of owners would of course have performance and data maintenance implications as well.
 public struct PolisItemOwner: Codable {
 
     /// A type that describes the different kinds of owners of a POLIS item.
     ///
-    /// `OwnershipType` is used to identify the ownership type of POLIS items (or devices) such as observing sites, telescopes,
+    /// `OwnershipType` is used to identify the ownership type of POLIS items (or devices) such as observing facilities, telescopes,
     /// CCD cameras, weather stations, etc. Different cases should be self-explanatory. The `private` type should be utilised by
     /// amateurs and hobbyists.
     public enum OwnershipType: String, Codable {
@@ -415,7 +415,7 @@ public struct PolisManufacturer: Codable, Identifiable {
 
 //MARK: - Communication related types -
 
-// Many POLIS types have reference to contact people (owners of sites, admins, project managers). Later we need to add
+// Many POLIS types have reference to contact people (owners of observing facilities, admins, project managers). Later we need to add
 // Institutions as well and handle the messiness of addresses, countries, languages, phone numbers and other
 // developer's nightmares. We think it's perhaps the best in the future to rely on an external implementation for address
 // management.
@@ -423,11 +423,11 @@ public struct PolisManufacturer: Codable, Identifiable {
 // is a simple enough task and therefore the current implementation of POLIS includes contact-only related types.
 
 
-/// `PolisAdminContact` defines a simple way to contact a provider admin, an observing site owner, or an observatory
+/// `PolisAdminContact` defines a simple way to contact a provider admin, an observing facility owner, or an observatory
 /// admin.
 ///
 /// It is important to be able to contact the admin of a POLIS service provider or the admin or the owner of an
-/// observing site, but one should not forget that all POLIS data is publicly available and therefore should not
+/// observing facility, but one should not forget that all POLIS data is publicly available and therefore should not
 /// expose private information if possible. It is preferable not to expose private email addresses, phone numbers, or
 /// twitter accounts, but only publicly available organisation contacts or pages.
 ///
@@ -529,7 +529,7 @@ public struct PolisAdminContact: Identifiable {
 }
 
 //MARK: - Images -
-/// A source for images related to a single item, such as an observing site, a satellite, a telescope, or a camera.
+/// A source for images related to a single item, such as an observing facility, a satellite, a telescope, or a camera.
 ///
 /// A POLIS client can use an image in many different ways—as a thumbnail, a full image, a banner, etc. A `PolisImageSource` could have multiple `ImageItem`s
 /// that fulfil the needs of the client application.

@@ -33,7 +33,7 @@ class PolisObservingTests: XCTestCase {
     }
 
     //MARK: - Actual tests -
-    func testPolisObservingSiteCodingSupport() {
+    func testPolisObservingFacilityCodingSupport() {
 //        let identity = PolisIdentity(id: UUID(),
 //                                     lifecycleStatus: PolisIdentity.LifecycleStatus.inactive,
 //                                     lastUpdate: Date(),
@@ -42,18 +42,18 @@ class PolisObservingTests: XCTestCase {
 //                                     automationLabel: "tst",
 //                                     shortDescription: "test identity")
 //        let item     = PolisItem(identity: identity)
-//        let location = PolisObservingSiteLocationType.earthSurfaceBased(location: PolisObservingSiteLocationType.EarthBasedLocation(), type: PolisObservingSiteLocationType.SurfaceLocationType.fixed)
+//        let location = PolisObservingFacilityLocationType.earthSurfaceBased(location: PolisObservingFacilityLocationType.EarthBasedLocation(), type: PolisObservingFacilityLocationType.SurfaceLocationType.fixed)
 //        let sut      = PolisEarthObservingSite(item: item)
 //
 //        data   = try? jsonEncoder.encode(sut)
 //        string = String(data: data!, encoding: .utf8)
 //
-//        XCTAssertNoThrow(try jsonDecoder.decode(PolisEarthObservingSite.self, from: string!.data(using: .utf8)!))
+//        XCTAssertNoThrow(try jsonDecoder.decode(PolisEarthObservingFacility.self, from: string!.data(using: .utf8)!))
     }
 
     //MARK: - Housekeeping -
         static var allTests = [
-            ("testPolisObservingSiteCodingSupport", testPolisObservingSiteCodingSupport),
+            ("testPolisObservingFacilityCodingSupport", testPolisObservingFacilityCodingSupport),
         ]
 
 }

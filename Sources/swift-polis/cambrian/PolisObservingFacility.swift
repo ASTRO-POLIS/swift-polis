@@ -98,7 +98,7 @@ public struct PolisObservingFacility: Identifiable, Codable {
     // Identifiable protocol compliance
     public var id: UUID { item.identity.id }
 
-    //MARK: Earth-based site properties
+    //MARK: Earth-based facility properties
     public var openingHours: PolisVisitingHours?
     public var accessRestrictions: String?
 
@@ -111,7 +111,34 @@ public struct PolisObservingFacility: Identifiable, Codable {
     public var dominantWindDirection: PolisDirection.RoughDirection?
     public var surfaceSize: PolisPropertyValue?
 
-    public init(item: PolisItem, gravitationalBodyRelationship: ObservingFacilityLocationType, placeInTheSolarSystem: PlaceInTheSolarSystem, observingFacilityCode: String? = nil, solarSystemBodyName: String? = nil, astronomicalCode: String? = nil, orbitingAroundPlaceInTheSolarSystemNamed: String? = nil, facilityLocationID: UUID? = nil, parentObservingFacilityID: UUID? = nil, subObservingFacilityIDs: Set<UUID>? = nil, observatoryIDs: Set<UUID>? = nil, deviceIDs: Set<UUID>? = nil, startDate: Date? = nil, endDate: Date? = nil, polisRegistrationDate: Date? = nil, polisDisconnectionDate: Date? = nil, adminContact: PolisAdminContact? = nil, website: URL? = nil, scientificObjectives: String? = nil, history: String? = nil, openingHours: PolisVisitingHours? = nil, accessRestrictions: String? = nil, averageClearNightsPerYear: UInt? = nil, averageSeeingConditions: PolisPropertyValue? = nil, averageSkyQuality: PolisPropertyValue? = nil, traditionalLandOwners: String? = nil, dominantWindDirection: PolisDirection.RoughDirection? = nil, surfaceSize: PolisPropertyValue? = nil) {
+    public init(item: PolisItem, 
+                gravitationalBodyRelationship: ObservingFacilityLocationType,
+                placeInTheSolarSystem: PlaceInTheSolarSystem,
+                observingFacilityCode: String?                         = nil,
+                solarSystemBodyName: String?                           = nil,
+                astronomicalCode: String?                              = nil,
+                orbitingAroundPlaceInTheSolarSystemNamed: String?      = nil,
+                facilityLocationID: UUID?                              = nil,
+                parentObservingFacilityID: UUID?                       = nil,
+                subObservingFacilityIDs: Set<UUID>?                    = nil,
+                observatoryIDs: Set<UUID>?                             = nil,
+                deviceIDs: Set<UUID>?                                  = nil,
+                startDate: Date?                                       = nil,
+                endDate: Date?                                         = nil,
+                polisRegistrationDate: Date?                           = nil,
+                polisDisconnectionDate: Date?                          = nil,
+                adminContact: PolisAdminContact?                       = nil,
+                website: URL?                                          = nil,
+                scientificObjectives: String?                          = nil,
+                history: String?                                       = nil,
+                openingHours: PolisVisitingHours?                      = nil,
+                accessRestrictions: String?                            = nil,
+                averageClearNightsPerYear: UInt?                       = nil,
+                averageSeeingConditions: PolisPropertyValue?           = nil,
+                averageSkyQuality: PolisPropertyValue?                 = nil,
+                traditionalLandOwners: String?                         = nil,
+                dominantWindDirection: PolisDirection.RoughDirection?  = nil,
+                surfaceSize: PolisPropertyValue?                       = nil) {
         self.item                                     = item
         self.gravitationalBodyRelationship            = gravitationalBodyRelationship
         self.placeInTheSolarSystem                    = placeInTheSolarSystem

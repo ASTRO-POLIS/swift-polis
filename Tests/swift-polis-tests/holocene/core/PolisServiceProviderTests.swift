@@ -86,17 +86,17 @@ final class PolisServiceProviderTests: XCTestCase {
     func test_ProviderDirectoryEntry_codingSupport_shouldSucceed() throws {
         // Given
         let sut = try? PolisDirectory.ProviderDirectoryEntry(mirrorID: UUID(),
-                                                     reachabilityStatus: .reachableAndResponsive,
-                                                     name: "Telescope Observer",
-                                                     shortDescription: "The Big Bank Source",
-                                                     url: "https://polis.net",
-                                                     supportedImplementations: [PolisConstants.frameworkSupportedImplementation.last!],
-                                                     providerType: .mirror,
-                                                     adminContact: PolisAdminContact(name: "polis",
-                                                                                     emailAddress: "polis@observer.net",
-                                                                                     phoneNumber: "+3068452820",
-                                                                                     additionalCommunication: nil,
-                                                                                     note: "The admin works only on Sunday")!)
+                                                             reachabilityStatus: .reachableAndResponsive,
+                                                             name: "Telescope Observer",
+                                                             shortDescription: "The Big Bank Source",
+                                                             url: "https://polis.net",
+                                                             supportedImplementations: [PolisConstants.frameworkSupportedImplementation.last!],
+                                                             providerType: .mirror,
+                                                             adminContact: PolisAdminContact(name: "polis",
+                                                                                             emailAddress: "polis@observer.net",
+                                                                                             phoneNumber: "+3068452820",
+                                                                                             additionalCommunication: nil,
+                                                                                             note: "The admin works only on Sunday")!)
 
         // When
         data   = try? jsonEncoder.encode(sut)
@@ -124,7 +124,7 @@ final class PolisServiceProviderTests: XCTestCase {
                                                                                                    phoneNumber: "+3068452820",
                                                                                                    additionalCommunication: nil,
                                                                                                    note: "The admin works only on Sunday")!)
-        let sut = PolisDirectory(providerDirectoryEntries: [sut_entry!])
+        let sut       = PolisDirectory(providerDirectoryEntries: [sut_entry!])
 
         // When
         data   = try? jsonEncoder.encode(sut)
@@ -134,7 +134,7 @@ final class PolisServiceProviderTests: XCTestCase {
         XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectory.self, from: string!.data(using: .utf8)!))
     }
 
-    func test_ObservingSiteReference_codingSupport_shouldSucceed() throws {
+    func test_ObservingFacilityReference_codingSupport_shouldSucceed() throws {
         // Given
         let identity = PolisIdentity(externalReferences: ["1234", "6539"],
                                      lifecycleStatus: PolisIdentity.LifecycleStatus.active,
@@ -143,44 +143,44 @@ final class PolisServiceProviderTests: XCTestCase {
                                      abbreviation: "abc",
                                      automationLabel: "Ascom Label",
                                      shortDescription: "Testing attributes")
-        let sut      = PolisObservingSiteDirectory.ObservingSiteReference(identity: identity)
+        let sut      = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: identity)
 
         // When
         data   = try? jsonEncoder.encode(sut)
         string = String(data: data!, encoding: .utf8)
 
         // Then
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisObservingSiteDirectory.ObservingSiteReference.self, from: string!.data(using: .utf8)!))
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisObservingFacilityDirectory.ObservingFacilityReference.self, from: string!.data(using: .utf8)!))
     }
 
-    func test_PolisObservingSiteDirectory_codingSupport_shouldSucceed() throws {
+    func test_PolisObservingFacilityDirectory_codingSupport_shouldSucceed() throws {
         // Given
-        let i1 = PolisIdentity(externalReferences: ["1234", "6539"],
-                               lifecycleStatus: PolisIdentity.LifecycleStatus.active,
-                               lastUpdate: Date(),
-                               name: "TestAttributes",
-                               abbreviation: "abc",
-                               automationLabel: "Ascom Label",
-                               shortDescription: "Testing attributes")
-        let i2 = PolisIdentity(externalReferences: ["1234"],
-                               lifecycleStatus: PolisIdentity.LifecycleStatus.suspended,
-                               lastUpdate: Date(),
-                               name: "OldStuff",
-                               abbreviation: "old",
-                               shortDescription: "Very old junk")
-        let osd1 = PolisObservingSiteDirectory.ObservingSiteReference(identity: i1)
-        let osd2 = PolisObservingSiteDirectory.ObservingSiteReference(identity: i2)
-        let sut  = PolisObservingSiteDirectory(lastUpdate: Date(), observingSiteReferences: [osd1, osd2])
+        let i1   = PolisIdentity(externalReferences: ["1234", "6539"],
+                                 lifecycleStatus: PolisIdentity.LifecycleStatus.active,
+                                 lastUpdate: Date(),
+                                 name: "TestAttributes",
+                                 abbreviation: "abc",
+                                 automationLabel: "Ascom Label",
+                                 shortDescription: "Testing attributes")
+        let i2   = PolisIdentity(externalReferences: ["1234"],
+                                 lifecycleStatus: PolisIdentity.LifecycleStatus.suspended,
+                                 lastUpdate: Date(),
+                                 name: "OldStuff",
+                                 abbreviation: "old",
+                                 shortDescription: "Very old junk")
+        let osd1 = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: i1)
+        let osd2 = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: i2)
+        let sut  = PolisObservingFacilityDirectory(lastUpdate: Date(), observingFacilityReferences: [osd1, osd2])
 
         // When
         data   = try? jsonEncoder.encode(sut)
         string = String(data: data!, encoding: .utf8)
 
         // Then
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisObservingSiteDirectory.self, from: string!.data(using: .utf8)!))
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisObservingFacilityDirectory.self, from: string!.data(using: .utf8)!))
     }
 
-    func test_PolisResourceSiteDirectory_codingSupport_shouldSucceed() throws {
+    func test_PolisResourceFacilityDirectory_codingSupport_shouldSucceed() throws {
         // Given
         let identity  = PolisIdentity(lifecycleStatus: PolisIdentity.LifecycleStatus.active,
                                       lastUpdate: Date(),
@@ -188,24 +188,25 @@ final class PolisServiceProviderTests: XCTestCase {
                                       abbreviation: "ASA",
                                       automationLabel: "asa",
                                       shortDescription: "Austrian major telescope producer")
-        let reference = PolisResourceSiteDirectory.ResourceReference(identity: identity, uniqueName: "ASA")
-        let sut       = PolisResourceSiteDirectory(lastUpdate: Date(), resourceReferences: [reference])
-
+        let reference = PolisResourceDirectory.ResourceReference(identity: identity, uniqueName: "ASA")
+        let sut       = PolisResourceDirectory(lastUpdate: Date(), resourceReferences: [reference])
+        
         // When
         data   = try? jsonEncoder.encode(sut)
         string = String(data: data!, encoding: .utf8)
 
         // Then
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisResourceSiteDirectory.self, from: string!.data(using: .utf8)!))
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisResourceDirectory.self, from: string!.data(using: .utf8)!))
     }
 
     static var allTests = [
         ("test_ProviderDirectoryEntry_codingSupport_shouldSucceed",              test_ProviderDirectoryEntry_codingSupport_shouldSucceed),
         ("test_DirectoryEntry_loadingPolisDirectoryEntryFromData_shouldSucceed", test_DirectoryEntry_loadingPolisDirectoryEntryFromData_shouldSucceed),
         ("test_PolisDirectory_codingSupport_shouldSucceed",                      test_PolisDirectory_codingSupport_shouldSucceed),
-        ("test_ObservingSiteReference_codingSupport_shouldSucceed",              test_ObservingSiteReference_codingSupport_shouldSucceed),
-        ("test_PolisObservingSiteDirectory_codingSupport_shouldSucceed",         test_PolisObservingSiteDirectory_codingSupport_shouldSucceed),
-        ("test_PolisResourceSiteDirectory_codingSupport_shouldSucceed",          test_PolisResourceSiteDirectory_codingSupport_shouldSucceed),
+        ("test_ObservingFacilityReference_codingSupport_shouldSucceed",          test_ObservingFacilityReference_codingSupport_shouldSucceed),
+        ("test_PolisObservingFacilityDirectory_codingSupport_shouldSucceed",     test_PolisObservingFacilityDirectory_codingSupport_shouldSucceed),
+        ("test_PolisResourceFacilityDirectory_codingSupport_shouldSucceed",      test_PolisResourceFacilityDirectory_codingSupport_shouldSucceed),
+        ("test_PolisResourceFacilityDirectory_codingSupport_shouldSucceed",      test_PolisResourceFacilityDirectory_codingSupport_shouldSucceed),
     ]
 
     //MARK: - Templates

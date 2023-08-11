@@ -1,6 +1,6 @@
 //
 //  PolisObservingFacilityLocationTests.swift
-//  
+//
 //
 //  Created by Georg Tuparev on 4.08.23.
 //
@@ -30,7 +30,7 @@ final class PolisObservingFacilityLocationTests: XCTestCase {
         print("In setUp.")
         jsonEncoder = PolisJSONEncoder()
         jsonDecoder = PolisJSONDecoder()
-  }
+    }
 
     override func tearDownWithError() throws {
         print("In tearDown.")
@@ -56,18 +56,18 @@ final class PolisObservingFacilityLocationTests: XCTestCase {
         let country           = "Austria"
         let countryCode       = "OS"
 
-        let sut = PolisObservingFacilityLocation(eastLongitude: eastLongitude,
-                                                 latitude: latitude,
-                                                 altitude: altitude,
-                                                 regionName: "Rodopi mountains",
-                                                 place: place,
-                                                 earthTimeZoneIdentifier: "Europe/Sofia",
-                                                 earthContinent: continent,
-                                                 earthRegionOrStateName: regionOrState,
-                                                 earthRegionOrStateCode: regionOrStateCode,
-                                                 earthZipCode: zipCode,
-                                                 earthCountry: country,
-                                                 earthCountryCode: countryCode)
+        let sut               = PolisObservingFacilityLocation(eastLongitude: eastLongitude,
+                                                               latitude: latitude,
+                                                               altitude: altitude,
+                                                               regionName: "Rodopi mountains",
+                                                               place: place,
+                                                               earthTimeZoneIdentifier: "Europe/Sofia",
+                                                               earthContinent: continent,
+                                                               earthRegionOrStateName: regionOrState,
+                                                               earthRegionOrStateCode: regionOrStateCode,
+                                                               earthZipCode: zipCode,
+                                                               earthCountry: country,
+                                                               earthCountryCode: countryCode)
 
         // When
         data   = try? jsonEncoder.encode(sut)
@@ -75,7 +75,7 @@ final class PolisObservingFacilityLocationTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(sut)
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisObservingSiteLocationType.EarthBasedLocation.self, from: string!.data(using: .utf8)!))
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisObservingFacilityLocation.self, from: string!.data(using: .utf8)!))
     }
 
     static var allTests = [

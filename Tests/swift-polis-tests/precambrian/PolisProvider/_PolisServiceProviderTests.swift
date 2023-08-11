@@ -10,42 +10,42 @@ final class _PolisServiceProviderTests: XCTestCase {
     //MARK: - Actual tests -
 
 
-    func test_PolisObservingSiteDirectory_coding_shouldSucceed() throws {
+    func test_PolisObservingDirectory_coding_shouldSucceed() throws {
         //TODO: Fix me! 
         // Given
-        let astroTechIdentity           = PolisIdentity(name: "AstroTech")
-        let astroTechObservingSiteEntry = PolisObservingSiteDirectory.ObservingSiteReference(identity: astroTechIdentity)
+        let astroTechIdentity               = PolisIdentity(name: "AstroTech")
+        let astroTechObservingFacilityEntry = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: astroTechIdentity)
 
         // When
-        let sut = PolisObservingSiteDirectory(lastUpdate: Date(), observingSiteReferences: [astroTechObservingSiteEntry])
+        let sut = PolisObservingFacilityDirectory(lastUpdate: Date(), observingFacilityReferences: [astroTechObservingFacilityEntry])
 
         // Then
         XCTAssertNotNil(sut)
 
 //        data   = try? jsonEncoder.encode(sut)
 //        string = String(data: data!, encoding: .utf8)
-//        XCTAssertNoThrow(try jsonDecoder.decode(PolisObservingSiteDirectory.self, from: string!.data(using: .utf8)!))
+//        XCTAssertNoThrow(try jsonDecoder.decode(PolisObservingFacilityDirectory.self, from: string!.data(using: .utf8)!))
     }
 
-    func test_PolisResourceSiteDirectoryResourceReference_coding_shouldSucceed() throws {
+    func test_PolisResourceReference_coding_shouldSucceed() throws {
         // Given
         let asa_identity = PolisIdentity(name: "ASA")
-        let asa          = PolisResourceSiteDirectory.ResourceReference(identity: asa_identity, uniqueName: "asa", deviceTypes: [.mount])
+        let asa          = PolisResourceDirectory.ResourceReference(identity: asa_identity, uniqueName: "asa", deviceTypes: [.mount])
 
         // When
-        let sut = PolisResourceSiteDirectory(lastUpdate: Date(), resourceReferences: [asa])
+        let sut = PolisResourceDirectory(lastUpdate: Date(), resourceReferences: [asa])
 
         // Then
         XCTAssertNotNil(sut)
 
 //        data   = try? jsonEncoder.encode(sut)
 //        string = String(data: data!, encoding: .utf8)
-//        XCTAssertNoThrow(try jsonDecoder.decode(PolisResourceSiteDirectory.self, from: string!.data(using: .utf8)!))
+//        XCTAssertNoThrow(try jsonDecoder.decode(PolisResourceDirectory.self, from: string!.data(using: .utf8)!))
    }
 
     //MARK: - Housekeeping -
     static var allTests = [
-        ("test_PolisObservingSiteDirectory_coding_shouldSucceed",                 test_PolisObservingSiteDirectory_coding_shouldSucceed),
-        ("test_PolisResourceSiteDirectoryResourceReference_coding_shouldSucceed", test_PolisResourceSiteDirectoryResourceReference_coding_shouldSucceed),
+        ("test_PolisObservingDirectory_coding_shouldSucceed", test_PolisObservingDirectory_coding_shouldSucceed),
+        ("test_PolisResourceReference_coding_shouldSucceed",  test_PolisResourceReference_coding_shouldSucceed),
     ]
 }
