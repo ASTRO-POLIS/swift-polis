@@ -184,18 +184,18 @@ public struct PolisDirectory  {
 public struct PolisObservingFacilityDirectory: Codable {
 
     /// It is expected that the list of observatory facilities is long and each facility's data could be way over 1MB. Therefore a
-    /// compact list of facilities references is maintained separately containing only facility's UUIDs and last update time. It is
+    /// compact list of facilities references is maintained separately containing only facility's `identity`  It is
     /// recommended that clients cache this list and update the observatory data only in case the cache needs to be
     /// invalidated (e.g. lastUpdate is changed).
+    ///
+    ///  **Note:** Only root facility (e.g. without a parent facility) should be listed!
     public struct ObservingFacilityReference: Codable, Identifiable {
         public var identity: PolisIdentity
-        public var parentObservingFacilityID: UUID?
 
         public var id: UUID { identity.id }
 
-        public init(identity: PolisIdentity, parentObservingFacilityID: UUID? = nil) {
+        public init(identity: PolisIdentity) {
             self.identity                  = identity
-            self.parentObservingFacilityID = parentObservingFacilityID
         }
     }
 
@@ -275,7 +275,6 @@ extension PolisObservingFacilityDirectory {
 extension PolisObservingFacilityDirectory.ObservingFacilityReference {
     public enum CodingKeys: String, CodingKey {
         case identity
-        case parentObservingFacilityID = "parent_observing_facility_id"
     }
 }
 
