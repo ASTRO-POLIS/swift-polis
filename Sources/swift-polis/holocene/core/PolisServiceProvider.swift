@@ -195,7 +195,7 @@ public struct PolisObservingFacilityDirectory: Codable {
         public var id: UUID { identity.id }
 
         public init(identity: PolisIdentity) {
-            self.identity                  = identity
+            self.identity = identity
         }
     }
 
