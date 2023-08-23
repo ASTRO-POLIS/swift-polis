@@ -68,7 +68,7 @@ public class PolisFileResourceFinder: PolisStaticResourceFinder {
         if enhancedPath.scheme == nil { enhancedPath = URL(fileURLWithPath: path.path) }
 
         guard try enhancedPath.checkPromisedItemIsReachable()           else { throw ResourceFinderError.basePathNotAccessible }
-        guard enhancedPath.hasDirectoryPath                             else { throw ResourceFinderError.basePathNotAccessible }
+        guard enhancedPath.isDirectoryPath()                            else { throw ResourceFinderError.basePathNotAccessible }
         guard FileManager.default.fileExists(atPath: enhancedPath.path) else { throw ResourceFinderError.basePathNotAccessible }
 
         rootPath = enhancedPath

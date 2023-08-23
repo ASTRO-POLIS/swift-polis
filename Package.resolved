@@ -1,25 +1,32 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "ScienceEtudes",
-        "repositoryURL": "https://github.com/tuparev/ScienceEtudes",
-        "state": {
-          "branch": "dev",
-          "revision": "9985327375cd0d119cdb57f351aab669c305f805",
-          "version": null
-        }
-      },
-      {
-        "package": "SoftwareEtudes",
-        "repositoryURL": "https://github.com/tuparev/SoftwareEtudes",
-        "state": {
-          "branch": "dev",
-          "revision": "cc2d7aface5182e350fde77990b9b2d56ac2017e",
-          "version": null
-        }
+  "pins" : [
+    {
+      "identity" : "scienceetudes",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tuparev/ScienceEtudes",
+      "state" : {
+        "branch" : "dev",
+        "revision" : "7b3a0a589b223846497ec4525519b60f454fcd8b"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "softwareetudes",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tuparev/SoftwareEtudes",
+      "state" : {
+        "branch" : "dev",
+        "revision" : "67a387a516011d943a2d75dcb91e3903da4db50e"
+      }
+    },
+    {
+      "identity" : "swift-log",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-log.git",
+      "state" : {
+        "revision" : "532d8b529501fb73a2455b179e0bbb6d49b652ed",
+        "version" : "1.5.3"
+      }
+    }
+  ],
+  "version" : 2
 }
