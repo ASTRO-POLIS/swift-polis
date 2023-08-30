@@ -229,8 +229,9 @@ final class PolisCommonTypesTests: XCTestCase {
                                                             copyrightHolderNote: "I agree this image to be used in POLIS")
         var imageSource   = PolisImageSource()
         imageSource.addImage(imageItem)
-
-        let sut           = PolisItem(identity: identity, manufacturerID: UUID(), owners: [owner], imageSources: [imageSource])
+        var imageIDs      =  Set<UUID>()
+        imageIDs.insert(imageSource.id)
+        let sut           = PolisItem(identity: identity, manufacturerID: UUID(), owners: [owner], imageIDs: imageIDs)
 
         // When
         data   = try? jsonEncoder.encode(sut)
