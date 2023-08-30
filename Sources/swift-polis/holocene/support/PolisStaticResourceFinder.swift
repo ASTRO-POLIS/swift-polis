@@ -82,14 +82,15 @@ public class PolisFileResourceFinder: PolisStaticResourceFinder {
     public func observingFacilitiesFolder() -> String { "\(rootFolder())\(relativePaths.observingFacilitiesPath())".normalisedPath() }
     public func resourcesFolder() -> String           { "\(rootFolder())\(relativePaths.resourcesPath())".normalisedPath() }
 
-    public func configurationFilePath() -> String                { "\(rootFolder())\(relativePaths.configurationFilePath())" }
-    public func polisProviderDirectoryFilePath() -> String       { "\(rootFolder())\(relativePaths.polisProviderDirectoryFilePath())" }
-    public func observingFacilitiesDirectoryFilePath() -> String { "\(rootFolder())\(relativePaths.polisObservingFacilitiesDirectoryFilePath())" }
-    public func resourcesDirectoryFilePath() -> String           { "\(rootFolder())\(relativePaths.polisResourcesDirectoryFilePath())" }
+    public func configurationFile() -> String                { "\(rootFolder())\(relativePaths.configurationFile())" }
+    public func polisProviderDirectoryFile() -> String       { "\(rootFolder())\(relativePaths.polisProviderDirectoryFile())" }
+    public func observingFacilitiesDirectoryFile() -> String { "\(rootFolder())\(relativePaths.polisObservingFacilitiesDirectoryFile())" }
+    public func resourcesDirectoryFile() -> String           { "\(rootFolder())\(relativePaths.polisResourcesDirectoryFile())" }
 
-    public func observingFacilityFilePath(observingFacilityID: String) -> String           { "\(observingFacilitiesFolder())\(observingFacilityID)/\(observingFacilityID)\(fileExtension())" }
-    public func resourcesPath(uniqueName: String) -> String                                { "\(resourcesFolder())\(uniqueName)".normalisedPath() }
-    public func observingDataFilePath(withID: UUID, observingFacilityID: String) -> String { "\(observingFacilitiesFolder())\(observingFacilityID)/\(withID.uuidString)\(fileExtension())" }
+    public func observingFacilityFolder(observingFacilityID: String) -> String         { "\(observingFacilitiesFolder())\(observingFacilityID)/\(observingFacilityID)".normalisedPath() }
+    public func observingFacilityFile(observingFacilityID: String) -> String           { "\(observingFacilitiesFolder())\(observingFacilityID)/\(observingFacilityID)\(fileExtension())" }
+    public func observingDataFile(withID: UUID, observingFacilityID: String) -> String { "\(observingFacilitiesFolder())\(observingFacilityID)/\(withID.uuidString)\(fileExtension())" }
+    public func resourcesFolder(uniqueName: String) -> String                          { "\(resourcesFolder())\(uniqueName)".normalisedPath() }
 
     private let rootPath: URL
 }
@@ -110,13 +111,11 @@ public class PolisRemoteResourceFinder: PolisStaticResourceFinder {
     public func observingFacilitiesURL() -> String { "\(polisDomain())\(relativePaths.observingFacilitiesPath())".normalisedPath() }
     public func resourcesURL() -> String           { "\(polisDomain())\(relativePaths.resourcesPath())".normalisedPath() }
 
-    public func configurationURL() -> String                { "\(polisDomain())\(relativePaths.configurationFilePath())" }
-    public func polisProviderDirectoryURL() -> String       { "\(polisDomain())\(relativePaths.polisProviderDirectoryFilePath())" }
-    public func observingFacilitiesDirectoryURL() -> String { "\(polisDomain())\(relativePaths.polisObservingFacilitiesDirectoryFilePath())" }
-    public func resourcesDirectoryURL() -> String           { "\(polisDomain())\(relativePaths.polisResourcesDirectoryFilePath())" }
+    public func configurationURL() -> String                { "\(polisDomain())\(relativePaths.configurationFile())" }
+    public func polisProviderDirectoryURL() -> String       { "\(polisDomain())\(relativePaths.polisProviderDirectoryFile())" }
+    public func observingFacilitiesDirectoryURL() -> String { "\(polisDomain())\(relativePaths.polisObservingFacilitiesDirectoryFile())" }
 
     public func observingFacilityURL(observingFacilityID: String) -> String           { "\(observingFacilitiesURL())\(observingFacilityID)/\(observingFacilityID)\(fileExtension())" }
-    public func resourcesURL(uniqueName: String) -> String                            { "\(resourcesURL())\(uniqueName)/" }
     public func observingDataURL(withID: UUID, observingFacilityID: String) -> String { "\(observingFacilitiesURL())\(observingFacilityID)/\(withID.uuidString)\(fileExtension())" }
 
     private var domain: String
@@ -133,9 +132,9 @@ fileprivate struct RelativePaths {
     func resourcesPath() -> String           { "\(basePath)\(versionString)/\(PolisStaticResourceFinder.PredefinedPaths.polisResources)" }
 
     // File paths
-    func configurationFilePath() -> String                     { "\(basePath)\(PolisStaticResourceFinder.PredefinedPaths.serviceProviderConfigurationFileName).\(fileExtension)" }
-    func polisProviderDirectoryFilePath() -> String            { "\(basePath)\(PolisStaticResourceFinder.PredefinedPaths.serviceProviderDirectoryFileName).\(fileExtension)" }
-    func polisObservingFacilitiesDirectoryFilePath() -> String { "\(basePath)\(versionString)/\(PolisStaticResourceFinder.PredefinedPaths.observingFacilitiesDirectoryFileName).\(fileExtension)" }
-    func polisResourcesDirectoryFilePath() -> String           { "\(basePath)\(versionString)/\(PolisStaticResourceFinder.PredefinedPaths.polisResourcesDirectoryFileName).\(fileExtension)" }
+    func configurationFile() -> String                     { "\(basePath)\(PolisStaticResourceFinder.PredefinedPaths.serviceProviderConfigurationFileName).\(fileExtension)" }
+    func polisProviderDirectoryFile() -> String            { "\(basePath)\(PolisStaticResourceFinder.PredefinedPaths.serviceProviderDirectoryFileName).\(fileExtension)" }
+    func polisObservingFacilitiesDirectoryFile() -> String { "\(basePath)\(versionString)/\(PolisStaticResourceFinder.PredefinedPaths.observingFacilitiesDirectoryFileName).\(fileExtension)" }
+    func polisResourcesDirectoryFile() -> String           { "\(basePath)\(versionString)/\(PolisStaticResourceFinder.PredefinedPaths.polisResourcesDirectoryFileName).\(fileExtension)" }
 }
 
