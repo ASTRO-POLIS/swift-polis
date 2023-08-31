@@ -200,6 +200,24 @@ final class PolisCommonTypesTests: XCTestCase {
     }
 
 
+    //MARK: - Images
+    func test_PolisImageSource_codingSupport_shouldSucceed() throws {
+        // Given
+        let sut = try PolisImageSource.ImageItem( originalSource: URL(string: PolisConstants.testBigBangPolisDomain)!,
+                                                  shortDescription: "Very interesting image",
+                                                  accessibilityDescription: "Image of a beautiful observatory on the topa high mountain",
+                                                  copyrightHolderType: .useWithOwnersPermission,
+                                                  copyrightHolderReference: "Contributor <contributor@example.com>",
+                                                  copyrightHolderNote: "I agree this image to be used in POLIS")
+
+        // When
+        data   = try? jsonEncoder.encode(sut)
+        string = String(data: data!, encoding: .utf8)
+
+        // Then
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisImageSource.self, from: string!.data(using: .utf8)!))
+    }
+
     //MARK: - POLIS Item
     func test_PolisItem_codingSupport_shouldSucceed() throws {
         // Given
@@ -225,7 +243,7 @@ final class PolisCommonTypesTests: XCTestCase {
                                                             shortDescription: "Very interesting image",
                                                             accessibilityDescription: "Image of a beautiful observatory on the topa high mountain",
                                                             copyrightHolderType: .useWithOwnersPermission,
-                                                            copyrightHolderReference: "Contributor <contributor@example.com",
+                                                            copyrightHolderReference: "Contributor <contributor@example.com>",
                                                             copyrightHolderNote: "I agree this image to be used in POLIS")
         var imageSource   = PolisImageSource()
         imageSource.addImage(imageItem)
@@ -359,6 +377,7 @@ final class PolisCommonTypesTests: XCTestCase {
         ("test_PolisDirection_calculations_shouldSucceed",                  test_PolisDirection_calculations_shouldSucceed),
         ("test_PolisIdentity_codingSupport_shouldSucceed",                  test_PolisIdentity_codingSupport_shouldSucceed),
         ("test_PolisItemOwner_codingSupport_shouldSucceed",                 test_PolisItemOwner_codingSupport_shouldSucceed),
+        ("test_PolisImageSource_codingSupport_shouldSucceed",               test_PolisImageSource_codingSupport_shouldSucceed),
         ("test_PolisItem_codingSupport_shouldSucceed",                      test_PolisItem_codingSupport_shouldSucceed),
         ("test_PolisAdminContactCommunication_codingSupport_shouldSucceed", test_PolisAdminContactCommunication_codingSupport_shouldSucceed),
         ("test_PolisAdminContact_codingSupport_shouldSucceed",              test_PolisAdminContact_codingSupport_shouldSucceed),
