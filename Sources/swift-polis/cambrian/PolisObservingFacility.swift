@@ -22,12 +22,12 @@ public struct PolisObservingFacility: Identifiable, Codable {
 
     // Are Collaborations and Networks not applicable only for observatories? And Arrays? Perhaps this should be called a Facility Type?
     public enum ObservingFacilityLocationType: String, Codable {
-        case surfaceFixed
-        case surfaceMobile
+        case surfaceFixed          = "surface_fixed"
+        case surfaceMobile         = "surface_mobile"
         case airborne
-        case keplerianOrbital
-        case nonKeplerianOrbital
-        case unboundInterplanetary
+        case keplerianOrbital      = "keplerian_orbital"
+        case nonKeplerianOrbital   = "non_keplerian_orbital"
+        case unboundInterplanetary = "unbound_interplanetary"
         case other
 //        case collaboration  // config
 //        case network        // config
