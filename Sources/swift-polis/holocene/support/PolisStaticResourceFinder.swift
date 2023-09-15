@@ -87,7 +87,7 @@ public class PolisFileResourceFinder: PolisStaticResourceFinder {
     public func observingFacilitiesDirectoryFile() -> String { "\(rootFolder())\(relativePaths.polisObservingFacilitiesDirectoryFile())" }
     public func resourcesDirectoryFile() -> String           { "\(rootFolder())\(relativePaths.polisResourcesDirectoryFile())" }
 
-    public func observingFacilityFolder(observingFacilityID: String) -> String         { "\(observingFacilitiesFolder())\(observingFacilityID)/\(observingFacilityID)".normalisedPath() }
+    public func observingFacilityFolder(observingFacilityID: String) -> String         { "\(observingFacilitiesFolder())\(observingFacilityID)".normalisedPath() }
     public func observingFacilityFile(observingFacilityID: String) -> String           { "\(observingFacilitiesFolder())\(observingFacilityID)/\(observingFacilityID)\(fileExtension())" }
     public func observingDataFile(withID: UUID, observingFacilityID: String) -> String { "\(observingFacilitiesFolder())\(observingFacilityID)/\(withID.uuidString)\(fileExtension())" }
     public func resourcesFolder(uniqueName: String) -> String                          { "\(resourcesFolder())\(uniqueName)".normalisedPath() }
