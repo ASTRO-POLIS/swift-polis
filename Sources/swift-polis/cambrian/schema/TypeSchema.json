@@ -7,7 +7,7 @@
         "standard_properties": [ "exact_direction", "rough_direction" ]
     },
     "identity": {
-        "mandatory_properties": [ "id", "minCardinality", "lifecycle_status", "last_update", "name" ],
+        "mandatory_properties": [ "id", "lifecycle_status", "last_update", "name" ],
         "standard_properties": [ "abbreviation", "automation_label", "external_references", "short_description" ]
     },
     "image_item": {
@@ -39,10 +39,11 @@
         "mandatory_properties": [ "last_update", "resource_reference" ]
     },
     "polis_observing_facility": {
-        "mandatory_properties": [ "last_update", "observing_facility_references" ]
+        "mandatory_properties": [ "last_update", "observing_facility_references", "item", "gravitational_body_relationship", "place_in_the_solar_system" ],
+        "standard_properties": [ "observing_facility_code", "solar_system_body_name", "orbiting_around_place_in_the_solar_system_named", "astronomical_code", "parent_observing_facility_id", "sub_observing_facility_ids", "observatory_ids", "device_ids", "start_date", "end_date", "end_date", "polis_registration_date", "polis_disconnection_date", "website", "scientific_objectives", "history", "access_restrictions", "average_clear_nights_per_year", "traditional_land_owners" ]
     },
     "property_value": {
-        "aliases": [ "altitude", "east_longitude", "latitude" ],
+        "aliases": [ "altitude", "east_longitude", "latitude", "average_seeing_conditions", "average_sky_quality", "surface_size" ],
         "mandatory_properties": [ "value_kind", "value", "unit" ]
     },
     "provider_directory_entries": {
@@ -54,5 +55,12 @@
     },
     "visiting_hours": {
         "standard_properties": [ "note" ]
+    },
+    "dominant_wind_direction": {
+        "standard_properties": [ "direction" ]
+    },
+    "manufacturer": {
+        "mandatory_properties": [ "identity" ],
+        "standard_properties": [ "admin_contact", "url" ]
     }
 }

@@ -54,11 +54,11 @@
         "value_type": "string"
     },
     "earth_country": {
-        "description": "Country name like France or Nepal).",
+        "description": "Country name like France or Nepal.",
         "value_type": "string"
     },
     "earth_country_code": {
-        "description": "Ywo letter international country code).",
+        "description": "Two letter international country code.",
         "value_type": "string",
         "min_length": 2,
         "max_length": 2
@@ -72,12 +72,17 @@
         "value_type": "string"
     },
     "earth_time_zone_identifier": {
-        "description": "International time zone identifiar (e.g. Europe/Berlin).",
+        "description": "International time zone identifier (e.g. Europe/Berlin).",
         "value_type": "string"
     },
     "earth_zip_code": {
         "description": "Depends on the country",
         "value_type": "string"
+    },
+    "phone_number": {
+        "description": "Phone number with international country code (e.g. +1xxxxxxxxx).",
+        "value_type": "string",
+        "validation": "\+[0-9]{7,15}"
     },
     "email_address": {
         "description": "Well defined valid email address",
@@ -259,5 +264,128 @@
         "description": "Array of valid WhatsApp IDs as strings",
         "value_type": "string",
         "is_array": true
-    }
+    },
+    "gravitational_body_relationship": {
+        "description": "Defines the relationship between the observatory and it's gravitational body.",
+        "value_type": "string",
+        "value_set": [
+            "surface_fixed",
+            "surface_mobile",
+            "airborne",
+            "keplerian_orbital",
+            "non_keplerian_orbital",
+            "unbound_interplanetary",
+            "other"
+        ]
+    },
+    "place_in_the_solar_system": {
+        "description": "The gravitational body the observatory is associated with.",
+        "value_type": "string",
+        "value_set": [
+            "Sun",
+            "Mercury",
+            "Venus",
+            "earth",
+            "Mars",
+            "Jupiter",
+            "Saturn",
+            "Uranus",
+            "Neptune",
+            "Pluto",
+            "Ceres",
+            "Humea",
+            "Mamemake",
+            "Eris",
+            "asteroid_belt_object",
+            "kuiper_belt_object",
+            "moon",
+            "comet",
+            "oort_cloud_object"
+        ]
+    },
+    "observing_facility_code": {
+        "description": "Commonly used codes for the observatory.",
+        "value_type": "string"
+    },
+    "solar_system_body_name": {
+        "description": "Name of the solar system body the observatory is associated with.",
+        "value_type": "string"
+    },
+    "orbiting_around_place_in_the_solar_system_named": {
+        "description": "The place in the solar system under which the observatory is orbiting (if applicable).",
+        "value_type": "string"
+    },
+    "astronomical_code": {
+        "description": "The International Astronomical Union (IAU) Minor Planet Centre (MPC) code (if applicable).",
+        "value_type": "string"
+    },
+    "parent_observing_facility_id": {
+        "description": "The UUID of the parent observing facility.",
+        "value_type": "string"
+    },
+    "sub_observing_facility_ids": {
+        "description": "The UUIDs of any sub-observing facilities.",
+        "value_type": "string",
+        "is_array": true
+    },
+    "observatory_ids": {
+        "description": "The UUIDs of any observatories.",
+        "value_type": "string",
+        "is_array": true
+    },
+    "device_ids": {
+        "description": "The UUIDs of any devices.",
+        "value_type": "string",
+        "is_array": true
+    },
+    "start_date": {
+        "description": "The starting date of the observing facility in.",
+        "value_type": "string",
+        "validation": "[0-9]{2}\-[0-9]{2}\-[0-9]{2} [0-9]{2}\:[0-9]{2}\:[0-9]{2}\.[0-9]{1,5}"
+    },
+    "end_date": {
+        "description": "The ending/closing date of the observing facility.",
+        "value_type": "string",
+        "validation": "[0-9]{2}\-[0-9]{2}\-[0-9]{2} [0-9]{2}\:[0-9]{2}\:[0-9]{2}\.[0-9]{1,5}"
+    },
+    "end_date": {
+        "description": "The ending/closing date of the observing facility.",
+        "value_type": "string",
+        "validation": "[0-9]{2}\-[0-9]{2}\-[0-9]{2} [0-9]{2}\:[0-9]{2}\:[0-9]{2}\.[0-9]{1,5}"
+    },
+    "polis_registration_date": {
+        "description": "The ending/closing date of the observing facility.",
+        "value_type": "string",
+        "validation": "[0-9]{2}\-[0-9]{2}\-[0-9]{2} [0-9]{2}\:[0-9]{2}\:[0-9]{2}\.[0-9]{1,5}"
+    },
+    "polis_disconnection_date": {
+        "description": "The ending/closing date of the observing facility.",
+        "value_type": "string",
+        "validation": "[0-9]{2}\-[0-9]{2}\-[0-9]{2} [0-9]{2}\:[0-9]{2}\:[0-9]{2}\.[0-9]{1,5}"
+    },
+    "website": {
+        "description": "Well formated URL including the protocol of the observing facility.",
+        "value_type": "string",
+        "validation": "[0-9]{2}\-[0-9]{2}\-[0-9]{2} [0-9]{2}\:[0-9]{2}\:[0-9]{2}\.[0-9]{1,5}"
+    },
+    "scientific_objectives": {
+        "description": "The scientific objectives of the object.",
+        "value_type": "string"
+    },
+    "history": {
+        "description": "The history of the object.",
+        "value_type": "string"
+    },
+    "access_restrictions": {
+        "description": "Any access restrictions to the observing facility (e.g. snow in certain months, wildfire risk).",
+        "value_type": "string"
+    },
+    "average_clear_nights_per_year": {
+        "description": "Average number of clear nights per year experienced at the observing facility.",
+        "value_type": "int"
+    },
+    "traditional_land_owners": {
+        "description": "The traditional land owners upon which the observing facility is located.",
+        "value_type": "string"
+    },
 }
