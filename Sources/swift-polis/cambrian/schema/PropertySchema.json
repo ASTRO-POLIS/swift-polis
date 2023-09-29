@@ -82,7 +82,7 @@
     "phone_number": {
         "description": "Phone number with international country code (e.g. +1xxxxxxxxx).",
         "value_type": "string",
-        "validation": "\+[0-9]{7,15}"
+        "validation": "\\+[0-9]{7,15}"
     },
     "email_address": {
         "description": "Well defined valid email address",
@@ -341,32 +341,32 @@
     "start_date": {
         "description": "The starting date of the observing facility in.",
         "value_type": "string",
-        "validation": "[0-9]{2}\-[0-9]{2}\-[0-9]{2} [0-9]{2}\:[0-9]{2}\:[0-9]{2}\.[0-9]{1,5}"
+        "validation": "[0-9]{2}\\-[0-9]{2}\\-[0-9]{2} [0-9]{2}\\:[0-9]{2}\\:[0-9]{2}\\.[0-9]{1,5}"
     },
     "end_date": {
         "description": "The ending/closing date of the observing facility.",
         "value_type": "string",
-        "validation": "[0-9]{2}\-[0-9]{2}\-[0-9]{2} [0-9]{2}\:[0-9]{2}\:[0-9]{2}\.[0-9]{1,5}"
+        "validation": "[0-9]{2}\\-[0-9]{2}\\-[0-9]{2} [0-9]{2}\\:[0-9]{2}\\:[0-9]{2}\\.[0-9]{1,5}"
     },
     "end_date": {
         "description": "The ending/closing date of the observing facility.",
         "value_type": "string",
-        "validation": "[0-9]{2}\-[0-9]{2}\-[0-9]{2} [0-9]{2}\:[0-9]{2}\:[0-9]{2}\.[0-9]{1,5}"
+        "validation": "[0-9]{2}\\-[0-9]{2}\\-[0-9]{2} [0-9]{2}\\:[0-9]{2}\\:[0-9]{2}\\.[0-9]{1,5}"
     },
     "polis_registration_date": {
         "description": "The ending/closing date of the observing facility.",
         "value_type": "string",
-        "validation": "[0-9]{2}\-[0-9]{2}\-[0-9]{2} [0-9]{2}\:[0-9]{2}\:[0-9]{2}\.[0-9]{1,5}"
+        "validation": "[0-9]{2}\\-[0-9]{2}\\-[0-9]{2} [0-9]{2}\\:[0-9]{2}\\:[0-9]{2}\\.[0-9]{1,5}"
     },
     "polis_disconnection_date": {
         "description": "The ending/closing date of the observing facility.",
         "value_type": "string",
-        "validation": "[0-9]{2}\-[0-9]{2}\-[0-9]{2} [0-9]{2}\:[0-9]{2}\:[0-9]{2}\.[0-9]{1,5}"
+        "validation": "[0-9]{2}\\-[0-9]{2}\\-[0-9]{2} [0-9]{2}\\:[0-9]{2}\\:[0-9]{2}\\.[0-9]{1,5}"
     },
     "website": {
         "description": "Well formated URL including the protocol of the observing facility.",
         "value_type": "string",
-        "validation": "[0-9]{2}\-[0-9]{2}\-[0-9]{2} [0-9]{2}\:[0-9]{2}\:[0-9]{2}\.[0-9]{1,5}"
+        "validation": "[0-9]{2}\\-[0-9]{2}\\-[0-9]{2} [0-9]{2}\\:[0-9]{2}\\:[0-9]{2}\\.[0-9]{1,5}"
     },
     "scientific_objectives": {
         "description": "The scientific objectives of the object.",
@@ -387,5 +387,5 @@
     "traditional_land_owners": {
         "description": "The traditional land owners upon which the observing facility is located.",
         "value_type": "string"
-    },
+    }
 }
