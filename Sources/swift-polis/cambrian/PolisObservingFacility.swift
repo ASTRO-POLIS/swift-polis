@@ -40,7 +40,7 @@ public struct PolisObservingFacility: Identifiable, Codable {
         // Planets
         case mercury            = "Mercury"
         case venus              = "Venus"
-        case earth              = "earth"
+        case earth              = "Earth"
         case mars               = "Mars"
         case jupiter            = "Jupiter"
         case saturn             = "Saturn"

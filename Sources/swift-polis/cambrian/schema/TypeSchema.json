@@ -40,7 +40,7 @@
     },
     "polis_observing_facility": {
         "mandatory_properties": [ "last_update", "observing_facility_references", "item", "gravitational_body_relationship", "place_in_the_solar_system" ],
-        "standard_properties": [ "observing_facility_code", "solar_system_body_name", "orbiting_around_place_in_the_solar_system_named", "astronomical_code", "parent_observing_facility_id", "sub_observing_facility_ids", "observatory_ids", "device_ids", "start_date", "end_date", "end_date", "polis_registration_date", "polis_disconnection_date", "website", "scientific_objectives", "history", "access_restrictions", "average_clear_nights_per_year", "traditional_land_owners" ]
+        "standard_properties": [ "observing_facility_code", "solar_system_body_name", "orbiting_around_place_in_the_solar_system_named", "astronomical_code", "parent_observing_facility_id", "sub_observing_facility_ids", "observatory_ids", "device_ids", "start_date", "end_date", "polis_registration_date", "polis_disconnection_date", "admin_contact", "website", "scientific_objectives", "history", "access_restrictions", "average_clear_nights_per_year", "average_seeing_conditions", "average_sky_quality", "dominant_wind_direction", "surface_size", "traditional_land_owners" ]
     },
     "property_value": {
         "aliases": [ "altitude", "east_longitude", "latitude", "average_seeing_conditions", "average_sky_quality", "surface_size" ],
