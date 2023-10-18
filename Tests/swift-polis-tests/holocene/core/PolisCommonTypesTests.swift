@@ -201,7 +201,7 @@ final class PolisCommonTypesTests: XCTestCase {
 
 
     //MARK: - Images
-    func test_PolisImageSource_codingSupport_shouldSucceed() throws {
+    func test_PolisImageItem_codingSupport_shouldSucceed() throws {
         // Given
         let sut = try PolisImageSource.ImageItem( originalSource: URL(string: PolisConstants.testBigBangPolisDomain)!,
                                                   shortDescription: "Very interesting image",
@@ -215,7 +215,7 @@ final class PolisCommonTypesTests: XCTestCase {
         string = String(data: data!, encoding: .utf8)
 
         // Then
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisImageSource.self, from: string!.data(using: .utf8)!))
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisImageSource.ImageItem.self, from: string!.data(using: .utf8)!))
     }
 
     //MARK: - POLIS Item
@@ -247,9 +247,8 @@ final class PolisCommonTypesTests: XCTestCase {
                                                             copyrightHolderNote: "I agree this image to be used in POLIS")
         var imageSource   = PolisImageSource()
         imageSource.addImage(imageItem)
-        var imageIDs      =  Set<UUID>()
-        imageIDs.insert(imageSource.id)
-        let sut           = PolisItem(identity: identity, manufacturerID: UUID(), owners: [owner], imageIDs: imageIDs)
+
+        let sut           = PolisItem(identity: identity, manufacturerID: UUID(), owners: [owner], imageSourceID: imageSource.id)
 
         // When
         data   = try? jsonEncoder.encode(sut)
@@ -328,8 +327,11 @@ final class PolisCommonTypesTests: XCTestCase {
                                                    copyrightHolderNote: "I agree this image to be used in POLIS")
         var sut  = PolisImageSource()
 
+        print(">>>> 1. Number of items: \(sut.imageItems.count)")
         // When
         sut.addImage(item)
+
+        print(">>>> 2. Number of items: \(sut.imageItems.count)")
 
         data   = try? jsonEncoder.encode(sut)
         string = String(data: data!, encoding: .utf8)
@@ -377,7 +379,7 @@ final class PolisCommonTypesTests: XCTestCase {
         ("test_PolisDirection_calculations_shouldSucceed",                  test_PolisDirection_calculations_shouldSucceed),
         ("test_PolisIdentity_codingSupport_shouldSucceed",                  test_PolisIdentity_codingSupport_shouldSucceed),
         ("test_PolisItemOwner_codingSupport_shouldSucceed",                 test_PolisItemOwner_codingSupport_shouldSucceed),
-        ("test_PolisImageSource_codingSupport_shouldSucceed",               test_PolisImageSource_codingSupport_shouldSucceed),
+        ("test_PolisImageItem_codingSupport_shouldSucceed",                 test_PolisImageItem_codingSupport_shouldSucceed),
         ("test_PolisItem_codingSupport_shouldSucceed",                      test_PolisItem_codingSupport_shouldSucceed),
         ("test_PolisAdminContactCommunication_codingSupport_shouldSucceed", test_PolisAdminContactCommunication_codingSupport_shouldSucceed),
         ("test_PolisAdminContact_codingSupport_shouldSucceed",              test_PolisAdminContact_codingSupport_shouldSucceed),

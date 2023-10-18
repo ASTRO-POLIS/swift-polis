@@ -84,12 +84,8 @@ final class PolisObservingFacilityTests: XCTestCase {
         let surfaceSize   = PolisPropertyValue(valueKind: .double, value: "2453.2", unit: "m^2")
         var imageSource   = PolisImageSource()
         imageSource.addImage(imageItem)
-        var imageIDs      =  Set<UUID>()
-        imageIDs.insert(imageSource.id)
-
-        let item          = PolisItem(identity: identity, manufacturerID: UUID(), owners: [owner], imageIDs: imageIDs)
-
-
+        
+        let item          = PolisItem(identity: identity, manufacturerID: UUID(), owners: [owner], imageSourceID: imageSource.id)
         let sut           = PolisObservingFacility(item: item,
                                                    gravitationalBodyRelationship: PolisObservingFacility.ObservingFacilityLocationType.surfaceFixed,
                                                    placeInTheSolarSystem: .earth,

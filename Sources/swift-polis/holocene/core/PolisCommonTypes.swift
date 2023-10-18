@@ -323,7 +323,7 @@ public struct PolisItem: Codable, Identifiable {
     public var manufacturerID: UUID?
     public var owners: [PolisItemOwner]?
 
-    public var imageIDs: Set<UUID>?
+    public var imageSourceID: UUID?
 
     public var id: UUID { identity.id }
 
@@ -331,12 +331,12 @@ public struct PolisItem: Codable, Identifiable {
                 modeOfOperation: ModeOfOperation  = .unknown,
                 manufacturerID: UUID?             = nil,
                 owners: [PolisItemOwner]?         = nil,
-                imageIDs: Set<UUID>?              = nil ) {
+                imageSourceID: UUID?              = nil ) {
         self.identity          = identity
         self.modeOfOperation   = modeOfOperation
         self.manufacturerID    = manufacturerID
         self.owners            = owners
-        self.imageIDs          = imageIDs
+        self.imageSourceID     = imageSourceID
     }
 }
 
@@ -711,7 +711,7 @@ public extension PolisItem {
         case modeOfOperation   = "mode_of_operation"
         case manufacturerID    = "manufacturer_id"
         case owners
-        case imageIDs          = "image_ids"
+        case imageSourceID     = "image_source_id"
     }
 }
 
