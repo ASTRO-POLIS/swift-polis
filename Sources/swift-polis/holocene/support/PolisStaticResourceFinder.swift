@@ -77,20 +77,20 @@ public class PolisFileResourceFinder: PolisStaticResourceFinder {
     }
 
 
-    public func rootFolder() -> String                { rootPath.path.normalisedPath() }
-    public func baseFolder() -> String                { "\(rootFolder())\(relativePaths.basePath)".normalisedPath() }
-    public func observingFacilitiesFolder() -> String { "\(rootFolder())\(relativePaths.observingFacilitiesPath())".normalisedPath() }
-    public func resourcesFolder() -> String           { "\(rootFolder())\(relativePaths.resourcesPath())".normalisedPath() }
+    public func rootFolder() -> String                { rootPath.path.normalisedFolderPath() }
+    public func baseFolder() -> String                { "\(rootFolder())\(relativePaths.basePath)".normalisedFolderPath() }
+    public func observingFacilitiesFolder() -> String { "\(rootFolder())\(relativePaths.observingFacilitiesPath())".normalisedFolderPath() }
+    public func resourcesFolder() -> String           { "\(rootFolder())\(relativePaths.resourcesPath())".normalisedFolderPath() }
 
     public func configurationFile() -> String                { "\(rootFolder())\(relativePaths.configurationFile())" }
     public func polisProviderDirectoryFile() -> String       { "\(rootFolder())\(relativePaths.polisProviderDirectoryFile())" }
     public func observingFacilitiesDirectoryFile() -> String { "\(rootFolder())\(relativePaths.polisObservingFacilitiesDirectoryFile())" }
     public func resourcesDirectoryFile() -> String           { "\(rootFolder())\(relativePaths.polisResourcesDirectoryFile())" }
 
-    public func observingFacilityFolder(observingFacilityID: String) -> String         { "\(observingFacilitiesFolder())\(observingFacilityID)".normalisedPath() }
+    public func observingFacilityFolder(observingFacilityID: String) -> String         { "\(observingFacilitiesFolder())\(observingFacilityID)".normalisedFolderPath() }
     public func observingFacilityFile(observingFacilityID: String) -> String           { "\(observingFacilitiesFolder())\(observingFacilityID)/\(observingFacilityID)\(fileExtension())" }
-    public func observingDataFile(withID: UUID, observingFacilityID: String) -> String { "\(observingFacilitiesFolder())\(observingFacilityID)/\(withID.uuidString)\(fileExtension())" }
-    public func resourcesFolder(uniqueName: String) -> String                          { "\(resourcesFolder())\(uniqueName)".normalisedPath() }
+    public func observingDataFile(withID: UUID, observingFacilityID: String) -> String { "\(observingFacilitiesFolder())\(observingFacilityID)/\(withID.uuidString)\(fileExtension())" }    //FIXME: Why id and string?
+    public func resourcesFolder(uniqueName: String) -> String                          { "\(resourcesFolder())\(uniqueName)".normalisedFolderPath() }
 
     private let rootPath: URL
 }
@@ -107,9 +107,9 @@ public class PolisRemoteResourceFinder: PolisStaticResourceFinder {
 
     public func polisDomain() -> String { domain }
 
-    public func baseURL() -> String                { "\(polisDomain())\(relativePaths.basePath)".normalisedPath() }
-    public func observingFacilitiesURL() -> String { "\(polisDomain())\(relativePaths.observingFacilitiesPath())".normalisedPath() }
-    public func resourcesURL() -> String           { "\(polisDomain())\(relativePaths.resourcesPath())".normalisedPath() }
+    public func baseURL() -> String                { "\(polisDomain())\(relativePaths.basePath)".normalisedFolderPath() }
+    public func observingFacilitiesURL() -> String { "\(polisDomain())\(relativePaths.observingFacilitiesPath())".normalisedFolderPath() }
+    public func resourcesURL() -> String           { "\(polisDomain())\(relativePaths.resourcesPath())".normalisedFolderPath() }
 
     public func configurationURL() -> String                { "\(polisDomain())\(relativePaths.configurationFile())" }
     public func polisProviderDirectoryURL() -> String       { "\(polisDomain())\(relativePaths.polisProviderDirectoryFile())" }

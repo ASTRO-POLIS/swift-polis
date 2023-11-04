@@ -48,8 +48,8 @@ final class PolisUtilitiesTests: XCTestCase {
     }
 
     func test_PolisUtilities_normalisedPath_shouldSucceed() throws {
-        XCTAssertEqual("/a/b/c/", "/a/b/c".normalisedPath())
-        XCTAssertEqual("/a/b/c/", "/a/b/c/".normalisedPath())
+        XCTAssertEqual("/a/b/c/", "/a/b/c".normalisedFolderPath())
+        XCTAssertEqual("/a/b/c/", "/a/b/c/".normalisedFolderPath())
     }
 
     static var allTests = [
