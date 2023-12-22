@@ -590,6 +590,7 @@ public struct PolisImageSource: Identifiable {
         public let copyrightHolderType: CopyrightHolderType
         public let copyrightHolderReference: String?
         public let copyrightHolderNote: String?
+        public let author: String?
 
         public init(id: UUID                                 = UUID(),
                     lastUpdate: Date                         = Date.now,
@@ -598,7 +599,8 @@ public struct PolisImageSource: Identifiable {
                     accessibilityDescription: String?        = nil,
                     copyrightHolderType: CopyrightHolderType = .pendingInformation,
                     copyrightHolderReference: String?        = nil,
-                    copyrightHolderNote: String?             = nil) throws {
+                    copyrightHolderNote: String?             = nil,
+                    author: String?                          = nil) throws {
             self.id                       = id
             self.lastUpdate               = lastUpdate
             self.originalSource           = originalSource
@@ -607,6 +609,7 @@ public struct PolisImageSource: Identifiable {
             self.copyrightHolderType      = copyrightHolderType
             self.copyrightHolderReference = copyrightHolderReference
             self.copyrightHolderNote      = copyrightHolderNote
+            self.author                   = author
 
             switch self.copyrightHolderType {
                 case .polisContributor, .creativeCommons, .openSource:
@@ -753,6 +756,7 @@ extension PolisImageSource.ImageItem: Codable {
         case copyrightHolderType      = "copyright_holder_type"
         case copyrightHolderReference = "copyright_holder_reference"
         case copyrightHolderNote      = "copyright_holder_note"
+        case author
     }
 }
 

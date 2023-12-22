@@ -245,7 +245,8 @@ final class PolisCommonTypesTests: XCTestCase {
                                                             accessibilityDescription: "Image of a beautiful observatory on the topa high mountain",
                                                             copyrightHolderType: .useWithOwnersPermission,
                                                             copyrightHolderReference: "Contributor <contributor@example.com>",
-                                                            copyrightHolderNote: "I agree this image to be used in POLIS")
+                                                            copyrightHolderNote: "I agree this image to be used in POLIS",
+                                                            author: "John Appleseed")
         var imageSource   = PolisImageSource()
         imageSource.addImage(imageItem)
 
