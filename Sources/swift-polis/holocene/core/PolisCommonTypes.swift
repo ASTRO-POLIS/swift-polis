@@ -263,6 +263,8 @@ public struct PolisIdentity: Codable, Identifiable {
     /// Human readable name of the item (object). It is recommended to assign a unique name to avoid potential confusions.
     public var name: String
 
+    /// Human readable name of the item in a local script.
+    public var localName: String?
     /// Human readable automationLabel of the item (object). If present it is recommended to assign a unique label to avoid
     /// potential confusions.
     public var abbreviation: String?
@@ -283,6 +285,7 @@ public struct PolisIdentity: Codable, Identifiable {
                 lifecycleStatus: LifecycleStatus = LifecycleStatus.unknown,
                 lastUpdate: Date                 = Date(),
                 name: String,
+                localName: String?               = nil,
                 abbreviation: String?            = nil,
                 automationLabel: String?         = nil,
                 shortDescription: String?        = nil) {
@@ -291,6 +294,7 @@ public struct PolisIdentity: Codable, Identifiable {
         self.lifecycleStatus    = lifecycleStatus
         self.lastUpdate         = lastUpdate
         self.name               = name
+        self.localName          = localName
         self.abbreviation       = abbreviation
         self.automationLabel    = automationLabel
         self.shortDescription   = shortDescription
@@ -679,6 +683,7 @@ public extension PolisIdentity {
         case lifecycleStatus    = "lifecycle_status"
         case lastUpdate         = "last_update"
         case name
+        case localName          = "local_name"
         case abbreviation
         case automationLabel    = "automation_label"
         case shortDescription   = "short_description"

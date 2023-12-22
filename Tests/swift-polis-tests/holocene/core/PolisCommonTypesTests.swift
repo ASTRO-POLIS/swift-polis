@@ -163,6 +163,7 @@ final class PolisCommonTypesTests: XCTestCase {
                                 lifecycleStatus: PolisIdentity.LifecycleStatus.active,
                                 lastUpdate: Date(),
                                 name: "TestAttributes",
+                                localName: "Тестови атрибути",
                                 abbreviation: "abc",
                                 automationLabel: "Ascom Label",
                                 shortDescription: "Testing attributes")
