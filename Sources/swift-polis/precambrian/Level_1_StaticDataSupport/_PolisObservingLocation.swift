@@ -47,16 +47,6 @@ public enum PolisObservingSiteLocationType: Codable {
 
     public struct EarthBasedLocation: Codable {
 
-//        public enum EarthContinent: String, Codable {
-//            case europe       = "Europe"
-//            case northAmerica = "North America"
-//            case southAmerica = "South America"
-//            case africa       = "Africa"
-//            case asia         = "Asia"
-//            case oceania      = "Australia and Oceania"
-//            case antarctica   = "Antarctica"
-//        }
-
         public let eastLongitude: PolisPropertyValue? // degrees
         public let latitude: PolisPropertyValue?      // degrees
         public let altitude: PolisPropertyValue?      // m
@@ -130,34 +120,6 @@ public extension PolisObservingSiteLocationType.OrbitalType {
     }
 }
 
-//public extension PolisObservingSiteLocationType.EarthBasedLocation {
-//    enum CodingKeys: String, CodingKey {
-//        case eastLongitude      = "east_longitude"
-//        case latitude
-//        case altitude
-//        case timeZoneIdentifier = "time_zone_identifier"
-//        case continent
-//        case place
-//        case regionOrState      = "region_or_state"
-//        case regionOrStateCode  = "region_or_state_code"
-//        case zipCode            = "zip_code"
-//        case country
-//        case countryCode        = "country_code"
-//        case surfaceSize        = "surface_size"
-//    }
-//}
-//
-
-//public extension PolisObservingSiteLocationType.GravitationalObjectBasedLocation {
-//    enum CodingKeys: String, CodingKey {
-//        case solarSystemBody = "solar_system_body"
-//        case eastLongitude   = "east_longitude"
-//        case latitude
-//        case altitude
-//        case region
-//    }
-//}
-//
 public extension PolisObservingSiteLocationType {
     enum CodingKeys: String, CodingKey {
         case earthSurfaceBased           = "earth_surface_based"

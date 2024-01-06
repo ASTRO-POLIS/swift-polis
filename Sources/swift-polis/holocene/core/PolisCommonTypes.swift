@@ -4,7 +4,7 @@
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
-// Copyright (c) 2021-2023 Tuparev Technologies and the ASTRO-POLIS project
+// Copyright (c) 2021-2024 Tuparev Technologies and the ASTRO-POLIS project
 // authors.
 // Licensed under MIT License Modern Variant
 //
@@ -658,6 +658,18 @@ public struct PolisImageSource: Identifiable {
 }
 
 
+public enum PolisElectromagneticSpectrumCoverage: String, Codable {
+    case gammaRay
+    case xRay
+    case ultraviolet
+    case optical
+    case infrared
+    case subMillimeter
+    case radio
+    case other
+    case unknown
+}
+
 //MARK: - Type extensions -
 
 
@@ -766,3 +778,18 @@ extension PolisImageSource: Codable {
         case imageItems = "image_items"
     }
 }
+
+public extension PolisElectromagneticSpectrumCoverage {
+    enum CodingKeys: String, CodingKey {
+        case gammaRay      = "gamma_ray"
+        case xRay          = "x_ray"
+        case ultraviolet
+        case optical
+        case infrared
+        case subMillimeter = "sub_millimeter"
+        case radio
+        case other
+        case unknown
+    }
+}
+

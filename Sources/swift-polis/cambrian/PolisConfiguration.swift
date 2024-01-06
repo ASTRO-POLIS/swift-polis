@@ -30,19 +30,6 @@ import Foundation
 
 public struct PolisConfiguration: Codable {
 
-    public enum ConfigurationType: String, Codable {
-        
-        // Configuration is for an array of connected telescopes
-        case array
-        
-        // Configuration is for a network of independent telescopes
-        case network
-        
-        // Configuration is for a single telescope
-        case telescope
-    }
-    
-    
     // Defines the type of scientific data that is produced by the configuration
     public enum ObservationResultType: String, Codable {
 
@@ -68,31 +55,17 @@ public struct PolisConfiguration: Codable {
         case radiometry                = "radiometry"
     }
 
-    // defines the parts of the electromagnetic spectrum that the observation is made in
-    public enum ElectromagneticCoverage: String, Codable {
-        case gammaRay      = "gamma_ray"
-        case xRay          = "x_ray"
-        case ultraviolet
-        case optical
-        case infrared
-        case subMillimetre = "sub_millimetre"
-        case millimetre
-        case radio
-    }
 
 
     // Identity information incl. uuid, reference etc.
     public var identity: PolisIdentity
     
-    // type of the specific configuration
-    public var configurationType: ConfigurationType
-    
     // resulting data type produced by the configuration
     public var observationResultType: ObservationResultType
     
     // the parts of the electromagnetic spectrum that the telescope is capable of observing
-    public var emCoverage: [ElectromagneticCoverage]?
-    
+    public var emCoverage: [PolisElectromagneticSpectrumCoverage]?
+
     // uuids of the associated POLIS devices with the configuration
     public var deviceIDs: [UUID]
     
@@ -103,15 +76,13 @@ public struct PolisConfiguration: Codable {
     public var availabilityEndTime: Date?
 
     public init(identity: PolisIdentity,
-                configurationType: ConfigurationType,
                 observationResultType: ObservationResultType,
-                emCoverage: [ElectromagneticCoverage]?  = nil,
+                emCoverage: [PolisElectromagneticSpectrumCoverage]?  = nil,
                 deviceIDs: [UUID],
                 configurationSpecificPropertiesID: UUID,
                 availabilityStartTime: Date?            = nil,
                 availabilityEndTime: Date?              = nil) {
         self.identity                          = identity
-        self.configurationType                 = configurationType
         self.observationResultType             = observationResultType
         self.emCoverage                        = emCoverage
         self.deviceIDs                         = deviceIDs
@@ -129,7 +100,6 @@ public struct PolisConfiguration: Codable {
 public extension PolisConfiguration {
     enum CodingKeys: String, CodingKey {
         case identity
-        case configurationType                 = "configuration_type"
         case observationResultType             = "observation_result_type"
         case emCoverage                        = "em_coverage"
         case deviceIDs                         = "device_ids"
