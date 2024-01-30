@@ -20,5 +20,5 @@ source code and / or ideas to SWIFT-POLIS project.
 - Hunter Wiliam Holland <hunterholland@tuparev.com>
 - Philip Tuparev <patupar@tuparev.com>
 - Stefan Kreutter <sklists@objectfarm.org>
-- Thomas Jackson <tmjackson@tuparev.com>
+- Thomas Jackson <Tmjjacko@googlemail.com>
 - Tomi Engel <tomi@objectfarm.org>
