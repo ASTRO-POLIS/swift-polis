@@ -99,8 +99,8 @@ final class PolisStaticResourceFinderTests: XCTestCase {
         XCTAssertEqual(sut!.observingFacilitiesDirectoryFile(), "/tmp/polis/\(version.description)/polis_observing_facilities.json")
         XCTAssertEqual(sut!.resourcesDirectoryFile(), "/tmp/polis/\(version.description)/polis_resources.json")
 
-        XCTAssertEqual(sut!.observingFacilityFile(observingFacilityID: facilityID.uuidString), "/tmp/polis/\(version.description)/polis_observing_facilities/\(facilityID.uuidString)/\(facilityID.uuidString).json")
-        XCTAssertEqual(sut!.observingDataFile(withID: dataID, observingFacilityID: facilityID.uuidString), "/tmp/polis/\(version.description)/polis_observing_facilities/\(facilityID.uuidString)/\(dataID.uuidString).json")
+        XCTAssertEqual(sut!.observingFacilityFile(observingFacilityID: facilityID), "/tmp/polis/\(version.description)/polis_observing_facilities/\(facilityID.uuidString)/\(facilityID.uuidString).json")
+        XCTAssertEqual(sut!.observingDataFile(withID: dataID, observingFacilityID: facilityID), "/tmp/polis/\(version.description)/polis_observing_facilities/\(facilityID.uuidString)/\(dataID.uuidString).json")
     }
 
     func test_PolisStaticResourceFinder_remoteResourceFinder_shouldSucceed() {
@@ -121,9 +121,9 @@ final class PolisStaticResourceFinderTests: XCTestCase {
         XCTAssertEqual(sut!.polisProviderDirectoryURL(), "\(domain)polis/polis_directory.json")
         XCTAssertEqual(sut!.observingFacilitiesDirectoryURL(), "\(domain)polis/\(version.description)/polis_observing_facilities.json")
 
-        XCTAssertEqual(sut!.observingFacilityURL(observingFacilityID: facilityID.uuidString),
-                       "\(domain)polis/\(version.description)/polis_observing_facilities/\(facilityID.uuidString)/\(facilityID.uuidString).json")
-        XCTAssertEqual(sut!.observingDataURL(withID: dataID, observingFacilityID: facilityID.uuidString),
+        XCTAssertEqual(sut!.observingFacilityURL(observingFacilityID: facilityID),
+                       "\(domain)polis/\(version.description)/polis_observing_facilities/\(facilityID)/\(facilityID.uuidString).json")
+        XCTAssertEqual(sut!.observingDataURL(withID: dataID, observingFacilityID: facilityID),
                        "\(domain)polis/\(version.description)/polis_observing_facilities/\(facilityID.uuidString)/\(dataID.uuidString).json")
     }
 

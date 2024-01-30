@@ -4,7 +4,7 @@
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
-// Copyright (c) 2021-2023 Tuparev Technologies and the ASTRO-POLIS project
+// Copyright (c) 2021-2024 Tuparev Technologies and the ASTRO-POLIS project
 // authors.
 // Licensed under MIT License Modern Variant
 //
@@ -87,10 +87,10 @@ public class PolisFileResourceFinder: PolisStaticResourceFinder {
     public func observingFacilitiesDirectoryFile() -> String { "\(rootFolder())\(relativePaths.polisObservingFacilitiesDirectoryFile())" }
     public func resourcesDirectoryFile() -> String           { "\(rootFolder())\(relativePaths.polisResourcesDirectoryFile())" }
 
-    public func observingFacilityFolder(observingFacilityID: String) -> String         { "\(observingFacilitiesFolder())\(observingFacilityID)".normalisedFolderPath() }
-    public func observingFacilityFile(observingFacilityID: String) -> String           { "\(observingFacilitiesFolder())\(observingFacilityID)/\(observingFacilityID)\(fileExtension())" }
-    public func observingDataFile(withID: UUID, observingFacilityID: String) -> String { "\(observingFacilitiesFolder())\(observingFacilityID)/\(withID.uuidString)\(fileExtension())" }    //FIXME: Why id and string?
-    public func resourcesFolder(uniqueName: String) -> String                          { "\(resourcesFolder())\(uniqueName)".normalisedFolderPath() }
+    public func observingFacilityFolder(observingFacilityID: UUID) -> String         { "\(observingFacilitiesFolder())\(observingFacilityID.uuidString)".normalisedFolderPath() }
+    public func observingFacilityFile(observingFacilityID: UUID) -> String           { "\(observingFacilitiesFolder())\(observingFacilityID.uuidString)/\(observingFacilityID)\(fileExtension())" }
+    public func observingDataFile(withID: UUID, observingFacilityID: UUID) -> String { "\(observingFacilitiesFolder())\(observingFacilityID.uuidString)/\(withID.uuidString)\(fileExtension())" }
+    public func resourcesFolder(uniqueName: String) -> String                        { "\(resourcesFolder())\(uniqueName)".normalisedFolderPath() }
 
     private let rootPath: URL
 }
@@ -115,8 +115,8 @@ public class PolisRemoteResourceFinder: PolisStaticResourceFinder {
     public func polisProviderDirectoryURL() -> String       { "\(polisDomain())\(relativePaths.polisProviderDirectoryFile())" }
     public func observingFacilitiesDirectoryURL() -> String { "\(polisDomain())\(relativePaths.polisObservingFacilitiesDirectoryFile())" }
 
-    public func observingFacilityURL(observingFacilityID: String) -> String           { "\(observingFacilitiesURL())\(observingFacilityID)/\(observingFacilityID)\(fileExtension())" }
-    public func observingDataURL(withID: UUID, observingFacilityID: String) -> String { "\(observingFacilitiesURL())\(observingFacilityID)/\(withID.uuidString)\(fileExtension())" }
+    public func observingFacilityURL(observingFacilityID: UUID) -> String           { "\(observingFacilitiesURL())\(observingFacilityID.uuidString)/\(observingFacilityID)\(fileExtension())" }
+    public func observingDataURL(withID: UUID, observingFacilityID: UUID) -> String { "\(observingFacilitiesURL())\(observingFacilityID.uuidString)/\(withID.uuidString)\(fileExtension())" }
 
     private var domain: String
 }
