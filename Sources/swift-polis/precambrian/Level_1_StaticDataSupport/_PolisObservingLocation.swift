@@ -13,7 +13,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-
+/*
 import Foundation
 
 public enum PolisRelationshipToTheGravitationalBodyType: String, Codable {
@@ -128,3 +128,6 @@ public extension PolisObservingSiteLocationType {
         case solarSystemBodyOrbital      = "solar_system_body_orbital"
     }
 }
+
+*/
+
