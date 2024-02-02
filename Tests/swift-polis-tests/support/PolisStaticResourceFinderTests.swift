@@ -93,14 +93,20 @@ final class PolisStaticResourceFinderTests: XCTestCase {
         XCTAssertEqual(sut!.baseFolder(), "/tmp/polis/")
         XCTAssertEqual(sut!.observingFacilitiesFolder(), "/tmp/polis/\(version.description)/polis_observing_facilities/")
         XCTAssertEqual(sut!.resourcesFolder(), "/tmp/polis/\(version.description)/polis_resources/")
+        XCTAssertEqual(sut!.ownersFolder(), "/tmp/polis/\(version.description)/polis_owners/")
+        XCTAssertEqual(sut!.manufacturersFolder(), "/tmp/polis/\(version.description)/polis_manufacturers/")
 
         XCTAssertEqual(sut!.configurationFile(), "/tmp/polis/polis.json")
         XCTAssertEqual(sut!.polisProviderDirectoryFile(), "/tmp/polis/polis_directory.json")
         XCTAssertEqual(sut!.observingFacilitiesDirectoryFile(), "/tmp/polis/\(version.description)/polis_observing_facilities.json")
         XCTAssertEqual(sut!.resourcesDirectoryFile(), "/tmp/polis/\(version.description)/polis_resources.json")
+        XCTAssertEqual(sut!.ownersDirectoryFile(), "/tmp/polis/\(version.description)/polis_owners.json")
+        XCTAssertEqual(sut!.manufacturersDirectoryFile(), "/tmp/polis/\(version.description)/polis_manufacturers.json")
 
         XCTAssertEqual(sut!.observingFacilityFile(observingFacilityID: facilityID), "/tmp/polis/\(version.description)/polis_observing_facilities/\(facilityID.uuidString)/\(facilityID.uuidString).json")
         XCTAssertEqual(sut!.observingDataFile(withID: dataID, observingFacilityID: facilityID), "/tmp/polis/\(version.description)/polis_observing_facilities/\(facilityID.uuidString)/\(dataID.uuidString).json")
+        XCTAssertEqual(sut!.ownerDataFile(ownerID: dataID), "/tmp/polis/\(version.description)/polis_owners/\(dataID.uuidString).json")
+        XCTAssertEqual(sut!.manufacturerDataFile(manufacturerID: dataID), "/tmp/polis/\(version.description)/polis_manufacturers/\(dataID.uuidString).json")
     }
 
     func test_PolisStaticResourceFinder_remoteResourceFinder_shouldSucceed() {

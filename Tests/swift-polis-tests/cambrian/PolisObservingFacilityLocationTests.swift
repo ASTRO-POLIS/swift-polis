@@ -44,7 +44,6 @@ final class PolisObservingFacilityLocationTests: XCTestCase {
     //MARK: - Tests -
     func test_PolisObservingFacilityLocation_codingSupport_shouldSucceed() throws {
         // Given
-        // Given
         let eastLongitude     = PolisPropertyValue(valueKind: .double, value: "14.15", unit: "degree")
         let latitude          = PolisPropertyValue(valueKind: .double, value: "48.51", unit: "degree")
         let altitude          = PolisPropertyValue(valueKind: .double, value: "896.0", unit: "m")
