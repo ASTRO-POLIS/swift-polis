@@ -81,41 +81,6 @@ final class PolisCommonTypesTests: XCTestCase {
         XCTAssertNoThrow(try jsonDecoder.decode(PolisVisitingHours.self, from: string!.data(using: .utf8)!))
     }
 
-    //MARK: - PolisPropertyValue tests -
-    func test_PolisPropertyValue_codingSupport_shouldSucceed() throws {
-        // Given
-        let sut = PolisPropertyValue(valueKind: .double, value: "123.4", unit: "m")
-
-        // When
-        data   = try? jsonEncoder.encode(sut)
-        string = String(data: data!, encoding: .utf8)
-
-        // Then
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisPropertyValue.self, from: data))
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisPropertyValue.self, from: string!.data(using: .utf8)!))
-   }
-
-    func test_PolisPropertyValue_equatable_shouldSucceed() throws {
-        // Given
-        let sut_string = PolisPropertyValue(valueKind: .string, value: "NW",    unit: "direction")
-        let sut_int    = PolisPropertyValue(valueKind: .int,    value: "17",    unit: "m")
-        let sut_float  = PolisPropertyValue(valueKind: .float,  value: "123.4", unit: "m")
-        let sut_double = PolisPropertyValue(valueKind: .double, value: "123.4", unit: "m")
-
-        // Then
-        XCTAssertNotNil(sut_string)
-        XCTAssertNotNil(sut_int)
-        XCTAssertNotNil(sut_float)
-        XCTAssertNotNil(sut_double)
-
-        XCTAssertEqual(sut_string.stringValue(), "NW")
-        XCTAssertEqual(sut_string.unit, "direction")
-
-        XCTAssertEqual(sut_int.intValue(), 17)
-        XCTAssertEqual(sut_float.floatValue(), Float(123.4))
-        XCTAssertEqual(sut_double.doubleValue(), Double(123.4))
-    }
-
     //MARK: Directions
     func test_PolisDirection_exactCodingSupport_shouldSucceed() throws {
         // Given
@@ -374,8 +339,6 @@ final class PolisCommonTypesTests: XCTestCase {
     static var allTests = [
         ("test_PolisVisitingHours_creation_shouldSucceed",                  test_PolisVisitingHours_creation_shouldSucceed),
         ("test_PolisVisitingHours_creation_shouldSucceed",                  test_PolisVisitingHours_creation_shouldSucceed),
-        ("test_PolisPropertyValue_codingSupport_shouldSucceed",             test_PolisPropertyValue_codingSupport_shouldSucceed),
-        ("test_PolisPropertyValue_equatable_shouldSucceed",                 test_PolisPropertyValue_equatable_shouldSucceed),
         ("test_PolisDirection_exactCodingSupport_shouldSucceed",            test_PolisDirection_exactCodingSupport_shouldSucceed),
         ("test_PolisDirection_roughCodingSupport_shouldSucceed",            test_PolisDirection_roughCodingSupport_shouldSucceed),
         ("test_PolisDirection_calculations_shouldSucceed",                  test_PolisDirection_calculations_shouldSucceed),

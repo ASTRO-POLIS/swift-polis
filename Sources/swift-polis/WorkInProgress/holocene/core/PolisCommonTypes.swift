@@ -36,63 +36,6 @@ public struct PolisVisitingHours: Codable {
     }
 }
 
-//MARK: - Property Values -
-// Basic idea - value is always a string that is converted (if possible) to a typed value.
-/// An object that represents a value a value with an accompanying unit.
-///
-/// Examples include telescope apertures, instrument wavelengths, etc. POLIS only defines the means of recording measurements. Client applications
-/// using POLIS should implement unit conversions (if needed). Currently, a POLIS provider is not expected to make any conversions, but it might
-/// check if the units are allowed.
-///
-/// Apple's Units types are purposely not used here because of the lack of scientific accuracy and profound misunderstanding of how science works.
-///
-/// **Note:** This Measurement implementation is very rudimentary. It is a placeholder type. In future implementations, it will be replaced by external
-/// implementations, capable of measurement computations and conversions.
-public struct PolisPropertyValue: Codable, Equatable {
-
-    public enum ValueKind: String, Codable {
-        case string
-        case int
-        case float
-        case double
-    }
-
-    //TODO: Make this Equitable and String CustomStringConvertible!
-
-    public var valueKind: ValueKind
-
-    /// The value of the measurement represented as a `String`
-    public var value: String
-
-    /// Unit of the measurement.
-    ///
-    /// The unit is expected to be in a format that is accepted by the astronomical community (as defined by the IAU, FITS Standard, etc).
-    ///
-    /// In the case that no unit is defined, the measurement has no dimension (e.g. counter).
-    ///
-    /// Examples:
-    /// - "m"
-    /// - "km"
-    /// - "in"
-    /// - "m^2"
-    /// - "µm"
-    /// - "solMass"
-    /// - "eV"
-    public var unit: String
-
-    public init(valueKind: ValueKind, value: String,  unit: String) {
-        self.valueKind  = valueKind
-        self.value      = value
-        self.unit       = unit
-    }
-
-    public func stringValue()  -> String? { value }
-    public func intValue()     -> Int?    { Int(value) }
-    public func floatValue()   -> Float?  { Float(value) }
-    public func doubleValue()  -> Double? { Double(value) }
-
-}
-
 //MARK: - Directions -
 
 /// `PolisDirection` is used to represent either a rough direction (of 16 possibilities) or exact direction in degree
@@ -674,14 +617,6 @@ public enum PolisElectromagneticSpectrumCoverage: String, Codable {
 
 
 //MARK: - Property Value
-public extension PolisPropertyValue {
-    enum CodingKeys: String, CodingKey {
-        case valueKind = "value_kind"
-        case value
-        case unit
-    }
-}
-
 //MARK: - Directions
 public extension PolisDirection {
     enum CodingKeys: String, CodingKey {

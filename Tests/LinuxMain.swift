@@ -2,7 +2,7 @@
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
-// Copyright (c) 2021-2022 Tuparev Technologies and the ASTRO-POLIS project
+// Copyright (c) 2021-2024 Tuparev Technologies and the ASTRO-POLIS project
 // authors.
 // Licensed under MIT License Modern Variant
 //
@@ -20,6 +20,9 @@ import swift_polisTests
 
 var tests = [XCTestCaseEntry]()
 tests += PolisImplementationTests.allTests()
+
+tests += PolisPropertyValueTests.allTests()
+
 
 //tests += PolisUtilitiesTests.allTests()
 //tests += PolisCommonTypesTests.allTests()

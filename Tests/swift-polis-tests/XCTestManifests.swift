@@ -2,7 +2,7 @@
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
-// Copyright (c) 2021-2022 Tuparev Technologies and the ASTRO-POLIS project
+// Copyright (c) 2021-2024 Tuparev Technologies and the ASTRO-POLIS project
 // authors.
 // Licensed under MIT License Modern Variant
 //
@@ -21,6 +21,7 @@ public func allTests() -> [XCTestCaseEntry] {
     return [
         XCTestCase(PolisUtilitiesTests),
         XCTestCase(PolisImplementationTests),
+        XCTestCase(PolisPropertyValueTests),
     ]
 }
 #endif
