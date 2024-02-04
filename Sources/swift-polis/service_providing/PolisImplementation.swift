@@ -64,21 +64,6 @@ public struct PolisImplementation: Codable, Equatable  {
         case dynamicScheduling = "dynamic_scheduling"
     }
 
-    /// Checks if the Device Type is supported by the given Implementation Info
-    public static func isValid(deviceType: PolisDevice.DeviceType, for implementation: PolisImplementation) -> Bool {
-        guard let possibleDevices = devicesSupportedByVersion[implementation.version] else  { return false }
-
-        return possibleDevices.contains(deviceType)
-    }
-
-    /// Checks if device hierarchy is supported  by the given Implementation Info
-    public static func canDevice(ofType: PolisDevice.DeviceType, beSubDeviceOfType: PolisDevice.DeviceType, for implementation: PolisImplementation) -> Bool {
-        guard let possibleVersionCombinations = subDevicesSupportedByVersion[implementation.version] else { return false }
-        guard let parentDevice                = possibleVersionCombinations[beSubDeviceOfType]                                   else { return false }
-
-        return parentDevice.contains(ofType)
-    }
-
     /// This is used to select the oldest supported implementation info in order to provide default data whenever needed
     ///
     ///  **Note:** The method assumes that the POLIS Service Provider implements at least one Implementation. Otherwise bad things will happen
@@ -112,14 +97,6 @@ public struct PolisImplementation: Codable, Equatable  {
 
 
 }
-
-//MARK: - Private definitions -
-fileprivate let devicesSupportedByVersion = [SemanticVersion(with: "0.2-alpha.1") :
-                                            [PolisDevice.DeviceType.mirror,
-                                             PolisDevice.DeviceType.enclosure,
-                                            ]
-]
-fileprivate let subDevicesSupportedByVersion = [SemanticVersion(with: "0.2-alpha.1") : [PolisDevice.DeviceType.mirror : [PolisDevice.DeviceType.mirror],]]
 
 //MARK: - Type extensions -
 extension PolisImplementation.APILevel: Comparable {

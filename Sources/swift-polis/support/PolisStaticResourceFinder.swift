@@ -29,17 +29,17 @@ public class PolisStaticResourceFinder {
     /// If possible clients should consider  using the latest supported version.
     public struct PredefinedPaths {
         // Level 1 resource paths. These are folders or files.
-        public static let baseServiceDirectory                  = "polis"                      // e.g. /polis/
-        public static let serviceProviderConfigurationFileName  = "polis"                      // e.g. /polis/polis.json
-        public static let serviceProviderDirectoryFileName      = "polis_directory"            // e.g. /polis/polis_directory.json
-        public static let observingFacilitiesDirectory          = "polis_observing_facilities" // e.g. /polis/<version>/polis_observing_facilities/
-        public static let observingFacilitiesDirectoryFileName  = "polis_observing_facilities" // e.g. /polis/<version>/polis_observing_facilities.json
-        public static let polisResources                        = "polis_resources"            // e.g. /polis/<version>/polis_resources/ .. e.g. manufacturers
-        public static let polisResourcesDirectoryFileName       = "polis_resources"            // e.g. /polis/<version>/polis_resources/polis_resources.json
-        public static let polisOwners                           = "polis_owners"               // e.g. /polis/<version>/polis_owners/ .. e.g. Caltech
-        public static let polisOwnersDirectoryFileName          = "polis_owners"               // e.g. /polis/<version>/polis_owners/polis_owners.json
-        public static let polisManufacturers                    = "polis_manufacturers"        // e.g. /polis/<version>/polis_manufacturers/ .. e.g. ASA
-        public static let polisManufacturersDirectoryFileName   = "polis_manufacturers"        // e.g. /polis/<version>/polis_manufacturers/polis_manufacturers.json
+        public static let baseServiceDirectory                 = "polis"                      // e.g. /polis/
+        public static let serviceProviderConfigurationFileName = "polis"                      // e.g. /polis/polis.json
+        public static let serviceProviderDirectoryFileName     = "polis_directory"            // e.g. /polis/polis_directory.json
+        public static let observingFacilitiesDirectory         = "polis_observing_facilities" // e.g. /polis/<version>/polis_observing_facilities/
+        public static let observingFacilitiesDirectoryFileName = "polis_observing_facilities" // e.g. /polis/<version>/polis_observing_facilities.json
+        public static let polisResources                       = "polis_resources"            // e.g. /polis/<version>/polis_resources/ .. e.g. manufacturers
+        public static let polisResourcesDirectoryFileName      = "polis_resources"            // e.g. /polis/<version>/polis_resources/polis_resources.json
+        public static let polisOwners                          = "polis_owners"               // e.g. /polis/<version>/polis_owners/ .. e.g. Caltech
+        public static let polisOwnersDirectoryFileName         = "polis_owners"               // e.g. /polis/<version>/polis_owners/polis_owners.json
+        public static let polisManufacturers                   = "polis_manufacturers"        // e.g. /polis/<version>/polis_manufacturers/ .. e.g. ASA
+        public static let polisManufacturersDirectoryFileName  = "polis_manufacturers"        // e.g. /polis/<version>/polis_manufacturers/polis_manufacturers.json
     }
 
     /// Possible (hopefully self-explanatory) errors while creating various Resource Finders

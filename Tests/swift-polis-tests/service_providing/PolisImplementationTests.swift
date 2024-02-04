@@ -4,7 +4,7 @@
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
-// Copyright (c) 2021-2023 Tuparev Technologies and the ASTRO-POLIS project
+// Copyright (c) 2021-2024 Tuparev Technologies and the ASTRO-POLIS project
 // authors.
 // Licensed under MIT License Modern Variant
 //
@@ -133,22 +133,6 @@ final class PolisImplementationTests: XCTestCase {
         XCTAssertNoThrow(try jsonDecoder.decode(PolisImplementation.self, from: string!.data(using: .utf8)!))
     }
 
-    func test_PolisImplementation_deviceCompatibilityDiscovery_shouldSucceed() throws {
-        // Given
-        let version          = PolisConstants.frameworkSupportedImplementation[1].version
-        let implementation   = PolisImplementation(dataFormat: PolisImplementation.DataFormat.json,
-                                                   apiSupport: PolisImplementation.APILevel.staticData,
-                                                   version: version)
-        let mirrorDeviceType = PolisDevice.DeviceType.mirror
-
-        // When
-
-        // Then
-        //TODO: This need to be reworked!
-        XCTAssertTrue(PolisImplementation.isValid(deviceType: mirrorDeviceType, for: implementation))
-        XCTAssertTrue(PolisImplementation.canDevice(ofType: mirrorDeviceType, beSubDeviceOfType: mirrorDeviceType, for: implementation))
-    }
-
     func test_PolisImplementation_oldestSupportedImplementation_shouldSucceed() {
         // Given
         let sut = PolisImplementation.oldestSupportedImplementation()
@@ -169,51 +153,5 @@ final class PolisImplementationTests: XCTestCase {
         ("test_PolisImplementation_dataFormat_shouldSucceed",                   test_PolisImplementation_dataFormat_shouldSucceed),
         ("test_PolisImplementation_apiLevel_shouldSucceed",                     test_PolisImplementation_apiLevel_shouldSucceed),
         ("test_PolisImplementation_supportedImplementation_shouldSucceed",      test_PolisImplementation_supportedImplementation_shouldSucceed),
-        ("test_PolisImplementation_deviceCompatibilityDiscovery_shouldSucceed", test_PolisImplementation_deviceCompatibilityDiscovery_shouldSucceed),
     ]
-
-
-    //MARK: - Templates
-    /*
-     func test_Type_stateUnderTest_expectedBehavior() throws {
-     // Given
-
-     // When
-
-     // Then
-
-     }
-
-     func testExampleWithTearDown() throws {
-     print("Starting test.")
-     addTeardownBlock {
-     print("In first tearDown block.")
-     }
-     print("In middle of test.")
-     addTeardownBlock {
-     print("In second tearDown block.")
-     }
-     print("Finishing test.")
-     }
-
-     func testPerformanceExample() throws {
-
-     self.measure {
-
-     }
-     }
-     */
 }
-
-/* NAMING RULES
- As your skill with testing increases, you might find it useful to adopt Roy Osherove’s naming convention for tests:
- [UnitOfWork_StateUnderTest_ExpectedBehavior].
-
- If you follow that precisely it would create test method names like this:
- test_Hater_AfterHavingAGoodDay_ShouldNotBeHating().
-
- *Note:* Mixing PascalCase and snake_case might hurt your head at first, but at least it makes clear the
- UnitOfWork – StateUnderTest – ExpectedBehavior
- separation at a glance. You might also see camelCase being used, which would give
- test_Hater_afterHavingAGoodDay_shouldNotBeHating()
- */
