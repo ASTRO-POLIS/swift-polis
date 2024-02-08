@@ -19,7 +19,7 @@ import Foundation
 
 // Basic idea - value is always a JSON string that is converted (if possible) to a typed value.
 
-/// An type that represents a value and a unit.
+/// A type that represents a value and a unit.
 ///
 /// Examples include telescope apertures, instrument wavelengths, etc. POLIS only defines the means of 
 /// recording measurements. Client applications using POLIS should implement unit conversions (if needed).
@@ -41,15 +41,13 @@ public struct PolisPropertyValue: Codable, Equatable {
         case double
     }
 
-    //TODO: Make this Equitable and String CustomStringConvertible!
-
     /// The expected value kind
     public var valueKind: ValueKind
 
     /// The value of the measurement represented as a `String`
     ///
     /// To simplify the standard, all values are stored in string. It is implementation's
-    /// responsibility to convert the string value in a proper programming language
+    /// responsibility to convert the string value into a proper programming language
     /// supported type , e.g. `Int`, `Double`, ...
         public var value: String
 

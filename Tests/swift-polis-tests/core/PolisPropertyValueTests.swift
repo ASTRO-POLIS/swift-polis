@@ -91,9 +91,8 @@ final class PolisPropertyValueTests: XCTestCase {
         XCTAssertEqual(sut_double.doubleValue(), Double(123.4))
     }
 
-
     static var allTests = [
-        ("test_PolisPropertyValue_codingSupport_shouldSucceed",             test_PolisPropertyValue_codingSupport_shouldSucceed),
-        ("test_PolisPropertyValue_equatable_shouldSucceed",                 test_PolisPropertyValue_equatable_shouldSucceed),
+        ("test_PolisPropertyValue_codingSupport_shouldSucceed", test_PolisPropertyValue_codingSupport_shouldSucceed),
+        ("test_PolisPropertyValue_equatable_shouldSucceed",     test_PolisPropertyValue_equatable_shouldSucceed),
     ]
 }
