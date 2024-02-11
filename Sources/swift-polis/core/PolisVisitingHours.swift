@@ -43,6 +43,11 @@ public struct PolisVisitingHours: Codable {
         public struct TimePeriod: Codable {
             public var from: HoursAndMinutes
             public var to: HoursAndMinutes
+
+            public init(from: HoursAndMinutes, to: HoursAndMinutes) {
+                self.from = from
+                self.to   = to
+            }
         }
 
         public var applicableYears: [Int]?
@@ -52,23 +57,46 @@ public struct PolisVisitingHours: Codable {
 
         public var isRepeating = true
         public var note: String?
+
+        public init(applicableYears: [Int]?              = nil, 
+                    applicableMonths: [Int]?             = nil,
+                    applicableWeekdays: [DayOfTheWeek]?  = nil,
+                    openingPeriod: [TimePeriod]?         = nil,
+                    isRepeating: Bool                    = true,
+                    note: String?                        = nil) {
+            self.applicableYears    = applicableYears
+            self.applicableMonths   = applicableMonths
+            self.applicableWeekdays = applicableWeekdays
+            self.openingPeriod      = openingPeriod
+            self.isRepeating        = isRepeating
+            self.note               = note
+        }
   }
 
     public var visitingPossibilities: [VisitingPossibility]?
 
     public var minVisitingGroupSize: Int?
     public var maxVisitingGroupSize: Int?
-    public var onlyGroupVisits = false
+    public var onlyGroupVisits: Bool
 
     public var note: String?
 
-    public init(note: String? = nil) {
-        self.note = note
-    }
-}
+    public init(visitingPossibilities: [VisitingPossibility]?  = nil, 
+                minVisitingGroupSize: Int?                     = nil,
+                maxVisitingGroupSize: Int?                     = nil,
+                onlyGroupVisits: Bool                          = false,
+                note: String?                                  = nil) {
+        self.visitingPossibilities = visitingPossibilities
+        self.minVisitingGroupSize  = minVisitingGroupSize
+        self.maxVisitingGroupSize  = maxVisitingGroupSize
+        self.onlyGroupVisits       = onlyGroupVisits
+        self.note                  = note
+    }}
 
 
 //MARK: - Type extensions -
+
+
 
 //MARK: - VisitingPossibility
 public extension PolisVisitingHours.VisitingPossibility {
