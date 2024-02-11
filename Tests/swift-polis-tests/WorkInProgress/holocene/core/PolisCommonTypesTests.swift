@@ -56,31 +56,6 @@ final class PolisCommonTypesTests: XCTestCase {
 
     //MARK: - Tests -
 
-    //MARK: - PolisOpeningTimesForVisitors tests
-    func test_PolisVisitingHours_creation_shouldSucceed() throws {
-        // Given
-        let aNote = "A very interesting note"
-        let sut = PolisVisitingHours(note: aNote)
-
-        // Then
-        XCTAssertNotNil(sut)
-        XCTAssertEqual(sut.note!, aNote)
-    }
-
-    func test_PolisVisitingHours_codingSupport_shouldSucceed() throws {
-        // Given
-        let aNote = "A very interesting note"
-        let sut =  PolisVisitingHours(note: aNote)
-
-        // When
-        data   = try? jsonEncoder.encode(sut)
-        string = String(data: data!, encoding: .utf8)
-
-        // Then
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisVisitingHours.self, from: data))
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisVisitingHours.self, from: string!.data(using: .utf8)!))
-    }
-
     //MARK: POLIS Identity
     func test_PolisIdentity_codingSupport_shouldSucceed() throws {
         // Given
@@ -297,8 +272,6 @@ final class PolisCommonTypesTests: XCTestCase {
     }
 
     static var allTests = [
-        ("test_PolisVisitingHours_creation_shouldSucceed",                  test_PolisVisitingHours_creation_shouldSucceed),
-        ("test_PolisVisitingHours_creation_shouldSucceed",                  test_PolisVisitingHours_creation_shouldSucceed),
         ("test_PolisIdentity_codingSupport_shouldSucceed",                  test_PolisIdentity_codingSupport_shouldSucceed),
         ("test_PolisItemOwner_codingSupport_shouldSucceed",                 test_PolisItemOwner_codingSupport_shouldSucceed),
         ("test_PolisImageItem_codingSupport_shouldSucceed",                 test_PolisImageItem_codingSupport_shouldSucceed),

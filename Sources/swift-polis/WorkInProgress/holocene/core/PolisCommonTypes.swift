@@ -17,27 +17,6 @@
 
 import Foundation
 
-/// The `PolisVisitingHours` struct is used to define periods of time when a ``PolisObservingFacility`` could be visited, or the
-/// working hours of the personnel.
-///
-/// Note that some facilities might only be open during part of the year (e.g. because of difficult winter conditions) or may only be visited during
-/// school vacations.
-///
-/// The first version of the the POLIS standard defines only an optional `note` string.  Future versions will add more structured types
-/// expressing numerical periods like:
-///    Mo-Fr: 16:00-18:00h or
-///    June - September
-/// Currently this more natural representation could be achieved by formatting `note` using `\n` (new lines) and tabs.
-public struct PolisVisitingHours: Codable {
-    public var note: String?
-
-    public init(note: String? = nil) {
-        self.note = note
-    }
-}
-
-//MARK: - Directions -
-
 //MARK: - POLIS Identity related types -
 
 /// `PolisIdentity` uniquely identifies and defines the status of almost every POLIS item and defines external relationships to other items

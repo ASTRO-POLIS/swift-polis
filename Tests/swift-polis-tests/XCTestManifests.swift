@@ -19,10 +19,17 @@ import XCTest
 #if !canImport(ObjectiveC)
 public func allTests() -> [XCTestCaseEntry] {
     return [
+        // service_provider
+        XCTestCase(PolisImplementationTests),
+        
+        // support
         XCTestCase(PolisImplementationTests),
         XCTestCase(PolisStaticResourceFinderTests),
-        XCTestCase(PolisPropertyValueTests),
+
+        // core
         XCTestCase(PolisDirectionTests),
+        XCTestCase(PolisPropertyValueTests),
+        XCTestCase(PolisVisitingHoursTests),
     ]
 }
 #endif

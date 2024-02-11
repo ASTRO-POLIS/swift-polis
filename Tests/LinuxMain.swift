@@ -20,9 +20,15 @@ import swift_polisTests
 
 var tests = [XCTestCaseEntry]()
 
+// service_provider
 tests += PolisImplementationTests.allTests()
+
+// support
 tests += PolisStaticResourceFinderTests.allTests()
+
+// core
 tests += PolisPropertyValueTests.allTests()
 tests += PolisDirectionTests.allTests()
+tests += PolisVisitingHoursTests.allTests()
 
 XCTMain(tests)
