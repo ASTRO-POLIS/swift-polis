@@ -59,17 +59,57 @@ final class PolisVisitingHoursTests: XCTestCase {
     }
 
     // JSON Examples
-    private var onlyANote = """
+    private let onlyANote = """
 {
+   "only_group_visits": false,
    "note": "For group and individual visits, please call the observatory office every working day between 14:00h and 16:00h."
 }
-""".data(using: .utf8)
+""".data(using: .utf8)!
+
+    private let everyYearEveryMonthEverySunday = """
+{
+   "visiting_possibilities": [
+      {
+         "applicable_weekdays": ["Sunday"],
+         "only_group_visits": true,
+         "is_repeating": true
+      },
+   ],
+   "note": "Please call before visiting."
+}
+""".data(using: .utf8)!
+
+    // In 2024 and 2025, between July and September, every Saturday between 14:00 and 16:00 (only for groups), and every Sunday between
+    // 9:00 and 12:00 and between 14:00 and 17:00.
+    private let complexOpeningHours = """
+{
+   "visiting_possibilities": [
+      {
+         "applicable_years": [2024, 2025],
+         "applicable_months": [7, 8, 9],
+         "applicable_weekdays": ["Saturday"],
+         "opening_period": [ { "from": "14:00", "to": "16:00" } ],
+         "only_group_visits": true,
+         "is_repeating": true
+      },
+      {
+         "applicable_years": [2024, 2025],
+         "applicable_months": [7, 8, 9],
+         "applicable_weekdays": ["Sunday"],
+         "opening_period": [ { "from": "09:00", "to": "12:00" }, { "from": "14:00", "to": "16:00" } ],
+         "only_group_visits": false,
+         "is_repeating": true
+      }
+   ],
+   "note": "By or after heavy rain, the road to the observatory could be closed. Check the weather forcast before planning your visit."
+}
+""".data(using: .utf8)!
 
     //MARK: - Tests -
     func test_PolisVisitingHours_creation_shouldSucceed() throws {
         // Given
         let aNote = "A very interesting note"
-        let sut = PolisVisitingHours(note: aNote)
+        let sut   = PolisVisitingHours(note: aNote)
 
         // Then
         XCTAssertNotNil(sut)
@@ -79,7 +119,7 @@ final class PolisVisitingHoursTests: XCTestCase {
     func test_PolisVisitingHours_codingSupport_shouldSucceed() throws {
         // Given
         let aNote = "A very interesting note"
-        let sut =  PolisVisitingHours(note: aNote)
+        let sut   =  PolisVisitingHours(note: aNote)
 
         // When
         data   = try? jsonEncoder.encode(sut)
@@ -90,9 +130,45 @@ final class PolisVisitingHoursTests: XCTestCase {
         XCTAssertNoThrow(try jsonDecoder.decode(PolisVisitingHours.self, from: string!.data(using: .utf8)!))
     }
 
+    func test_PolisVisitingHours_onlyNote_shouldSucceed() throws {
+        // Given
+        let sut = try? jsonDecoder.decode(PolisVisitingHours.self, from: onlyANote)
+
+        // Then
+        XCTAssertNotNil(sut)
+        XCTAssertNotNil(sut!.note)
+    }
+
+    func test_PolisVisitingHours_simpleVisitingPossibility_shouldSucceed() throws {
+        // Given
+        let sut = try? jsonDecoder.decode(PolisVisitingHours.self, from: everyYearEveryMonthEverySunday)
+
+        // Then
+        XCTAssertNotNil(sut)
+        XCTAssertEqual(sut!.visitingPossibilities?.count, 1)
+        XCTAssertTrue(sut!.visitingPossibilities![0].applicableWeekdays![0] == PolisVisitingHours.VisitingPossibility.DayOfTheWeek.sunday)
+    }
+
+    func test_PolisVisitingHours_complexOpeningHours_shouldSucceed() throws {
+        // Given
+        let sut = try? jsonDecoder.decode(PolisVisitingHours.self, from: complexOpeningHours)
+
+        // When
+
+        // Then
+        XCTAssertNotNil(sut)
+        XCTAssertEqual(sut!.visitingPossibilities?.count, 2)
+        XCTAssertEqual(sut!.visitingPossibilities?[1].applicableYears?.count, 2)
+        XCTAssertEqual(sut!.visitingPossibilities?[1].applicableMonths?.count, 3)
+        XCTAssertEqual(sut!.visitingPossibilities?[1].applicableWeekdays?.count, 1)
+    }
+
     static var allTests = [
-        ("test_PolisVisitingHours_creation_shouldSucceed", test_PolisVisitingHours_creation_shouldSucceed),
-        ("test_PolisVisitingHours_creation_shouldSucceed", test_PolisVisitingHours_creation_shouldSucceed),
+        ("test_PolisVisitingHours_creation_shouldSucceed",                  test_PolisVisitingHours_creation_shouldSucceed),
+        ("test_PolisVisitingHours_creation_shouldSucceed",                  test_PolisVisitingHours_creation_shouldSucceed),
+        ("test_PolisVisitingHours_onlyNote_shouldSucceed",                  test_PolisVisitingHours_onlyNote_shouldSucceed),
+        ("test_PolisVisitingHours_simpleVisitingPossibility_shouldSucceed", test_PolisVisitingHours_simpleVisitingPossibility_shouldSucceed),
+        ("test_PolisVisitingHours_complexOpeningHours_shouldSucceed",       test_PolisVisitingHours_complexOpeningHours_shouldSucceed),
     ]
 
 

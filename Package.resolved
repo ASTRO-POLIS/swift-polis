@@ -6,7 +6,7 @@
       "location" : "https://github.com/tuparev/ScienceEtudes",
       "state" : {
         "branch" : "dev",
-        "revision" : "4d367285cb62f756e20ccf95e7461a2489ae32ba"
+        "revision" : "740d00927a90f6dc2812217da91634e14d26c996"
       }
     },
     {
@@ -15,16 +15,7 @@
       "location" : "https://github.com/tuparev/SoftwareEtudes",
       "state" : {
         "branch" : "dev",
-        "revision" : "ab2af4efd456526e777a8eeb110fb2bcad559ae5"
-      }
-    },
-    {
-      "identity" : "swift-log",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-log.git",
-      "state" : {
-        "revision" : "532d8b529501fb73a2455b179e0bbb6d49b652ed",
-        "version" : "1.5.3"
+        "revision" : "324926193077d32e026f1b5b36eb32cd96eeaeb6"
       }
     }
   ],
