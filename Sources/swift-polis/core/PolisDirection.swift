@@ -82,18 +82,22 @@ public struct PolisDirection: Codable {
     public enum DirectionError: Error {
         case bothPropertiesCannotBeNilError
         case bothPropertiesCannotBeNotNilError
+        case directionMustBeBetween0and360Degree
     }
 
     /// Designated initialiser.
     ///
     /// See ``DirectionError`` for possible errors during creation
     public init(roughDirection: RoughDirection? = nil, exactDirection: Double? = nil) throws {
-        if (roughDirection == nil) && (exactDirection == nil) { throw DirectionError.bothPropertiesCannotBeNilError }
-        if (roughDirection != nil) && (exactDirection != nil) { throw DirectionError.bothPropertiesCannotBeNotNilError }
+        if (roughDirection != nil) && (exactDirection != nil)                                   { throw DirectionError.bothPropertiesCannotBeNilError }
+        if (roughDirection == nil) && (exactDirection == nil)                                   { throw DirectionError.bothPropertiesCannotBeNotNilError }
+        if ((exactDirection != nil) && ((exactDirection! < 0.0) || (exactDirection! > 360.0)))  { throw DirectionError.directionMustBeBetween0and360Degree }
 
-        //TODO: Make sure that exactDirection <= 360.0!
-        self.roughDirection = roughDirection
-        self.exactDirection = exactDirection
+        if roughDirection != nil { self.roughDirection = roughDirection }
+        else                     { self.roughDirection = PolisDirection.roughDirection(from: exactDirection!) }
+
+        if exactDirection != nil { self.exactDirection = exactDirection }
+        else                     { self.exactDirection = roughDirection!.direction() }
     }
 
     // Clockwise e.g. 157.12
@@ -105,6 +109,27 @@ public struct PolisDirection: Codable {
     //MARK: - Private stuff
     private var roughDirection: RoughDirection?
     private var exactDirection: Double?
+
+    private static func roughDirection(from degree: Double) -> RoughDirection {
+        if      degree < 22.5  { return .north }
+        else if degree < 45.0  { return .northNorthEast }
+        else if degree < 67.5  { return .eastNorthEast }
+
+        else if degree < 90.0  { return .east }
+        else if degree < 112.5 { return .eastSouthEast }
+        else if degree < 135.0 { return .southEast }
+        else if degree < 157.5 { return .southSouthEast }
+
+        else if degree < 180.0 { return .south }
+        else if degree < 202.5 { return .southSouthWest }
+        else if degree < 225.0 { return .southWest }
+        else if degree < 247.5 { return .westSouthWest }
+
+        else if degree < 270.0 { return .west }
+        else if degree < 292.5 { return .westNorthWest }
+        else if degree < 315.0 { return .northWest }
+        else                   { return .northNorthWest }
+    }
 }
 
 //MARK: - Type extensions -
