@@ -73,6 +73,14 @@ public struct PolisDirection: Codable {
                 case .northNorthWest: return 337.5
             }
         }
+
+        public func abbreviation() -> String {
+            var result = self.rawValue
+
+            if result.count > 1 { result.insert("/", at: result.index(result.startIndex, offsetBy: 1)) }
+            
+           return result
+        }
     }
 
     /// Possible errors id a `PolisDirection` cannot be created.
@@ -106,10 +114,10 @@ public struct PolisDirection: Codable {
         else                     { return roughDirection!.direction() }
     }
 
-    //MARK: - Private stuff
-    private var roughDirection: RoughDirection?
-    private var exactDirection: Double?
+    public private(set) var roughDirection: RoughDirection?
+    public private(set) var exactDirection: Double?
 
+    //MARK: - Private stuff
     private static func roughDirection(from degree: Double) -> RoughDirection {
         if      degree < 22.5  { return .north }
         else if degree < 45.0  { return .northNorthEast }

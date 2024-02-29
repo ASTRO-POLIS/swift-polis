@@ -84,6 +84,7 @@ final class PolisDirectionTests: XCTestCase {
         XCTAssertNotNil(sut_rough)
         XCTAssertNoThrow(try jsonDecoder.decode(PolisDirection.self, from: data))
         XCTAssertNoThrow(try jsonDecoder.decode(PolisDirection.self, from: string!.data(using: .utf8)!))
+        XCTAssertEqual(sut_rough.roughDirection?.abbreviation(), "E/NE")
     }
 
     func test_PolisDirection_calculations_shouldSucceed() throws {
