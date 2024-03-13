@@ -24,7 +24,8 @@ public struct PolisObservingFacility: Identifiable, Codable {
     public enum ObservingFacilityLocationType: String, Codable {
         case surfaceFixed          = "surface_fixed"
         case surfaceMobile         = "surface_mobile"
-        case airborne
+        case airborneSelfPropelled = "airborne_self_propelled"
+        case airborneBallon        = "airborne_ballon"
         case keplerianOrbital      = "keplerian_orbital"
         case nonKeplerianOrbital   = "non_keplerian_orbital"
         case unboundInterplanetary = "unbound_interplanetary"
