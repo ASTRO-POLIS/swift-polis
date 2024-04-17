@@ -1,4 +1,6 @@
 //===----------------------------------------------------------------------===//
+//  PolisServiceProvider.swift
+//===----------------------------------------------------------------------===//
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
@@ -14,10 +16,6 @@
 //===----------------------------------------------------------------------===//
 
 import Foundation
-
-// **Note for Swift developers:** COURAGEOUS and IMPORTANT ASSUMPTION: Types defined in this file should not have
-// incompatible coding/decoding and API changes in future versions of the standard! All other types could evolve.
-// The types defined here are only simple lists of IDs and last update dates.
 
 /// `PolisDirectory` is the list of all known Polis providers.
 ///
