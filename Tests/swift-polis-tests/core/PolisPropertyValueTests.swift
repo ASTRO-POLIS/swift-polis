@@ -16,6 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 import Foundation
+import SoftwareEtudesUtilities
 
 import XCTest
 
@@ -24,8 +25,8 @@ import XCTest
 final class PolisPropertyValueTests: XCTestCase {
 
     //MARK: - Setup & Teardown -
-    private var jsonEncoder: PolisJSONEncoder!
-    private var jsonDecoder: PolisJSONDecoder!
+    private var jsonEncoder: PrettyJSONEncoder!
+    private var jsonDecoder: PrettyJSONDecoder!
     private var data: Data!
     private var string: String!
 
@@ -41,8 +42,8 @@ final class PolisPropertyValueTests: XCTestCase {
         try super.setUpWithError()
         print("In setUp.")
 
-        jsonEncoder = PolisJSONEncoder()
-        jsonDecoder = PolisJSONDecoder()
+        jsonEncoder = PrettyJSONEncoder()
+        jsonDecoder = PrettyJSONDecoder()
     }
 
     override func tearDownWithError() throws {

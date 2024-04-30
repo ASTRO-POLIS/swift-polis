@@ -14,21 +14,23 @@
 //===----------------------------------------------------------------------===//
 
 import XCTest
+import SoftwareEtudesUtilities
+
 @testable import swift_polis
 
 class PolisItemOwnerTests: XCTestCase {
 
     //MARK: - Initialisation -
-    private var jsonEncoder: PolisJSONEncoder!
-    private var jsonDecoder: PolisJSONDecoder!
+    private var jsonEncoder: PrettyJSONEncoder!
+    private var jsonDecoder: PrettyJSONDecoder!
     private var data: Data!
     private var string: String!
 
     override func setUpWithError() throws {
         super.setUp()
 
-        jsonEncoder = PolisJSONEncoder()
-        jsonDecoder = PolisJSONDecoder()
+        jsonEncoder = PrettyJSONEncoder()
+        jsonDecoder = PrettyJSONDecoder()
     }
 
     override func tearDownWithError() throws {

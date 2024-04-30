@@ -22,8 +22,8 @@ import SoftwareEtudesUtilities
 
 final class PolisImplementationTests: XCTestCase {
 
-    private var jsonEncoder: PolisJSONEncoder!
-    private var jsonDecoder: PolisJSONDecoder!
+    private var jsonEncoder: PrettyJSONEncoder!
+    private var jsonDecoder: PrettyJSONDecoder!
     private var data: Data!
     private var string: String!
     private var originalFrameworkSupportedImplementation: [PolisImplementation]!
@@ -42,8 +42,8 @@ final class PolisImplementationTests: XCTestCase {
         try super.setUpWithError()
         print("In setUp.")
 
-        jsonEncoder                              = PolisJSONEncoder()
-        jsonDecoder                              = PolisJSONDecoder()
+        jsonEncoder                              = PrettyJSONEncoder()
+        jsonDecoder                              = PrettyJSONDecoder()
 
         originalFrameworkSupportedImplementation = PolisConstants.frameworkSupportedImplementation
 

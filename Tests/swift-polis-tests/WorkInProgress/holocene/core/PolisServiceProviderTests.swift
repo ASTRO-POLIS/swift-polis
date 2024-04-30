@@ -15,13 +15,14 @@
 
 
 import XCTest
+import SoftwareEtudesUtilities
 
 @testable import swift_polis
 
 final class PolisServiceProviderTests: XCTestCase {
 
-    private var jsonEncoder: PolisJSONEncoder!
-    private var jsonDecoder: PolisJSONDecoder!
+    private var jsonEncoder: PrettyJSONEncoder!
+    private var jsonDecoder: PrettyJSONDecoder!
     private var data: Data!
     private var string: String!
     private let jsonDataFromDirectoryEntry = """
@@ -64,8 +65,8 @@ final class PolisServiceProviderTests: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
 
-        jsonEncoder = PolisJSONEncoder()
-        jsonDecoder = PolisJSONDecoder()
+        jsonEncoder = PrettyJSONEncoder()
+        jsonDecoder = PrettyJSONDecoder()
 
         print("In setUp.")
     }
