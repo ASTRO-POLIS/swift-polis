@@ -79,12 +79,29 @@ public struct PolisPropertyValue: Codable, Equatable {
         self.unit      = unit
     }
 
-    //TODO: Enhance and document these method!
-    // First of all, check it the corresponding method is applicable to the value kind!
-    public func stringValue()  -> String? { value }
-    public func intValue()     -> Int?    { Int(value) }
-    public func floatValue()   -> Float?  { Float(value) }
-    public func doubleValue()  -> Double? { Double(value) }
+    /// Returns a `String` value if the `valueKind` is equal to`.string`
+    public func stringValue() -> String? {
+        if valueKind != .string { return nil }
+        else                    { return value }
+    }
+
+    /// Returns an `Int` value if the `valueKind` is is equal  `.int`
+    public func intValue() -> Int? {
+        if valueKind != .int { return nil }
+        else                 { return Int(value) }
+    }
+
+    /// Returns a `Float` value if the `valueKind` is is equal  `.float`
+    public func floatValue() -> Float? {
+        if valueKind != .float { return nil }
+        else                   { return Float(value) }
+    }
+
+    /// Returns a `Double` value if the `valueKind` is is equal  `.double`
+    public func doubleValue() -> Double? {
+        if valueKind != .double { return nil }
+        else                    { return Double(value) }
+    }
 }
 
 //MARK: - Property Value

@@ -403,7 +403,6 @@ public struct PolisImageSource: Identifiable {
     ///
     /// It is important to note that POLIS data may be viewed by kids. Therefore, all images must be verified before made public. The `lastUpdate` attribute
     /// can help the curator of the data set verify new entries.
-    //TODO: Do we need to know the image size and aspect ratio?
     public struct ImageItem: Identifiable {
         public enum ImageItemError: Error {
             case copyrightHolderReferenceMissing

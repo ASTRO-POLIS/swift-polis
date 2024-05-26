@@ -46,6 +46,11 @@ public struct PolisObservingFacilityLocation: Codable {
     public let earthCountry: String?              // e.g. Armenia
     public let earthCountryCode: String?          // 2-letter code.
 
+    //TODO: Miscellaneous locations (for later implementation)
+    // - Orbital location
+    // - Lander location
+    // - Airborne location
+
     public init(eastLongitude: PolisPropertyValue?  = nil,
                 latitude: PolisPropertyValue?       = nil,
                 altitude: PolisPropertyValue?       = nil,

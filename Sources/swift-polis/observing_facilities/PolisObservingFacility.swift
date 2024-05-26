@@ -30,8 +30,10 @@ public struct PolisObservingFacility: Identifiable, Codable {
         case nonKeplerianOrbital   = "non_keplerian_orbital"
         case unboundInterplanetary = "unbound_interplanetary"
         case other
-//        case collaboration  // config
-//        case network        // config
+
+        //TODO: These 3 types do not belong here.They need to me moved to the corresponding types
+//        case collaboration  // configuration
+//        case network        // configuration
 //        case array          // -> observatory
     }
 
