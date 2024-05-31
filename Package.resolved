@@ -6,7 +6,7 @@
       "location" : "https://github.com/tuparev/ScienceEtudes",
       "state" : {
         "branch" : "dev",
-        "revision" : "740d00927a90f6dc2812217da91634e14d26c996"
+        "revision" : "29702586da60cb9e5e80b8d9f70b25386ce145f5"
       }
     },
     {
@@ -15,7 +15,7 @@
       "location" : "https://github.com/tuparev/SoftwareEtudes",
       "state" : {
         "branch" : "dev",
-        "revision" : "1568d00acaab15e2a6ff93f5cbb798e14def4978"
+        "revision" : "0284daec515cb948b84af915e6e8380070224d81"
       }
     }
   ],
