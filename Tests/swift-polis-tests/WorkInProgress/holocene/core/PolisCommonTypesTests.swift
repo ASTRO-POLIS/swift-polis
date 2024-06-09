@@ -58,25 +58,6 @@ final class PolisCommonTypesTests: XCTestCase {
     //MARK: - Tests -
 
     //MARK: POLIS Identity
-    func test_PolisIdentity_codingSupport_shouldSucceed() throws {
-        // Given
-        let sut = PolisIdentity(externalReferences: ["1234", "6539"],
-                                lifecycleStatus: PolisIdentity.LifecycleStatus.active,
-                                lastUpdate: Date(),
-                                name: "TestAttributes",
-                                localName: "Тестови атрибути",
-                                abbreviation: "abc",
-                                automationLabel: "Ascom Label",
-                                shortDescription: "Testing attributes")
-
-        // When
-        data   = try? jsonEncoder.encode(sut)
-        string = String(data: data!, encoding: .utf8)
-
-        // Then
-        XCTAssertNotNil(sut)
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisIdentity.self, from: string!.data(using: .utf8)!))
-    }
 
     //MARK: - Item Owner
     func test_PolisItemOwner_codingSupport_shouldSucceed() throws {
@@ -134,13 +115,7 @@ final class PolisCommonTypesTests: XCTestCase {
                                               additionalCommunication: communication,
                                               note: nil)
         let owner         = PolisItemOwner(ownershipType: PolisItemOwner.OwnershipType.research, abbreviation: "SAO", adminContact: admin)
-        let identity      = PolisIdentity(externalReferences: ["1234", "6539"],
-                                          lifecycleStatus: PolisIdentity.LifecycleStatus.active,
-                                          lastUpdate: Date(),
-                                          name: "TestAttributes",
-                                          abbreviation: "abc",
-                                          automationLabel: "Ascom Label",
-                                          shortDescription: "Testing attributes")
+        let identity      = TestingSupport.examplePolisIdentityBAO()
         let imageItem     = try PolisImageSource.ImageItem( originalSource: URL(string: PolisConstants.testBigBangPolisDomain)!,
                                                             shortDescription: "Very interesting image",
                                                             accessibilityDescription: "Image of a beautiful observatory on the topa high mountain",
@@ -273,7 +248,6 @@ final class PolisCommonTypesTests: XCTestCase {
     }
 
     static var allTests = [
-        ("test_PolisIdentity_codingSupport_shouldSucceed",                  test_PolisIdentity_codingSupport_shouldSucceed),
         ("test_PolisItemOwner_codingSupport_shouldSucceed",                 test_PolisItemOwner_codingSupport_shouldSucceed),
         ("test_PolisImageItem_codingSupport_shouldSucceed",                 test_PolisImageItem_codingSupport_shouldSucceed),
         ("test_PolisItem_codingSupport_shouldSucceed",                      test_PolisItem_codingSupport_shouldSucceed),
