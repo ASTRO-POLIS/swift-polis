@@ -28,6 +28,8 @@ struct TestingSupport {
                       localName:          "ՀՀ ԳԱԱ Վ․Հ․ ՀԱՄԲԱՐՁՈՒՄՅԱՆԻ ԱՆՎԱՆ ԲՅՈՒՐԱԿԱՆԻ ԱՍՏՂԱԴԻՏԱՐԱՆ (ԱԶԳԱՅԻՆ ԱՐԺԵՔ)",
                       abbreviation:       "bao",
                       automationLabel:    "bao_ascom",
-                      shortDescription:   "Testing BAO site")
+                      shortDescription:   "Testing BAO site",
+                      startDate:          Date.now
+        )
     }
 }

@@ -104,6 +104,16 @@ public struct PolisIdentity: Codable, Identifiable {
     /// Short optional item (object) description.
     public var shortDescription: String?
 
+    /// The date that the corresponding POLIS item started its existence, e.g. first light of a telescope
+    public var startDate: Date?
+
+    /// The date that the corresponding POLIS item ended its existence, e.g. a device was decommissioned
+    public var endDate: Date?
+
+    /// The date of initial POLIS registration of the item
+    public var polisRegistrationDate: Date?
+
+
     /// Designated initialiser.
     ///
     /// Only the `name` parameter is required. All other parameters have reasonable default values.
@@ -115,30 +125,39 @@ public struct PolisIdentity: Codable, Identifiable {
                 localName: String?               = nil,
                 abbreviation: String?            = nil,
                 automationLabel: String?         = nil,
-                shortDescription: String?        = nil) {
-        self.id                 = id
-        self.externalReferences = externalReferences
-        self.lifecycleStatus    = lifecycleStatus
-        self.lastUpdate         = lastUpdate
-        self.name               = name
-        self.localName          = localName
-        self.abbreviation       = abbreviation
-        self.automationLabel    = automationLabel
-        self.shortDescription   = shortDescription
-    }
+                shortDescription: String?        = nil,
+                startDate: Date?                 = nil,
+                endDate: Date?                   = nil,
+                polisRegistrationDate: Date?     = nil) {
+        self.id                    = id
+        self.externalReferences    = externalReferences
+        self.lifecycleStatus       = lifecycleStatus
+        self.lastUpdate            = lastUpdate
+        self.name                  = name
+        self.localName             = localName
+        self.abbreviation          = abbreviation
+        self.automationLabel       = automationLabel
+        self.shortDescription      = shortDescription
+        self.startDate             = startDate
+        self.endDate               = endDate
+        self.polisRegistrationDate = polisRegistrationDate
+   }
 }
 
 public extension PolisIdentity {
     enum CodingKeys: String, CodingKey {
         case id
-        case externalReferences = "external_references"
-        case lifecycleStatus    = "lifecycle_status"
-        case lastUpdate         = "last_update"
+        case externalReferences    = "external_references"
+        case lifecycleStatus       = "lifecycle_status"
+        case lastUpdate            = "last_update"
         case name
-        case localName          = "local_name"
+        case localName             = "local_name"
         case abbreviation
-        case automationLabel    = "automation_label"
-        case shortDescription   = "short_description"
+        case automationLabel       = "automation_label"
+        case shortDescription      = "short_description"
+        case startDate             = "start_date"
+        case endDate               = "end_date"
+        case polisRegistrationDate = "polis_registration_date"
     }
 }
 

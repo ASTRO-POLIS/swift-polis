@@ -86,12 +86,6 @@ public struct PolisObservingFacility: Identifiable, Codable {
     public var observatoryIDs: Set<UUID>?
     public var deviceIDs: Set<UUID>?
 
-    // When
-    public var startDate: Date?
-    public var endDate: Date?
-    public var polisRegistrationDate: Date?
-    public var polisDisconnectionDate: Date?
-
     // Info
     public var adminContact: PolisAdminContact?
     public var website: URL?
@@ -126,10 +120,6 @@ public struct PolisObservingFacility: Identifiable, Codable {
                 subObservingFacilityIDs: Set<UUID>?                    = nil,
                 observatoryIDs: Set<UUID>?                             = nil,
                 deviceIDs: Set<UUID>?                                  = nil,
-                startDate: Date?                                       = nil,
-                endDate: Date?                                         = nil,
-                polisRegistrationDate: Date?                           = nil,
-                polisDisconnectionDate: Date?                          = nil,
                 adminContact: PolisAdminContact?                       = nil,
                 website: URL?                                          = nil,
                 scientificObjectives: String?                          = nil,
@@ -154,10 +144,6 @@ public struct PolisObservingFacility: Identifiable, Codable {
         self.subObservingFacilityIDs                  = subObservingFacilityIDs
         self.observatoryIDs                           = observatoryIDs
         self.deviceIDs                                = deviceIDs
-        self.startDate                                = startDate
-        self.endDate                                  = endDate
-        self.polisRegistrationDate                    = polisRegistrationDate
-        self.polisDisconnectionDate                   = polisDisconnectionDate
         self.adminContact                             = adminContact
         self.website                                  = website
         self.scientificObjectives                     = scientificObjectives
@@ -194,12 +180,6 @@ public extension PolisObservingFacility {
         // Contains
         case observatoryIDs                           = "observatory_ids"
         case deviceIDs                                = "device_ids"
-
-        // When
-        case startDate                                = "start_date"
-        case endDate                                  = "end_date"
-        case polisRegistrationDate                    = "polis_registration_date"
-        case polisDisconnectionDate                   = "polis_disconnection_date"
 
         // Info
         case adminContact                             = "admin_contact"
