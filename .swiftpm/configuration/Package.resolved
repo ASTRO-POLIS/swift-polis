@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "scienceetudes",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tuparev/ScienceEtudes",
+      "state" : {
+        "branch" : "dev",
+        "revision" : "29702586da60cb9e5e80b8d9f70b25386ce145f5"
+      }
+    },
+    {
+      "identity" : "softwareetudes",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tuparev/SoftwareEtudes",
+      "state" : {
+        "branch" : "dev",
+        "revision" : "0284daec515cb948b84af915e6e8380070224d81"
+      }
+    }
+  ],
+  "version" : 2
+}
