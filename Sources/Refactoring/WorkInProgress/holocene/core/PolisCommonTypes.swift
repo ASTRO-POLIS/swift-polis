@@ -71,26 +71,26 @@ public struct PolisItem: Codable, Identifiable {
 /// (as this framework does). Such a cache of owners would of course have performance and data maintenance implications as well.
 public struct PolisItemOwner: Codable {
 
-    /// A type that describes the different kinds of owners of a POLIS item.
-    ///
-    /// `OwnershipType` is used to identify the ownership type of POLIS items (or devices) such as observing facilities, telescopes,
-    /// CCD cameras, weather stations, etc. Different cases should be self-explanatory. The `private` type should be utilised by
-    /// amateurs and hobbyists.
-    public enum OwnershipType: String, Codable {
-        case university
-        case research
-        case commercial
-        case school
-        case network
-        case government
-        case ngo
-        case club
-        case consortium
-        case cooperative
-        case collaboration
-        case `private`
-        case other
-    }
+//    /// A type that describes the different kinds of owners of a POLIS item.
+//    ///
+//    /// `OwnershipType` is used to identify the ownership type of POLIS items (or devices) such as observing facilities, telescopes,
+//    /// CCD cameras, weather stations, etc. Different cases should be self-explanatory. The `private` type should be utilised by
+//    /// amateurs and hobbyists.
+//    public enum OwnershipType: String, Codable {
+//        case university
+//        case research
+//        case commercial
+//        case school
+//        case network
+//        case government
+//        case ngo
+//        case club
+//        case consortium
+//        case cooperative
+//        case collaboration
+//        case `private`
+//        case other
+//    }
 
     public let ownershipType: OwnershipType
     public var adminContact: PolisAdminContact?
@@ -164,36 +164,36 @@ public struct PolisAdminContact: Identifiable {
     /// such channels, please submit a pull request to the POLIS developers.
     ///
     /// The type implements the `Codable` protocol and is thus JSON-representable.
-    public struct Communication: Codable {
-
-        /// Twitter user id, e.g. @AstroPolis. "@" is expected to be part of the id.
-        public var twitterIDs: [String]?
-
-        /// Phone number used by WhatsApp. The phone number should include the country code, starting with "+", and contain no
-        /// spaces, brackets, or other formatting characters. Currently no validation is provided.
-        public var whatsappPhoneNumbers: [String]?
-
-        /// The Facebook user id is only the part of the URL after "www.facebook.com/".
-        public var facebookIDs: [String]?
-
-        /// Instagram user id, e.g. @AstroPolis. "@" is expected to be part of the id.
-        public var instagramIDs: [String]?
-
-        /// Skype user id
-        public var skypeIDs: [String]?
-
-        public init(twitterIDs: [String]?     = nil,
-             whatsappPhoneNumbers: [String]?  = nil,
-             facebookIDs: [String]?           = nil,
-             instagramIDs: [String]?          = nil,
-             skypeIDs: [String]?              = nil) {
-            self.twitterIDs           = twitterIDs
-            self.whatsappPhoneNumbers = whatsappPhoneNumbers
-            self.facebookIDs          = facebookIDs
-            self.instagramIDs         = instagramIDs
-            self.skypeIDs             = skypeIDs
-        }
-    }
+//    public struct Communication: Codable {
+//
+//        /// Twitter user id, e.g. @AstroPolis. "@" is expected to be part of the id.
+//        public var twitterIDs: [String]?
+//
+//        /// Phone number used by WhatsApp. The phone number should include the country code, starting with "+", and contain no
+//        /// spaces, brackets, or other formatting characters. Currently no validation is provided.
+//        public var whatsappPhoneNumbers: [String]?
+//
+//        /// The Facebook user id is only the part of the URL after "www.facebook.com/".
+//        public var facebookIDs: [String]?
+//
+//        /// Instagram user id, e.g. @AstroPolis. "@" is expected to be part of the id.
+//        public var instagramIDs: [String]?
+//
+//        /// Skype user id
+//        public var skypeIDs: [String]?
+//
+//        public init(twitterIDs: [String]?     = nil,
+//             whatsappPhoneNumbers: [String]?  = nil,
+//             facebookIDs: [String]?           = nil,
+//             instagramIDs: [String]?          = nil,
+//             skypeIDs: [String]?              = nil) {
+//            self.twitterIDs           = twitterIDs
+//            self.whatsappPhoneNumbers = whatsappPhoneNumbers
+//            self.facebookIDs          = facebookIDs
+//            self.instagramIDs         = instagramIDs
+//            self.skypeIDs             = skypeIDs
+//        }
+//    }
 
     /// The admin's unique identifier.
     ///
@@ -420,16 +420,16 @@ public extension PolisItem {
     }
 }
 
-//MARK: - Communication related types
-extension PolisAdminContact.Communication {
-    public enum CodingKeys: String, CodingKey {
-        case twitterIDs           = "twitter_ids"
-        case whatsappPhoneNumbers = "whatsapp_phone_numbers"
-        case facebookIDs          = "facebook_ids"
-        case instagramIDs         = "instagram_ids"
-        case skypeIDs             = "skype_ids"
-    }
-}
+////MARK: - Communication related types
+//extension PolisAdminContact.Communication {
+//    public enum CodingKeys: String, CodingKey {
+//        case twitterIDs           = "twitter_ids"
+//        case whatsappPhoneNumbers = "whatsapp_phone_numbers"
+//        case facebookIDs          = "facebook_ids"
+//        case instagramIDs         = "instagram_ids"
+//        case skypeIDs             = "skype_ids"
+//    }
+//}
 
 extension PolisAdminContact: Codable {
     public enum CodingKeys: String, CodingKey {
