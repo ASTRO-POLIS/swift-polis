@@ -5,7 +5,7 @@
 //  Created by Georg Tuparev on 20.08.24.
 //
 
-import Testing
+import swift_polis
 
 import XCTest
 

@@ -8,7 +8,7 @@
 import Foundation
 
 //MARK: - PolisParty -
-public protocol PolisParty {
+public protocol PolisParty: Codable {
     func name() -> String?
     func set(name: String)
 
@@ -149,8 +149,18 @@ public struct PolisAddress: Codable {
 }
 
 //MARK: - PolisPerson -
-public struct PolisPerson: Codable {
+public struct PolisPerson: PolisParty {
+    public var name: String
+    public var email: String
+    public var communication: PolisCommunicationChannel?
+    public var address: PolisAddress?
 
+    public init(name: String, email: String, communication: PolisCommunicationChannel? = nil, address: PolisAddress? = nil) {
+        self.name          = name
+        self.email         = email
+        self.communication = communication
+        self.address       = address
+    }
 }
 
 //MARK: - PolisOrganisation -
@@ -161,14 +171,14 @@ public struct PolisOrganisation: Codable {
 //MARK: - Type extensions -
 
 extension PolisParty {
-    func name() -> String? { nil }
-    func set(name: String) { }
+    public func name() -> String? { nil }
+    public func set(name: String) { }
 
-    func communicationChannel() -> PolisCommunicationChannel? { nil }
-    func set(communicationChannel: PolisCommunicationChannel) { }
+    public func communicationChannel() -> PolisCommunicationChannel? { nil }
+    public func set(communicationChannel: PolisCommunicationChannel) { }
 
-    func address() -> PolisAddress? { nil }
-    func set(address: PolisAddress) { }
+    public func address() -> PolisAddress? { nil }
+    public func set(address: PolisAddress) { }
 }
 
 //MARK: - PolisCommunicationChannel
@@ -221,3 +231,4 @@ extension PolisAddress {
         case note
     }
 }
+
