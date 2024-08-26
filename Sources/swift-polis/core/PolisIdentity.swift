@@ -49,12 +49,6 @@ public struct PolisIdentity: Codable, Identifiable {
     /// recommended to assign a unique label (within the observatory or the observing site) to avoid potential confusions.
     public var abbreviation: String?
 
-    //TODO: Move to Item
-    /// The purpose of the optional `automationLabel` is to act as a unique target for scripts and other software
-    /// packages. As an example, the observatory control software could search for an instrument with a given label and
-    /// set its status or issue commands etc. This could be used to sync with ASCOM or INDI based systems.
-    public var automationLabel: String?
-
     /// Short optional item (object) description.
     public var shortDescription: String?
 
@@ -77,7 +71,6 @@ public struct PolisIdentity: Codable, Identifiable {
                 name: String,
                 localName: String?            = nil,
                 abbreviation: String?         = nil,
-                automationLabel: String?      = nil,
                 shortDescription: String?     = nil,
                 startDate: Date?              = nil,
                 endDate: Date?                = nil,
@@ -88,7 +81,6 @@ public struct PolisIdentity: Codable, Identifiable {
         self.name                  = name
         self.localName             = localName
         self.abbreviation          = abbreviation
-        self.automationLabel       = automationLabel
         self.shortDescription      = shortDescription
         self.startDate             = startDate
         self.endDate               = endDate
@@ -104,7 +96,6 @@ public extension PolisIdentity {
         case name
         case localName             = "local_name"
         case abbreviation
-        case automationLabel       = "automation_label"
         case shortDescription      = "short_description"
         case startDate             = "start_date"
         case endDate               = "end_date"

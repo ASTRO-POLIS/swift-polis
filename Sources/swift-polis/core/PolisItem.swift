@@ -86,6 +86,12 @@ public struct PolisItem: Codable {
 
     public var parentID: UUID?
 
+    /// The purpose of the optional `automationLabel` is to act as a unique target for scripts and other software
+    /// packages. As an example, the observatory control software could search for an instrument with a given label and
+    /// set its status or issue commands etc. This could be used to sync with ASCOM or INDI based systems.
+    public var automationLabel: String?
+
+
     public          func childrenIDs() -> Set<UUID> { _childrenIDs }
     public mutating func add(childID: UUID)         { _childrenIDs.insert(childID) }
 

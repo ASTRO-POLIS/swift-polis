@@ -53,11 +53,11 @@ final class PolisPartyTests: XCTestCase {
         // Given
 
         // When
-        data   = try? jsonEncoder.encode(PolisPartyTests.testCommunicationChannel)
+        data   = try? jsonEncoder.encode(TestingSupport.exampleCommunicationChannel())
         string = String(data: data!, encoding: .utf8)
 
         // Then
-        XCTAssertNotNil(PolisPartyTests.testCommunicationChannel)
+        XCTAssertNotNil(TestingSupport.exampleCommunicationChannel())
         XCTAssertNoThrow(try jsonDecoder.decode(PolisCommunicationChannel.self, from: string!.data(using: .utf8)!))
     }
 
@@ -65,11 +65,11 @@ final class PolisPartyTests: XCTestCase {
         // Given
 
         // When
-        data   = try? jsonEncoder.encode(PolisPartyTests.testAddress)
+        data   = try? jsonEncoder.encode(TestingSupport.exampleAddress())
         string = String(data: data!, encoding: .utf8)
 
         // Then
-        XCTAssertNotNil(PolisPartyTests.testAddress)
+        XCTAssertNotNil(TestingSupport.exampleAddress())
         XCTAssertNoThrow(try jsonDecoder.decode(PolisAddress.self, from: string!.data(using: .utf8)!))
     }
 
@@ -77,49 +77,14 @@ final class PolisPartyTests: XCTestCase {
         // Given
 
         // When
-        data   = try? jsonEncoder.encode(PolisPartyTests.testPerson)
+        data   = try? jsonEncoder.encode(TestingSupport.examplePerson())
         string = String(data: data!, encoding: .utf8)
 
         // Then
-        XCTAssertNotNil(PolisPartyTests.testAddress)
+        XCTAssertNotNil(TestingSupport.exampleAddress())
         XCTAssertNoThrow(try jsonDecoder.decode(PolisPerson.self, from: string!.data(using: .utf8)!))
     }
 
-    private static let testCommunicationChannel = PolisCommunicationChannel(twitterIDs: ["@CoolAstro", "@GalaxyFarAway"],
-                                                                            mastodonIDs: ["@GalaxyFarAway@mastodon.social"],
-                                                                            whatsappPhoneNumbers: ["+1 900 1234567"],
-                                                                            facebookIDs: ["916735592641"],
-                                                                            instagramIDs: ["GalaxyFarAway"],
-                                                                            skypeIDs: ["cool_astro"])
-    private static  let testAddress = PolisAddress(attentionOff: "Mrs. Royal Astronomer",
-                                                   houseName: "Galaxy.",
-                                                   street: "Observatory str.",
-                                                   houseNumber: 42,
-                                                   houseNumberSuffix: "a",
-                                                   floor: 1,
-                                                   apartment: "24",
-                                                   district: "Stars",
-                                                   place: "Sun hill",
-                                                   block: "43",
-                                                   zipCode: "ST1234",
-                                                   province: "Star cluster",
-                                                   region: "Milky way",
-                                                   state: "Comet",
-                                                   countryID: "AM",
-                                                   poBox: "4242",
-                                                   poBoxZip: "ST1256",
-                                                   posteRestante: "The Observing Man",
-                                                   latitude: 41.24,
-                                                   longitude: 11.07,
-                                                   streetLine1: "1",
-                                                   streetLine2: "2",
-                                                   streetLine3: "3",
-                                                   streetLine4: "4",
-                                                   streetLine5: "5",
-                                                   streetLine6: "6",
-                                                   note: "Send only stars and love")
-
-    private static let testPerson = PolisPerson(name: "Amon Ra", email: "ra@god.cun", communication: testCommunicationChannel, address: testAddress)
 
     static var allTests = [
         ("test_CommunicationChannel_creation_shouldSucceed", test_CommunicationChannel_creation_shouldSucceed),
