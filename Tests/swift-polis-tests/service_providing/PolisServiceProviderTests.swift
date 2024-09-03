@@ -27,10 +27,13 @@ final class PolisServiceProviderTests: XCTestCase {
     private var string: String!
     private let jsonDataFromDirectoryEntry = """
 {
-    "short_description": "The Big Bank Source",
-    "reachability_status": "reachable_and_responsive",
     "id": "090E3F63-EF2A-4123-8518-77D5664EAA01",
+    "mirror_id": "62B5E7C7-4A90-4569-9B13-4AEF324441E4",
+    "reachability_status": "reachable_and_responsive",
+    "name": "Telescope Observer",
+    "short_description": "The Big Bank Source",
     "last_update": "2023-07-22T12:10:06Z",
+    "url": "https://polis.net",
     "supported_implementations": [
         {
             "api_support": "static_data",
@@ -39,16 +42,60 @@ final class PolisServiceProviderTests: XCTestCase {
         }
     ],
     "provider_type": "mirror",
-    "mirror_id": "62B5E7C7-4A90-4569-9B13-4AEF324441E4",
     "admin_contact": {
-        "id": "4C8C99D5-1E44-4069-B30D-7DE18B76336F",
-        "email_address": "polis@observer.net",
-        "name": "polis",
-        "phone_number": "+3068452820",
-        "note": "The admin works only on Sunday"
-    },
-    "name": "Telescope Observer",
-    "url": "https://polis.net"
+        "name": "Amon Ra",
+        "email": "ra@god.cun",
+        "communication": {
+            "skype_ids": [
+                "cool_astro"
+            ],
+            "instagram_ids": [
+                "GalaxyFarAway"
+            ],
+            "twitter_ids": [
+                "@CoolAstro",
+                "@GalaxyFarAway"
+            ],
+            "whatsapp_phone_numbers": [
+                "+1 900 1234567"
+            ],
+            "mastodon_ids": [
+                "@GalaxyFarAway@mastodon.social"
+            ],
+            "facebook_ids": [
+                "916735592641"
+            ]
+        },
+        "address": {
+            "state": "Comet",
+            "po_box": "4242",
+            "place": "Sun hill",
+            "zip_code": "ST1234",
+            "country_id": "AM",
+            "district": "Stars",
+            "street_line_4": "4",
+            "note": "Send only stars and love",
+            "street_line_1": "1",
+            "street": "Observatory str.",
+            "street_line_3": "3",
+            "attention_off": "Mrs. Royal Astronomer",
+            "house_name": "Galaxy.",
+            "house_number_suffix": "a",
+            "poste_restante": "The Observing Man",
+            "po_box_zip": "ST1256",
+            "apartment": "24",
+            "block": "43",
+            "street_line_2": "2",
+            "street_line_5": "5",
+            "floor": 1,
+            "longitude": 11.07,
+            "region": "Milky way",
+            "house_number": 42,
+            "latitude": 41.24,
+            "province": "Star cluster",
+            "street_line_6": "6"
+        }
+    }
 }
 """
 

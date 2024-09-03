@@ -117,3 +117,21 @@
 }
 ```
 
+## PolisIdentity
+```json
+{
+    "id": "65BEF6F8-C383-40D4-9E53-B4517ACD348E",
+    "external_references": [
+        "https://bao.am/device?id=1234",
+        "https://bao.am/rtml?dump-1234"
+    ],
+    "last_update": "2024-09-03T02:14:28Z",
+    "name": "Byurakan Astronomical Observatory",
+    "local_name": "ՀՀ ԳԱԱ Վ․Հ․ ՀԱՄԲԱՐՁՈՒՄՅԱՆԻ ԱՆՎԱՆ ԲՅՈՒՐԱԿԱՆԻ ԱՍՏՂԱԴԻՏԱՐԱՆ (ԱԶԳԱՅԻՆ ԱՐԺԵՔ)",
+    "abbreviation": "bao",
+    "short_description": "Testing BAO site",
+    "start_date": "2024-09-03T02:14:28Z",
+    "end_date": "2024-09-03T02:23:57Z",
+    "polis_registration_date": "2024-09-03T02:23:57Z"
+}
+```

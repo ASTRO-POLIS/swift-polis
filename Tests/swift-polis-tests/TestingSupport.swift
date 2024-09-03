@@ -21,13 +21,15 @@ import swift_polis
 struct TestingSupport {
     
     static func examplePolisIdentityBAO() -> PolisIdentity {
-        PolisIdentity(externalReferences: ["https://bao.am/device?id=1234", "https://bao.am/rtml?dump-1234"],
-                      lastUpdate:         Date(),
-                      name:               "Byurakan Astronomical Observatory",
-                      localName:          "ՀՀ ԳԱԱ Վ․Հ․ ՀԱՄԲԱՐՁՈՒՄՅԱՆԻ ԱՆՎԱՆ ԲՅՈՒՐԱԿԱՆԻ ԱՍՏՂԱԴԻՏԱՐԱՆ (ԱԶԳԱՅԻՆ ԱՐԺԵՔ)",
-                      abbreviation:       "bao",
-                      shortDescription:   "Testing BAO site",
-                      startDate:          Date.now
+        PolisIdentity(externalReferences:    ["https://bao.am/device?id=1234", "https://bao.am/rtml?dump-1234"],
+                      lastUpdate:            Date(),
+                      name:                  "Byurakan Astronomical Observatory",
+                      localName:             "ՀՀ ԳԱԱ Վ․Հ․ ՀԱՄԲԱՐՁՈՒՄՅԱՆԻ ԱՆՎԱՆ ԲՅՈՒՐԱԿԱՆԻ ԱՍՏՂԱԴԻՏԱՐԱՆ (ԱԶԳԱՅԻՆ ԱՐԺԵՔ)",
+                      abbreviation:          "bao",
+                      shortDescription:      "Testing BAO site",
+                      startDate:             Date.now,
+                      endDate:               Date.now,
+                      polisRegistrationDate: Date.now
         )
     }
     
