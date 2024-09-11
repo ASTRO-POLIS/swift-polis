@@ -9,14 +9,10 @@ import Foundation
 
 //MARK: - PolisParty -
 public protocol PolisParty: Codable {
-    func name() -> String?
-    func set(name: String)
-
-    func communicationChannel() -> PolisCommunicationChannel?
-    func set(communicationChannel: PolisCommunicationChannel)
-
-    func address() -> PolisAddress?
-    func set(address: PolisAddress)
+    var name: String                              { get set }
+    var communication: PolisCommunicationChannel? { get set }
+    var address: PolisAddress?                    { get set }
+    var note: String?                             { get set }
 }
 
 //MARK: - PolisCommunicationChannel -
@@ -53,6 +49,25 @@ public struct PolisCommunicationChannel: Codable {
         self.instagramIDs         = instagramIDs
         self.skypeIDs             = skypeIDs
     }
+}
+
+/// `PolisOwnershipType` is used to identify the ownership type of POLIS items (or devices) such as observing facilities, telescopes,
+/// CCD cameras, weather stations, etc. Different cases should be self-explanatory. The `private` type should be utilised by
+/// amateurs and hobbyists.
+public enum PolisOrganisationType: String, Codable {
+    case university
+    case research
+    case commercial
+    case school
+    case network
+    case government
+    case ngo
+    case club
+    case consortium
+    case cooperative
+    case collaboration
+    case `private`
+    case other
 }
 
 //MARK: - PolisAddress -
@@ -154,32 +169,37 @@ public struct PolisPerson: PolisParty {
     public var email: String
     public var communication: PolisCommunicationChannel?
     public var address: PolisAddress?
+    public var note: String?
 
-    public init(name: String, email: String, communication: PolisCommunicationChannel? = nil, address: PolisAddress? = nil) {
+    public init(name: String, email: String, communication: PolisCommunicationChannel? = nil, address: PolisAddress? = nil, note: String? = nil) {
         self.name          = name
         self.email         = email
         self.communication = communication
         self.address       = address
+        self.note          = note
     }
 }
 
 //MARK: - PolisOrganisation -
 public struct PolisOrganisation: Codable {
+    public var organisationType: PolisOrganisationType
+    public var name: String
+    public var communication: PolisCommunicationChannel?
+    public var address: PolisAddress?
+    public var note: String?
+    public var url: URL?
 
+    public init(organisationType: PolisOrganisationType = .other, name: String, communication: PolisCommunicationChannel? = nil, address: PolisAddress? = nil, note: String? = nil, url: URL? = nil) {
+        self.organisationType = organisationType
+        self.name             = name
+        self.communication    = communication
+        self.address          = address
+        self.note             = note
+        self.url              = url
+    }
 }
 
 //MARK: - Type extensions -
-
-extension PolisParty {
-    public func name() -> String? { nil }
-    public func set(name: String) { }
-
-    public func communicationChannel() -> PolisCommunicationChannel? { nil }
-    public func set(communicationChannel: PolisCommunicationChannel) { }
-
-    public func address() -> PolisAddress? { nil }
-    public func set(address: PolisAddress) { }
-}
 
 //MARK: - PolisCommunicationChannel
 extension PolisCommunicationChannel {
@@ -232,3 +252,13 @@ extension PolisAddress {
     }
 }
 
+//MARK: - PolisPerson -
+extension PolisPerson {
+    public enum CodingKeys: String, CodingKey {
+        case name
+        case email
+        case communication
+        case address
+        case note
+    }
+}

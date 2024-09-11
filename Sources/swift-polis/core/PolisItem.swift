@@ -55,28 +55,9 @@ public enum PolisLifecycleStatus: String, Codable {
 
 public struct PolisItem: Codable {
     /// A type that describes the different kinds of owners of a POLIS item.
-    ///
-    /// `OwnershipType` is used to identify the ownership type of POLIS items (or devices) such as observing facilities, telescopes,
-    /// CCD cameras, weather stations, etc. Different cases should be self-explanatory. The `private` type should be utilised by
-    /// amateurs and hobbyists.
-    public enum OwnershipType: String, Codable {
-        case university
-        case research
-        case commercial
-        case school
-        case network
-        case government
-        case ngo
-        case club
-        case consortium
-        case cooperative
-        case collaboration
-        case `private`
-        case other
-    }
 
     public struct Owner: Codable {
-        public var ownershipType: OwnershipType
+        public var ownershipType: PolisOrganisationType
         public var personalOwnerIDs: Set<UUID>?
         public var organisationalOwnerIDs: Set<UUID>?
    }
@@ -85,16 +66,10 @@ public struct PolisItem: Codable {
     public var owner: Owner?
 
     public var parentID: UUID?
+    public var childrenIDs = Set<UUID>()
 
     /// The purpose of the optional `automationLabel` is to act as a unique target for scripts and other software
     /// packages. As an example, the observatory control software could search for an instrument with a given label and
     /// set its status or issue commands etc. This could be used to sync with ASCOM or INDI based systems.
     public var automationLabel: String?
-
-
-    public          func childrenIDs() -> Set<UUID> { _childrenIDs }
-    public mutating func add(childID: UUID)         { _childrenIDs.insert(childID) }
-
-    //MARK: Private APIs
-    private var _childrenIDs = Set<UUID>()
 }
