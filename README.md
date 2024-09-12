@@ -40,7 +40,12 @@ We use this package for the `SemanticVersion` type, that helps us manage POLIS v
 
 **Note about testing:** The tests are only to test encoding and decoding different types from and to JSON and (later) to XML formatters.  For some types the implementation of `CustomStringConvertible` will be also tested in order to support easy debugging.
 
+## Questions
+- Should Owners be attached to Item only (possible repetitions and inconsistencies) or Item owned and Referenced (more complex implementation)?
+
 ## To Do
+- Reimplement PolisReferences and its tests. We decided to start with, references will be only to Device Details
+- Finish the implementation of the Manufacturer and back-index to shared device details. Manufacturers are referenced objects only (so no duplications)
 - PolisDirection needs more documentation
 - PolisCommunicationChannel needs Documentation and Tests
 - PolisAddress needs Documentation and Tests

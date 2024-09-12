@@ -82,6 +82,9 @@ public struct PolisDirectory  {
             /// `permanentlyUnreachable` marks Service Providers that are down for longer period of time. After ca. 18 months, the data could
             /// be deleted permanently
             case permanentlyUnreachable = "permanently_unreachable"
+
+            /// `localUseOnly` should be set automatically for `private` and `local` providers.
+            case localUseOnly           = "local_use_only"
         }
 
         /// Possible errors while creating a `PolisDirectoryEntry`
