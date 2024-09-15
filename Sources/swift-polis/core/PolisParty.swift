@@ -10,6 +10,7 @@ import Foundation
 //MARK: - PolisParty -
 public protocol PolisParty: Codable {
     var name: String                              { get set }
+    var email: String                             { get set }
     var communication: PolisCommunicationChannel? { get set }
     var address: PolisAddress?                    { get set }
     var note: String?                             { get set }
@@ -181,17 +182,19 @@ public struct PolisPerson: PolisParty {
 }
 
 //MARK: - PolisOrganisation -
-public struct PolisOrganisation: Codable {
+public struct PolisOrganisation: PolisParty {
     public var organisationType: PolisOrganisationType
+    public var email: String
     public var name: String
     public var communication: PolisCommunicationChannel?
     public var address: PolisAddress?
     public var note: String?
     public var url: URL?
 
-    public init(organisationType: PolisOrganisationType = .other, name: String, communication: PolisCommunicationChannel? = nil, address: PolisAddress? = nil, note: String? = nil, url: URL? = nil) {
+    public init(organisationType: PolisOrganisationType = .other, name: String, email: String, communication: PolisCommunicationChannel? = nil, address: PolisAddress? = nil, note: String? = nil, url: URL? = nil) {
         self.organisationType = organisationType
         self.name             = name
+        self.email            = email
         self.communication    = communication
         self.address          = address
         self.note             = note
