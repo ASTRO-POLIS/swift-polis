@@ -37,7 +37,7 @@ public struct PolisIdentity: Codable, Identifiable {
     public var externalReferences: [String]?
 
     /// Latest update time. Used primarily for syncing.
-    public var lastUpdate: Date
+    public var lastUpdateDate: Date
 
     /// Human readable name of the item (object). It is recommended to assign a unique name to avoid potential confusions.
     public var name: String
@@ -67,7 +67,7 @@ public struct PolisIdentity: Codable, Identifiable {
     /// Only the `name` parameter is required. All other parameters have reasonable default values.
     public init(id: UUID                      = UUID(),
                 externalReferences: [String]? = nil,
-                lastUpdate: Date              = Date(),
+                lastUpdateDate: Date          = Date(),
                 name: String,
                 localName: String?            = nil,
                 abbreviation: String?         = nil,
@@ -77,7 +77,7 @@ public struct PolisIdentity: Codable, Identifiable {
                 polisRegistrationDate: Date?  = nil) {
         self.id                    = id
         self.externalReferences    = externalReferences
-        self.lastUpdate            = lastUpdate
+        self.lastUpdateDate        = lastUpdateDate
         self.name                  = name
         self.localName             = localName
         self.abbreviation          = abbreviation
@@ -92,7 +92,7 @@ public extension PolisIdentity {
     enum CodingKeys: String, CodingKey {
         case id
         case externalReferences    = "external_references"
-        case lastUpdate            = "last_update"
+        case lastUpdateDate        = "last_update_date"
         case name
         case localName             = "local_name"
         case abbreviation

@@ -177,7 +177,7 @@ final class PolisServiceProviderTests: XCTestCase {
     func test_ObservingFacilityReference_codingSupport_shouldSucceed() throws {
         // Given
         let identity = PolisIdentity(externalReferences: ["1234", "6539"],
-                                     lastUpdate: Date(),
+                                     lastUpdateDate: Date(),
                                      name: "TestAttributes",
                                      abbreviation: "abc",
                                      shortDescription: "Testing attributes")
@@ -194,12 +194,12 @@ final class PolisServiceProviderTests: XCTestCase {
     func test_PolisObservingFacilityDirectory_codingSupport_shouldSucceed() throws {
         // Given
         let i1   = PolisIdentity(externalReferences: ["1234", "6539"],
-                                 lastUpdate: Date(),
+                                 lastUpdateDate: Date(),
                                  name: "TestAttributes",
                                  abbreviation: "abc",
                                  shortDescription: "Testing attributes")
         let i2   = PolisIdentity(externalReferences: ["1234"],
-                                 lastUpdate: Date(),
+                                 lastUpdateDate: Date(),
                                  name: "OldStuff",
                                  abbreviation: "old",
                                  shortDescription: "Very old junk")
@@ -217,7 +217,7 @@ final class PolisServiceProviderTests: XCTestCase {
 
     func test_PolisResourceFacilityDirectory_codingSupport_shouldSucceed() throws {
         // Given
-        let identity  = PolisIdentity(lastUpdate: Date(),
+        let identity  = PolisIdentity(lastUpdateDate: Date(),
                                       name: "AstroSystemeAustria",
                                       abbreviation: "ASA",
                                       shortDescription: "Austrian major telescope producer")

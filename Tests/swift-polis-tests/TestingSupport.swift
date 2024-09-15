@@ -22,7 +22,7 @@ struct TestingSupport {
     
     static func examplePolisIdentityBAO() -> PolisIdentity {
         PolisIdentity(externalReferences:    ["https://bao.am/device?id=1234", "https://bao.am/rtml?dump-1234"],
-                      lastUpdate:            Date(),
+                      lastUpdateDate:        Date(),
                       name:                  "Byurakan Astronomical Observatory",
                       localName:             "ՀՀ ԳԱԱ Վ․Հ․ ՀԱՄԲԱՐՁՈՒՄՅԱՆԻ ԱՆՎԱՆ ԲՅՈՒՐԱԿԱՆԻ ԱՍՏՂԱԴԻՏԱՐԱՆ (ԱԶԳԱՅԻՆ ԱՐԺԵՔ)",
                       abbreviation:          "bao",
