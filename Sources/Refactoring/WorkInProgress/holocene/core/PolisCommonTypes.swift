@@ -69,7 +69,7 @@ public struct PolisItem: Codable, Identifiable {
 /// Files containing an owner's information are in general stored within the static file hierarchy of the observing facilities (or equivalent).
 /// For performance reasons, it is recommended (but not required by the standard) that the service provider supports a directory of owners
 /// (as this framework does). Such a cache of owners would of course have performance and data maintenance implications as well.
-public struct PolisItemOwner: Codable {
+//public struct PolisItemOwner: Codable {
 
 //    /// A type that describes the different kinds of owners of a POLIS item.
 //    ///
@@ -92,16 +92,16 @@ public struct PolisItemOwner: Codable {
 //        case other
 //    }
 
-    public let ownershipType: OwnershipType
-    public var adminContact: PolisAdminContact?
-    public let abbreviation: String?   // e.g. MIT. MONET, BAO, ...
-
-    public init(ownershipType: OwnershipType, abbreviation: String?, adminContact: PolisAdminContact? = nil) {
-        self.ownershipType = ownershipType
-        self.abbreviation  = abbreviation
-        self.adminContact  = adminContact
-    }
-}
+//    public let ownershipType: OwnershipType
+//    public var adminContact: PolisAdminContact?
+//    public let abbreviation: String?   // e.g. MIT. MONET, BAO, ...
+//
+//    public init(ownershipType: OwnershipType, abbreviation: String?, adminContact: PolisAdminContact? = nil) {
+//        self.ownershipType = ownershipType
+//        self.abbreviation  = abbreviation
+//        self.adminContact  = adminContact
+//    }
+//}
 
 
 //MARK: - Manufacturer information -

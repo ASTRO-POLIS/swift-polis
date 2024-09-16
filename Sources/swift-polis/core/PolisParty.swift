@@ -190,8 +190,15 @@ public struct PolisOrganisation: PolisParty {
     public var address: PolisAddress?
     public var note: String?
     public var url: URL?
+    public let abbreviation: String?   // e.g. MIT. MONET, BAO, ...
 
-    public init(organisationType: PolisOwnershipType = .other, name: String, email: String, communication: PolisCommunicationChannel? = nil, address: PolisAddress? = nil, note: String? = nil, url: URL? = nil) {
+    public init(organisationType: PolisOwnershipType       = .other,
+                name: String, email: String,
+                communication: PolisCommunicationChannel?  = nil,
+                address: PolisAddress?                     = nil,
+                note: String?                              = nil,
+                url: URL?                                  = nil,
+                abbreviation: String?                      = nil) {
         self.organisationType = organisationType
         self.name             = name
         self.email            = email
@@ -199,6 +206,7 @@ public struct PolisOrganisation: PolisParty {
         self.address          = address
         self.note             = note
         self.url              = url
+        self.abbreviation     = abbreviation
     }
 }
 
@@ -263,5 +271,19 @@ extension PolisPerson {
         case communication
         case address
         case note
+    }
+}
+
+//MARK: - PolisOrganisation -
+extension PolisOrganisation {
+    public enum CodingKeys: String, CodingKey {
+        case organisationType = "organisation_type"
+        case name
+        case email
+        case communication
+        case address
+        case note
+        case url
+        case abbreviation
     }
 }
