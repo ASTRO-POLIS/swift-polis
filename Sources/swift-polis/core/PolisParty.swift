@@ -55,7 +55,7 @@ public struct PolisCommunicationChannel: Codable {
 /// `PolisOwnershipType` is used to identify the ownership type of POLIS items (or devices) such as observing facilities, telescopes,
 /// CCD cameras, weather stations, etc. Different cases should be self-explanatory. The `private` type should be utilised by
 /// amateurs and hobbyists.
-public enum PolisOrganisationType: String, Codable {
+public enum PolisOwnershipType: String, Codable {
     case university
     case research
     case commercial
@@ -183,7 +183,7 @@ public struct PolisPerson: PolisParty {
 
 //MARK: - PolisOrganisation -
 public struct PolisOrganisation: PolisParty {
-    public var organisationType: PolisOrganisationType
+    public var organisationType: PolisOwnershipType
     public var email: String
     public var name: String
     public var communication: PolisCommunicationChannel?
@@ -191,7 +191,7 @@ public struct PolisOrganisation: PolisParty {
     public var note: String?
     public var url: URL?
 
-    public init(organisationType: PolisOrganisationType = .other, name: String, email: String, communication: PolisCommunicationChannel? = nil, address: PolisAddress? = nil, note: String? = nil, url: URL? = nil) {
+    public init(organisationType: PolisOwnershipType = .other, name: String, email: String, communication: PolisCommunicationChannel? = nil, address: PolisAddress? = nil, note: String? = nil, url: URL? = nil) {
         self.organisationType = organisationType
         self.name             = name
         self.email            = email

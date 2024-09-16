@@ -57,7 +57,7 @@ public struct PolisItem: Codable {
     /// A type that describes the different kinds of owners of a POLIS item.
 
     public struct Owner: Codable {
-        public var ownershipType: PolisOrganisationType
+        public var ownershipType: PolisOwnershipType
         public var personalOwnerIDs: Set<UUID>?
         public var organisationalOwnerIDs: Set<UUID>?
    }
