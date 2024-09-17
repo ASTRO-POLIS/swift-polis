@@ -7,6 +7,7 @@
 
 import Foundation
 
+//TODO: $$$GT Add documentation
 public struct PolisProviderConfiguration {
 
 }
