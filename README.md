@@ -42,6 +42,7 @@ We use this package for the `SemanticVersion` type, that helps us manage POLIS v
 
 ## Questions
 - Should Owners be attached to Item only (possible repetitions and inconsistencies) or Item owned and Referenced (more complex implementation)?
+- At the moment we are using only Images. But does it make sense to use `Media` instead, e.g. Movie or Audio description? In this case we need also to define the type of the media and rename Image -> Media. Perhaps we should do this before the first official version is released. Of course, in the first version of TO we will consider only Images, but who knows what will happen with future versions. I think this is a minor change.
 
 ## To Do
 - Reimplement PolisReferences and its tests. We decided to start with, references will be only to Device Details
