@@ -1,5 +1,5 @@
 //===----------------------------------------------------------------------===//
-//  PolisImageSource.swift
+//  PolisMediaSource.swift
 //===----------------------------------------------------------------------===//
 //
 // This source file is part of the ASTRO-POLIS open source project
@@ -17,17 +17,24 @@
 
 import Foundation
 
-//MARK: - Images -
+//MARK: - Media -
 /// A source for images related to a single item, such as an observing facility, a satellite, a telescope, or a camera.
 ///
-/// A POLIS client can use an image in many different ways—as a thumbnail, a full image, a banner, etc. A `PolisImageSource` could have multiple `ImageItem`s
+/// A POLIS client can use an image in many different ways—as a thumbnail, a full image, a banner, etc. A `PolisImageSource` could have multiple `MediaItem`s
 /// that fulfil the needs of the client application.
 ///
 /// Each image from the set defines its index within the set (used for sorting), and image attributes (source URL, description and accessibility description, as well as
 /// information about the copyright holder and copyright type).
 ///
 /// **Important note:** POLIS providers should only use images that are either open source or have explicitly requested and received rights of use from the copyright holder!
-public struct PolisImageSource: Identifiable {
+public struct PolisMediaSource: Identifiable {
+
+    public enum MediaType: String, Codable {
+        case image
+        case movie
+        case audio
+        case unknown
+    }
 
     /// A type defining the author's copyright claims on the image.
     public enum CopyrightHolderType: String, Codable {
@@ -69,13 +76,15 @@ public struct PolisImageSource: Identifiable {
     /// It is important to note that POLIS data may be viewed by kids. Therefore, all images shall be verified before made public. The `lastUpdate` attribute
     /// can help the curator of the data set to verify new entries. If the POLIS service provider is used by educational applications, it is recommended, that a local
     /// cache of verified images is maintained, or at least image hashes, that can guarantee, that the original image was unchanged.
-    public struct ImageItem: Identifiable {
-        public enum ImageItemError: Error {
+    public struct MediaItem: Identifiable {
+        public enum MediaItemError: Error {
             case copyrightHolderReferenceMissing
             case copyrightHolderReferenceOrNoteMissing
+            case copyrightPendingInformationMissing
         }
 
         public let id: UUID
+        public let mediaType: MediaType
         public var lastUpdateDate: Date
         public let originalSource: URL
 
@@ -90,6 +99,7 @@ public struct PolisImageSource: Identifiable {
         public let hash: String?
 
         public init(id: UUID                                 = UUID(),
+                    mediaType: MediaType                     = .image,
                     lastUpdateDate: Date                     = Date.now,
                     originalSource: URL,
                     shortDescription: String?                = nil,
@@ -100,6 +110,7 @@ public struct PolisImageSource: Identifiable {
                     author: String?                          = nil,
                     hash: String?                            = nil) throws {
             self.id                       = id
+            self.mediaType                = mediaType
             self.lastUpdateDate           = lastUpdateDate
             self.originalSource           = originalSource
             self.shortDescription         = shortDescription
@@ -112,11 +123,11 @@ public struct PolisImageSource: Identifiable {
 
             switch self.copyrightHolderType {
                 case .polisContributor, .creativeCommons, .openSource:
-                    if self.copyrightHolderReference == nil                                        { throw ImageItemError.copyrightHolderReferenceMissing }
+                    if self.copyrightHolderReference == nil                                        { throw MediaItemError.copyrightHolderReferenceMissing }
                 case .useWithOwnersPermission:
-                    if (self.copyrightHolderReference == nil) || (self.copyrightHolderNote == nil) { throw ImageItemError.copyrightHolderReferenceOrNoteMissing }
-                case .starClusterImage, .pendingInformation:
-                    break
+                    if (self.copyrightHolderReference == nil) || (self.copyrightHolderNote == nil) { throw MediaItemError.copyrightHolderReferenceOrNoteMissing }
+                case .pendingInformation:
+                    if self.copyrightHolderNote == nil                                             { throw MediaItemError.copyrightPendingInformationMissing }
             }
         }
     }
@@ -124,41 +135,42 @@ public struct PolisImageSource: Identifiable {
     public let id: UUID
 
     /// The metadata of the images associated with this `PolisImageSource`.
-    public var imageItems = [ImageItem]()
+    public var mediaItems = [MediaItem]()
 
     public init(id: UUID = UUID()) { self.id = id }
 
     /// Add an image to this image source.
     /// - Parameter item: The `ImageItem` associated with the image to be added.
-    public mutating func addImage(_ item: ImageItem) {
-        for (index, imageItem) in imageItems.enumerated() {
+    public mutating func addImage(_ item: MediaItem) {
+        for (index, imageItem) in mediaItems.enumerated() {
             if imageItem.id == item.id {
                 if imageItem.lastUpdateDate < item.lastUpdateDate {
-                    imageItems.remove(at: index)
-                    imageItems.append(item)
+                    mediaItems.remove(at: index)
+                    mediaItems.append(item)
                     return
                 }
                 else { return }
             }
         }
-        imageItems.append(item)
+        mediaItems.append(item)
     }
 
     /// Remove an image item from this image source.
     /// - Parameter id: The id of the `ImageItem`.
     public mutating func removeImageWith(id: UUID) {
-        for (index, imageItem) in imageItems.enumerated() {
+        for (index, imageItem) in mediaItems.enumerated() {
             if imageItem.id == id {
-                imageItems.remove(at: index)
+                mediaItems.remove(at: index)
                 break
             }
         }
     }
 }
 
-extension PolisImageSource.ImageItem: Codable {
+extension PolisMediaSource.MediaItem: Codable {
     public enum CodingKeys: String, CodingKey {
         case id
+        case mediaType                = "media_type"
         case lastUpdateDate           = "last_update_date"
         case originalSource           = "original_source"
         case shortDescription         = "short_description"
@@ -171,9 +183,9 @@ extension PolisImageSource.ImageItem: Codable {
     }
 }
 
-extension PolisImageSource: Codable {
+extension PolisMediaSource: Codable {
     public enum CodingKeys: String, CodingKey {
         case id
-        case imageItems = "image_items"
+        case mediaItems = "media_items"
     }
 }
