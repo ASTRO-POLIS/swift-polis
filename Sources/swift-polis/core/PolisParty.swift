@@ -52,6 +52,83 @@ public struct PolisCommunicationChannel: Codable {
     }
 }
 
+/// `PolisAdminContact` defines a simple way to contact a provider admin, an observing facility owner, or an observatory
+/// admin.
+///
+/// It is important to be able to contact the admin of a POLIS service provider or the admin or the owner of an
+/// observing facility, but one should not forget that all POLIS data is publicly available and therefore should not
+/// expose private information if possible. It is preferable not to expose private email addresses, phone numbers, or
+/// twitter accounts, but only publicly available organisation contacts or pages.
+///
+/// The type implements the `Codable` protocol.
+public struct PolisAdminContact: Identifiable {
+
+    /// `Communication` defines different types of communication channels in addition to the default email address and
+    /// mobile number.
+    ///
+    /// The current list includes just a handful of popular communication channels. Emerging apps like Signal and Telegram
+    /// are not currently included, nor are local Chinese and Russian social media communication channels. If you need
+    /// such channels, please submit a pull request to the POLIS developers.
+    ///
+    /// The type implements the `Codable` protocol and is thus JSON-representable.
+
+    /// The admin's unique identifier.
+    ///
+    /// An administrator needs a unique identifier in order to define login credentials and identify sources of data changes and contributions.
+    public let id: UUID
+
+    /// The admin's name.
+    ///
+    /// It is recommended that an admin's name is either omitted or describes the admin's role, e.g. "Managing
+    /// Director of Mountain Observatory"
+    public var name: String?
+
+    /// The admin's email address.
+    ///
+    /// Email is the most reliable and widely adopted communication channel, and therefore a valid email address is
+    /// required. To protect privacy, it is recommended that the email address is assigned to the institution,
+    /// e.g. "office@mountain-observatory.org". A valid email is expected.
+    public var emailAddress: String
+
+    /// The admin's phone number.
+    ///
+    /// Consider giving only institution phone numbers - not private ones. The phone number should include the country
+    /// code, starting with "+", and should contain no spaces, brackets, or other formatting characters. No validation
+    /// is provided.
+    public var phoneNumber: String?
+
+    /// An array of additional communication channels for contacting the admin, if applicable.
+    public var additionalCommunication: PolisCommunicationChannel?
+
+    /// Miscellaneous information that doesn't fit in any other property.
+    ///
+    /// Notes can contain additional information on how to contact the admin, such as "The admin could be contacted only during office hours," or "The admin is
+    /// on vacation from 01/12 to 20/12."
+    public var note: String?
+
+    /// Designated initialiser.
+    ///
+    /// Only the `email` is a required parameter. It must contain well formatted email addresses. If the email is not a
+    /// valid one, `nil` will be returned.
+
+    public init?(id:                              UUID                = UUID(),
+                 name:                            String?,
+                 emailAddress:                    String,
+                 phoneNumber:                     String?             = nil,
+                 additionalCommunication: PolisCommunicationChannel?  = nil,
+                 note:                           String?              = nil) {
+        guard emailAddress.isValidEmailAddress() else { return nil }
+
+        self.id                      = id
+        self.name                    = name
+        self.emailAddress            = emailAddress
+        self.phoneNumber             = phoneNumber
+        self.additionalCommunication = additionalCommunication
+        self.note                    = note
+    }
+
+}
+
 /// `PolisOwnershipType` is used to identify the ownership type of POLIS items (or devices) such as observing facilities, telescopes,
 /// CCD cameras, weather stations, etc. Different cases should be self-explanatory. The `private` type should be utilised by
 /// amateurs and hobbyists.
@@ -223,6 +300,18 @@ extension PolisCommunicationChannel {
         case skypeIDs             = "skype_ids"
     }
 }
+
+extension PolisAdminContact: Codable {
+    public enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case emailAddress            = "email_address"
+        case phoneNumber             = "phone_number"
+        case additionalCommunication = "additional_communication"
+        case note
+    }
+}
+
 
 //MARK: - PolisAddress
 extension PolisAddress {

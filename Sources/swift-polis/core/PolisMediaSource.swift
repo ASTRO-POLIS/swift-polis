@@ -47,12 +47,12 @@ public struct PolisMediaSource: Identifiable {
         /// Most photos from Wikipedia etc.
         ///
         /// Client applications are free to use this media
-        case creativeCommons         = "creative_commons"
+        case creativeCommons        = "creative_commons"
 
         /// Open source image, like a photo of the observatory on the website of the facility/
         ///
         /// Client applications are free to use this media
-      case openSource              = "open_source"
+      case openSource               = "open_source"
 
         /// In case the copyright holder gives an explicit permission to POLIS to use his or her image, the `copyrightHolderNote` property shall contain the
         ///  text of the message (e.g. email) that transfers the author's rights to POLIS to use the copyrighted material.
@@ -65,7 +65,7 @@ public struct PolisMediaSource: Identifiable {
         ///
         ///  In cases when publicly available images (e.g. from the observatory's website) images are not explicitly marked as open source or Creative Commons,
         ///  the team of POLIS maintainers shall ask the potential copyright owner to clarify the permission to use the media.
-        case pendingInformation      = "pending_information"
+        case pendingInformation     = "pending_information"
     }
 
     /// `ImageItem` defines one of potentially multiple images of the same item.

@@ -44,11 +44,16 @@ We use this package for the `SemanticVersion` type, that helps us manage POLIS v
 - Should Owners be attached to Item only (possible repetitions and inconsistencies) or Item owned and Referenced (more complex implementation)?
 
 ## To Do
+- General ToDo - make sure all examples have JSON data examples.
 - Reimplement PolisReferences and its tests. We decided to start with, references will be only to Device Details
 - Finish the implementation of the Manufacturer and back-index to shared device details. Manufacturers are referenced objects only (so no duplications)
 - PolisDirection needs more documentation
 - PolisCommunicationChannel needs Documentation and Tests
 - PolisAddress needs Documentation and Tests
-- PolisItem needs Documentation and Tests
+- PolisItem needs Documentation, Tests, and JSON examples.
 - PolisOrganisation needs Documentation, Tests, and JSON examples
 - In PolisMediaSource, correct the documentation so that it reflects the Image to Media Transition 
+- Document, test, and create JSON examples for `PolisAdminContact`
+- Document `PolisModeOfOperation`
+- Document `PolisElectromagneticSpectrumCoverage`
+- After everything else is finished, produce valid JSON schemas

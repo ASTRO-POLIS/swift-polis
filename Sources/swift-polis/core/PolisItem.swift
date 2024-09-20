@@ -72,10 +72,33 @@ public struct PolisItem: Codable {
     /// set its status or issue commands etc. This could be used to sync with ASCOM or INDI based systems.
     public var automationLabel: String?
 
+    public var media: PolisMediaSource?
+
+    public init(identity: PolisIdentity,
+                owner: Owner?             = nil, parentID: UUID? = nil,
+                automationLabel: String?  = nil,
+                media: PolisMediaSource?  = nil) {
+        self.identity        = identity
+        self.owner           = owner
+        self.parentID        = parentID
+        self.automationLabel = automationLabel
+        self.media           = media
+    }
+
     public          func childrenIDs() -> Set<UUID> { _childrenIDs }
     public mutating func addChildWith(id: UUID)     { _childrenIDs.insert(id) }
     public mutating func removeChildWith(id: UUID)  { _childrenIDs.remove(id) }
 
     //MARK: - Private properties
     private var _childrenIDs = Set<UUID>()
+}
+
+public extension PolisItem {
+    enum CodingKeys: String, CodingKey {
+        case identity
+        case owner
+        case parentID = "parent_id"
+        case automationLabel = "automation_label"
+        case media
+    }
 }
