@@ -51,3 +51,4 @@ We use this package for the `SemanticVersion` type, that helps us manage POLIS v
 - PolisAddress needs Documentation and Tests
 - PolisItem needs Documentation and Tests
 - PolisOrganisation needs Documentation, Tests, and JSON examples
+- In PolisMediaSource, correct the documentation so that it reflects the Image to Media Transition 

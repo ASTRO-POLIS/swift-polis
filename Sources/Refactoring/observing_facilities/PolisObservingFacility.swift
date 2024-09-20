@@ -40,7 +40,7 @@ public struct PolisObservingFacility: Identifiable, Codable {
     public enum PlaceInTheSolarSystem: String, Codable {
         case sun                = "Sun"
 
-        // Planets
+        // Planets & Dwarfs
         case mercury            = "Mercury"
         case venus              = "Venus"
         case earth              = "Earth"
@@ -49,20 +49,14 @@ public struct PolisObservingFacility: Identifiable, Codable {
         case saturn             = "Saturn"
         case uranus             = "Uranus"
         case neptune            = "Neptune"
-
-        // Kuiper and Asteroid belt
         case pluto              = "Pluto"
         case ceres              = "Ceres"
-        case haumea             = "Humea"
-        case makemake           = "Mamemake"
-        case eris               = "Eris"
-        case asteroidBeltObject = "asteroid_belt_object"
-        case kuiperBeltObject   = "kuiper_belt_object"
 
         // Miscellaneous
+        case dwarfPlanet
         case moon
+        case asteroid
         case comet
-        case oortCloudObject    = "oort_cloud_object"
     }
 
     //MARK: - Common properties -
@@ -78,7 +72,7 @@ public struct PolisObservingFacility: Identifiable, Codable {
     public var facilityLocationID: UUID?                                   // Points to dictionary with some predefined (standard) keys
     public var astronomicalCode: String?                                   // Minor planet codes, etc.
 
-    // Relationship to other facilities
+    //TODO: Fix me -  Relationship to other facilities
     public var parentObservingFacilityID: UUID?
     public var subObservingFacilityIDs: Set<UUID>?
 
@@ -87,7 +81,7 @@ public struct PolisObservingFacility: Identifiable, Codable {
     public var deviceIDs: Set<UUID>?
 
     // Info
-    public var adminContact: PolisAdminContact?
+    public var adminContact: PolisAdminContact? //TODO: Remove
     public var website: URL?
     public var scientificObjectives: String?
     public var history: String?
