@@ -98,7 +98,7 @@ public struct PolisAdminContact: Identifiable {
     public var phoneNumber: String?
 
     /// An array of additional communication channels for contacting the admin, if applicable.
-    public var additionalCommunication: PolisCommunicationChannel?
+    public var communication: PolisCommunicationChannel?
 
     /// Miscellaneous information that doesn't fit in any other property.
     ///
@@ -111,20 +111,20 @@ public struct PolisAdminContact: Identifiable {
     /// Only the `email` is a required parameter. It must contain well formatted email addresses. If the email is not a
     /// valid one, `nil` will be returned.
 
-    public init?(id:                              UUID                = UUID(),
+    public init?(id:                              UUID     = UUID(),
                  name:                            String?,
                  emailAddress:                    String,
-                 phoneNumber:                     String?             = nil,
-                 additionalCommunication: PolisCommunicationChannel?  = nil,
-                 note:                           String?              = nil) {
+                 phoneNumber:                     String?  = nil,
+                 communication: PolisCommunicationChannel? = nil,
+                 note:                           String?   = nil) {
         guard emailAddress.isValidEmailAddress() else { return nil }
 
-        self.id                      = id
-        self.name                    = name
-        self.emailAddress            = emailAddress
-        self.phoneNumber             = phoneNumber
-        self.additionalCommunication = additionalCommunication
-        self.note                    = note
+        self.id            = id
+        self.name          = name
+        self.emailAddress  = emailAddress
+        self.phoneNumber   = phoneNumber
+        self.communication = communication
+        self.note          = note
     }
 
 }
@@ -271,11 +271,11 @@ public struct PolisOrganisation: PolisParty {
 
     public init(organisationType: PolisOwnershipType       = .other,
                 name: String, email: String,
-                communication: PolisCommunicationChannel?  = nil,
-                address: PolisAddress?                     = nil,
-                note: String?                              = nil,
-                url: URL?                                  = nil,
-                abbreviation: String?                      = nil) {
+                communication: PolisCommunicationChannel? = nil,
+                address: PolisAddress?                    = nil,
+                note: String?                             = nil,
+                url: URL?                                 = nil,
+                abbreviation: String?                     = nil) {
         self.organisationType = organisationType
         self.name             = name
         self.email            = email
@@ -305,9 +305,9 @@ extension PolisAdminContact: Codable {
     public enum CodingKeys: String, CodingKey {
         case id
         case name
-        case emailAddress            = "email_address"
-        case phoneNumber             = "phone_number"
-        case additionalCommunication = "additional_communication"
+        case emailAddress = "email_address"
+        case phoneNumber  = "phone_number"
+        case communication
         case note
     }
 }

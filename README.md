@@ -45,8 +45,14 @@ We use this package for the `SemanticVersion` type, that helps us manage POLIS v
 
 ## To Do
 - General ToDo - make sure all examples have JSON data examples.
+- General ToDO - make sure all swift files have the proper copyright message.
+
 - Reimplement PolisReferences and its tests. We decided to start with, references will be only to Device Details
-- Finish the implementation of the Manufacturer and back-index to shared device details. Manufacturers are referenced objects only (so no duplications)
+- Finish the implementation of 
+    - ✅ the Manufacturer 
+    - and back-index to shared device details. Manufacturers are referenced objects only (so no duplications)
+    - Test 
+    - Document
 - PolisDirection needs more documentation
 - PolisCommunicationChannel needs Documentation and Tests
 - PolisAddress needs Documentation and Tests
@@ -57,3 +63,7 @@ We use this package for the `SemanticVersion` type, that helps us manage POLIS v
 - Document `PolisModeOfOperation`
 - Document `PolisElectromagneticSpectrumCoverage`
 - After everything else is finished, produce valid JSON schemas
+- Create support for References:
+    - Create global functions
+    - Test
+    - Document

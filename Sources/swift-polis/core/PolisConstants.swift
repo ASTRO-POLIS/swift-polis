@@ -30,6 +30,9 @@ public struct PolisConstants {
     public static let bigBangPolisDomain     = "https://polis.observer"
     public static let testBigBangPolisDomain = "https://test.polis.observer"
 
+    /// All references should start with this string
+    public static let polisReferencePrefix   = "ref://"
+
     /// A list of supported implementations for this concrete framework.
     ///
     /// Until we have a stable version there should be only one supported version. After version 1.0 of the standard is

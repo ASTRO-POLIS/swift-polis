@@ -25,12 +25,22 @@ public struct PolisManufacturer: Codable, Identifiable {
     public var url: URL?
 
     /// The point-of-contact for the manufacturer.
-    public var adminContact: PolisPerson?
+    public var adminContact: PolisAdminContact?
 
-    public init(identity: PolisIdentity, url: URL? = nil, adminContact: PolisPerson? = nil) {
-        self.identity     = identity
-        self.url          = url
-        self.adminContact = adminContact
+    public var addresses: [PolisAddress]?
+
+    public var communication: PolisCommunicationChannel?
+
+    public init(identity: PolisIdentity,
+                url: URL?                                 = nil,
+                adminContact: PolisAdminContact?          = nil,
+                addresses: [PolisAddress]?                = nil,
+                communication: PolisCommunicationChannel? = nil) {
+        self.identity      = identity
+        self.url           = url
+        self.adminContact  = adminContact
+        self.addresses     = addresses
+        self.communication = communication
     }
 }
 
@@ -40,5 +50,7 @@ extension PolisManufacturer {
         case identity
         case url
         case adminContact = "admin_contact"
+        case addresses
+        case communication
     }
 }
