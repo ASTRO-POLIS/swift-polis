@@ -18,8 +18,15 @@ public class PolisLogger {
     /// Should logging messages be accumulated.
     public var shouldLog = true
 
+    /// Info logs that inform what is happening
     public func infoMessages()    -> [String] { [String]() }
+
+    ///  Non-critical warnings
+    ///
+    ///  Most probable cause are unsuccessful remote data syncing operations. The framework could be used further.
     public func warningMessages() -> [String] { [String]() }
+
+    /// Critical errors that will most probably terminate the normal work of the framework and need special attention.
     public func errorMessages()   -> [String] { [String]() }
 
     /// Delete all messages until now
@@ -30,9 +37,11 @@ public class PolisLogger {
     }
 
     //MARK: Internal
-    func info(_ message: String)    { if shouldLog { _infoMessages.append(message) } }
-    func warning(_ message: String) { if shouldLog { _warningMessages.append(message) } }
-    func error(_ message: String)   { if shouldLog { _errorMessages.append(message) } }
+
+    // All methods are adding a timestemp
+    func info(_ message: String)    { if shouldLog { _infoMessages.append("\(Date.now) -- \(message)") } }
+    func warning(_ message: String) { if shouldLog { _warningMessages.append("\(Date.now) -- \(message)") } }
+    func error(_ message: String)   { if shouldLog { _errorMessages.append("\(Date.now) -- \(message)") } }
 
     //Mark: Private stuff
     private var _infoMessages    = [String]()
