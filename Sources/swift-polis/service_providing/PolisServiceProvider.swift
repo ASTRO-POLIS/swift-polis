@@ -112,7 +112,7 @@ public struct PolisDirectory  {
         public var lastUpdate: Date
 
         /// The fully qualified URL of the service provider, e.g. https://polis.observer
-        public var url: String
+        public var url: String?
 
         /// A list of one or more supported implementations
         public var supportedImplementations: [PolisImplementation]
@@ -132,7 +132,7 @@ public struct PolisDirectory  {
                     name:                     String,
                     shortDescription:         String?             = nil,
                     lastUpdate:               Date                = Date(),
-                    url:                      String,
+                    url:                      String?             = nil,
                     supportedImplementations: [PolisImplementation],
                     providerType:             ProviderType,
                     adminContact:             PolisPerson) throws {
