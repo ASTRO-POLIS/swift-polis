@@ -9,7 +9,7 @@ import XCTest
 
 @testable import swift_polis
 
-final class PolisProviderConfiguration: XCTestCase {
+final class PolisProviderConfigurationTests: XCTestCase {
 
     //MARK: - Setup & Teardown -
 
@@ -32,14 +32,34 @@ final class PolisProviderConfiguration: XCTestCase {
     }
 
     //MARK: - Tests -
-    func testZero() {
-//        XCTFail()
+    func test_PolisProviderConfiguration_creation_shouldSucceed() throws {
+        // Given
+        PolisProviderManager.localPolisRootPath = "/tmp/polis_test"
+
+        let sut = try PolisProviderManager()
+
+        // Then
+        XCTAssertNotNil(sut)
+    }
+
+    func test_PolisProviderConfiguration_creatingProvider_shouldSucceed() async throws {
+        // Given
+        PolisProviderManager.localPolisRootPath = "/tmp/polis_test"
+
+        let sut = try PolisProviderManager()
+        let config = PolisProviderConfiguration(name: "BigBang", adminName: "admin", adminEmail:  "admin@admin.nirvana")
+
+        // When
+        try await sut.createLocalProvider(configuration: config)
+        
+        // Then
+
     }
 
     //TODO: Start with test that create a new public provider
     
     static var allTests = [
-        ("testZero", testZero),
+        ("test_PolisProviderConfiguration_creatingProvider_shouldSucceed", test_PolisProviderConfiguration_creatingProvider_shouldSucceed),
     ]
 
 

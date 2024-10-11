@@ -16,16 +16,36 @@ protocol StorableItem {
 
 //TODO: $$$GT Add documentation
 public struct PolisProviderConfiguration {
-    public let reachability = PolisDirectory.ProviderDirectoryEntry.ServiceReachability.localUseOnly
-    public let name: String
-    public let shortDescription: String?
-    public let url: String?
-    public let supportedImplementations: [PolisImplementation]
-    public let providerType = PolisDirectory.ProviderDirectoryEntry.ProviderType.experimental
+    public var reachability                                      = PolisDirectory.ProviderDirectoryEntry.ServiceReachability.localUseOnly
+    public var name: String
+    public var shortDescription: String?
+    public var url: String?
+    public var supportedImplementations: [PolisImplementation]?  = [PolisImplementation.oldestSupportedImplementation()]
+    public var providerType                                      = PolisDirectory.ProviderDirectoryEntry.ProviderType.experimental
 
-    public let adminName: String
-    public let adminEmail: String
-    public let adminNote: String?
+    public var adminName: String
+    public var adminEmail: String
+    public var adminNote: String?
+
+    public init(reachability: PolisDirectory.ProviderDirectoryEntry.ServiceReachability = PolisDirectory.ProviderDirectoryEntry.ServiceReachability.localUseOnly,
+                name: String,
+                shortDescription: String?                                               = nil,
+                url: String?                                                            = nil,
+                supportedImplementations: [PolisImplementation]?                        = [PolisImplementation.oldestSupportedImplementation()],
+                providerType:PolisDirectory.ProviderDirectoryEntry.ProviderType         = PolisDirectory.ProviderDirectoryEntry.ProviderType.experimental,
+                adminName: String,
+                adminEmail: String,
+                adminNote: String?                                                      = nil) {
+        self.reachability             = reachability
+        self.name                     = name
+        self.shortDescription         = shortDescription
+        self.url                      = url
+        self.supportedImplementations = supportedImplementations
+        self.providerType             = providerType
+        self.adminName                = adminName
+        self.adminEmail               = adminEmail
+        self.adminNote                = adminNote
+    }
 }
 
 public final class PolisProviderManager {
@@ -59,7 +79,7 @@ public final class PolisProviderManager {
     /// Designate initialiser
     ///
     ///  Before calling, make sure that `localPolisRootPath` is set to proper existing path
-    public init() async throws {
+    public init() throws {
         self.polisImplementation     = PolisConstants.frameworkSupportedImplementation.last
         self.polisFileResourceFinder = try PolisFileResourceFinder(at: URL(fileURLWithPath: PolisProviderManager.localPolisRootPath), supportedImplementation: self.polisImplementation)
 
@@ -94,7 +114,7 @@ public extension PolisProviderManager {
         //TODO: Throw if something exists (Hasmik's suggestion)
 
         let admin     = PolisPerson(name: configuration.adminName, email: configuration.adminEmail, note: configuration.adminNote)
-        let directory = try PolisDirectory.ProviderDirectoryEntry(name: configuration.name, supportedImplementations: configuration.supportedImplementations, providerType: configuration.providerType, adminContact: admin)
+        let directory = try PolisDirectory.ProviderDirectoryEntry(name: configuration.name, supportedImplementations: [PolisImplementation.oldestSupportedImplementation()], providerType: configuration.providerType, adminContact: admin)
 
         // 1. Create the provider configuration entry
         polisProviderConfigurationEntry = directory

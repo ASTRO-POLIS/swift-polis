@@ -296,6 +296,7 @@ extension PolisDirectory.ProviderDirectoryEntry {
     func parentItem() -> (any StorableItem)? { nil }
 
     mutating func flashUsing(manager: PolisProviderManager) async throws {
+        let fm          = FileManager.default
         let jsonEncoder = PrettyJSONEncoder()
         let finder      = manager.polisFileResourceFinder!
         let path        = finder.configurationFile()
@@ -309,11 +310,7 @@ extension PolisDirectory.ProviderDirectoryEntry {
             throw PolisProviderManager.PolisProviderManagerError.cannotEncodePolisType
         }
 
-        do {
-            let url = URL(string: path)
-            try data.write(to: url!)
-        }
-        catch {
+        if !fm.createFile(atPath: path, contents: data) {
             PolisLogger.shared.error("Cannot save POLIS Provider Main Configuration Entry to: \(path)")
             throw PolisProviderManager.PolisProviderManagerError.cannotWriteFile
         }
