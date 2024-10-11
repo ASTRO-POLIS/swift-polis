@@ -8,15 +8,14 @@
 import Foundation
 import SoftwareEtudesUtilities
 
-protocol StorableItem: Identifiable, Hashable {
+protocol StorableItem {
     func parentItem() -> (any StorableItem)?
-    mutating func flash(forManager: PolisProviderManager) throws
+    mutating func flashUsing(manager: PolisProviderManager) async throws
 }
 
 
 //TODO: $$$GT Add documentation
 public struct PolisProviderConfiguration {
-    public let mirrorID: UUID?
     public let reachability = PolisDirectory.ProviderDirectoryEntry.ServiceReachability.localUseOnly
     public let name: String
     public let shortDescription: String?
@@ -29,7 +28,7 @@ public struct PolisProviderConfiguration {
     public let adminNote: String?
 }
 
-public final actor PolisProviderManager {
+public final class PolisProviderManager {
 
     //MARK: Notifications
     public struct StatusChangeNotifications {
@@ -41,6 +40,8 @@ public final actor PolisProviderManager {
     public enum PolisProviderManagerError: Error {
         case cannotAccessOrCreateStandardPolisFolder
         case providerAtTheSameRootPathAlreadyConfigured // Thrown by attempting to call multiple configuration methods
+        case cannotEncodePolisType                      // JSON encoding
+        case cannotWriteFile
     }
 
     /// `localPolisRootPath` is the root path of the locally created POLIS provider.
@@ -90,13 +91,18 @@ public extension PolisProviderManager {
     func createLocalProvider(configuration: PolisProviderConfiguration) async throws {
         try canConfigure()
 
+        //TODO: Throw if something exists (Hasmik's suggestion)
+
         let admin     = PolisPerson(name: configuration.adminName, email: configuration.adminEmail, note: configuration.adminNote)
         let directory = try PolisDirectory.ProviderDirectoryEntry(name: configuration.name, supportedImplementations: configuration.supportedImplementations, providerType: configuration.providerType, adminContact: admin)
 
-        // Create the provider configuration entry
+        // 1. Create the provider configuration entry
         polisProviderConfigurationEntry = directory
-        try flush(item: polisProviderConfigurationEntry as! (any StorableItem))
+        try await flush(item: polisProviderConfigurationEntry)
 
+        // 2. Create the provider directory
+
+        // 3. Create facility directory
 
         //TODO: Implement me!
     }
@@ -144,11 +150,11 @@ extension PolisProviderManager {
         return tryToEnsureFoldersExistence(paths: paths)
     }
 
-    private func flush(item: any StorableItem) throws {
+    private func flush(item: any StorableItem) async throws {
         var currentItem: (any StorableItem)? = item
 
         while currentItem != nil {
-            try currentItem?.flash(forManager: self)
+            try await currentItem?.flashUsing(manager: self)
             currentItem = currentItem?.parentItem()
         }
     }

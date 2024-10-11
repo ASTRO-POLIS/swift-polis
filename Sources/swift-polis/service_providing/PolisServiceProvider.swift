@@ -16,6 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 import Foundation
+import SoftwareEtudesUtilities
 
 /// `PolisDirectory` is the list of all known Polis providers.
 ///
@@ -29,8 +30,7 @@ public struct PolisDirectory  {
     ///
     /// `PolisDirectoryEntry` is used to define the Polis provider itself, as well as as an entry in the list of known Polis
     /// providers.
-    public struct ProviderDirectoryEntry: Identifiable {
-
+    public struct ProviderDirectoryEntry: StorableItem, Identifiable {
         /// `ProviderType` defines different types of POLIS Providers.
         ///
         /// In general, only `public` and `mirror` types should be used by clients. Astro clubs and other communities might
@@ -290,3 +290,32 @@ extension PolisObservingFacilityDirectory.ObservingFacilityReference {
 //        case deviceTypes            = "device_types"
 //    }
 //}
+
+//MARK: Implementing the StorableItem protocol
+extension PolisDirectory.ProviderDirectoryEntry {
+    func parentItem() -> (any StorableItem)? { nil }
+
+    mutating func flashUsing(manager: PolisProviderManager) async throws {
+        let jsonEncoder = PrettyJSONEncoder()
+        let finder      = manager.polisFileResourceFinder!
+        let path        = finder.configurationFile()
+        let data: Data
+
+        self.lastUpdate = Date.now
+
+        do    { data = try jsonEncoder.encode(self) }
+        catch {
+            PolisLogger.shared.error("Cannot encode POLIS Provider Main Configuration Entry")
+            throw PolisProviderManager.PolisProviderManagerError.cannotEncodePolisType
+        }
+
+        do {
+            let url = URL(string: path)
+            try data.write(to: url!)
+        }
+        catch {
+            PolisLogger.shared.error("Cannot save POLIS Provider Main Configuration Entry to: \(path)")
+            throw PolisProviderManager.PolisProviderManagerError.cannotWriteFile
+        }
+    }
+}
