@@ -179,7 +179,7 @@ public struct PolisDirectory: StorableItem  {
 //MARK: - Observing Facility Directory -
 
 /// A compact list of all known Observing Facilities
-public struct PolisObservingFacilityDirectory: Codable {
+public struct PolisObservingFacilityDirectory: Codable, StorableItem {
 
     /// It is expected that the list of observatory facilities is long and each facility's data could be way over 1MB. Therefore a
     /// compact list of facilities references is maintained separately containing only facility's `identity`  It is
@@ -291,7 +291,7 @@ extension PolisObservingFacilityDirectory.ObservingFacilityReference {
 //    }
 //}
 
-//MARK: Implementing the StorableItem protocol
+//MARK: Implementing the StorableItem protocols
 extension PolisDirectory.ProviderDirectoryEntry {
     func parentItem() -> (any StorableItem)? { nil }
 
@@ -317,7 +317,6 @@ extension PolisDirectory.ProviderDirectoryEntry {
     }
 }
 
-//MARK: Implementing the StorableItem protocol
 extension PolisDirectory {
     func parentItem() -> (any StorableItem)? { nil }
 
@@ -338,6 +337,33 @@ extension PolisDirectory {
 
         if !fm.createFile(atPath: path, contents: data) {
             PolisLogger.shared.error("Cannot save POLIS Directory to: \(path)")
+            throw PolisProviderManager.PolisProviderManagerError.cannotWriteFile
+        }
+
+        try await manager.polisProviderConfigurationEntry.flashUsing(manager: manager)
+    }
+}
+
+extension PolisObservingFacilityDirectory {
+    func parentItem() -> (any StorableItem)? { nil }
+
+    mutating func flashUsing(manager: PolisProviderManager) async throws {
+        let fm          = FileManager.default
+        let jsonEncoder = PrettyJSONEncoder()
+        let finder      = manager.polisFileResourceFinder!
+        let path        = finder.observingFacilitiesDirectoryFile()
+        let data: Data
+
+        self.lastUpdate = Date.now
+
+        do    { data = try jsonEncoder.encode(self) }
+        catch {
+            PolisLogger.shared.error("Cannot encode POLIS Observing Facility Directory")
+            throw PolisProviderManager.PolisProviderManagerError.cannotEncodePolisType
+        }
+
+        if !fm.createFile(atPath: path, contents: data) {
+            PolisLogger.shared.error("Cannot save POLIS Observing Facility Directory to: \(path)")
             throw PolisProviderManager.PolisProviderManagerError.cannotWriteFile
         }
 

@@ -48,6 +48,11 @@ We use this package for the `SemanticVersion` type, that helps us manage POLIS v
 - General ToDo - make sure all swift files have the proper copyright message.
 
 - Implement, test and document global Error Message Handler
+- Implement PolisProviderManager
+    - ✅ Implement, document and test the creation of the provider from scratch (core information files and directories).
+    - Implement, test, and document the access from existing local files
+    - Implement, test, and document of creation, editing, deleting, and loading existent Facility Details
+    - Implement, test, and document of creation, editing, deleting, and loading existent Facility Location
 - Reimplement PolisFacility
     - Implement Facility details
     - Implement Facility Location

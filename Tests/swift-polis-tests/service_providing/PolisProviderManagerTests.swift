@@ -13,8 +13,8 @@ final class PolisProviderConfigurationTests: XCTestCase {
 
     //MARK: - Setup & Teardown -
     var providerWillCreateNotificationExpectation: XCTNSNotificationExpectation!
+    var providerDidCreateNotificationExpectation: XCTNSNotificationExpectation!
 
-    
     override class func setUp() {
         print("In class setUp.")
     }
@@ -27,8 +27,8 @@ final class PolisProviderConfigurationTests: XCTestCase {
         try super.setUpWithError()
         print("In setUp.")
 
-        providerWillCreateNotificationExpectation     = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotifications.providerWillCreateNotification)
-
+        providerWillCreateNotificationExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotifications.providerWillCreateNotification)
+        providerDidCreateNotificationExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotifications.providerDidCreateNotification)
     }
 
     override func tearDownWithError() throws {
@@ -58,7 +58,7 @@ final class PolisProviderConfigurationTests: XCTestCase {
         try await sut.createLocalProvider(configuration: config)
         
         // Then
-        await fulfillment(of: [providerWillCreateNotificationExpectation,],
+        await fulfillment(of: [providerWillCreateNotificationExpectation, providerDidCreateNotificationExpectation],
                           timeout: 5,
                           enforceOrder: true)
     }

@@ -16,12 +16,12 @@ protocol StorableItem {
 
 //TODO: $$$GT Add documentation
 public struct PolisProviderConfiguration {
-    public var reachability                                      = PolisDirectory.ProviderDirectoryEntry.ServiceReachability.localUseOnly
+    public var reachability                                     = PolisDirectory.ProviderDirectoryEntry.ServiceReachability.localUseOnly
     public var name: String
     public var shortDescription: String?
     public var url: String?
-    public var supportedImplementations: [PolisImplementation]?  = [PolisImplementation.oldestSupportedImplementation()]
-    public var providerType                                      = PolisDirectory.ProviderDirectoryEntry.ProviderType.experimental
+    public var supportedImplementations: [PolisImplementation]? = [PolisImplementation.oldestSupportedImplementation()]
+    public var providerType                                     = PolisDirectory.ProviderDirectoryEntry.ProviderType.experimental
 
     public var adminName: String
     public var adminEmail: String
@@ -52,7 +52,7 @@ public final class PolisProviderManager {
 
     //MARK: Notifications
     public struct StatusChangeNotifications {
-        public static let providerWillCreateNotification = Notification.Name("providerWillCreate")  // Object is the Mnager
+        public static let providerWillCreateNotification = Notification.Name("providerWillCreate")  // Object is the Manager
         public static let providerDidCreateNotification  = Notification.Name("providerWDidCreate")
     }
 
@@ -75,6 +75,7 @@ public final class PolisProviderManager {
 
     var polisProviderConfigurationEntry: PolisDirectory.ProviderDirectoryEntry!
     var polisProviderDirectory: PolisDirectory!
+    var facilityDirectory: PolisObservingFacilityDirectory!
 
     /// Designate initialiser
     ///
@@ -98,10 +99,9 @@ public final class PolisProviderManager {
 
     private var isConfigured    = false // check if any of the configuration methods was called
 
-
 }
 
-//MARK: - Configuration of the POLIS Service Provider
+//MARK: - Configuration of the POLIS Service Provider -
 public extension PolisProviderManager {
 
     /// Creates a new provider based on the content of the `configuration`
@@ -114,7 +114,10 @@ public extension PolisProviderManager {
         //TODO: Throw if something exists (Hasmik's suggestion)
 
         let admin     = PolisPerson(name: configuration.adminName, email: configuration.adminEmail, note: configuration.adminNote)
-        let directory = try PolisDirectory.ProviderDirectoryEntry(name: configuration.name, supportedImplementations: [PolisImplementation.oldestSupportedImplementation()], providerType: configuration.providerType, adminContact: admin)
+        let directory = try PolisDirectory.ProviderDirectoryEntry(name: configuration.name,
+                                                                  supportedImplementations: [PolisImplementation.oldestSupportedImplementation()],
+                                                                  providerType: configuration.providerType,
+                                                                  adminContact: admin)
 
         nc.post(name: StatusChangeNotifications.providerWillCreateNotification, object: self)
         
@@ -127,8 +130,10 @@ public extension PolisProviderManager {
         try await flush(item: polisProviderDirectory)
 
         // 3. Create facility directory
+        facilityDirectory = PolisObservingFacilityDirectory(lastUpdate: Date.now, observingFacilityReferences: [])
+        try await flush(item: facilityDirectory)
 
-        //TODO: Implement me!
+        nc.post(name: StatusChangeNotifications.providerDidCreateNotification, object: self)
     }
 
     func localProvider(using providerUrl: URL, isMirror: Bool = false) async throws {
@@ -147,9 +152,18 @@ public extension PolisProviderManager {
     }
 }
 
+//MARK: - Working with Observing Facilities -
+public extension PolisProviderManager {
+
+    //TODO: Implement me!
+
+}
+
 //MARK: - Working with files and folders -
 extension PolisProviderManager {
-    func tryToEnsureFoldersExistence(paths: [String]) -> Bool {
+
+    //TODO: Move these methods to SoftwareEtudes
+    private func tryToEnsureFoldersExistence(paths: [String]) -> Bool {
         do {
             for path in paths {
                 if !(fm.fileExists(atPath: path, isDirectory: &isDir) && (isDir.boolValue)) {
@@ -162,6 +176,11 @@ extension PolisProviderManager {
             logger.error("Error: cannot access or create folder - \(error.localizedDescription)")
             return false
         }
+    }
+
+    private func tryToEnsureFileExistence(paths: [String], createEmptyFilesIfDoNotExist: Bool = false) -> Bool {
+        //TODO: Implement me!
+        return true
     }
 
     private func ensurePolisFoldersExistence()  -> Bool {
