@@ -52,7 +52,7 @@ public final class PolisProviderManager {
 
     //MARK: Notifications
     public struct StatusChangeNotifications {
-        public static let providerWillCreateNotification = Notification.Name("providerWillCreate")
+        public static let providerWillCreateNotification = Notification.Name("providerWillCreate")  // Object is the Mnager
         public static let providerDidCreateNotification  = Notification.Name("providerWDidCreate")
     }
 
@@ -74,7 +74,7 @@ public final class PolisProviderManager {
     let polisFileResourceFinder: PolisFileResourceFinder!
 
     var polisProviderConfigurationEntry: PolisDirectory.ProviderDirectoryEntry!
-
+    var polisProviderDirectory: PolisDirectory!
 
     /// Designate initialiser
     ///
@@ -116,11 +116,15 @@ public extension PolisProviderManager {
         let admin     = PolisPerson(name: configuration.adminName, email: configuration.adminEmail, note: configuration.adminNote)
         let directory = try PolisDirectory.ProviderDirectoryEntry(name: configuration.name, supportedImplementations: [PolisImplementation.oldestSupportedImplementation()], providerType: configuration.providerType, adminContact: admin)
 
+        nc.post(name: StatusChangeNotifications.providerWillCreateNotification, object: self)
+        
         // 1. Create the provider configuration entry
         polisProviderConfigurationEntry = directory
         try await flush(item: polisProviderConfigurationEntry)
 
         // 2. Create the provider directory
+        polisProviderDirectory = PolisDirectory(providerDirectoryEntries: [polisProviderConfigurationEntry])
+        try await flush(item: polisProviderDirectory)
 
         // 3. Create facility directory
 

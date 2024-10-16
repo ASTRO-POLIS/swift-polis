@@ -12,7 +12,9 @@ import XCTest
 final class PolisProviderConfigurationTests: XCTestCase {
 
     //MARK: - Setup & Teardown -
+    var providerWillCreateNotificationExpectation: XCTNSNotificationExpectation!
 
+    
     override class func setUp() {
         print("In class setUp.")
     }
@@ -24,6 +26,9 @@ final class PolisProviderConfigurationTests: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
         print("In setUp.")
+
+        providerWillCreateNotificationExpectation     = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotifications.providerWillCreateNotification)
+
     }
 
     override func tearDownWithError() throws {
@@ -53,7 +58,9 @@ final class PolisProviderConfigurationTests: XCTestCase {
         try await sut.createLocalProvider(configuration: config)
         
         // Then
-
+        await fulfillment(of: [providerWillCreateNotificationExpectation,],
+                          timeout: 5,
+                          enforceOrder: true)
     }
 
     //TODO: Start with test that create a new public provider

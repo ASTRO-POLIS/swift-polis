@@ -22,7 +22,7 @@ import SoftwareEtudesUtilities
 ///
 /// To avoid confusion (and potential syncing errors) it is required that the directory does contain the POLIS
 /// service provider entry that serves the directory list.
-public struct PolisDirectory  {
+public struct PolisDirectory: StorableItem  {
 
     //MARK: - POLIS Directory Entry
 
@@ -314,5 +314,33 @@ extension PolisDirectory.ProviderDirectoryEntry {
             PolisLogger.shared.error("Cannot save POLIS Provider Main Configuration Entry to: \(path)")
             throw PolisProviderManager.PolisProviderManagerError.cannotWriteFile
         }
+    }
+}
+
+//MARK: Implementing the StorableItem protocol
+extension PolisDirectory {
+    func parentItem() -> (any StorableItem)? { nil }
+
+    mutating func flashUsing(manager: PolisProviderManager) async throws {
+        let fm          = FileManager.default
+        let jsonEncoder = PrettyJSONEncoder()
+        let finder      = manager.polisFileResourceFinder!
+        let path        = finder.polisProviderDirectoryFile()
+        let data: Data
+
+        self.lastUpdate = Date.now
+
+        do    { data = try jsonEncoder.encode(self) }
+        catch {
+            PolisLogger.shared.error("Cannot encode POLIS Directory")
+            throw PolisProviderManager.PolisProviderManagerError.cannotEncodePolisType
+        }
+
+        if !fm.createFile(atPath: path, contents: data) {
+            PolisLogger.shared.error("Cannot save POLIS Directory to: \(path)")
+            throw PolisProviderManager.PolisProviderManagerError.cannotWriteFile
+        }
+
+        try await manager.polisProviderConfigurationEntry.flashUsing(manager: manager)
     }
 }
