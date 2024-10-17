@@ -58,6 +58,7 @@ public final class PolisProviderManager {
 
     //MARK: Error definitions
     public enum PolisProviderManagerError: Error {
+        case cannotRegisterMultipleManagerInstances
         case cannotAccessOrCreateStandardPolisFolder
         case providerAtTheSameRootPathAlreadyConfigured // Thrown by attempting to call multiple configuration methods
         case cannotEncodePolisType                      // JSON encoding
@@ -68,6 +69,11 @@ public final class PolisProviderManager {
     ///
     /// `localPolisRootPath` must be set before any other factory method is called.
     public static var localPolisRootPath: String = "/tmp/"
+
+    /// Semi replacement for singleton
+    ///
+    /// Make sure the public init() was called before trying to access this within the framework
+    static var currentProviderManager: PolisProviderManager!
 
     //MARK: Polis Provider Manager internal configuration
     let polisImplementation: PolisImplementation!
@@ -81,10 +87,14 @@ public final class PolisProviderManager {
     ///
     ///  Before calling, make sure that `localPolisRootPath` is set to proper existing path
     public init() throws {
+        guard PolisProviderManager.currentProviderManager == nil else { throw PolisProviderManagerError.cannotRegisterMultipleManagerInstances }
+
         self.polisImplementation     = PolisConstants.frameworkSupportedImplementation.last
         self.polisFileResourceFinder = try PolisFileResourceFinder(at: URL(fileURLWithPath: PolisProviderManager.localPolisRootPath), supportedImplementation: self.polisImplementation)
 
         if !ensurePolisFoldersExistence() { throw PolisProviderManagerError.cannotAccessOrCreateStandardPolisFolder }
+
+        PolisProviderManager.currentProviderManager = self
     }
 
     //MARK: Private stuff
