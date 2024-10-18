@@ -34,7 +34,6 @@ final class PolisProviderConfigurationTests: XCTestCase {
     override func tearDownWithError() throws {
         print("In tearDown.")
         PolisProviderManager.currentProviderManager = nil
-        
         try super.tearDownWithError()
     }
 
