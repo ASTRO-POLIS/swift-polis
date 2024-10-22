@@ -1,5 +1,5 @@
 //
-//  PolisObservingFacility2.swift
+//  PolisObservingFacility.swift
 //  swift-polis
 //
 //  Created by Georg Tuparev on 25/09/2024.
@@ -57,4 +57,22 @@ public struct PolisObservingFacility: Identifiable, Codable {
     // Identifiable protocol compliance
     public var id: UUID { item.identity.id }
 
+    // Relationship to other facilities
+    public var parentObservingFacilityID: UUID?
+
+    // Contains
+    public var observatoryIDs: Set<UUID>?
+    public var deviceIDs: Set<UUID>?
+
+    // Info
+    public var website: URL?
+    public var scientificObjectives: String?
+    public var history: String?
+
+    // Facility details UUIDs - one and only one type could be assigned!
+    public var fixedSurfaceEarthBaseDetailsID: UUID?
+    public var mobileSurfaceEarthBaseDetailsID: UUID?
+    public var airborneEarthBaseDetailsID: UUID?
+    // ... and satellites, rovers, ... to be added
+    
 }

@@ -73,34 +73,33 @@ public struct PolisObservingFacility: Identifiable, Codable {
 //    public var astronomicalCode: String?                                   // Minor planet codes, etc.
 
     //TODO: Fix me -  Relationship to other facilities
-    public var parentObservingFacilityID: UUID?
-    public var subObservingFacilityIDs: Set<UUID>?
+//    public var parentObservingFacilityID: UUID?
+//    public var subObservingFacilityIDs: Set<UUID>?
 
     // Contains
-    public var observatoryIDs: Set<UUID>?
-    public var deviceIDs: Set<UUID>?
+//    public var observatoryIDs: Set<UUID>?
+//    public var deviceIDs: Set<UUID>?
 
     // Info
-    public var adminContact: PolisAdminContact? //TODO: Remove
-    public var website: URL?
-    public var scientificObjectives: String?
-    public var history: String?
+//    public var website: URL?
+//    public var scientificObjectives: String?
+//    public var history: String?
 
     // Identifiable protocol compliance
 //    public var id: UUID { item.identity.id }
 
     //MARK: Earth-based facility properties
-    public var openingHours: PolisVisitingHours?
-    public var accessRestrictions: String?
-
-    public var averageClearNightsPerYear: UInt?
-    public var averageSeeingConditions: PolisPropertyValue? // [arcsec]
-    public var averageSkyQuality: PolisPropertyValue?       // [magnitude / arcsec^2]
-
-    public var traditionalLandOwners: String?
-
-    public var dominantWindDirection: PolisDirection.RoughDirection?
-    public var surfaceSize: PolisPropertyValue?
+//    public var openingHours: PolisVisitingHours?
+//    public var accessRestrictions: String?
+//
+//    public var averageClearNightsPerYear: UInt?
+//    public var averageSeeingConditions: PolisPropertyValue? // [arcsec]
+//    public var averageSkyQuality: PolisPropertyValue?       // [magnitude / arcsec^2]
+//
+//    public var traditionalLandOwners: String?
+//
+//    public var dominantWindDirection: PolisDirection.RoughDirection?
+//    public var surfaceSize: PolisPropertyValue?
 
     public init(item: PolisItem, 
                 gravitationalBodyRelationship: ObservingFacilityLocationType,

@@ -44,6 +44,8 @@ We use this package for the `SemanticVersion` type, that helps us manage POLIS v
 - Should Owners be attached to Item only (possible repetitions and inconsistencies) or Item owned and Referenced (more complex implementation)?
 
 ## To Do
+- ⛔️ Fix Address Tests!
+
 - General ToDo - make sure all examples have JSON data examples.
 - General ToDo - make sure all swift files have the proper copyright message.
 
@@ -54,8 +56,8 @@ We use this package for the `SemanticVersion` type, that helps us manage POLIS v
     - Implement, test, and document of creation, editing, deleting, and loading existent Facility Details
     - Implement, test, and document of creation, editing, deleting, and loading existent Facility Location
 - Reimplement PolisFacility
-    - Implement Facility details
-    - Implement Facility Location
+    - ✅ Implement Facility details
+    - ✅ Implement Facility Location
     - Test
     - Document
     - JSON examples

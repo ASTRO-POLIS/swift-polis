@@ -150,6 +150,17 @@ public enum PolisOwnershipType: String, Codable {
 
 //MARK: - PolisAddress -
 public struct PolisAddress: Codable {
+
+    public enum EarthContinent: String, Codable {
+        case europe       = "Europe"
+        case northAmerica = "North America"
+        case southAmerica = "South America"
+        case africa       = "Africa"
+        case asia         = "Asia"
+        case oceania      = "Australia and Oceania"
+        case antarctica   = "Antarctica"
+    }
+
     public var attentionOff: String?
     public var houseName: String?
     public var street: String?
@@ -158,22 +169,28 @@ public struct PolisAddress: Codable {
     public var floor: Int?
     public var apartment: String?
     public var district: String?
-    public var place: String?
+    public var place: String?                     // e.g. Mount Wilson
     public var block: String?
     public var zipCode: String?
     public var province: String?
-    public var region: String?
+    public var region: String?                    // Region or state name, e.g. California
+    public let regionCode: String?                // e.g. CA for California
+
     public var state: String?
 
-    public var countryID: String? // 2-letter code
+    public let country: String?                   // e.g. Armenia
+    public var countryID: String?                 // 2-letter code
+
+    public var continent: EarthContinent?
 
     public var poBox: String?
     public var poBoxZip: String?
 
     public var posteRestante: String?
 
-    public var latitude: Double?
-    public var longitude: Double?
+    public let eastLongitude: PolisPropertyValue? // degrees
+    public let latitude: PolisPropertyValue?      // degrees
+    public let altitude: PolisPropertyValue?      // m
 
     public var streetLine1: String?
     public var streetLine2: String?
@@ -184,60 +201,72 @@ public struct PolisAddress: Codable {
 
     public var note: String?
 
-    public init(attentionOff: String?      = nil,
-                houseName: String?         = nil,
-                street: String?            = nil,
-                houseNumber: Int?          = nil,
-                houseNumberSuffix: String? = nil,
-                floor: Int?                = nil,
-                apartment: String?         = nil,
-                district: String?          = nil,
-                place: String?             = nil,
-                block: String?             = nil,
-                zipCode: String?           = nil,
-                province: String?          = nil,
-                region: String?            = nil,
-                state: String?             = nil,
-                countryID: String?         = nil,
-                poBox: String?             = nil,
-                poBoxZip: String?          = nil,
-                posteRestante: String?     = nil,
-                latitude: Double?          = nil,
-                longitude: Double?         = nil,
-                streetLine1: String?       = nil,
-                streetLine2: String?       = nil,
-                streetLine3: String?       = nil,
-                streetLine4: String?       = nil,
-                streetLine5: String?       = nil,
-                streetLine6: String?       = nil,
-                note: String?              = nil) {
-        self.attentionOff      = attentionOff
-        self.houseName         = houseName
-        self.street            = street
-        self.houseNumber       = houseNumber
-        self.houseNumberSuffix = houseNumberSuffix
-        self.floor             = floor
-        self.apartment         = apartment
-        self.district          = district
-        self.place             = place
-        self.block             = block
-        self.zipCode           = zipCode
-        self.province          = province
-        self.region            = region
-        self.state             = state
-        self.countryID         = countryID
-        self.poBox             = poBox
-        self.poBoxZip          = poBoxZip
-        self.posteRestante     = posteRestante
-        self.latitude          = latitude
-        self.longitude         = longitude
-        self.streetLine1       = streetLine1
-        self.streetLine2       = streetLine2
-        self.streetLine3       = streetLine3
-        self.streetLine4       = streetLine4
-        self.streetLine5       = streetLine5
-        self.streetLine6       = streetLine6
-        self.note              = note
+    public var timeZoneIdentifier: String?        // .. as defined with `TimeZone.knownTimeZoneIdentifiers`
+
+    public init(attentionOff: String?              = nil,
+                houseName: String?                 = nil,
+                street: String?                    = nil,
+                houseNumber: Int?                  = nil,
+                houseNumberSuffix: String?         = nil,
+                floor: Int?                        = nil,
+                apartment: String?                 = nil,
+                district: String?                  = nil,
+                place: String?                     = nil,
+                block: String?                     = nil,
+                zipCode: String?                   = nil,
+                province: String?                  = nil,
+                region: String?                    = nil,
+                regionCode: String?                = nil,
+                country: String?                   = nil,
+                state: String?                     = nil,
+                countryID: String?                 = nil,
+                continent: EarthContinent?         = nil,
+                poBox: String?                     = nil,
+                poBoxZip: String?                  = nil,
+                posteRestante: String?             = nil,
+                eastLongitude: PolisPropertyValue? = nil,
+                latitude: PolisPropertyValue?      = nil,
+                altitude: PolisPropertyValue?      = nil,
+                streetLine1: String?               = nil,
+                streetLine2: String?               = nil,
+                streetLine3: String?               = nil,
+                streetLine4: String?               = nil,
+                streetLine5: String?               = nil,
+                streetLine6: String?               = nil,
+                note: String?                      = nil,
+                timeZoneIdentifier: String?        = nil) {
+        self.attentionOff       = attentionOff
+        self.houseName          = houseName
+        self.street             = street
+        self.houseNumber        = houseNumber
+        self.houseNumberSuffix  = houseNumberSuffix
+        self.floor              = floor
+        self.apartment          = apartment
+        self.district           = district
+        self.place              = place
+        self.block              = block
+        self.zipCode            = zipCode
+        self.province           = province
+        self.region             = region
+        self.regionCode         = regionCode
+        self.state              = state
+        self.country            = country
+        self.countryID          = countryID
+        self.continent          = continent
+        self.poBox              = poBox
+        self.poBoxZip           = poBoxZip
+        self.posteRestante      = posteRestante
+        self.eastLongitude      = eastLongitude
+        self.latitude           = latitude
+        self.altitude           = altitude
+        self.streetLine1        = streetLine1
+        self.streetLine2        = streetLine2
+        self.streetLine3        = streetLine3
+        self.streetLine4        = streetLine4
+        self.streetLine5        = streetLine5
+        self.streetLine6        = streetLine6
+        self.note               = note
+        self.timeZoneIdentifier = timeZoneIdentifier
     }
 }
 
@@ -316,39 +345,46 @@ extension PolisAdminContact: Codable {
 //MARK: - PolisAddress
 extension PolisAddress {
     public enum CodingKeys: String, CodingKey {
-        case attentionOff      = "attention_off"
-        case houseName         = "house_name"
+        case attentionOff       = "attention_off"
+        case houseName          = "house_name"
         case street
-        case houseNumber       = "house_number"
-        case houseNumberSuffix = "house_number_suffix"
+        case houseNumber        = "house_number"
+        case houseNumberSuffix  = "house_number_suffix"
         case floor
         case apartment
         case district
         case place
         case block
-        case zipCode           = "zip_code"
+        case zipCode            = "zip_code"
         case province
         case region
+        case regionCode         = "region_code"
         case state
 
-        case countryID         = "country_id"
+        case country
+        case countryID          = "country_id"
 
-        case poBox             = "po_box"
-        case poBoxZip          = "po_box_zip"
+        case continent
 
-        case posteRestante     = "poste_restante"
+        case poBox              = "po_box"
+        case poBoxZip           = "po_box_zip"
 
+        case posteRestante      = "poste_restante"
+
+        case eastLongitude      = "east_longitude"
         case latitude
-        case longitude
+        case altitude
 
-        case streetLine1       = "street_line_1"
-        case streetLine2       = "street_line_2"
-        case streetLine3       = "street_line_3"
-        case streetLine4       = "street_line_4"
-        case streetLine5       = "street_line_5"
-        case streetLine6       = "street_line_6"
+        case streetLine1        = "street_line_1"
+        case streetLine2        = "street_line_2"
+        case streetLine3        = "street_line_3"
+        case streetLine4        = "street_line_4"
+        case streetLine5        = "street_line_5"
+        case streetLine6        = "street_line_6"
 
         case note
+
+        case timeZoneIdentifier = "time_zone_identifier"
     }
 }
 
