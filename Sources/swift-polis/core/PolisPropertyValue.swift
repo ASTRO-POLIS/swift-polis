@@ -104,6 +104,11 @@ public struct PolisPropertyValue: Codable, Equatable {
     }
 }
 
+public enum PolisUnits: String {
+    case surface = "m^2"
+    case altitude = "m"
+}
+
 //MARK: - Property Value
 public extension PolisPropertyValue {
     enum CodingKeys: String, CodingKey {

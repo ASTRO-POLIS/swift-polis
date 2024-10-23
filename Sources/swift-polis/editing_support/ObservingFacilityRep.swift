@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class ObservingFacilityRep {
+public class ObservingFacilityRep {
 
     
     /// Tries to register a new facility
@@ -69,35 +69,4 @@ public final class ObservingFacilityRep {
         self.lastUpdateDate = lastUpdateDate
         self.name = name
     }
-
-
 }
-
-
-/*
-
-
- /// Pointers to externally defined items (IDREF in XML). It is recommended that the references are URLs (e.g.
- /// https://monet.org/instruments/12345 or https://telescope.observer/instriment123456 )
-
- /// Latest update time. Used primarily for syncing.
- public var lastUpdateDate: Date
-
- /// Human readable name of the item (object). It is recommended to assign a unique name to avoid potential confusions.
-
- /// Human readable name of the item in a local script.
- public var localName: String?
-
- /// Abbreviations are widely used for searching items, as well as device, instrument, and  project names. If present it is
- /// recommended to assign a unique label (within the observatory or the observing site) to avoid potential confusions.
-
- /// Short optional item (object) description.
-
- /// The date that the corresponding POLIS item started its existence, e.g. first light of a telescope
-
- /// The date that the corresponding POLIS item ended its existence, e.g. a device was decommissioned
- public var endDate: Date?
-
- /// The date of initial POLIS registration of the item
-
- */

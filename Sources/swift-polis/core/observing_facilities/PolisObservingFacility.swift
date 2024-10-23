@@ -73,6 +73,6 @@ public struct PolisObservingFacility: Identifiable, Codable {
     public var fixedSurfaceEarthBaseDetailsID: UUID?
     public var mobileSurfaceEarthBaseDetailsID: UUID?
     public var airborneEarthBaseDetailsID: UUID?
-    // ... and satellites, rovers, ... to be added
+    //TODO: ... and satellites, rovers, ... to be added
     
 }

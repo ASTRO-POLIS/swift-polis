@@ -173,12 +173,10 @@ public struct PolisAddress: Codable {
     public var block: String?
     public var zipCode: String?
     public var province: String?
-    public var region: String?                    // Region or state name, e.g. California
-    public let regionCode: String?                // e.g. CA for California
+    public var regionOrState: String?             // Region or state name, e.g. California
+    public let regionOrStateCode: String?         // e.g. CA for California
 
-    public var state: String?
-
-    public let country: String?                   // e.g. Armenia
+    public var country: String?                   // e.g. Armenia
     public var countryID: String?                 // 2-letter code
 
     public var continent: EarthContinent?
@@ -188,9 +186,9 @@ public struct PolisAddress: Codable {
 
     public var posteRestante: String?
 
-    public let eastLongitude: PolisPropertyValue? // degrees
-    public let latitude: PolisPropertyValue?      // degrees
-    public let altitude: PolisPropertyValue?      // m
+    public var eastLongitude: PolisPropertyValue? // degrees
+    public var latitude: PolisPropertyValue?      // degrees
+    public var altitude: PolisPropertyValue?      // m
 
     public var streetLine1: String?
     public var streetLine2: String?
@@ -215,10 +213,9 @@ public struct PolisAddress: Codable {
                 block: String?                     = nil,
                 zipCode: String?                   = nil,
                 province: String?                  = nil,
-                region: String?                    = nil,
-                regionCode: String?                = nil,
+                regionOrState: String?             = nil,
+                regionOrSatteCode: String?         = nil,
                 country: String?                   = nil,
-                state: String?                     = nil,
                 countryID: String?                 = nil,
                 continent: EarthContinent?         = nil,
                 poBox: String?                     = nil,
@@ -247,9 +244,8 @@ public struct PolisAddress: Codable {
         self.block              = block
         self.zipCode            = zipCode
         self.province           = province
-        self.region             = region
-        self.regionCode         = regionCode
-        self.state              = state
+        self.regionOrState      = regionOrState
+        self.regionOrStateCode  = regionOrSatteCode
         self.country            = country
         self.countryID          = countryID
         self.continent          = continent
@@ -357,9 +353,8 @@ extension PolisAddress {
         case block
         case zipCode            = "zip_code"
         case province
-        case region
-        case regionCode         = "region_code"
-        case state
+        case regionOrState      = "region_or_state"
+        case regionOrStateCode  = "region_or_state_code"
 
         case country
         case countryID          = "country_id"

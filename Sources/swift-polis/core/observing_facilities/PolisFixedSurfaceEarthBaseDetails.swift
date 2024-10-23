@@ -20,7 +20,7 @@ public struct PolisFixedSurfaceEarthBaseDetails: Codable {
     public var traditionalLandOwners: String?
 
     public var dominantWindDirection: PolisDirection.RoughDirection?
-    public var surfaceSize: PolisPropertyValue?
+    public var surfaceSize: PolisPropertyValue?             // [m^2]
 
     //TODO: Init
 
