@@ -5,7 +5,7 @@
 //  Created by Georg Tuparev on 22/10/2024.
 //
 
-public struct PolisFixedSurfaceEarthBaseDetails: Codable {
+public class PolisFixedSurfaceEarthBaseDetails: PolisObservingFacility {
 
     public var address: PolisAddress?
 

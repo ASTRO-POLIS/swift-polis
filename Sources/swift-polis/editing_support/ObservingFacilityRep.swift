@@ -18,9 +18,15 @@ public class ObservingFacilityRep {
     ///   - name: although not required, it is recommended, that the name is unique. This will provide more meaningful search and discovery functionality
     /// - Returns: newly registered facility
     public static func registerNewFacility(with id: UUID = UUID(), name: String = "Unknown Facility") throws -> ObservingFacilityRep {
-        var result = ObservingFacilityRep(id: id, name: name)
+        let result      = ObservingFacilityRep(id: id, name: name)
+        let newIdentity = PolisIdentity(id: id, name: name, polisRegistrationDate: Date.now)
+        let newItem     = PolisItem(identity: newIdentity)
+        let dirEntry    = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: newIdentity)
 
-        //TODO: Try to register to the facility directory.
+        PolisProviderManager.currentProviderManager.facilityDirectory.addObservingFacility(reference: dirEntry)
+        result.identity = newIdentity
+        result.item     = newItem
+
 
         return result
     }
@@ -63,6 +69,43 @@ public class ObservingFacilityRep {
     public var orbitingAroundPlaceInTheSolarSystemNamed: String?
     public var facilityLocationID: UUID?                                   // Points to dictionary with some predefined (standard) keys
     public var astronomicalCode: String?                                   // Minor planet codes, etc.
+
+    func flush() throws {
+        // Identity
+        identity.externalReferences    = externalReferences
+        identity.lastUpdateDate        = lastUpdateDate
+        identity.name                  = name
+        identity.localName             = localName
+        identity.abbreviation          = abbreviation
+        identity.shortDescription      = shortDescription
+        identity.startDate             = startDate
+        identity.endDate               = endDate
+        identity.polisRegistrationDate = polisRegistrationDate
+
+        // Item
+        item.identity        = identity
+        item.owner           = owner
+        item.parentID        = parentID
+        item.automationLabel = automationLabel
+        item.media           = media
+
+        var facility = PolisObservingFacility(item: item, gravitationalBodyRelationship: PolisObservingFacility.ObservingFacilityLocationType.surfaceFixed, placeInTheSolarSystem: PolisObservingFacility.PlaceInTheSolarSystem.earth)
+
+        facility.gravitationalBodyRelationship            = gravitationalBodyRelationship
+        facility.placeInTheSolarSystem                    = placeInTheSolarSystem
+        facility.observingFacilityCode                    = observingFacilityCode
+        facility.solarSystemBodyName                      = solarSystemBodyName
+        facility.orbitingAroundPlaceInTheSolarSystemNamed = orbitingAroundPlaceInTheSolarSystemNamed
+        facility.facilityLocationID                       = facilityLocationID
+        facility.astronomicalCode                         = astronomicalCode
+
+        //TODO: Implement me!
+
+    }
+    //MARK: Private stuff
+
+    var identity: PolisIdentity!
+    var item: PolisItem!
 
     private init(id: UUID, lastUpdateDate: Date = Date(), name: String) {
         self.id = id

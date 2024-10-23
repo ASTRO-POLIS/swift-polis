@@ -204,6 +204,11 @@ public struct PolisObservingFacilityDirectory: Codable, StorableItem {
         self.lastUpdate                  = lastUpdate
         self.observingFacilityReferences = observingFacilityReferences
     }
+
+    public mutating func addObservingFacility(reference: ObservingFacilityReference) {
+        observingFacilityReferences.append(reference)
+        lastUpdate = Date.now
+    }
 }
 
 //MARK: - Resources provided by manufacturers -
