@@ -76,6 +76,9 @@ public final class PolisProviderManager {
     static var currentProviderManager: PolisProviderManager!
 
     //MARK: Polis Provider Manager internal configuration
+    var jsonEncoder     = PrettyJSONEncoder()
+    var jsonDecoder     = PrettyJSONDecoder()
+
     let polisImplementation: PolisImplementation!
     let polisFileResourceFinder: PolisFileResourceFinder!
 
@@ -110,8 +113,6 @@ public final class PolisProviderManager {
     private var isDir: ObjCBool = false
     private var logger          = PolisLogger.shared
 
-    private var jsonEncoder     = PrettyJSONEncoder()
-    private var jsonDecoder     = PrettyJSONDecoder()
 
     private var isConfigured    = false // check if any of the configuration methods was called
 
@@ -179,7 +180,7 @@ public extension PolisProviderManager {
 extension PolisProviderManager {
 
     //TODO: Move these methods to SoftwareEtudes
-    private func tryToEnsureFoldersExistence(paths: [String]) -> Bool {
+    func tryToEnsureFoldersExistence(paths: [String]) -> Bool {
         do {
             for path in paths {
                 if !(fm.fileExists(atPath: path, isDirectory: &isDir) && (isDir.boolValue)) {

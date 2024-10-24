@@ -27,7 +27,6 @@ public class ObservingFacilityRep {
         result.identity = newIdentity
         result.item     = newItem
 
-
         return result
     }
 
@@ -70,7 +69,11 @@ public class ObservingFacilityRep {
     public var facilityLocationID: UUID?                                   // Points to dictionary with some predefined (standard) keys
     public var astronomicalCode: String?                                   // Minor planet codes, etc.
 
-    func flush() throws {
+    func flush() async throws {
+        let manager = PolisProviderManager.currentProviderManager!
+
+        try await manager.facilityDirectory.flashUsing(manager: PolisProviderManager.currentProviderManager)
+
         // Identity
         identity.externalReferences    = externalReferences
         identity.lastUpdateDate        = lastUpdateDate
@@ -89,7 +92,7 @@ public class ObservingFacilityRep {
         item.automationLabel = automationLabel
         item.media           = media
 
-        var facility = PolisObservingFacility(item: item, gravitationalBodyRelationship: PolisObservingFacility.ObservingFacilityLocationType.surfaceFixed, placeInTheSolarSystem: PolisObservingFacility.PlaceInTheSolarSystem.earth)
+        let facility = PolisObservingFacility(item: item, gravitationalBodyRelationship: PolisObservingFacility.ObservingFacilityLocationType.surfaceFixed, placeInTheSolarSystem: PolisObservingFacility.PlaceInTheSolarSystem.earth)
 
         facility.gravitationalBodyRelationship            = gravitationalBodyRelationship
         facility.placeInTheSolarSystem                    = placeInTheSolarSystem
@@ -99,9 +102,30 @@ public class ObservingFacilityRep {
         facility.facilityLocationID                       = facilityLocationID
         facility.astronomicalCode                         = astronomicalCode
 
-        //TODO: Implement me!
+        try await ensureFacilityFolderDoesExist()
 
+        let detailsPath = manager.polisFileResourceFinder.observingFacilityFile(observingFacilityID: identity.id)
+
+        do {
+            let data = try manager.jsonEncoder.encode(facility)
+            try data.write(to: URL(string: detailsPath)!)
+        }
+        catch {
+            PolisLogger.shared.error("Cannot encode or save facility details to: \(detailsPath)")
+            throw PolisProviderManager.PolisProviderManagerError.cannotWriteFile
+        }
     }
+
+    func ensureFacilityFolderDoesExist() async throws {
+        let manager = PolisProviderManager.currentProviderManager!
+        let path    = manager.polisFileResourceFinder.observingFacilityFolder(observingFacilityID: identity.id)
+
+        if !manager.tryToEnsureFoldersExistence(paths: [path]) {
+            PolisLogger.shared.error("Cannot create or access facility forlder: \(path)")
+            throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFolder
+        }
+    }
+
     //MARK: Private stuff
 
     var identity: PolisIdentity!

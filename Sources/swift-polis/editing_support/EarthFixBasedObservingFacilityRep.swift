@@ -45,4 +45,10 @@ class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
     public var dominantWindDirection: PolisDirection.RoughDirection?
     public var surfaceSize: PolisPropertyValue?             // [m^2]
 
+    override func flush() async throws {
+        try await super.flush()
+
+        //TODO: Implement me!
+    }
+
 }

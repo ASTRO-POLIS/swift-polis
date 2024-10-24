@@ -9,7 +9,7 @@ import Foundation
 
 public class PolisFixedSurfaceEarthBaseDetails: PolisObservingFacility {
 
-    public var address: PolisAddress?
+    public var location: PolisAddress?
 
     // General info
     public var openingHours: PolisVisitingHours?
@@ -24,7 +24,7 @@ public class PolisFixedSurfaceEarthBaseDetails: PolisObservingFacility {
     public var dominantWindDirection: PolisDirection.RoughDirection?
     public var surfaceSize: PolisPropertyValue?             // [m^2]
 
-    public init(address: PolisAddress?                                 = nil,
+    public init(location: PolisAddress?                                = nil,
                 openingHours: PolisVisitingHours?                      = nil,
                 averageClearNightsPerYear: UInt?                       = nil,
                 averageSeeingConditions: PolisPropertyValue?           = nil,
@@ -48,7 +48,7 @@ public class PolisFixedSurfaceEarthBaseDetails: PolisObservingFacility {
                 fixedSurfaceEarthBaseDetailsID: UUID?                  = nil,
                 mobileSurfaceEarthBaseDetailsID: UUID?                 = nil,
                 airborneEarthBaseDetailsID: UUID?                      = nil) {
-        self.address                   = address
+        self.location                  = location
         self.openingHours              = openingHours
         self.averageClearNightsPerYear = averageClearNightsPerYear
         self.averageSeeingConditions   = averageSeeingConditions
@@ -86,7 +86,7 @@ public class PolisFixedSurfaceEarthBaseDetails: PolisObservingFacility {
 
 public extension PolisFixedSurfaceEarthBaseDetails {
     enum CodingKeys: String, CodingKey {
-        case address
+        case location
         case openingHours                             = "opening_hours"
         case accessRestrictions                       = "access_restrictions"
         case averageClearNightsPerYear                = "average_clear_nights_per_year"
