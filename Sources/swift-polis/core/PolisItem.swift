@@ -67,6 +67,8 @@ public struct PolisItem: Codable {
 
     public var parentID: UUID?
 
+    public var lifecycleStatus: PolisLifecycleStatus
+
     /// The purpose of the optional `automationLabel` is to act as a unique target for scripts and other software
     /// packages. As an example, the observatory control software could search for an instrument with a given label and
     /// set its status or issue commands etc. This could be used to sync with ASCOM or INDI based systems.
@@ -75,12 +77,15 @@ public struct PolisItem: Codable {
     public var media: PolisMediaSource?
 
     public init(identity: PolisIdentity,
-                owner: Owner?             = nil, parentID: UUID? = nil,
-                automationLabel: String?  = nil,
-                media: PolisMediaSource?  = nil) {
+                owner: Owner?                         = nil,
+                parentID: UUID?                       = nil,
+                lifecycleStatus: PolisLifecycleStatus = .unknown,
+                automationLabel: String?              = nil,
+                media: PolisMediaSource?              = nil) {
         self.identity        = identity
         self.owner           = owner
         self.parentID        = parentID
+        self.lifecycleStatus = lifecycleStatus
         self.automationLabel = automationLabel
         self.media           = media
     }
@@ -97,7 +102,8 @@ public extension PolisItem {
     enum CodingKeys: String, CodingKey {
         case identity
         case owner
-        case parentID = "parent_id"
+        case parentID        = "parent_id"
+        case lifecycleStatus = "lifecycle_status"
         case automationLabel = "automation_label"
         case media
     }
