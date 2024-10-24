@@ -90,7 +90,13 @@ public final class PolisProviderManager {
         guard PolisProviderManager.currentProviderManager == nil else { throw PolisProviderManagerError.cannotRegisterMultipleManagerInstances }
 
         self.polisImplementation     = PolisConstants.frameworkSupportedImplementation.last
-        self.polisFileResourceFinder = try PolisFileResourceFinder(at: URL(fileURLWithPath: PolisProviderManager.localPolisRootPath), supportedImplementation: self.polisImplementation)
+        if let url = URL(string: PolisProviderManager.localPolisRootPath) {
+            self.polisFileResourceFinder = try PolisFileResourceFinder(at: url, supportedImplementation: self.polisImplementation)
+        } else {
+            logger.error("Cannot create URL from rootFolder")
+            throw PolisProviderManagerError.cannotAccessOrCreateStandardPolisFolder
+        }
+
 
         if !ensurePolisFoldersExistence() { throw PolisProviderManagerError.cannotAccessOrCreateStandardPolisFolder }
 
