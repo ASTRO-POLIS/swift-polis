@@ -76,6 +76,7 @@ public class PolisObservingFacility: Identifiable, Codable {
 
     //TODO: ... and satellites, rovers, ... to be added
 
+
     public init(item: PolisItem,
                 gravitationalBodyRelationship: ObservingFacilityLocationType,
                 placeInTheSolarSystem: PlaceInTheSolarSystem,
