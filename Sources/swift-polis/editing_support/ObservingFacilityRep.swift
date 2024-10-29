@@ -69,7 +69,7 @@ public class ObservingFacilityRep {
     public var facilityLocationID: UUID?                                   // Points to dictionary with some predefined (standard) keys
     public var astronomicalCode: String?                                   // Minor planet codes, etc.
 
-    func flush() async throws {
+    public func flush() async throws {
         let manager = PolisProviderManager.currentProviderManager!
 
         try await manager.facilityDirectory.flashUsing(manager: PolisProviderManager.currentProviderManager)

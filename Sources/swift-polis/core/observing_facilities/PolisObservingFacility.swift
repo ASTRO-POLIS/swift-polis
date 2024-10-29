@@ -9,7 +9,7 @@ import Foundation
 
 public class PolisObservingFacility: Identifiable, Codable {
 
-    public enum ObservingFacilityLocationType: String, Codable {
+    public enum ObservingFacilityLocationType: String, Codable, CaseIterable {
         case surfaceFixed          = "surface_fixed"
         case surfaceMobile         = "surface_mobile"
         case airborneSelfPropelled = "airborne_self_propelled"
@@ -20,7 +20,7 @@ public class PolisObservingFacility: Identifiable, Codable {
         case other
     }
 
-    public enum PlaceInTheSolarSystem: String, Codable {
+    public enum PlaceInTheSolarSystem: String, Codable, CaseIterable {
         case sun         = "Sun"
 
         // Planets & Dwarfs
