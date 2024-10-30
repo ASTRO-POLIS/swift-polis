@@ -135,3 +135,17 @@
     "polis_registration_date": "2024-09-03T02:23:57Z"
 }
 ```
+## PolisItem.Owner
+```json
+{
+    "ownership_type": "government",
+    "personal_owner_ids": [
+        "6FDA06D1-9AB1-4EF2-AD13-0DAF28940C52"
+    ],
+    "organisational_owner_ids": [
+        "2CE0491C-AC1F-4B84-A4C5-D752E9AE95D4",
+        "FD0D5301-9C0F-4239-BD52-FAF8DBA2A2EF"
+    ]
+}
+```
+

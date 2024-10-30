@@ -55,11 +55,26 @@ public enum PolisLifecycleStatus: String, Codable {
 
 public struct PolisItem: Codable {
     /// A type that describes the different kinds of owners of a POLIS item.
-
+    ///
+    /// In case the owner claims ownership over a single `PolisItem` the owner's data should be stored together with the Item's
+    /// data. Otherwise shared ownership is recommended.
     public struct Owner: Codable {
+        /// The ownership type as defined by `PolisOwnershipType`
         public var ownershipType: PolisOwnershipType
+
+        /// An optional set of UUIDs pointing to stored `PolisPerson`s.
         public var personalOwnerIDs: Set<UUID>?
+
+        /// An optional set of UUIDs pointing to stored `PolisOrganisation`s.
         public var organisationalOwnerIDs: Set<UUID>?
+
+        public init(ownershipType: PolisOwnershipType  = .other,
+                    personalOwnerIDs: Set<UUID>?       = nil,
+                    organisationalOwnerIDs: Set<UUID>? = nil) {
+            self.ownershipType          = ownershipType
+            self.personalOwnerIDs       = personalOwnerIDs
+            self.organisationalOwnerIDs = organisationalOwnerIDs
+        }
    }
 
     public var identity: PolisIdentity
@@ -106,5 +121,14 @@ public extension PolisItem {
         case lifecycleStatus = "lifecycle_status"
         case automationLabel = "automation_label"
         case media
+    }
+}
+
+public extension PolisItem.Owner {
+    enum CodingKeys: String, CodingKey {
+        case ownershipType          = "ownership_type"
+        case personalOwnerIDs       = "personal_owner_ids"
+        case organisationalOwnerIDs = "organisational_owner_ids"
+
     }
 }

@@ -9,7 +9,7 @@ import XCTest
 
 @testable import swift_polis
 
-final class PolisProviderConfigurationTests: XCTestCase {
+final class PolisProviderManagerTests: XCTestCase {
 
     //MARK: - Setup & Teardown -
     var providerWillCreateNotificationExpectation: XCTNSNotificationExpectation!
@@ -38,7 +38,7 @@ final class PolisProviderConfigurationTests: XCTestCase {
     }
 
     //MARK: - Tests -
-    func test_PolisProviderConfiguration_creation_shouldSucceed() throws {
+    func test_PolisProviderManager_creation_shouldSucceed() throws {
         // Given
         PolisProviderManager.localPolisRootPath = "/tmp/polis_test"
 
@@ -48,7 +48,7 @@ final class PolisProviderConfigurationTests: XCTestCase {
         XCTAssertNotNil(sut)
     }
 
-    func test_PolisProviderConfiguration_creatingProvider_shouldSucceed() async throws {
+    func test_PolisProviderManager_creatingAndStoringProvider_shouldSucceed() async throws {
         // Given
         PolisProviderManager.localPolisRootPath = "/tmp/polis_test"
 
@@ -64,10 +64,10 @@ final class PolisProviderConfigurationTests: XCTestCase {
                           enforceOrder: true)
     }
 
-    //TODO: Start with test that create a new public provider
-    
+
     static var allTests = [
-        ("test_PolisProviderConfiguration_creatingProvider_shouldSucceed", test_PolisProviderConfiguration_creatingProvider_shouldSucceed),
+        ("test_PolisProviderManager_creation_shouldSucceed",                   test_PolisProviderManager_creation_shouldSucceed),
+        ("test_PolisProviderManager_creatingAndStoringProvider_shouldSucceed", test_PolisProviderManager_creatingAndStoringProvider_shouldSucceed),
     ]
 
 

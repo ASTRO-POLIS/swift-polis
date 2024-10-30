@@ -77,6 +77,7 @@ We use this package for the `SemanticVersion` type, that helps us manage POLIS v
     - and back-index to shared device details. Manufacturers are referenced objects only (so no duplications)
     - Test 
     - Document
+- ✅ Owner (part of Item) needs tests, JSON, and documentation
 - PolisDirection needs more documentation
 - PolisCommunicationChannel needs Documentation and Tests
 - PolisAddress needs Documentation and Tests
