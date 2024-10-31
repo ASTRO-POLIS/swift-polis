@@ -32,7 +32,13 @@ struct TestingSupport {
                       polisRegistrationDate: Date.now
         )
     }
-    
+
+    static func exampleOwner() -> PolisItem.Owner {
+        PolisItem.Owner(ownershipType: .government,
+                        personalOwnerIDs: Set([UUID(uuidString: "6FDA06D1-9AB1-4EF2-AD13-0DAF28940C52")!]),
+                        organisationalOwnerIDs: Set([UUID(uuidString: "2CE0491C-AC1F-4B84-A4C5-D752E9AE95D4")!, UUID(uuidString: "FD0D5301-9C0F-4239-BD52-FAF8DBA2A2EF")!]))
+    }
+
     static func exampleCommunicationChannel() -> PolisCommunicationChannel {
         PolisCommunicationChannel(twitterIDs: ["@CoolAstro", "@GalaxyFarAway"],
                                   mastodonIDs: ["@GalaxyFarAway@mastodon.social"],
@@ -76,5 +82,38 @@ struct TestingSupport {
     static func examplePerson() -> PolisPerson {
         PolisPerson(name: "Amon Ra", email: "ra@god.cun", communication: exampleCommunicationChannel(), address: exampleAddress())
     }
-    
+
+    static func exampleItem() -> PolisItem {
+        PolisItem(identity: examplePolisIdentityBAO())
+    /*
+     owner: Owner?                         = nil,
+     parentID: UUID?                       = nil,
+     lifecycleStatus: PolisLifecycleStatus = .unknown,
+     automationLabel: String?              = nil,
+     media: PolisMediaSource?              = nil) {
+
+     */
+    }
+
+
+    static func exampleObservingFacility() -> PolisObservingFacility {
+        PolisObservingFacility(item: exampleItem(), gravitationalBodyRelationship: PolisObservingFacility.ObservingFacilityLocationType.surfaceFixed, placeInTheSolarSystem: PolisObservingFacility.PlaceInTheSolarSystem.earth)
+        /*
+         observingFacilityCode: String?                    = nil,
+         solarSystemBodyName: String?                      = nil,
+         orbitingAroundPlaceInTheSolarSystemNamed: String? = nil,
+         facilityLocationID: UUID?                         = nil,
+         astronomicalCode: String?                         = nil,
+         parentObservingFacilityID: UUID?                  = nil,
+         observatoryIDs: Set<UUID>?                        = nil,
+         deviceIDs: Set<UUID>?                             = nil,
+         website: URL?                                     = nil,
+         scientificObjectives: String?                     = nil,
+         history: String?                                  = nil,
+         fixedSurfaceEarthBaseDetailsID: UUID?             = nil,
+         mobileSurfaceEarthBaseDetailsID: UUID?            = nil,
+         airborneEarthBaseDetailsID: UUID?                 = nil) {
+
+         */
+    }
 }
