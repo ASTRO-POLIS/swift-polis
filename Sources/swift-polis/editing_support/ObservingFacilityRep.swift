@@ -59,6 +59,7 @@ public class ObservingFacilityRep {
     public var parentID: UUID?
     public var automationLabel: String?
     public var media: PolisMediaSource?
+    public var lifecycleStatus: PolisLifecycleStatus = PolisLifecycleStatus.unknown
 
     // Polis Observing Facility Details defined
     public var gravitationalBodyRelationship = PolisObservingFacility.ObservingFacilityLocationType.surfaceFixed
@@ -91,6 +92,7 @@ public class ObservingFacilityRep {
         item.parentID        = parentID
         item.automationLabel = automationLabel
         item.media           = media
+        item.lifecycleStatus = lifecycleStatus
 
         let facility = PolisObservingFacility(item: item, gravitationalBodyRelationship: PolisObservingFacility.ObservingFacilityLocationType.surfaceFixed, placeInTheSolarSystem: PolisObservingFacility.PlaceInTheSolarSystem.earth)
 
