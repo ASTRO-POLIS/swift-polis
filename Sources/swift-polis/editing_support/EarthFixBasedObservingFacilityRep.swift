@@ -5,8 +5,7 @@
 //  Created by Georg Tuparev on 23/10/2024.
 //
 
-class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
-
+public class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
 
     // Address related
     public var street: String?
@@ -45,7 +44,7 @@ class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
     public var dominantWindDirection: PolisDirection.RoughDirection?
     public var surfaceSize: PolisPropertyValue?             // [m^2]
 
-    override func flush() async throws {
+    public override func flush() async throws {
         try await super.flush()
 
         //TODO: Implement me!

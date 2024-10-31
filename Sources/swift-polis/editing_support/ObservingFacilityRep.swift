@@ -108,7 +108,9 @@ public class ObservingFacilityRep {
 
         do {
             let data = try manager.jsonEncoder.encode(facility)
-            try data.write(to: URL(string: detailsPath)!)
+//TODO: remove later solution will be found
+            let path = "file://\(detailsPath)"
+            try data.write(to: URL(string: path.normalisedFolderPath())!)
         }
         catch {
             PolisLogger.shared.error("Cannot encode or save facility details to: \(detailsPath)")
