@@ -25,16 +25,16 @@ public struct PolisManufacturer: Codable, Identifiable {
     public var url: URL?
 
     /// The point-of-contact for the manufacturer.
-    public var adminContact: PolisAdminContact?
+    public var adminContact: PolisAdminContact? //TODO: Make it emai!
 
-    public var addresses: [PolisAddress]?
+    public var addresses: [PolisPlace]?
 
     public var communication: PolisCommunicationChannel?
 
     public init(identity: PolisIdentity,
                 url: URL?                                 = nil,
                 adminContact: PolisAdminContact?          = nil,
-                addresses: [PolisAddress]?                = nil,
+                addresses: [PolisPlace]?                = nil,
                 communication: PolisCommunicationChannel? = nil) {
         self.identity      = identity
         self.url           = url

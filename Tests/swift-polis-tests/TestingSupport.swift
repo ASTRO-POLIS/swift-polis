@@ -48,8 +48,8 @@ struct TestingSupport {
                                   skypeIDs: ["cool_astro"])
     }
     
-    static func exampleAddress() -> PolisAddress {
-        PolisAddress(attentionOff: "Mrs. Royal Astronomer",
+    static func exampleAddress() -> PolisPlace {
+        PolisPlace(attentionOff: "Mrs. Royal Astronomer",
                      houseName: "Galaxy.",
                      street: "Observatory str.",
                      houseNumber: 42,

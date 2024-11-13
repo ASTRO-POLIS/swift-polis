@@ -42,7 +42,7 @@ public class PolisObservingFacility: Identifiable, Codable {
         case comet
     }
 
-    // Identification and type
+    // Identification and type 
     public var item: PolisItem
     public var gravitationalBodyRelationship: ObservingFacilityLocationType
     public var placeInTheSolarSystem: PlaceInTheSolarSystem
@@ -53,9 +53,6 @@ public class PolisObservingFacility: Identifiable, Codable {
     public var orbitingAroundPlaceInTheSolarSystemNamed: String?
     public var facilityLocationID: UUID?                                   // Points to dictionary with some predefined (standard) keys
     public var astronomicalCode: String?                                   // Minor planet codes, etc.
-
-    // Identifiable protocol compliance
-    public var id: UUID { item.identity.id }
 
     // Relationship to other facilities
     public var parentObservingFacilityID: UUID?
@@ -74,7 +71,13 @@ public class PolisObservingFacility: Identifiable, Codable {
     public var mobileSurfaceEarthBaseDetailsID: UUID?
     public var airborneEarthBaseDetailsID: UUID?
 
+    // Arifacts of interest could be also on other solar system bodies (e.g. Apollo landing site)
+    public var artifactIDs: Set<UUID>?
+
     //TODO: ... and satellites, rovers, ... to be added
+
+    // Identifiable protocol compliance
+    public var id: UUID { item.identity.id }
 
 
     public init(item: PolisItem,

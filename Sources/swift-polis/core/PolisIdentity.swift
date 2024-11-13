@@ -39,7 +39,7 @@ public struct PolisIdentity: Codable, Identifiable {
     /// Latest update time. Used primarily for syncing.
     public var lastUpdateDate: Date
 
-    /// Human readable name of the item (object). It is recommended to assign a unique name to avoid potential confusions.
+    /// Human readable name of the item (object). It is recommended to assign a unique English name to avoid potential confusions.
     public var name: String
 
     /// Human readable name of the item in a local script.

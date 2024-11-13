@@ -21,7 +21,7 @@ public class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
     public var country: String?                   // e.g. Armenia
     public var countryID: String?                 // 2-letter code
 
-    public var continent: PolisAddress.EarthContinent?
+    public var continent: PolisPlace.EarthContinent?
 
     public var eastLongitude: PolisPropertyValue? // degrees
     public var latitude: PolisPropertyValue?      // degrees

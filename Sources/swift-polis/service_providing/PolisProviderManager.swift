@@ -153,16 +153,30 @@ public extension PolisProviderManager {
         nc.post(name: StatusChangeNotifications.providerDidCreateNotification, object: self)
     }
 
-    func localProvider(using providerUrl: URL, isMirror: Bool = false) async throws {
-        try canConfigure()
+    
+    /// This method should be used by non data editing clients (e.g. mobile apps) trying to load the initial batch of POLIS data
+    ///
+    /// In client apps use this method only once. Use `cachedProvider()` in subsequent launches of the client app.
+    ///
+    /// - Parameter useExperimentalVersion: if `true` it tries to connect to a well known experimental test server
+    func createLocalProviderByUsingExistingRemoteProvider(useExperimentalVersion: Bool = false) async throws {
         //TODO: Implement me!
     }
-
-    func cachedProvider() async throws {
+    
+    /// If there is already an existing local copy of the POLIS dataset use this method to access it
+    ///
+    /// - Parameter rootURL: the local file URL that lead to the path containing the `../polis` folder
+    func existingLocalProvider(rootURL: URL) async throws {
         try canConfigure()
-        //TODO: Implement me!
+
+        //TODO: 1. Check and try to load the provider configuration entry
+        //TODO: 2. Check and try to load the provider directory
+        //TODO: 3. Check and try to load the facility directory
+        //TODO: 4. Prepare the lost of all currently available observing facilities
+        //TODO: 5. If needed, sync with remote providers
     }
 
+    //MARK: Private stuff
     private func canConfigure() throws {
         if isConfigured { throw PolisProviderManagerError.providerAtTheSameRootPathAlreadyConfigured }
         else            { isConfigured = true }

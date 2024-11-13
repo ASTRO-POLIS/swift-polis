@@ -96,7 +96,7 @@ public struct PolisMediaSource: Identifiable {
         public let copyrightHolderNote: String?
         public let author: String?
 
-        public let hash: String?
+        public let hash: String? //TODO: Document for URLs
 
         public init(id: UUID                                 = UUID(),
                     mediaType: MediaType                     = .image,

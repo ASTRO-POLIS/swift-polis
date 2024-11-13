@@ -9,7 +9,7 @@ import Foundation
 
 public class PolisFixedSurfaceEarthBaseDetails: PolisObservingFacility {
 
-    public var location: PolisAddress?
+    public var location: PolisPlace?
 
     // General info
     public var openingHours: PolisVisitingHours?
@@ -24,7 +24,7 @@ public class PolisFixedSurfaceEarthBaseDetails: PolisObservingFacility {
     public var dominantWindDirection: PolisDirection.RoughDirection?
     public var surfaceSize: PolisPropertyValue?             // [m^2]
 
-    public init(location: PolisAddress?                                = nil,
+    public init(location: PolisPlace?                                = nil,
                 openingHours: PolisVisitingHours?                      = nil,
                 averageClearNightsPerYear: UInt?                       = nil,
                 averageSeeingConditions: PolisPropertyValue?           = nil,

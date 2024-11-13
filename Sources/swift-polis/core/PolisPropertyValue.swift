@@ -68,7 +68,7 @@ public struct PolisPropertyValue: Codable, Equatable {
     /// - "µm"
     /// - "solMass"
     /// - "eV"
-    public var unit: String?
+    public var unit: String? //TODO: Take FITS defs
 
     /// Designated initialiser
     ///

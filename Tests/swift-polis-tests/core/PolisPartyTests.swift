@@ -70,7 +70,7 @@ final class PolisPartyTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(TestingSupport.exampleAddress())
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisAddress.self, from: string!.data(using: .utf8)!))
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisPlace.self, from: string!.data(using: .utf8)!))
     }
 
     func test_PolisPerson_creation_shouldSucceed() throws {

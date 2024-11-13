@@ -12,7 +12,7 @@ public protocol PolisParty: Codable {
     var name: String                              { get set }
     var email: String                             { get set }
     var communication: PolisCommunicationChannel? { get set }
-    var address: PolisAddress?                    { get set }
+    var address: PolisPlace?                      { get set }
     var note: String?                             { get set }
 }
 
@@ -149,7 +149,7 @@ public enum PolisOwnershipType: String, Codable {
 }
 
 //MARK: - PolisAddress -
-public struct PolisAddress: Codable {
+public struct PolisPlace: Codable {
 
     public enum EarthContinent: String, Codable {
         case europe       = "Europe"
@@ -271,10 +271,10 @@ public struct PolisPerson: PolisParty {
     public var name: String
     public var email: String
     public var communication: PolisCommunicationChannel?
-    public var address: PolisAddress?
+    public var address: PolisPlace?
     public var note: String?
 
-    public init(name: String, email: String, communication: PolisCommunicationChannel? = nil, address: PolisAddress? = nil, note: String? = nil) {
+    public init(name: String, email: String, communication: PolisCommunicationChannel? = nil, address: PolisPlace? = nil, note: String? = nil) {
         self.name          = name
         self.email         = email
         self.communication = communication
@@ -289,7 +289,7 @@ public struct PolisOrganisation: PolisParty {
     public var email: String
     public var name: String
     public var communication: PolisCommunicationChannel?
-    public var address: PolisAddress?
+    public var address: PolisPlace?
     public var note: String?
     public var url: URL?
     public let abbreviation: String?   // e.g. MIT. MONET, BAO, ...
@@ -297,7 +297,7 @@ public struct PolisOrganisation: PolisParty {
     public init(organisationType: PolisOwnershipType       = .other,
                 name: String, email: String,
                 communication: PolisCommunicationChannel? = nil,
-                address: PolisAddress?                    = nil,
+                address: PolisPlace?                      = nil,
                 note: String?                             = nil,
                 url: URL?                                 = nil,
                 abbreviation: String?                     = nil) {
@@ -339,7 +339,7 @@ extension PolisAdminContact: Codable {
 
 
 //MARK: - PolisAddress
-extension PolisAddress {
+extension PolisPlace {
     public enum CodingKeys: String, CodingKey {
         case attentionOff       = "attention_off"
         case houseName          = "house_name"
