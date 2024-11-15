@@ -62,7 +62,7 @@ We use this package for the `SemanticVersion` type, that helps us manage POLIS v
     - Document
     - JSON examples
 - PolisArtifact
-    - Implement init()
+    - ✅ Implement init()
     - Tests
     - Documentation
     - JSON examples
