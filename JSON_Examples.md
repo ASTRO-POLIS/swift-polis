@@ -149,3 +149,26 @@
 }
 ```
 
+## PolisArtifact
+```json
+{
+    "identity": {
+        "last_update_date": "2024-11-15T15:19:46Z",
+        "short_description": "Testing BAO site",
+        "end_date": "2024-11-15T15:19:46Z",
+        "polis_registration_date": "2024-11-15T15:19:46Z",
+        "start_date": "2024-11-15T15:19:46Z",
+        "id": "8BECDC20-0114-473D-B184-46893332E7AB",
+        "external_references": [
+            "https://bao.am/device?id=1234",
+            "https://bao.am/rtml?dump-1234"
+        ],
+        "abbreviation": "bao",
+        "name": "Byurakan Astronomical Observatory",
+        "local_name": "ՀՀ ԳԱԱ Վ․Հ․ ՀԱՄԲԱՐՁՈՒՄՅԱՆԻ ԱՆՎԱՆ ԲՅՈՒՐԱԿԱՆԻ ԱՍՏՂԱԴԻՏԱՐԱՆ (ԱԶԳԱՅԻՆ ԱՐԺԵՔ)"
+    },
+    "artifact_type": "monument",
+    "visiting_opportunities": "One can visit Viktor Ambartsumian monument et any time BAO is open"
+}
+```
+

@@ -7,14 +7,17 @@
 
 import Foundation
 
-/// Often ``PolisObservingFacility`` instances contain historically  interesting artefacts or facilities specially
+/// `PolisObservingFacility` encapsulates non-observing artifacts like museums, planetariums etc.
+///
+/// Often ``PolisObservingFacility`` instances contain historically  interesting artifacts or facilities specially
 /// designated for visitors (visitor centres, planetariums, museums, ...). `PolisArtifact` encapsulates such
-/// artefacts.
+/// artifacts.
 ///
 /// **Note:** `PolisArtifact` is always part of an ``PolisObservingFacility`` and therefore inherits
 /// the visiting hours.
 public struct PolisArtifact: Codable, Identifiable {
 
+    /// The type of the artifact
     public enum ArtifactType: String, Codable {
         case museum
         case planetarium
@@ -26,10 +29,18 @@ public struct PolisArtifact: Codable, Identifiable {
         case unknown
     }
 
+    /// The identity of the artifact
     public var identity: PolisIdentity
+
+    /// The type of the artifact
     public var artifactType: ArtifactType
 
+    ///  Describes the attractiveness of the artifact and how to visit it
+    ///
+    ///  **Note:** Visiting hours should be defined by the observing site
     public var visitingOpportunities: String?
+
+    /// Mostly images (photos)
     public var media: PolisMediaSource?
 
     public var id: UUID { identity.id }

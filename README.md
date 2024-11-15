@@ -61,11 +61,6 @@ We use this package for the `SemanticVersion` type, that helps us manage POLIS v
     - Test
     - Document
     - JSON examples
-- PolisArtifact
-    - ✅ Implement init()
-    - Tests
-    - Documentation
-    - JSON examples
 - Implement Observatory
     - Implement
     - Test
@@ -108,3 +103,8 @@ We use this package for the `SemanticVersion` type, that helps us manage POLIS v
     - ✅ Document
 - ✅ Implement, test and document global Logger
 - ✅ Owner (part of Item) needs tests, JSON, and documentation
+- ✅ PolisArtifact
+    - ✅ Implement init()
+    - ✅ Tests
+    - ✅ Documentation
+    - ✅ JSON examples

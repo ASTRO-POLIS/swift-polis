@@ -48,8 +48,8 @@ final class PolisArtifactTests: XCTestCase {
     //MARK: - Tests -
     func test_PolisArtifact_codingSupport_shouldSucceed() throws {
         // Given
-        let sut = PolisArtifact(identity: TestingSupport.examplePolisIdentityBAO(), artifactType: .monument, visitingOpportunities: "One can visit Viktor Ambartsumian's monument et ant time BAO is open")
-        
+        let sut = PolisArtifact(identity: TestingSupport.examplePolisIdentityBAO(), artifactType: .monument, visitingOpportunities: "One can visit Viktor Ambartsumian monument et any time BAO is open")
+
         // When
         data   = try? jsonEncoder.encode(sut)
         string = String(data: data!, encoding: .utf8)
