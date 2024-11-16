@@ -42,9 +42,11 @@ The simplest configuration is the Polis client. The client monitors and syncs wi
 
 ## To Do
 - ⛔️ Fix Address Tests!
+- ⛔️ Fix PolisDirectory.ProviderDirectoryEntry Tests!
 
 - General ToDo - make sure all examples have JSON data examples.
 - General ToDo - make sure all swift files have the proper copyright message.
+- General ToDo - document `local` vs. `reference` UUIDs
 
 - Implement PolisProviderManager
     - ✅ Implement, document and test the creation of the provider from scratch (core information files and directories).
@@ -73,10 +75,20 @@ The simplest configuration is the Polis client. The client monitors and syncs wi
     - Test 
     - Document
 - PolisDirection needs more documentation
-- PolisCommunicationChannel needs Documentation and Tests
-- PolisAddress needs Documentation and Tests
-- PolisItem needs Documentation, Tests, and JSON examples.
-- PolisOrganisation needs Documentation, Tests, and JSON examples
+- PolisCommunicationChannel 
+    - Test
+    - Document
+- PolisAddress
+    - Test
+    - Document
+- PolisItem
+    - Test
+    - Document
+    - JSON examples
+- PolisOrganisation
+    - Test
+    - Document
+    - JSON examples
 - In PolisMediaSource, correct the documentation so that it reflects the Image to Media Transition 
 - Document, test, and create JSON examples for `PolisAdminContact`
 - Document `PolisModeOfOperation`

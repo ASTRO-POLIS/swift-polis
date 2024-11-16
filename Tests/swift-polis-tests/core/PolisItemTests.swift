@@ -55,7 +55,7 @@ final class PolisItemTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(sut)
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisItem.Owner.self, from: string!.data(using: .utf8)!))
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisOwner.self, from: string!.data(using: .utf8)!))
         XCTAssertEqual(sut.ownershipType, .government)
         XCTAssertEqual(sut.personalOwnerIDs!.count, 1)
         XCTAssertEqual(sut.organisationalOwnerIDs?.count, 2)

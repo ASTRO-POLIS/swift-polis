@@ -33,8 +33,8 @@ struct TestingSupport {
         )
     }
 
-    static func exampleOwner() -> PolisItem.Owner {
-        PolisItem.Owner(ownershipType: .government,
+    static func exampleOwner() -> PolisOwner {
+        PolisOwner(ownershipType: .government,
                         personalOwnerIDs: Set([UUID(uuidString: "6FDA06D1-9AB1-4EF2-AD13-0DAF28940C52")!]),
                         organisationalOwnerIDs: Set([UUID(uuidString: "2CE0491C-AC1F-4B84-A4C5-D752E9AE95D4")!, UUID(uuidString: "FD0D5301-9C0F-4239-BD52-FAF8DBA2A2EF")!]))
     }

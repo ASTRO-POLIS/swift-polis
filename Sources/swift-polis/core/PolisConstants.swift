@@ -30,8 +30,11 @@ public struct PolisConstants {
     public static let bigBangPolisDomain     = "https://polis.observer"
     public static let testBigBangPolisDomain = "https://test.polis.observer"
 
-    /// All references should start with this string
+    /// All global references should start with this string
     public static let polisReferencePrefix   = "ref://"
+
+    /// All UUIDs to local to the container files should start with this string
+    public static let polisLocalPrefix       = "local://"
 
     /// A list of supported implementations for this concrete framework.
     ///

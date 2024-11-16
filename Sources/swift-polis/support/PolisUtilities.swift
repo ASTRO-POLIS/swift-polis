@@ -23,3 +23,7 @@ public func uuidFromPolis(reference: String) -> String? {
 
 /// Creates a new POLIS reference from a valid UUID
 public func polisReferenceFrom(uuid: UUID) -> String { "\(PolisConstants.polisReferencePrefix)\(uuid.uuidString)" }
+
+//TODO: Add reverse functions and also support for references of different type (e.g. Manufacturer)
+public func localUUID(form id: UUID)     -> String { "\(PolisConstants.polisLocalPrefix)\(id)" }
+public func referenceUUID(form id: UUID) -> String { "\(PolisConstants.polisReferencePrefix)\(id)" }
