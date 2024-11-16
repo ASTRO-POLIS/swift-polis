@@ -123,7 +123,7 @@ public struct PolisDirectory: StorableItem  {
         /// POLIS service provider's admin contact
         ///
         /// It is recommended that the contact information exposes no or very limited personal information
-        public var adminContact: PolisPerson
+        public var contact: PolisPerson
 
         /// Designated initialiser.
         public init(id:                       UUID                = UUID(),
@@ -135,7 +135,7 @@ public struct PolisDirectory: StorableItem  {
                     url:                      String?             = nil,
                     supportedImplementations: [PolisImplementation],
                     providerType:             ProviderType,
-                    adminContact:             PolisPerson) throws {
+                    contact:                  PolisPerson) throws {
             if supportedImplementations.isEmpty               { throw DirectoryEntryError.emptyListOfSupportedImplementations }
             if (providerType == .mirror) && (mirrorID == nil) { throw DirectoryEntryError.mirrorIdNotAssigned }
 
@@ -155,7 +155,7 @@ public struct PolisDirectory: StorableItem  {
             self.url                      = url
             self.supportedImplementations = filtered
             self.providerType             = providerType
-            self.adminContact             = adminContact
+            self.contact                  = contact
         }
     }
 
@@ -256,7 +256,7 @@ extension PolisDirectory.ProviderDirectoryEntry: Codable {
         case url
         case supportedImplementations = "supported_implementations"
         case providerType             = "provider_type"
-        case adminContact             = "admin_contact"
+        case contact
     }
 }
 

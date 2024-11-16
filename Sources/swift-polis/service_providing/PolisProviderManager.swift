@@ -134,7 +134,7 @@ public extension PolisProviderManager {
         let directory = try PolisDirectory.ProviderDirectoryEntry(name: configuration.name,
                                                                   supportedImplementations: [PolisImplementation.oldestSupportedImplementation()],
                                                                   providerType: configuration.providerType,
-                                                                  adminContact: admin)
+                                                                  contact: admin)
 
         nc.post(name: StatusChangeNotifications.providerWillCreateNotification, object: self)
         

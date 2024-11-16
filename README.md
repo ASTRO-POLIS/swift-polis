@@ -49,7 +49,6 @@ We use this package for the `SemanticVersion` type, that helps us manage POLIS v
 - General ToDo - make sure all examples have JSON data examples.
 - General ToDo - make sure all swift files have the proper copyright message.
 
-- Replace Admin with Person
 - Implement PolisProviderManager
     - ✅ Implement, document and test the creation of the provider from scratch (core information files and directories).
     - Implement, test, and document the access from existing local files
@@ -108,3 +107,4 @@ We use this package for the `SemanticVersion` type, that helps us manage POLIS v
     - ✅ Tests
     - ✅ Documentation
     - ✅ JSON examples
+- ✅ Replace Admin with Person

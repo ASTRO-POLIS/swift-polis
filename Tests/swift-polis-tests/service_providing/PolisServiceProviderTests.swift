@@ -140,7 +140,7 @@ final class PolisServiceProviderTests: XCTestCase {
                                                              url: "https://polis.net",
                                                              supportedImplementations: [PolisConstants.frameworkSupportedImplementation.last!],
                                                              providerType: .mirror,
-                                                             adminContact: TestingSupport.examplePerson())
+                                                             contact: TestingSupport.examplePerson())
 
         // When
         data   = try? jsonEncoder.encode(sut)
@@ -163,7 +163,7 @@ final class PolisServiceProviderTests: XCTestCase {
                                                                    url: "https://polis.net",
                                                                    supportedImplementations: [PolisConstants.frameworkSupportedImplementation.last!],
                                                                    providerType: .mirror,
-                                                                   adminContact: TestingSupport.examplePerson())
+                                                                   contact: TestingSupport.examplePerson())
         let sut       = PolisDirectory(providerDirectoryEntries: [sut_entry!])
 
         // When

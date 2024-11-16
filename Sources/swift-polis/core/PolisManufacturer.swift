@@ -25,7 +25,7 @@ public struct PolisManufacturer: Codable, Identifiable {
     public var url: URL?
 
     /// The point-of-contact for the manufacturer.
-    public var adminContact: PolisAdminContact? //TODO: Make it emai!
+    public var contact: PolisPerson?
 
     public var addresses: [PolisPlace]?
 
@@ -33,12 +33,12 @@ public struct PolisManufacturer: Codable, Identifiable {
 
     public init(identity: PolisIdentity,
                 url: URL?                                 = nil,
-                adminContact: PolisAdminContact?          = nil,
-                addresses: [PolisPlace]?                = nil,
+                contact: PolisPerson?                     = nil,
+                addresses: [PolisPlace]?                  = nil,
                 communication: PolisCommunicationChannel? = nil) {
         self.identity      = identity
         self.url           = url
-        self.adminContact  = adminContact
+        self.contact       = contact
         self.addresses     = addresses
         self.communication = communication
     }
@@ -49,7 +49,7 @@ extension PolisManufacturer {
     enum CodingKeys: String, CodingKey {
         case identity
         case url
-        case adminContact = "admin_contact"
+        case contact
         case addresses
         case communication
     }
