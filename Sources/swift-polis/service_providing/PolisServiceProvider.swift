@@ -211,36 +211,6 @@ public struct PolisObservingFacilityDirectory: Codable, StorableItem {
     }
 }
 
-//MARK: - Resources provided by manufacturers -
-
-//TODO: Documentation!
-//WARNING: This here is very wrong! What actually is needed is a list of referred devices. Obviously Georg was drunk while writing this!
-//public struct PolisResourceDirectory: Codable {
-//
-//    public struct ResourceReference: Codable, Identifiable {
-//        public var identity: PolisIdentity
-//        public var uniqueManufacturerName: String
-//        public var deviceTypes: [PolisDevice.DeviceType]
-//
-//        public var id: UUID { identity.id }
-//
-//        public init(identity: PolisIdentity, uniqueName: String, deviceTypes: [PolisDevice.DeviceType] = [PolisDevice.DeviceType]()) {
-//            self.identity               = identity
-//            self.uniqueManufacturerName = uniqueName
-//            self.deviceTypes            = deviceTypes
-//        }
-//    }
-//
-//    public var lastUpdate: Date                        // UTC
-//    public var resourceReferences: [ResourceReference]
-//
-//    public init(lastUpdate: Date, resourceReferences: [ResourceReference]) {
-//        self.lastUpdate         = lastUpdate
-//        self.resourceReferences = resourceReferences
-//    }
-//
-//}
-
 //MARK: - Making types Codable and CustomStringConvertible -
 
 
@@ -280,21 +250,6 @@ extension PolisObservingFacilityDirectory.ObservingFacilityReference {
         case identity
     }
 }
-
-//extension PolisResourceDirectory {
-//    public enum CodingKeys: String, CodingKey {
-//        case lastUpdate         = "last_updated"
-//        case resourceReferences = "resource_references"
-//    }
-//}
-//
-//extension PolisResourceDirectory.ResourceReference {
-//    public enum CodingKeys: String, CodingKey {
-//        case identity
-//        case uniqueManufacturerName = "unique_manufacturer_name"
-//        case deviceTypes            = "device_types"
-//    }
-//}
 
 //MARK: Implementing the StorableItem protocols
 extension PolisDirectory.ProviderDirectoryEntry {

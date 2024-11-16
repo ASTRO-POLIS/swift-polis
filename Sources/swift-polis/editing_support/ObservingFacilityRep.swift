@@ -55,7 +55,7 @@ public class ObservingFacilityRep {
     public var polisRegistrationDate: Date?
 
     // Polis Item defined
-    public var owner: PolisItem.Owner?
+    public var owner: PolisOwner?
     public var parentID: UUID?
     public var automationLabel: String?
     public var media: PolisMediaSource?
@@ -90,7 +90,6 @@ public class ObservingFacilityRep {
         item.identity        = identity
         item.owner           = owner
         item.parentID        = parentID
-        item.automationLabel = automationLabel
         item.media           = media
         item.lifecycleStatus = lifecycleStatus
 

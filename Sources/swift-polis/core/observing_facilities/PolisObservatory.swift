@@ -55,7 +55,19 @@ public class PolisObservatory: Identifiable, Codable {
 
     public var id: UUID { identity.id }
 
-
+    public init(identity: PolisIdentity,
+                electromagneticSpectrumCoverage: PolisElectromagneticSpectrumCoverage,
+                observatoryType: ObservatoryType,
+                location: PolisPlace?         = nil,
+                configurationIDs: Set<UUID>?  = nil,
+                deviceIDs: Set<UUID>?         = nil) {
+        self.identity                        = identity
+        self.electromagneticSpectrumCoverage = electromagneticSpectrumCoverage
+        self.observatoryType                 = observatoryType
+        self.location                        = location
+        self.configurationIDs                = configurationIDs
+        self.deviceIDs                       = deviceIDs
+    }
 }
 
 

@@ -11,9 +11,11 @@ The framework contains general sources common to all support levels and sources,
 
 ### Level 3 support
 
-## Framework Dependancies
-- [SoftwareEtudes](https://github.com/tuparev/SoftwareEtudes) is a collection of useful general types developed and maintained by one of the POLIS creators.
-
+## Dependancies 
+In general we are trying to avoid dependancies to other projects. Why? We share the concerns of many other well respected developers on this subject. However, in the case of `swift-polis` we have decided to use software modules developed and maintained by members of our team. This guarantees that even in the case that the concrete author of the module abandons the project, someone from our team can take over the maintenance.
+Current dependences include:
+- [SoftwareEtudes](https://github.com/tuparev/SoftwareEtudes)
+We use this package mainly for the `SemanticVersion` type that helps us manage POLIS versions, and few other helpful utilities. This package is maintained by the authors of `swift-polis`, so we can guarantee, that it will not get out of sync.
 
 ## To be refactored...
 
@@ -29,11 +31,6 @@ The simplest configuration is the Polis client. The client monitors and syncs wi
 
 - .../(client/provider)root_path/... - Root path is the folder that contains all POLIS related data. In the case that the framework is also used to maintain a POLIS provider, two root paths (for the client and for the provider) are required.
 
-## Dependancies 
-In general we are trying to avoid dependancies to other projects. Why? We share the concerns of many other well respected developers on this subject. However, in the case of `swift-polis` we have decided to use software modules developed and maintained by members of our team. This guarantees that even in the case that the concrete author of the module abandons the project, someone from our team can take over the maintenance.
-Current dependences include:
-- [SoftwareEtudes](https://github.com/tuparev/SoftwareEtudes)
-We use this package for the `SemanticVersion` type, that helps us manage POLIS versions.
 
 ### Random notes to be sorted later
 **Note about RTML:** As often as possible types are similar to types defined by [RTML](http://www.astro.physik.uni-goettingen.de/~hessman/misc/RTML-3.2b.xsd)
@@ -61,21 +58,15 @@ We use this package for the `SemanticVersion` type, that helps us manage POLIS v
     - Document
     - JSON examples
 - Implement Observatory
-    - Implement
+    - ✅ Implement
     - Test
     - Document
     - JSON examples
 - Implement Device
-    - Implement
+    - ✅ Implement
     - Test
     - Document
     - JSON examples
-- Implement Device
-    - Implement
-    - Test
-    - Document
-    - JSON examples
-- Reimplement PolisReferences and its tests. We decided to start with, references will be only to Device Details
 - Finish the implementation of 
     - ✅ the Manufacturer 
     - and back-index to shared device details. Manufacturers are referenced objects only (so no duplications)
