@@ -66,13 +66,13 @@ public struct PolisDevice: Codable, Identifiable {
      - polarimeter: Hasmik to suggest the parameters
      */
 
-    public var item: PolisItem
-    public var type: DeviceType
-    public var deviceSpecificPropertiesID: UUID?  // There are simple devices without any specific parameters
-    public var additionalPropertiesID: UUID?
-    public var url: URL?
-    public var scientificObjectives: String?
-    public var notes: String?
+//    public var item: PolisItem
+//    public var type: DeviceType
+//    public var deviceSpecificPropertiesID: UUID?  // There are simple devices without any specific parameters
+//    public var additionalPropertiesID: UUID?
+//    public var url: URL?
+//    public var scientificObjectives: String?
+//    public var notes: String?
 
         
     /// Device administrator's suggested sub-devices
@@ -80,48 +80,48 @@ public struct PolisDevice: Codable, Identifiable {
     /// It is the responsibility of the client software to decide to load or reject these sub-devices. ``PolisImplementation`` implements methods to
     /// support the client software to make the loading decision, but the POLIS standard just recommends a device hierarchy without strictly requiring it. There are
     /// legit cases when the suggested hierarchy does not fit complexity of astronomical observing stations.
-    public var subDevices: Set<UUID>?
+//    public var subDevices: Set<UUID>?
 
-    public var id: UUID { item.identity.id }
+//    public var id: UUID { item.identity.id }
     
     // POLIS configurations associated with the device
     public var configurationIDs: Set<UUID>?
 
-    public init(item: PolisItem,
-                type: DeviceType,
-                deviceSpecificPropertiesID: UUID? = nil,
-                additionalPropertiesID: UUID?     = nil,
-                suggestedSubDeviceIDs: Set<UUID>? = nil,
-                url: URL?                         = nil,
-                scientificObjectives: String?     = nil,
-                notes: String?                    = nil,
-                subDevices: Set<UUID>?            = nil) {
-        self.item                       = item
-        self.type                       = type
-        self.deviceSpecificPropertiesID = deviceSpecificPropertiesID
-        self.additionalPropertiesID     = additionalPropertiesID
-        self.url                        = url
-        self.scientificObjectives       = scientificObjectives
-        self.notes                      = notes
-        self.subDevices                 = subDevices
-    }
-
-    public func suggestedSubDeviceIDs() -> Set<UUID> { Set<UUID>() } //TODO: Implement me!
+//    public init(item: PolisItem,
+//                type: DeviceType,
+//                deviceSpecificPropertiesID: UUID? = nil,
+//                additionalPropertiesID: UUID?     = nil,
+//                suggestedSubDeviceIDs: Set<UUID>? = nil,
+//                url: URL?                         = nil,
+//                scientificObjectives: String?     = nil,
+//                notes: String?                    = nil,
+//                subDevices: Set<UUID>?            = nil) {
+//        self.item                       = item
+//        self.type                       = type
+//        self.deviceSpecificPropertiesID = deviceSpecificPropertiesID
+//        self.additionalPropertiesID     = additionalPropertiesID
+//        self.url                        = url
+//        self.scientificObjectives       = scientificObjectives
+//        self.notes                      = notes
+//        self.subDevices                 = subDevices
+//    }
+//
+//    public func suggestedSubDeviceIDs() -> Set<UUID> { Set<UUID>() } //TODO: Implement me!
 
 }
 
 
 //MARK: - Type extensions -
 
-public extension PolisDevice {
-    enum CodingKeys: String, CodingKey {
-        case item
-        case type
-        case deviceSpecificPropertiesID = "device_specific_properties_id"
-        case additionalPropertiesID     = "additional_properties_id"
-        case url
-        case scientificObjectives       = "scientific_objectives"
-        case notes
-        case subDevices                 = "sub_devices"
-    }
-}
+//public extension PolisDevice {
+//    enum CodingKeys: String, CodingKey {
+//        case item
+//        case type
+//        case deviceSpecificPropertiesID = "device_specific_properties_id"
+//        case additionalPropertiesID     = "additional_properties_id"
+//        case url
+//        case scientificObjectives       = "scientific_objectives"
+//        case notes
+//        case subDevices                 = "sub_devices"
+//    }
+//}

@@ -90,7 +90,6 @@ The simplest configuration is the Polis client. The client monitors and syncs wi
     - Document
     - JSON examples
 - In PolisMediaSource, correct the documentation so that it reflects the Image to Media Transition 
-- Document, test, and create JSON examples for `PolisAdminContact`
 - Document `PolisModeOfOperation`
 - Document `PolisElectromagneticSpectrumCoverage`
 
