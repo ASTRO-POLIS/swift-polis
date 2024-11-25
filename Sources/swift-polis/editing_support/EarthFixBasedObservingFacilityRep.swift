@@ -5,7 +5,17 @@
 //  Created by Georg Tuparev on 23/10/2024.
 //
 
+import Foundation
+
 public class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
+
+    public static func registerNewEarthFixBasedFacility(with id: UUID = UUID(), name: String = "Unknown Facility") throws -> EarthFixBasedObservingFacilityRep {
+        let result: EarthFixBasedObservingFacilityRep = try ObservingFacilityRep.registerNewFacility(with: id, name: name) as! EarthFixBasedObservingFacilityRep
+
+        //TODO: Implement me!
+        
+        return result
+    }
 
     // Address related
     public var street: String?
