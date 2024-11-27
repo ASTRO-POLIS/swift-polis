@@ -10,10 +10,10 @@ import Foundation
 public class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
 
     public static func registerNewEarthFixBasedFacility(with id: UUID = UUID(), name: String = "Unknown Facility") throws -> EarthFixBasedObservingFacilityRep {
-        let result: EarthFixBasedObservingFacilityRep = try ObservingFacilityRep.registerNewFacility(with: id, name: name) as! EarthFixBasedObservingFacilityRep
+        let result: EarthFixBasedObservingFacilityRep = EarthFixBasedObservingFacilityRep(id: id, name: name)
 
         //TODO: Implement me!
-        
+
         return result
     }
 
@@ -60,4 +60,59 @@ public class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
         //TODO: Implement me!
     }
 
+    init(id: UUID,
+         name: String,
+         street: String?                                       = nil,
+         houseNumber: Int?                                     = nil,
+         houseNumberSuffix: String?                            = nil,
+         district: String?                                     = nil,
+         place: String?                                        = nil,
+         zipCode: String?                                      = nil,
+         province: String?                                     = nil,
+         regionOrState: String?                                = nil,
+         regionOrStateCode: String?                            = nil,
+         country: String?                                      = nil,
+         countryID: String?                                    = nil,
+         continent: PolisPlace.EarthContinent?                 = nil,
+         eastLongitude: PolisPropertyValue?                    = nil,
+         latitude: PolisPropertyValue?                         = nil,
+         altitude: PolisPropertyValue?                         = nil,
+         addressNote: String?                                  = nil,
+         timeZoneIdentifier: String?                           = nil,
+         openingHours: PolisVisitingHours?                     = nil,
+         accessRestrictions: String?                           = nil,
+         averageClearNightsPerYear: UInt?                      = nil,
+         averageSeeingConditions: PolisPropertyValue?          = nil,
+         averageSkyQuality: PolisPropertyValue?                = nil,
+         traditionalLandOwners: String?                        = nil,
+         dominantWindDirection: PolisDirection.RoughDirection? = nil,
+         surfaceSize: PolisPropertyValue?                      = nil) {
+        self.street                    = street
+        self.houseNumber               = houseNumber
+        self.houseNumberSuffix         = houseNumberSuffix
+        self.district                  = district
+        self.place                     = place
+        self.zipCode                   = zipCode
+        self.province                  = province
+        self.regionOrState             = regionOrState
+        self.regionOrStateCode         = regionOrStateCode
+        self.country                   = country
+        self.countryID                 = countryID
+        self.continent                 = continent
+        self.eastLongitude             = eastLongitude
+        self.latitude                  = latitude
+        self.altitude                  = altitude
+        self.addressNote               = addressNote
+        self.timeZoneIdentifier        = timeZoneIdentifier
+        self.openingHours              = openingHours
+        self.accessRestrictions        = accessRestrictions
+        self.averageClearNightsPerYear = averageClearNightsPerYear
+        self.averageSeeingConditions   = averageSeeingConditions
+        self.averageSkyQuality         = averageSkyQuality
+        self.traditionalLandOwners     = traditionalLandOwners
+        self.dominantWindDirection     = dominantWindDirection
+        self.surfaceSize               = surfaceSize
+
+        super.init(id: id, name: name)
+    }
 }

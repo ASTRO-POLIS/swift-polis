@@ -134,7 +134,7 @@ public class ObservingFacilityRep {
     var identity: PolisIdentity!
     var item: PolisItem!
 
-    private init(id: UUID, lastUpdateDate: Date = Date(), name: String) {
+    init(id: UUID, lastUpdateDate: Date = Date(), name: String) {
         self.id = id
         self.lastUpdateDate = lastUpdateDate
         self.name = name
