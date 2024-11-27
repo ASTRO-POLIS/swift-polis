@@ -92,7 +92,11 @@ public struct PolisVisitingHours: Codable {
     //TODO: Finish documentation!
     public struct VisitingPossibility: Codable {
 
-        public enum DayOfTheWeek: String, Codable {
+        public enum DayOfTheWeek: String, Codable, CaseIterable, Identifiable {
+            public var id: Self {
+                return self
+            }
+
             case monday    = "Monday"
             case tuesday   = "Tuesday"
             case wednesday = "Wednesday"

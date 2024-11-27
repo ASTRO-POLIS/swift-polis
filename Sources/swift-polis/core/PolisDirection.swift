@@ -32,7 +32,11 @@ public struct PolisDirection: Codable {
     ///
     /// Rough direction could be used when it is not important to know or impossible to measure the exact
     /// direction. Examples include the wind direction, or the orientations of the doors of a clamshell enclosure.
-    public enum RoughDirection: String, Codable {
+    public enum RoughDirection: String, Codable, CaseIterable, Identifiable {
+        public var id: Self {
+            return self
+        }
+
         case north          = "N"
         case northNorthEast = "NNE"
         case northEast      = "NE"

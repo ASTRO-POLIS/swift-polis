@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
+open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
 
     public static func registerNewEarthFixBasedFacility(with id: UUID = UUID(), name: String = "Unknown Facility") throws -> EarthFixBasedObservingFacilityRep {
         let result: EarthFixBasedObservingFacilityRep = EarthFixBasedObservingFacilityRep(id: id, name: name)

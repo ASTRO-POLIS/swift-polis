@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class ObservingFacilityRep {
+open class ObservingFacilityRep {
 
     
     /// Tries to register a new facility
