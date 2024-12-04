@@ -177,6 +177,8 @@ public struct PolisDirectory: StorableItem  {
 }
 
 //MARK: - Observing Facility Directory -
+fileprivate let fm = FileManager.default
+fileprivate var data: Data?
 
 /// A compact list of all known Observing Facilities
 public struct PolisObservingFacilityDirectory: Codable, StorableItem {
@@ -256,15 +258,12 @@ extension PolisDirectory.ProviderDirectoryEntry {
     func parentItem() -> (any StorableItem)? { nil }
 
     mutating func flashUsing(manager: PolisProviderManager) async throws {
-        let fm          = FileManager.default
-        let jsonEncoder = PrettyJSONEncoder()
-        let finder      = manager.polisFileResourceFinder!
-        let path        = finder.configurationFile()
-        let data: Data
+        let finder = manager.polisFileResourceFinder!
+        let path   = finder.configurationFile()
 
         self.lastUpdate = Date.now
 
-        do    { data = try jsonEncoder.encode(self) }
+        do    { data = try manager.jsonEncoder.encode(self) }
         catch {
             PolisLogger.shared.error("Cannot encode POLIS Provider Main Configuration Entry")
             throw PolisProviderManager.PolisProviderManagerError.cannotEncodePolisType
@@ -281,15 +280,12 @@ extension PolisDirectory {
     func parentItem() -> (any StorableItem)? { nil }
 
     mutating func flashUsing(manager: PolisProviderManager) async throws {
-        let fm          = FileManager.default
-        let jsonEncoder = PrettyJSONEncoder()
-        let finder      = manager.polisFileResourceFinder!
-        let path        = finder.polisProviderDirectoryFile()
-        let data: Data
+        let finder = manager.polisFileResourceFinder!
+        let path   = finder.polisProviderDirectoryFile()
 
         self.lastUpdate = Date.now
 
-        do    { data = try jsonEncoder.encode(self) }
+        do    { data = try manager.jsonEncoder.encode(self) }
         catch {
             PolisLogger.shared.error("Cannot encode POLIS Directory")
             throw PolisProviderManager.PolisProviderManagerError.cannotEncodePolisType
@@ -308,15 +304,12 @@ extension PolisObservingFacilityDirectory {
     func parentItem() -> (any StorableItem)? { nil }
 
     mutating func flashUsing(manager: PolisProviderManager) async throws {
-        let fm          = FileManager.default
-        let jsonEncoder = PrettyJSONEncoder()
-        let finder      = manager.polisFileResourceFinder!
-        let path        = finder.observingFacilitiesDirectoryFile()
-        let data: Data
+        let finder = manager.polisFileResourceFinder!
+        let path   = finder.observingFacilitiesDirectoryFile()
 
         self.lastUpdate = Date.now
 
-        do    { data = try jsonEncoder.encode(self) }
+        do    { data = try manager.jsonEncoder.encode(self) }
         catch {
             PolisLogger.shared.error("Cannot encode POLIS Observing Facility Directory")
             throw PolisProviderManager.PolisProviderManagerError.cannotEncodePolisType

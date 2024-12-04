@@ -70,17 +70,23 @@ public final class PolisProviderManager {
     /// `localPolisRootPath` must be set before any other factory method is called.
     public static var localPolisRootPath: String = "/tmp/"
 
+    /// The version that will be used to sync working copy of the data for read access and editing
+    ///
+    /// Later implementations might sync also other versions, but this is not required. Default implementation will use the newest possible software version.
+    public static var workingPolisVersion = PolisConstants.frameworkSupportedImplementation.last
+
     /// Semi replacement for singleton
     ///
     /// Make sure the public init() was called before trying to access this within the framework
     static var currentProviderManager: PolisProviderManager!
 
     //MARK: Polis Provider Manager internal configuration
-    var jsonEncoder     = PrettyJSONEncoder()
-    var jsonDecoder     = PrettyJSONDecoder()
+    var jsonEncoder = PrettyJSONEncoder()
+    var jsonDecoder = PrettyJSONDecoder()
 
     let polisImplementation: PolisImplementation!
-    let polisFileResourceFinder: PolisFileResourceFinder!
+    var polisFileResourceFinder: PolisFileResourceFinder!
+    var polisRemoteResourceFinder: PolisRemoteResourceFinder!
 
     var polisProviderConfigurationEntry: PolisDirectory.ProviderDirectoryEntry!
     var polisProviderDirectory: PolisDirectory!
@@ -89,17 +95,17 @@ public final class PolisProviderManager {
     /// Designate initialiser
     ///
     ///  Before calling, make sure that `localPolisRootPath` is set to proper existing path
-    public init() throws {
+    init() throws {
         guard PolisProviderManager.currentProviderManager == nil else { throw PolisProviderManagerError.cannotRegisterMultipleManagerInstances }
 
-        self.polisImplementation     = PolisConstants.frameworkSupportedImplementation.last
+        self.polisImplementation = PolisProviderManager.workingPolisVersion
+
         if let url = URL(string: PolisProviderManager.localPolisRootPath) {
             self.polisFileResourceFinder = try PolisFileResourceFinder(at: url, supportedImplementation: self.polisImplementation)
         } else {
             logger.error("Cannot create URL from rootFolder")
             throw PolisProviderManagerError.cannotAccessOrCreateStandardPolisFolder
         }
-
 
         if !ensurePolisFoldersExistence() { throw PolisProviderManagerError.cannotAccessOrCreateStandardPolisFolder }
 
@@ -122,6 +128,9 @@ public final class PolisProviderManager {
 public extension PolisProviderManager {
 
     /// Creates a new provider based on the content of the `configuration`
+    ///
+    /// This factory method should be used in rare cases only, mostly for testing. In most cases use
+    /// `createLocalProviderByUsingExistingRemoteProvider(usingExperimentalVersion:)` instead.
     ///
     /// - Parameter configuration: contains all information needed to create a new POLIS provider
     /// - Returns: an instance of `PolisProviderManager`
@@ -159,21 +168,33 @@ public extension PolisProviderManager {
     /// In client apps use this method only once. Use `cachedProvider()` in subsequent launches of the client app.
     ///
     /// - Parameter useExperimentalVersion: if `true` it tries to connect to a well known experimental test server
-    func createLocalProviderByUsingExistingRemoteProvider(useExperimentalVersion: Bool = false) async throws {
+    func createLocalProviderByUsingExistingRemoteProvider(usingExperimentalVersion: Bool = false) async throws {
+        //TODO: 0. Make sure no local data exist that could be overwritten!
+
+        //TODO: 1. Check if the remote provider is set. If not use one of the framework provided starting "BigBang" sites
+
         //TODO: Implement me!
     }
-    
+
+    func prepareToTerminateSession() async throws {
+        //TODO: Implement me!
+        //TODO: Perhaps we need a delegate to complete the task> Like execute the script that Douglas is writing? The delegate
+        // should have methods to sync different POLIS files one by one if they are modified.
+        //TODO: N. Post ReadyToTerminate notification.
+    }
+
     /// If there is already an existing local copy of the POLIS dataset use this method to access it
     ///
     /// - Parameter rootURL: the local file URL that lead to the path containing the `../polis` folder
     func existingLocalProvider(rootURL: URL) async throws {
         try canConfigure()
-
+        //TODO: 0. Check for existing folders
         //TODO: 1. Check and try to load the provider configuration entry
         //TODO: 2. Check and try to load the provider directory
         //TODO: 3. Check and try to load the facility directory
-        //TODO: 4. Prepare the lost of all currently available observing facilities
+        //TODO: 4. Prepare the list of all currently available observing facilities
         //TODO: 5. If needed, sync with remote providers
+        //TODO: 6: Post a notification that the local copy is ready to be used
     }
 
     //MARK: Private stuff
@@ -193,6 +214,27 @@ public extension PolisProviderManager {
 //MARK: - Working with files and folders -
 extension PolisProviderManager {
 
+    /// This method returns all currently possible POLIS directories. Use it whenever the list is needed.
+    private func polisDirectoryPaths() -> [String] {
+        [
+            polisFileResourceFinder.baseFolder(),                        // ../polis/
+            polisFileResourceFinder.observingFacilitiesFolder(),         // ../polis/<version>/polis_observing_facilities/
+            polisFileResourceFinder.resourcesFolder(),                   // ../polis/<version>/polis_resources/
+            polisFileResourceFinder.ownersFolder(),                      // ../polis/<version>/polis_owners/
+            polisFileResourceFinder.manufacturersFolder(),               // ../polis/<version>/polis_manufacturers/
+        ]
+    }
+
+    /// This method returns all currently possible POLIS essential files required by the standard. Use it whenever the list is needed.
+    private func essentialPolisFiles() -> [String] {
+        [
+            polisFileResourceFinder.configurationFile(),                 // ../polis/polis.json
+            polisFileResourceFinder.polisProviderDirectoryFile(),        // ../polis/polis_directory.json
+            polisFileResourceFinder.observingFacilitiesDirectoryFile(),  // ../polis/<version>/polis_observing_facilities.json
+
+        ]
+    }
+
     //TODO: Move these methods to SoftwareEtudes
     func tryToEnsureFoldersExistence(paths: [String]) -> Bool {
         do {
@@ -209,20 +251,31 @@ extension PolisProviderManager {
         }
     }
 
-    private func tryToEnsureFileExistence(paths: [String], createEmptyFilesIfDoNotExist: Bool = false) -> Bool {
-        //TODO: Implement me!
+    private func ensurePolisFoldersExistence()  -> Bool { tryToEnsureFoldersExistence(paths: polisDirectoryPaths()) }
+
+    private func checkPolisDirectoryPatsExistence(paths: [String]) -> Bool {
+        for path in paths {
+            if (fm.fileExists(atPath: path, isDirectory: &isDir) && (isDir.boolValue)) {
+                return false
+            }
+        }
+
         return true
     }
 
-    private func ensurePolisFoldersExistence()  -> Bool {
-        let paths = [polisFileResourceFinder.baseFolder(),                 // ../polis/
-                     polisFileResourceFinder.observingFacilitiesFolder(),  // ../polis/<version>/polis_observing_facilities/
-                     polisFileResourceFinder.resourcesFolder(),            // ../polis/<version>/polis_resources/
-                     polisFileResourceFinder.ownersFolder(),               // ../polis/<version>/polis_owners/
-                     polisFileResourceFinder.manufacturersFolder()         // ../polis/<version>/polis_manufacturers/
-        ]
-        return tryToEnsureFoldersExistence(paths: paths)
+    private func checkPolisFilesExistence(paths: [String]) -> Bool {
+        for path in paths {
+            if !fm.isReadableFile(atPath: path) { return false }
+        }
+
+        return true
     }
+
+    /// If `true` we can start loading data or doing other changes to the local POLIS provider
+    private func ensureMinimalLocalPolisConfiguration() -> Bool {
+        return checkPolisDirectoryPatsExistence(paths: polisDirectoryPaths()) && checkPolisFilesExistence(paths: essentialPolisFiles())
+    }
+
 
     private func flush(item: any StorableItem) async throws {
         var currentItem: (any StorableItem)? = item
