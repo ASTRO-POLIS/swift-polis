@@ -48,7 +48,7 @@ public struct PolisProviderConfiguration {
     }
 }
 
-public final class PolisProviderManager {
+open class PolisProviderManager {
 
     //MARK: Notifications
     public struct StatusChangeNotifications {
@@ -59,25 +59,30 @@ public final class PolisProviderManager {
     //MARK: Error definitions
     public enum PolisProviderManagerError: Error {
         case cannotRegisterMultipleManagerInstances
+        case rootPolisPathUnaccessible
+        case requiredPolisDataMissing
+        case noRemoteDataFound 
         case cannotAccessOrCreateStandardPolisFolder
         case providerAtTheSameRootPathAlreadyConfigured // Thrown by attempting to call multiple configuration methods
         case cannotEncodePolisType                      // JSON encoding
         case cannotWriteFile
     }
 
+    //MARK: Static configurations
+
     /// `localPolisRootPath` is the root path of the locally created POLIS provider.
     ///
-    /// `localPolisRootPath` must be set before any other factory method is called.
+    /// **Note:** `localPolisRootPath` must be set prior any other factory method is called.
     public static var localPolisRootPath: String = "/tmp/"
 
-    /// The version that will be used to sync working copy of the data for read access and editing
+    /// The (latest) version that will be used to sync working copy of the data for read access and editing
     ///
-    /// Later implementations might sync also other versions, but this is not required. Default implementation will use the newest possible software version.
-    public static var workingPolisVersion = PolisConstants.frameworkSupportedImplementation.last
+    /// Later implementations might sync also other (older) versions, but this is not required. Default implementation will use the newest possible software version.
+    public static var latestWorkingPolisVersion = PolisConstants.frameworkSupportedImplementation.last
 
     /// Semi replacement for singleton
     ///
-    /// Make sure the public init() was called before trying to access this within the framework
+    /// **Note:** Make sure the public init() was called before trying to access this within the framework
     static var currentProviderManager: PolisProviderManager!
 
     //MARK: Polis Provider Manager internal configuration
@@ -98,30 +103,32 @@ public final class PolisProviderManager {
     init() throws {
         guard PolisProviderManager.currentProviderManager == nil else { throw PolisProviderManagerError.cannotRegisterMultipleManagerInstances }
 
-        self.polisImplementation = PolisProviderManager.workingPolisVersion
+        self.polisImplementation = PolisProviderManager.latestWorkingPolisVersion
 
         if let url = URL(string: PolisProviderManager.localPolisRootPath) {
             self.polisFileResourceFinder = try PolisFileResourceFinder(at: url, supportedImplementation: self.polisImplementation)
         } else {
             logger.error("Cannot create URL from rootFolder")
-            throw PolisProviderManagerError.cannotAccessOrCreateStandardPolisFolder
+            throw PolisProviderManagerError.rootPolisPathUnaccessible
         }
 
-        if !ensurePolisFoldersExistence() { throw PolisProviderManagerError.cannotAccessOrCreateStandardPolisFolder }
+        //TODO: This should be responsibility of the static factory methods!
+//        if !ensurePolisFoldersExistence() { throw PolisProviderManagerError.cannotAccessOrCreateStandardPolisFolder }
 
         PolisProviderManager.currentProviderManager = self
     }
 
+
     //MARK: Private stuff
+
     // Utility properties
     private let nc              = NotificationCenter.default
     private let fm              = FileManager.default
     private var isDir: ObjCBool = false
     private var logger          = PolisLogger.shared
-
-
     private var isConfigured    = false // check if any of the configuration methods was called
 
+    private var localConfiguration: LocalConfiguration!
 }
 
 //MARK: - Configuration of the POLIS Service Provider -
@@ -130,36 +137,42 @@ public extension PolisProviderManager {
     /// Creates a new provider based on the content of the `configuration`
     ///
     /// This factory method should be used in rare cases only, mostly for testing. In most cases use
-    /// `createLocalProviderByUsingExistingRemoteProvider(usingExperimentalVersion:)` instead.
+    /// `createLocalProviderByUsingExistingRemoteProvider(isExperimentalVersion:)` instead.
+    ///
+    ///  Before calling, make sure that `localPolisRootPath` is set to proper existing path
     ///
     /// - Parameter configuration: contains all information needed to create a new POLIS provider
     /// - Returns: an instance of `PolisProviderManager`
-    func createLocalProvider(configuration: PolisProviderConfiguration) async throws {
-        try canConfigure()
+    static func createLocalProviderWith(configuration: PolisProviderConfiguration, isExperimentalVersion: Bool = false) throws -> PolisProviderManager? {
+//        try canConfigure()
 
         //TODO: Throw if something exists (Hasmik's suggestion)
+        //TODO: Make sure to configure Syncing data
+        //TODO: Make sure to use `isExperimentalVersion`
 
-        let admin     = PolisPerson(name: configuration.adminName, email: configuration.adminEmail, note: configuration.adminNote)
-        let directory = try PolisDirectory.ProviderDirectoryEntry(name: configuration.name,
-                                                                  supportedImplementations: [PolisImplementation.oldestSupportedImplementation()],
-                                                                  providerType: configuration.providerType,
-                                                                  contact: admin)
+//        let admin     = PolisPerson(name: configuration.adminName, email: configuration.adminEmail, note: configuration.adminNote)
+//        let directory = try PolisDirectory.ProviderDirectoryEntry(name: configuration.name,
+//                                                                  supportedImplementations: [PolisImplementation.oldestSupportedImplementation()],
+//                                                                  providerType: configuration.providerType,
+//                                                                  contact: admin)
+//
+//        nc.post(name: StatusChangeNotifications.providerWillCreateNotification, object: self)
+//        
+//        // 1. Create the provider configuration entry
+//        polisProviderConfigurationEntry = directory
+//        try await flush(item: polisProviderConfigurationEntry)
+//
+//        // 2. Create the provider directory
+//        polisProviderDirectory = PolisDirectory(providerDirectoryEntries: [polisProviderConfigurationEntry])
+//        try await flush(item: polisProviderDirectory)
+//
+//        // 3. Create facility directory
+//        facilityDirectory = PolisObservingFacilityDirectory(lastUpdate: Date.now, observingFacilityReferences: [])
+//        try await flush(item: facilityDirectory)
+//
+//        nc.post(name: StatusChangeNotifications.providerDidCreateNotification, object: self)
 
-        nc.post(name: StatusChangeNotifications.providerWillCreateNotification, object: self)
-        
-        // 1. Create the provider configuration entry
-        polisProviderConfigurationEntry = directory
-        try await flush(item: polisProviderConfigurationEntry)
-
-        // 2. Create the provider directory
-        polisProviderDirectory = PolisDirectory(providerDirectoryEntries: [polisProviderConfigurationEntry])
-        try await flush(item: polisProviderDirectory)
-
-        // 3. Create facility directory
-        facilityDirectory = PolisObservingFacilityDirectory(lastUpdate: Date.now, observingFacilityReferences: [])
-        try await flush(item: facilityDirectory)
-
-        nc.post(name: StatusChangeNotifications.providerDidCreateNotification, object: self)
+        return nil
     }
 
     
@@ -167,27 +180,33 @@ public extension PolisProviderManager {
     ///
     /// In client apps use this method only once. Use `cachedProvider()` in subsequent launches of the client app.
     ///
+    ///  Before calling, make sure that `localPolisRootPath` is set to proper existing path
+    ///
     /// - Parameter useExperimentalVersion: if `true` it tries to connect to a well known experimental test server
-    func createLocalProviderByUsingExistingRemoteProvider(usingExperimentalVersion: Bool = false) async throws {
+    static func createLocalProviderByUsingExistingRemoteProvider(isExperimentalVersion: Bool = false, isEditable: Bool = false) async throws -> PolisProviderManager? {
+
+        //FIXME: Act as if there is no remote server
+        throw PolisProviderManagerError.noRemoteDataFound
+
+        //TODO: Implement the `isEditable` functionality as part of the syncing/config file / struct
         //TODO: 0. Make sure no local data exist that could be overwritten!
 
         //TODO: 1. Check if the remote provider is set. If not use one of the framework provided starting "BigBang" sites
 
         //TODO: Implement me!
-    }
 
-    func prepareToTerminateSession() async throws {
-        //TODO: Implement me!
-        //TODO: Perhaps we need a delegate to complete the task> Like execute the script that Douglas is writing? The delegate
-        // should have methods to sync different POLIS files one by one if they are modified.
-        //TODO: N. Post ReadyToTerminate notification.
+        return nil
     }
 
     /// If there is already an existing local copy of the POLIS dataset use this method to access it
     ///
-    /// - Parameter rootURL: the local file URL that lead to the path containing the `../polis` folder
-    func existingLocalProvider(rootURL: URL) async throws {
-        try canConfigure()
+    ///  Before calling, make sure that `localPolisRootPath` is set to proper existing path
+    static func useExistingLocalProvider() throws -> PolisProviderManager {
+
+        //FIXME: Act as if nothing is found on disk
+        throw PolisProviderManagerError.requiredPolisDataMissing
+
+//        try canConfigure()
         //TODO: 0. Check for existing folders
         //TODO: 1. Check and try to load the provider configuration entry
         //TODO: 2. Check and try to load the provider directory
@@ -195,6 +214,19 @@ public extension PolisProviderManager {
         //TODO: 4. Prepare the list of all currently available observing facilities
         //TODO: 5. If needed, sync with remote providers
         //TODO: 6: Post a notification that the local copy is ready to be used
+        return try PolisProviderManager()
+    }
+
+    /// Call this method before terminating the process and wait for the notification
+    ///
+    /// In order to avoid data inconsistency, or loss of new or updated data, always call this method before exiting the process (tool or app, and wait for the notification. If
+    /// exception is thrown, and the process is updating the local data, notify the user for the possibility that the data might be inconsistent. If the process is read-only,
+    /// automatic data recovery will be performed next time the process is executed.
+    func prepareToTerminate() async throws {
+        //TODO: Implement me!
+        //TODO: Perhaps we need a delegate to complete the task> Like execute the script that Douglas is writing? The delegate
+        // should have methods to sync different POLIS files one by one if they are modified.
+        //TODO: N. Post ReadyToTerminate notification.
     }
 
     //MARK: Private stuff
@@ -231,7 +263,6 @@ extension PolisProviderManager {
             polisFileResourceFinder.configurationFile(),                 // ../polis/polis.json
             polisFileResourceFinder.polisProviderDirectoryFile(),        // ../polis/polis_directory.json
             polisFileResourceFinder.observingFacilitiesDirectoryFile(),  // ../polis/<version>/polis_observing_facilities.json
-
         ]
     }
 
@@ -285,4 +316,46 @@ extension PolisProviderManager {
             currentItem = currentItem?.parentItem()
         }
     }
+}
+
+//MARK: - Working with LocalConfiguration
+extension PolisProviderManager {
+    private func newLocalConfiguration(remoteSyncServer: URL? = nil, isEditable: Bool, isTesting: Bool) throws {
+        var remoteURL: URL
+
+        if let url = remoteSyncServer { remoteURL = url }
+        else {
+            if isTesting { remoteURL = URL(string: PolisConstants.testBigBangPolisDomain)! }
+            else         { remoteURL = URL(string: PolisConstants.bigBangPolisDomain)! }
+        }
+        //TODO: Implement me!
+        var config = LocalConfiguration(remoteSyncServer: remoteURL, isEditable: isEditable, isTesting: isTesting, lastSyncDate: nil, lastSyncResult: .neverSynced)
+
+        localConfiguration = config
+    }
+
+    private func updateLocalConfiguration() throws {
+        //TODO: Implement me!
+    }
+
+    private func loadLocalConfiguration() throws {
+        //TODO: Implement me!
+    }
+}
+
+
+fileprivate struct LocalConfiguration: Codable {
+    enum SyncResult: String, Codable {
+        case success
+        case partiallySynced
+        case noContention
+        case failed
+        case neverSynced
+    }
+
+    var remoteSyncServer: URL?
+    var isEditable: Bool
+    var isTesting: Bool
+    var lastSyncDate: Date?
+    var lastSyncResult: SyncResult?
 }
