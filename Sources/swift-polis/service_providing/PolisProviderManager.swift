@@ -63,6 +63,7 @@ open class PolisProviderManager {
         case requiredPolisDataMissing
         case noRemoteDataFound 
         case cannotAccessOrCreateStandardPolisFolder
+        case cannotAccessOrCreateStandardPolisFile
         case providerAtTheSameRootPathAlreadyConfigured // Thrown by attempting to call multiple configuration methods
         case cannotEncodePolisType                      // JSON encoding
         case cannotWriteFile
@@ -120,13 +121,14 @@ open class PolisProviderManager {
 
 
     //MARK: Private stuff
+    private static var isConfigured  = false // check if any of the configuration methods was called
 
     // Utility properties
     private let nc              = NotificationCenter.default
     private let fm              = FileManager.default
     private var isDir: ObjCBool = false
+    private var data: Data?
     private var logger          = PolisLogger.shared
-    private var isConfigured    = false // check if any of the configuration methods was called
 
     private var localConfiguration: LocalConfiguration!
 }
@@ -144,7 +146,7 @@ public extension PolisProviderManager {
     /// - Parameter configuration: contains all information needed to create a new POLIS provider
     /// - Returns: an instance of `PolisProviderManager`
     static func createLocalProviderWith(configuration: PolisProviderConfiguration, isExperimentalVersion: Bool = false) throws -> PolisProviderManager? {
-//        try canConfigure()
+        try canConfigure()
 
         //TODO: Throw if something exists (Hasmik's suggestion)
         //TODO: Make sure to configure Syncing data
@@ -206,7 +208,7 @@ public extension PolisProviderManager {
         //FIXME: Act as if nothing is found on disk
         throw PolisProviderManagerError.requiredPolisDataMissing
 
-//        try canConfigure()
+        try canConfigure()
         //TODO: 0. Check for existing folders
         //TODO: 1. Check and try to load the provider configuration entry
         //TODO: 2. Check and try to load the provider directory
@@ -230,7 +232,7 @@ public extension PolisProviderManager {
     }
 
     //MARK: Private stuff
-    private func canConfigure() throws {
+    private static func canConfigure() throws {
         if isConfigured { throw PolisProviderManagerError.providerAtTheSameRootPathAlreadyConfigured }
         else            { isConfigured = true }
     }
@@ -284,7 +286,7 @@ extension PolisProviderManager {
 
     private func ensurePolisFoldersExistence()  -> Bool { tryToEnsureFoldersExistence(paths: polisDirectoryPaths()) }
 
-    private func checkPolisDirectoryPatsExistence(paths: [String]) -> Bool {
+    private func checkPolisDirectoryPathsExistence(paths: [String]) -> Bool {
         for path in paths {
             if (fm.fileExists(atPath: path, isDirectory: &isDir) && (isDir.boolValue)) {
                 return false
@@ -304,7 +306,7 @@ extension PolisProviderManager {
 
     /// If `true` we can start loading data or doing other changes to the local POLIS provider
     private func ensureMinimalLocalPolisConfiguration() -> Bool {
-        return checkPolisDirectoryPatsExistence(paths: polisDirectoryPaths()) && checkPolisFilesExistence(paths: essentialPolisFiles())
+        return checkPolisDirectoryPathsExistence(paths: polisDirectoryPaths()) && checkPolisFilesExistence(paths: essentialPolisFiles())
     }
 
 
@@ -328,19 +330,45 @@ extension PolisProviderManager {
             if isTesting { remoteURL = URL(string: PolisConstants.testBigBangPolisDomain)! }
             else         { remoteURL = URL(string: PolisConstants.bigBangPolisDomain)! }
         }
-        //TODO: Implement me!
-        var config = LocalConfiguration(remoteSyncServer: remoteURL, isEditable: isEditable, isTesting: isTesting, lastSyncDate: nil, lastSyncResult: .neverSynced)
+
+        let config = LocalConfiguration(remoteSyncServer: remoteURL, isEditable: isEditable, isTesting: isTesting, lastSyncDate: Date.now, lastSyncResult: .neverSynced)
 
         localConfiguration = config
+        try updateLocalConfiguration()
     }
 
     private func updateLocalConfiguration() throws {
-        //TODO: Implement me!
+        localConfiguration.lastSyncDate = Date.now
+
+        do    { data = try jsonEncoder.encode(localConfiguration) }
+        catch {
+            PolisLogger.shared.error("Cannot encode POLIS Configuration Data")
+            throw PolisProviderManager.PolisProviderManagerError.cannotEncodePolisType
+        }
+
+        if !fm.createFile(atPath: configurationFilePath(), contents: data) {
+            PolisLogger.shared.error("Cannot save POLIS Configuration Data to: \(configurationFilePath())")
+            throw PolisProviderManager.PolisProviderManagerError.cannotWriteFile
+        }
     }
 
     private func loadLocalConfiguration() throws {
-        //TODO: Implement me!
+        if fm.fileExists(atPath: configurationFilePath()) {
+            let data = fm.contents(atPath: configurationFilePath())
+
+            if let data = data {
+                if let result = try? jsonDecoder.decode(LocalConfiguration.self, from: data) { localConfiguration = result }
+                else {
+                    logger.error("Error: cannot load POLIS configuration data at - \(configurationFilePath())")
+                    throw PolisProviderManagerError.cannotEncodePolisType }
+            }
+            else {
+                logger.error("Error: POLIS configuration data does not exist at path - \(configurationFilePath())")
+                throw PolisProviderManagerError.cannotAccessOrCreateStandardPolisFile }
+        }
     }
+
+    private func configurationFilePath() -> String { "\(polisFileResourceFinder.rootFolder())\(PolisConstants.polisLocalConfigFileName)" }
 }
 
 

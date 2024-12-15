@@ -27,15 +27,16 @@ public struct PolisConstants {
     ///
     /// Software packages trying for the first time to connect to a POLIS service provider should use these constants. In the future there might be (hopefully) many
     /// more service providers, but an initial search is mostly guaranteed to be successful if `bigBangPolisDomain` is used.
-    public static let bigBangPolisDomain     = "https://polis.observer"
-    public static let testBigBangPolisDomain = "https://test.polis.observer"
+    public static let bigBangPolisDomain       = "https://polis.observer"
+    public static let testBigBangPolisDomain   = "https://test.polis.observer"
 
     /// All global references should start with this string
-    public static let polisReferencePrefix   = "ref://"
+    public static let polisReferencePrefix     = "ref://"
 
-    /// All UUIDs to local to the container files should start with this string
-    public static let polisLocalPrefix       = "local://"
+    /// All UUIDs to local  container files should start with this string
+    public static let polisLocalPrefix         = "local://"
 
+    public static let polisLocalConfigFileName = "polis_config.json"
     /// A list of supported implementations for this concrete framework.
     ///
     /// Until we have a stable version there should be only one supported version. After version 1.0 of the standard is
