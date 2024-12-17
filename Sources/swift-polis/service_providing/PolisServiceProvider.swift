@@ -257,7 +257,7 @@ extension PolisObservingFacilityDirectory.ObservingFacilityReference {
 extension PolisDirectory.ProviderDirectoryEntry {
     func parentItem() -> (any StorableItem)? { nil }
 
-    mutating func flashUsing(manager: PolisProviderManager) async throws {
+    mutating func flashUsing(manager: PolisProviderManager) throws {
         let finder = manager.polisFileResourceFinder!
         let path   = finder.configurationFile()
 
@@ -279,7 +279,7 @@ extension PolisDirectory.ProviderDirectoryEntry {
 extension PolisDirectory {
     func parentItem() -> (any StorableItem)? { nil }
 
-    mutating func flashUsing(manager: PolisProviderManager) async throws {
+    mutating func flashUsing(manager: PolisProviderManager) throws {
         let finder = manager.polisFileResourceFinder!
         let path   = finder.polisProviderDirectoryFile()
 
@@ -296,14 +296,14 @@ extension PolisDirectory {
             throw PolisProviderManager.PolisProviderManagerError.cannotWriteFile
         }
 
-        try await manager.polisProviderConfigurationEntry.flashUsing(manager: manager)
+        try manager.polisProviderConfigurationEntry.flashUsing(manager: manager)
     }
 }
 
 extension PolisObservingFacilityDirectory {
     func parentItem() -> (any StorableItem)? { nil }
 
-    mutating func flashUsing(manager: PolisProviderManager) async throws {
+    mutating func flashUsing(manager: PolisProviderManager) throws {
         let finder = manager.polisFileResourceFinder!
         let path   = finder.observingFacilitiesDirectoryFile()
 
@@ -320,6 +320,6 @@ extension PolisObservingFacilityDirectory {
             throw PolisProviderManager.PolisProviderManagerError.cannotWriteFile
         }
 
-        try await manager.polisProviderConfigurationEntry.flashUsing(manager: manager)
+        try manager.polisProviderConfigurationEntry.flashUsing(manager: manager)
     }
 }

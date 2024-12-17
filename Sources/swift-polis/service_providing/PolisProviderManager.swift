@@ -9,6 +9,7 @@ import Foundation
 import SoftwareEtudesUtilities
 
 protocol StorableItem {
+//    static func loadFrom(manager: PolisProviderManager) throws -> Self
     func parentItem() -> (any StorableItem)?
     mutating func flashUsing(manager: PolisProviderManager) throws
 }
@@ -166,7 +167,7 @@ public extension PolisProviderManager {
         try manager.updateLocalConfiguration()
         nc.post(name: StatusChangeNotifications.providerWillCreateNotification, object: manager)
 
-        // 1. Create the provider configuration entry
+        // 1. Create the provider root
         manager.polisProviderConfigurationEntry = directory
         try manager.flush(item: manager.polisProviderConfigurationEntry)
 
@@ -203,26 +204,29 @@ public extension PolisProviderManager {
 
         //TODO: Implement me!
 
-        return nil
+//        return nil
     }
 
     /// If there is already an existing local copy of the POLIS dataset use this method to access it
     ///
     ///  Before calling, make sure that `localPolisRootPath` is set to proper existing path
     static func useExistingLocalProvider() throws -> PolisProviderManager {
-
-        //FIXME: Act as if nothing is found on disk
-        throw PolisProviderManagerError.requiredPolisDataMissing
-
         try canConfigure()
-        //TODO: 0. Check for existing folders
-        //TODO: 1. Check and try to load the provider configuration entry
+
+        // 0. Check for existing essential files and load the configuration data
+        let manager = try PolisProviderManager()
+
+        if !manager.ensureMinimalLocalPolisConfiguration() { throw PolisProviderManagerError.providerAtTheSameRootPathAlreadyConfigured }
+        try manager.loadLocalConfiguration()
+
+        //TODO: 1. Check and try to load the provider root
+
         //TODO: 2. Check and try to load the provider directory
         //TODO: 3. Check and try to load the facility directory
         //TODO: 4. Prepare the list of all currently available observing facilities
         //TODO: 5. If needed, sync with remote providers
         //TODO: 6: Post a notification that the local copy is ready to be used
-        return try PolisProviderManager()
+        return manager
     }
 
     /// Call this method before terminating the process and wait for the notification
@@ -268,6 +272,7 @@ extension PolisProviderManager {
     /// This method returns all currently possible POLIS essential files required by the standard. Use it whenever the list is needed.
     private func essentialPolisFiles() -> [String] {
         [
+            configurationFilePath(),                                     // ./polis_config.json
             polisFileResourceFinder.configurationFile(),                 // ../polis/polis.json
             polisFileResourceFinder.polisProviderDirectoryFile(),        // ../polis/polis_directory.json
             polisFileResourceFinder.observingFacilitiesDirectoryFile(),  // ../polis/<version>/polis_observing_facilities.json
