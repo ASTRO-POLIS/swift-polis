@@ -10,7 +10,7 @@ import SoftwareEtudesUtilities
 
 protocol StorableItem {
     func parentItem() -> (any StorableItem)?
-    mutating func flashUsing(manager: PolisProviderManager) async throws
+    mutating func flashUsing(manager: PolisProviderManager) throws
 }
 
 
@@ -108,7 +108,8 @@ open class PolisProviderManager {
 
         if let url = URL(string: PolisProviderManager.localPolisRootPath) {
             self.polisFileResourceFinder = try PolisFileResourceFinder(at: url, supportedImplementation: self.polisImplementation)
-        } else {
+        }
+        else {
             logger.error("Cannot create URL from rootFolder")
             throw PolisProviderManagerError.rootPolisPathUnaccessible
         }
@@ -146,35 +147,40 @@ public extension PolisProviderManager {
     /// - Parameter configuration: contains all information needed to create a new POLIS provider
     /// - Returns: an instance of `PolisProviderManager`
     static func createLocalProviderWith(configuration: PolisProviderConfiguration, isExperimentalVersion: Bool = false) throws -> PolisProviderManager? {
+        let nc = NotificationCenter.default
+
         try canConfigure()
 
-        //TODO: Throw if something exists (Hasmik's suggestion)
-        //TODO: Make sure to configure Syncing data
-        //TODO: Make sure to use `isExperimentalVersion`
+        // 1. Make sure no POLIS data already exists
+        var manager = try PolisProviderManager()
+        if manager.ensureMinimalLocalPolisConfiguration() { throw PolisProviderManagerError.providerAtTheSameRootPathAlreadyConfigured }
 
-//        let admin     = PolisPerson(name: configuration.adminName, email: configuration.adminEmail, note: configuration.adminNote)
-//        let directory = try PolisDirectory.ProviderDirectoryEntry(name: configuration.name,
-//                                                                  supportedImplementations: [PolisImplementation.oldestSupportedImplementation()],
-//                                                                  providerType: configuration.providerType,
-//                                                                  contact: admin)
-//
-//        nc.post(name: StatusChangeNotifications.providerWillCreateNotification, object: self)
-//        
-//        // 1. Create the provider configuration entry
-//        polisProviderConfigurationEntry = directory
-//        try await flush(item: polisProviderConfigurationEntry)
-//
-//        // 2. Create the provider directory
-//        polisProviderDirectory = PolisDirectory(providerDirectoryEntries: [polisProviderConfigurationEntry])
-//        try await flush(item: polisProviderDirectory)
-//
-//        // 3. Create facility directory
-//        facilityDirectory = PolisObservingFacilityDirectory(lastUpdate: Date.now, observingFacilityReferences: [])
-//        try await flush(item: facilityDirectory)
-//
-//        nc.post(name: StatusChangeNotifications.providerDidCreateNotification, object: self)
+        // 2. Create Configuration instances and Provider data
+        let admin     = PolisPerson(name: configuration.adminName, email: configuration.adminEmail, note: configuration.adminNote)
+        let directory = try PolisDirectory.ProviderDirectoryEntry(name: configuration.name,
+                                                                  supportedImplementations: [PolisImplementation.oldestSupportedImplementation()],
+                                                                  providerType: configuration.providerType,
+                                                                  contact: admin)
 
-        return nil
+        try manager.newLocalConfiguration(isEditable: true , isTesting: isExperimentalVersion)
+        try manager.updateLocalConfiguration()
+        nc.post(name: StatusChangeNotifications.providerWillCreateNotification, object: manager)
+
+        // 1. Create the provider configuration entry
+        manager.polisProviderConfigurationEntry = directory
+        try manager.flush(item: manager.polisProviderConfigurationEntry)
+
+        // 2. Create the provider directory
+        manager.polisProviderDirectory = PolisDirectory(providerDirectoryEntries: [manager.polisProviderConfigurationEntry])
+        try manager.flush(item: manager.polisProviderDirectory)
+
+        // 3. Create facility directory
+        manager.facilityDirectory = PolisObservingFacilityDirectory(lastUpdate: Date.now, observingFacilityReferences: [])
+        try manager.flush(item: manager.facilityDirectory)
+
+        nc.post(name: StatusChangeNotifications.providerDidCreateNotification, object: self)
+
+        return manager
     }
 
     
@@ -310,11 +316,11 @@ extension PolisProviderManager {
     }
 
 
-    private func flush(item: any StorableItem) async throws {
+    private func flush(item: any StorableItem) throws {
         var currentItem: (any StorableItem)? = item
 
         while currentItem != nil {
-            try await currentItem?.flashUsing(manager: self)
+            try currentItem?.flashUsing(manager: self)
             currentItem = currentItem?.parentItem()
         }
     }
