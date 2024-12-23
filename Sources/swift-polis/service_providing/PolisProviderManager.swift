@@ -216,7 +216,7 @@ public extension PolisProviderManager {
         // 0. Check for existing essential files and load the configuration data
         let manager = try PolisProviderManager()
 
-        if !manager.ensureMinimalLocalPolisConfiguration() { throw PolisProviderManagerError.providerAtTheSameRootPathAlreadyConfigured }
+        if !manager.ensureMinimalLocalPolisConfiguration() { throw PolisProviderManagerError.requiredPolisDataMissing }
         try manager.loadLocalConfiguration()
 
         //TODO: 1. Check and try to load the provider root
