@@ -299,7 +299,7 @@ extension PolisProviderManager {
 
     private func checkPolisDirectoryPathsExistence(paths: [String]) -> Bool {
         for path in paths {
-            if (fm.fileExists(atPath: path, isDirectory: &isDir) && (isDir.boolValue)) {
+            if !(fm.fileExists(atPath: path, isDirectory: &isDir) && (isDir.boolValue)) {
                 return false
             }
         }
@@ -386,10 +386,10 @@ extension PolisProviderManager {
 fileprivate struct LocalConfiguration: Codable {
     enum SyncResult: String, Codable {
         case success
-        case partiallySynced
-        case noContention
+        case partiallySynced = "partially_synced"
+        case noContention    = "no_contention"
         case failed
-        case neverSynced
+        case neverSynced     = "never_synced"
     }
 
     var remoteSyncServer: URL?
@@ -397,4 +397,14 @@ fileprivate struct LocalConfiguration: Codable {
     var isTesting: Bool
     var lastSyncDate: Date?
     var lastSyncResult: SyncResult?
+}
+
+extension LocalConfiguration {
+    public enum CodingKeys: String, CodingKey {
+        case remoteSyncServer = "remote_sync_server"
+        case isEditable       = "is_editable"
+        case isTesting        = "is_testing"
+        case lastSyncDate     = "last_syncDate"
+        case lastSyncResult   = "last_sync_result"
+    }
 }
