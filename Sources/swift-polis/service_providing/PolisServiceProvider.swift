@@ -255,6 +255,22 @@ extension PolisObservingFacilityDirectory.ObservingFacilityReference {
 
 //MARK: Implementing the StorableItem protocols
 extension PolisDirectory.ProviderDirectoryEntry {
+    static func loadFromLocalFileSystemUsing(manager: PolisProviderManager) throws -> AnyObject {
+        let finder = manager.polisFileResourceFinder!
+        let path   = finder.configurationFile()
+        let fm     = FileManager.default
+        let data   = fm.contents(atPath: path)
+
+        guard let data = data else { throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFile }
+
+        do {
+            let entry = try JSONDecoder().decode(PolisDirectory.ProviderDirectoryEntry.self, from: data)
+
+            return entry as AnyObject
+        }
+        catch { throw PolisProviderManager.PolisProviderManagerError.cannotDecodePolisType }
+    }
+
     func parentItem() -> (any StorableItem)? { nil }
 
     mutating func flashUsing(manager: PolisProviderManager) throws {
@@ -277,6 +293,11 @@ extension PolisDirectory.ProviderDirectoryEntry {
 }
 
 extension PolisDirectory {
+    static func loadFromLocalFileSystemUsing(manager: PolisProviderManager) throws -> AnyObject {
+        //TODO: Implement me!
+        throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFile
+    }
+
     func parentItem() -> (any StorableItem)? { nil }
 
     mutating func flashUsing(manager: PolisProviderManager) throws {
@@ -301,6 +322,11 @@ extension PolisDirectory {
 }
 
 extension PolisObservingFacilityDirectory {
+    static func loadFromLocalFileSystemUsing(manager: PolisProviderManager) throws -> AnyObject {
+        //TODO: Implement me!
+        throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFile
+    }
+
     func parentItem() -> (any StorableItem)? { nil }
 
     mutating func flashUsing(manager: PolisProviderManager) throws {

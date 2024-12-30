@@ -25,6 +25,8 @@ final class PolisServiceProviderTests: XCTestCase {
     private var jsonDecoder: PrettyJSONDecoder!
     private var data: Data!
     private var string: String!
+
+    //MARK: Test dada
     private let jsonDataFromDirectoryEntry = """
 {
     "id": "090E3F63-EF2A-4123-8518-77D5664EAA01",
@@ -42,7 +44,7 @@ final class PolisServiceProviderTests: XCTestCase {
         }
     ],
     "provider_type": "mirror",
-    "admin_contact": {
+    "contact": {
         "name": "Amon Ra",
         "email": "ra@god.cun",
         "communication": {
@@ -94,7 +96,8 @@ final class PolisServiceProviderTests: XCTestCase {
             "latitude": 41.24,
             "province": "Star cluster",
             "street_line_6": "6"
-        }
+        },
+        "note": "Do not disturb during weekends"
     }
 }
 """

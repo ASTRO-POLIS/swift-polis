@@ -19,7 +19,12 @@ import Foundation
 import swift_polis
 
 struct TestingSupport {
-    
+
+    //MARK: - String for Decoding Data -
+
+
+
+    //MARK: - Factory Static Methods -
     static func examplePolisIdentityBAO() -> PolisIdentity {
         PolisIdentity(externalReferences:    ["https://bao.am/device?id=1234", "https://bao.am/rtml?dump-1234"],
                       lastUpdateDate:        Date(),

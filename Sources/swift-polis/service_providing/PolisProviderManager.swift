@@ -9,7 +9,7 @@ import Foundation
 import SoftwareEtudesUtilities
 
 protocol StorableItem {
-//    static func loadFrom(manager: PolisProviderManager) throws -> Self
+    static func loadFromLocalFileSystemUsing(manager: PolisProviderManager) throws -> AnyObject
     func parentItem() -> (any StorableItem)?
     mutating func flashUsing(manager: PolisProviderManager) throws
 }
@@ -67,6 +67,7 @@ open class PolisProviderManager {
         case cannotAccessOrCreateStandardPolisFile
         case providerAtTheSameRootPathAlreadyConfigured // Thrown by attempting to call multiple configuration methods
         case cannotEncodePolisType                      // JSON encoding
+        case cannotDecodePolisType                      // JSON decoding
         case cannotWriteFile
     }
 
@@ -85,7 +86,7 @@ open class PolisProviderManager {
     /// Semi replacement for singleton
     ///
     /// **Note:** Make sure the public init() was called before trying to access this within the framework
-    static var currentProviderManager: PolisProviderManager!
+    public static var currentProviderManager: PolisProviderManager!
 
     //MARK: Polis Provider Manager internal configuration
     var jsonEncoder = PrettyJSONEncoder()
