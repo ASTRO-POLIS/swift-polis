@@ -39,6 +39,7 @@ public struct PolisPropertyValue: Codable, Equatable {
         case int
         case float
         case double
+        case boolean
     }
 
     /// The expected value kind
@@ -101,6 +102,12 @@ public struct PolisPropertyValue: Codable, Equatable {
     public func doubleValue() -> Double? {
         if valueKind != .double { return nil }
         else                    { return Double(value) }
+    }
+
+    /// Returns a `Bool` value if the `valueKind` is is equal  `.boolean`
+    public func boolValue() -> Bool? {
+        if valueKind != .boolean { return nil }
+        else                     { return Bool(value) }
     }
 }
 
