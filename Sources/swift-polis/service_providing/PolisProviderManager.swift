@@ -154,7 +154,7 @@ public extension PolisProviderManager {
         try canConfigure()
 
         // 1. Make sure no POLIS data already exists
-        var manager = try PolisProviderManager()
+        let manager = try PolisProviderManager()
         if manager.ensureMinimalLocalPolisConfiguration() { throw PolisProviderManagerError.providerAtTheSameRootPathAlreadyConfigured }
 
         // 2. Create Configuration instances and Provider data
@@ -182,6 +182,8 @@ public extension PolisProviderManager {
 
         nc.post(name: StatusChangeNotifications.providerDidCreateNotification, object: self)
 
+        isConfigured = true
+
         return manager
     }
 
@@ -194,6 +196,7 @@ public extension PolisProviderManager {
     ///
     /// - Parameter useExperimentalVersion: if `true` it tries to connect to a well known experimental test server
     static func createLocalProviderByUsingExistingRemoteProvider(isExperimentalVersion: Bool = false, isEditable: Bool = false) async throws -> PolisProviderManager? {
+        try canConfigure()
 
         //FIXME: Act as if there is no remote server
         throw PolisProviderManagerError.noRemoteDataFound
@@ -204,6 +207,8 @@ public extension PolisProviderManager {
         //TODO: 1. Check if the remote provider is set. If not use one of the framework provided starting "BigBang" sites
 
         //TODO: Implement me!
+
+//        isConfigured = true
 
 //        return nil
     }
@@ -217,7 +222,7 @@ public extension PolisProviderManager {
         // 0. Check for existing essential files and load the configuration data
         let manager = try PolisProviderManager()
 
-        if !manager.ensureMinimalLocalPolisConfiguration() { throw PolisProviderManagerError.providerAtTheSameRootPathAlreadyConfigured }
+        if !manager.ensureMinimalLocalPolisConfiguration() { throw PolisProviderManagerError.requiredPolisDataMissing }
         try manager.loadLocalConfiguration()
 
         //TODO: 1. Check and try to load the provider root
@@ -227,6 +232,9 @@ public extension PolisProviderManager {
         //TODO: 4. Prepare the list of all currently available observing facilities
         //TODO: 5. If needed, sync with remote providers
         //TODO: 6: Post a notification that the local copy is ready to be used
+
+        isConfigured = true
+
         return manager
     }
 
@@ -245,7 +253,6 @@ public extension PolisProviderManager {
     //MARK: Private stuff
     private static func canConfigure() throws {
         if isConfigured { throw PolisProviderManagerError.providerAtTheSameRootPathAlreadyConfigured }
-        else            { isConfigured = true }
     }
 }
 
@@ -300,7 +307,7 @@ extension PolisProviderManager {
 
     private func checkPolisDirectoryPathsExistence(paths: [String]) -> Bool {
         for path in paths {
-            if (fm.fileExists(atPath: path, isDirectory: &isDir) && (isDir.boolValue)) {
+            if !(fm.fileExists(atPath: path, isDirectory: &isDir) && (isDir.boolValue)) {
                 return false
             }
         }
@@ -343,7 +350,11 @@ extension PolisProviderManager {
             else         { remoteURL = URL(string: PolisConstants.bigBangPolisDomain)! }
         }
 
-        let config = LocalConfiguration(remoteSyncServer: remoteURL, isEditable: isEditable, isTesting: isTesting, lastSyncDate: Date.now, lastSyncResult: .neverSynced)
+        let config = LocalConfiguration(remoteSyncServer: remoteURL,
+                                        isEditable: isEditable,
+                                        isTesting: isTesting,
+                                        lastSyncDate: Date.now,
+                                        lastSyncResult: .neverSynced)
 
         localConfiguration = config
         try updateLocalConfiguration()
@@ -387,10 +398,10 @@ extension PolisProviderManager {
 fileprivate struct LocalConfiguration: Codable {
     enum SyncResult: String, Codable {
         case success
-        case partiallySynced
-        case noContention
+        case partiallySynced = "partially_synced"
+        case noContention    = "no_contention"
         case failed
-        case neverSynced
+        case neverSynced     = "never_synced"
     }
 
     var remoteSyncServer: URL?
@@ -398,4 +409,14 @@ fileprivate struct LocalConfiguration: Codable {
     var isTesting: Bool
     var lastSyncDate: Date?
     var lastSyncResult: SyncResult?
+}
+
+extension LocalConfiguration {
+    public enum CodingKeys: String, CodingKey {
+        case remoteSyncServer = "remote_sync_server"
+        case isEditable       = "is_editable"
+        case isTesting        = "is_testing"
+        case lastSyncDate     = "last_syncDate"
+        case lastSyncResult   = "last_sync_result"
+    }
 }
