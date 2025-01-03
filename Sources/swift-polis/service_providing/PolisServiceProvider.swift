@@ -213,10 +213,8 @@ public struct PolisObservingFacilityDirectory: Codable, StorableItem {
     }
 }
 
-//MARK: - Making types Codable and CustomStringConvertible -
+//MARK: - Making types Codable -
 
-
-//MARK: - PolisDirectoryEntry
 extension PolisDirectory.ProviderDirectoryEntry: Codable {
     public enum CodingKeys: String, CodingKey {
         case id
@@ -232,11 +230,16 @@ extension PolisDirectory.ProviderDirectoryEntry: Codable {
     }
 }
 
-//MARK: - PolisDirectory
 extension PolisDirectory: Codable {
     public enum CodingKeys: String, CodingKey {
         case lastUpdate               = "last_updated"
         case providerDirectoryEntries = "provider_directory_entries"
+    }
+}
+
+extension PolisObservingFacilityDirectory.ObservingFacilityReference {
+    public enum CodingKeys: String, CodingKey {
+        case identity
     }
 }
 
@@ -247,13 +250,7 @@ extension PolisObservingFacilityDirectory {
     }
 }
 
-extension PolisObservingFacilityDirectory.ObservingFacilityReference {
-    public enum CodingKeys: String, CodingKey {
-        case identity
-    }
-}
-
-//MARK: Implementing the StorableItem protocols
+//MARK: - Implementing the StorableItem protocols -
 extension PolisDirectory.ProviderDirectoryEntry {
     static func loadFromLocalFileSystemUsing(manager: PolisProviderManager) throws -> AnyObject {
         let finder = manager.polisFileResourceFinder!
@@ -294,8 +291,19 @@ extension PolisDirectory.ProviderDirectoryEntry {
 
 extension PolisDirectory {
     static func loadFromLocalFileSystemUsing(manager: PolisProviderManager) throws -> AnyObject {
-        //TODO: Implement me!
-        throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFile
+        let finder = manager.polisFileResourceFinder!
+        let path   = finder.polisProviderDirectoryFile()
+        let fm     = FileManager.default
+        let data   = fm.contents(atPath: path)
+
+        guard let data = data else { throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFile }
+
+        do {
+            let entry = try JSONDecoder().decode(PolisDirectory.self, from: data)
+
+            return entry as AnyObject
+        }
+        catch { throw PolisProviderManager.PolisProviderManagerError.cannotDecodePolisType }
     }
 
     func parentItem() -> (any StorableItem)? { nil }
@@ -323,8 +331,19 @@ extension PolisDirectory {
 
 extension PolisObservingFacilityDirectory {
     static func loadFromLocalFileSystemUsing(manager: PolisProviderManager) throws -> AnyObject {
-        //TODO: Implement me!
-        throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFile
+        let finder = manager.polisFileResourceFinder!
+        let path   = finder.observingFacilitiesDirectoryFile()
+        let fm     = FileManager.default
+        let data   = fm.contents(atPath: path)
+
+        guard let data = data else { throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFile }
+
+        do {
+            let entry = try JSONDecoder().decode(PolisObservingFacilityDirectory.self, from: data)
+
+            return entry as AnyObject
+        }
+        catch { throw PolisProviderManager.PolisProviderManagerError.cannotDecodePolisType }
     }
 
     func parentItem() -> (any StorableItem)? { nil }

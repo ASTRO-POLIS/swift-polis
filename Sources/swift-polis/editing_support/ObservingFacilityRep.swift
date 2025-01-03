@@ -73,7 +73,7 @@ open class ObservingFacilityRep {
     public func flush() async throws {
         let manager = PolisProviderManager.currentProviderManager!
 
-        try await manager.facilityDirectory.flashUsing(manager: PolisProviderManager.currentProviderManager)
+        try manager.facilityDirectory.flashUsing(manager: PolisProviderManager.currentProviderManager)
 
         // Identity
         identity.externalReferences    = externalReferences
