@@ -52,7 +52,7 @@ public struct PolisProviderConfiguration {
 open class PolisProviderManager {
 
     //MARK: Notifications
-    public struct StatusChangeNotifications {
+    public struct StatusChangeNotification {
         public static let providerWillCreateNotification = Notification.Name("providerWillCreate")  // Object is the Manager
         public static let providerDidCreateNotification  = Notification.Name("providerWDidCreate")
     }
@@ -118,13 +118,11 @@ open class PolisProviderManager {
 
         //TODO: This should be responsibility of the static factory methods!
 //        if !ensurePolisFoldersExistence() { throw PolisProviderManagerError.cannotAccessOrCreateStandardPolisFolder }
-
-        PolisProviderManager.currentProviderManager = self
     }
 
 
     //MARK: Private stuff
-    private static var isConfigured  = false // check if any of the configuration methods was called
+    private static var isConfigured = false // check if any of the configuration methods was called
 
     // Utility properties
     private let nc              = NotificationCenter.default
@@ -166,7 +164,7 @@ public extension PolisProviderManager {
 
         try manager.newLocalConfiguration(isEditable: true , isTesting: isExperimentalVersion)
         try manager.updateLocalConfiguration()
-        nc.post(name: StatusChangeNotifications.providerWillCreateNotification, object: manager)
+        nc.post(name: StatusChangeNotification.providerWillCreateNotification, object: manager)
 
         // 1. Create the provider root
         manager.polisProviderConfigurationEntry = directory
@@ -180,9 +178,10 @@ public extension PolisProviderManager {
         manager.facilityDirectory = PolisObservingFacilityDirectory(lastUpdate: Date.now, observingFacilityReferences: [])
         try manager.flush(item: manager.facilityDirectory)
 
-        nc.post(name: StatusChangeNotifications.providerDidCreateNotification, object: self)
+        nc.post(name: StatusChangeNotification.providerDidCreateNotification, object: self)
 
         isConfigured = true
+        PolisProviderManager.currentProviderManager = manager
 
         return manager
     }
@@ -252,7 +251,9 @@ public extension PolisProviderManager {
 
     //MARK: Private stuff
     private static func canConfigure() throws {
-        if isConfigured { throw PolisProviderManagerError.providerAtTheSameRootPathAlreadyConfigured }
+        if isConfigured || (PolisProviderManager.currentProviderManager != nil) {
+            throw PolisProviderManagerError.providerAtTheSameRootPathAlreadyConfigured
+        }
     }
 }
 

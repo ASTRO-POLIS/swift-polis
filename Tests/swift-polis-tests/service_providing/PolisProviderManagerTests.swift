@@ -27,8 +27,8 @@ final class PolisProviderManagerTests: XCTestCase {
         try super.setUpWithError()
         print("In setUp.")
 
-        providerWillCreateNotificationExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotifications.providerWillCreateNotification)
-        providerDidCreateNotificationExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotifications.providerDidCreateNotification)
+        providerWillCreateNotificationExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerWillCreateNotification)
+        providerDidCreateNotificationExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerDidCreateNotification)
     }
 
     override func tearDownWithError() throws {
