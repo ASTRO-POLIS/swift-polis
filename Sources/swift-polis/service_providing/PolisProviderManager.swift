@@ -154,8 +154,12 @@ public extension PolisProviderManager {
         // 1. Make sure no POLIS data already exists
         let manager = try PolisProviderManager()
         if manager.ensureMinimalLocalPolisConfiguration() { throw PolisProviderManagerError.providerAtTheSameRootPathAlreadyConfigured }
+        nc.post(name: StatusChangeNotification.providerWillCreateNotification, object: manager)
 
-        // 2. Create Configuration instances and Provider data
+        // 2. Create POLIS Folders
+        if !manager.ensurePolisFoldersExistence() { throw PolisProviderManagerError.cannotAccessOrCreateStandardPolisFolder }
+
+        // 3. Create Configuration instances and Provider data
         let admin     = PolisPerson(name: configuration.adminName, email: configuration.adminEmail, note: configuration.adminNote)
         let directory = try PolisDirectory.ProviderDirectoryEntry(name: configuration.name,
                                                                   supportedImplementations: [PolisImplementation.oldestSupportedImplementation()],
@@ -164,28 +168,26 @@ public extension PolisProviderManager {
 
         try manager.newLocalConfiguration(isEditable: true , isTesting: isExperimentalVersion)
         try manager.updateLocalConfiguration()
-        nc.post(name: StatusChangeNotification.providerWillCreateNotification, object: manager)
 
-        // 1. Create the provider root
+        // 4. Create the provider root
         manager.polisProviderConfigurationEntry = directory
         try manager.flush(item: manager.polisProviderConfigurationEntry)
 
-        // 2. Create the provider directory
+        // 5. Create the provider directory
         manager.polisProviderDirectory = PolisDirectory(providerDirectoryEntries: [manager.polisProviderConfigurationEntry])
         try manager.flush(item: manager.polisProviderDirectory)
 
-        // 3. Create facility directory
+        // 6. Create facility directory
         manager.facilityDirectory = PolisObservingFacilityDirectory(lastUpdate: Date.now, observingFacilityReferences: [])
         try manager.flush(item: manager.facilityDirectory)
 
+        // 7. Finalise
         nc.post(name: StatusChangeNotification.providerDidCreateNotification, object: self)
-
         isConfigured = true
         PolisProviderManager.currentProviderManager = manager
 
         return manager
     }
-
     
     /// This method should be used by non data editing clients (e.g. mobile apps) trying to load the initial batch of POLIS data
     ///
