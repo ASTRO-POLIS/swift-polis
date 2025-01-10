@@ -60,14 +60,16 @@ public struct PolisItem: Codable {
 
     public var parentID: UUID?
 
-    public var lifecycleStatus: PolisLifecycleStatus
+    public var automationLabel: String?
 
+    public var lifecycleStatus: PolisLifecycleStatus
 
     public var media: PolisMediaSource?
 
     public init(identity: PolisIdentity,
                 owner: PolisOwner?                    = nil,
                 parentID: UUID?                       = nil,
+                automationLabel: String?              = nil,
                 lifecycleStatus: PolisLifecycleStatus = .unknown,
                 media: PolisMediaSource?              = nil) {
         self.identity        = identity
@@ -90,6 +92,7 @@ public extension PolisItem {
         case identity
         case owner
         case parentID        = "parent_id"
+        case automationLabel = "automation_label"
         case lifecycleStatus = "lifecycle_status"
         case media
     }

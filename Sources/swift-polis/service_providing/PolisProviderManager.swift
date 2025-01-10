@@ -53,8 +53,11 @@ open class PolisProviderManager {
 
     //MARK: Notifications
     public struct StatusChangeNotification {
-        public static let providerWillCreateNotification = Notification.Name("providerWillCreate")  // Object is the Manager
-        public static let providerDidCreateNotification  = Notification.Name("providerWDidCreate")
+        public static let providerWillCreateNotification        = Notification.Name("providerWillCreate")  // Object is the Manager
+        public static let providerDidCreateNotification         = Notification.Name("providerWDidCreate")  // Object is the Manager
+
+        public static let providerWillLoadLocalDataNotification = Notification.Name("providerWillLoadLocalData") // Object is the Manager
+        public static let providerDidLoadLocalDataNotification  = Notification.Name("providerDidLoadLocalData")  // Object is the Manager
     }
 
     //MARK: Error definitions
@@ -188,7 +191,7 @@ public extension PolisProviderManager {
 
         return manager
     }
-    
+
     /// This method should be used by non data editing clients (e.g. mobile apps) trying to load the initial batch of POLIS data
     ///
     /// In client apps use this method only once. Use `cachedProvider()` in subsequent launches of the client app.
@@ -218,23 +221,35 @@ public extension PolisProviderManager {
     ///
     ///  Before calling, make sure that `localPolisRootPath` is set to proper existing path
     static func useExistingLocalProvider() throws -> PolisProviderManager {
+        let nc = NotificationCenter.default
+
         try canConfigure()
 
-        // 0. Check for existing essential files and load the configuration data
+        // 1. Make sure POLIS data already exists
         let manager = try PolisProviderManager()
-
         if !manager.ensureMinimalLocalPolisConfiguration() { throw PolisProviderManagerError.requiredPolisDataMissing }
+        nc.post(name: StatusChangeNotification.providerWillLoadLocalDataNotification, object: manager)
+
+        // 0. Load the configuration data
         try manager.loadLocalConfiguration()
 
-        //TODO: 1. Check and try to load the provider root
+        // 1. Check and try to load the provider root
+        manager.polisProviderConfigurationEntry = try PolisDirectory.ProviderDirectoryEntry.loadFromLocalFileSystemUsing(manager: manager) as? PolisDirectory.ProviderDirectoryEntry
 
-        //TODO: 2. Check and try to load the provider directory
-        //TODO: 3. Check and try to load the facility directory
+        // 2. Check and try to load the provider directory
+        manager.polisProviderDirectory = try PolisDirectory.loadFromLocalFileSystemUsing(manager: manager) as? PolisDirectory
+
+        // 3. Check and try to load the facility directory
+        manager.facilityDirectory = try PolisObservingFacilityDirectory.loadFromLocalFileSystemUsing(manager: manager) as? PolisObservingFacilityDirectory
+
         //TODO: 4. Prepare the list of all currently available observing facilities
         //TODO: 5. If needed, sync with remote providers
-        //TODO: 6: Post a notification that the local copy is ready to be used
 
+
+        // 6: Post a notification that the local copy is ready to be used and finalise
+        nc.post(name: StatusChangeNotification.providerDidLoadLocalDataNotification, object: manager)
         isConfigured = true
+        PolisProviderManager.currentProviderManager = manager
 
         return manager
     }
