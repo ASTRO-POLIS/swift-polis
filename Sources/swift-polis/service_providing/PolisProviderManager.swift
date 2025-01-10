@@ -58,6 +58,10 @@ open class PolisProviderManager {
 
         public static let providerWillLoadLocalDataNotification = Notification.Name("providerWillLoadLocalData") // Object is the Manager
         public static let providerDidLoadLocalDataNotification  = Notification.Name("providerDidLoadLocalData")  // Object is the Manager
+
+        public static let facilityWillLoadNotification          = Notification.Name("facilityWillLoad")   // Object is the ObservingFacilityRep
+        public static let facilityDidLoadNotification           = Notification.Name("facilityDidLoad")    // Object is the ObservingFacilityRep
+        public static let facilityDidChangeNotification         = Notification.Name("facilityDidChange")  // Object is the ObservingFacilityRep
     }
 
     //MARK: Error definitions
@@ -102,6 +106,8 @@ open class PolisProviderManager {
     var polisProviderConfigurationEntry: PolisDirectory.ProviderDirectoryEntry!
     var polisProviderDirectory: PolisDirectory!
     var facilityDirectory: PolisObservingFacilityDirectory!
+
+    var facilities = [ObservingFacilityRep]()
 
     /// Designate initialiser
     ///
@@ -242,9 +248,13 @@ public extension PolisProviderManager {
         // 3. Check and try to load the facility directory
         manager.facilityDirectory = try PolisObservingFacilityDirectory.loadFromLocalFileSystemUsing(manager: manager) as? PolisObservingFacilityDirectory
 
-        //TODO: 4. Prepare the list of all currently available observing facilities
-        //TODO: 5. If needed, sync with remote providers
+        // 4. Prepare the list of all currently available observing facilities
+        for facility in manager.facilityDirectory!.observingFacilityReferences {
+            //FIXME: This is a hack! We assume all facilities are earth-based and fixed. Later we need to check facility's type
+            try EarthFixBasedObservingFacilityRep.registerEarthFixBasedFacility(with: facility.identity)
+        }
 
+        //TODO: 5. If needed, sync with remote providers
 
         // 6: Post a notification that the local copy is ready to be used and finalise
         nc.post(name: StatusChangeNotification.providerDidLoadLocalDataNotification, object: manager)

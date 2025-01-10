@@ -208,6 +208,10 @@ public struct PolisObservingFacilityDirectory: Codable, StorableItem {
     }
 
     public mutating func addObservingFacility(reference: ObservingFacilityReference) {
+        for ref in observingFacilityReferences {
+            if ref.id == reference.id { return }
+        }
+        
         observingFacilityReferences.append(reference)
         lastUpdate = Date.now
     }
