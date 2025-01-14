@@ -207,9 +207,21 @@ public struct PolisObservingFacilityDirectory: Codable, StorableItem {
         self.observingFacilityReferences = observingFacilityReferences
     }
 
-    public mutating func addObservingFacility(reference: ObservingFacilityReference) {
-        for ref in observingFacilityReferences {
-            if ref.id == reference.id { return }
+    public mutating func addOrUpdateObservingFacility(reference: ObservingFacilityReference) {
+        for var ref in observingFacilityReferences {
+            if ref.id == reference.id {
+                ref.identity.externalReferences    = reference.identity.externalReferences
+                ref.identity.lastUpdateDate        = reference.identity.lastUpdateDate
+                ref.identity.name                  = reference.identity.name
+                ref.identity.localName             = reference.identity.localName
+                ref.identity.abbreviation          = reference.identity.abbreviation
+                ref.identity.shortDescription      = reference.identity.shortDescription
+                ref.identity.startDate             = reference.identity.startDate
+                ref.identity.endDate               = reference.identity.endDate
+                ref.identity.polisRegistrationDate = reference.identity.polisRegistrationDate
+
+                return
+            }
         }
         
         observingFacilityReferences.append(reference)
@@ -314,7 +326,7 @@ extension PolisDirectory {
         catch { throw PolisProviderManager.PolisProviderManagerError.cannotDecodePolisType }
     }
 
-    func parentItem() -> (any StorableItem)? { nil }
+    func parentItem() -> (any StorableItem)? { PolisProviderManager.currentProviderManager.polisProviderConfigurationEntry }
 
     mutating func flashUsing(manager: PolisProviderManager) throws {
         let finder = manager.polisFileResourceFinder!
@@ -356,7 +368,7 @@ extension PolisObservingFacilityDirectory {
         catch { throw PolisProviderManager.PolisProviderManagerError.cannotDecodePolisType }
     }
 
-    func parentItem() -> (any StorableItem)? { nil }
+    func parentItem() -> (any StorableItem)? { PolisProviderManager.currentProviderManager.polisProviderDirectory }
 
     mutating func flashUsing(manager: PolisProviderManager) throws {
         let finder = manager.polisFileResourceFinder!
