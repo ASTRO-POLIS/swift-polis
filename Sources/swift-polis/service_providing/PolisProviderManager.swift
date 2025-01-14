@@ -59,6 +59,8 @@ open class PolisProviderManager {
         public static let providerWillLoadLocalDataNotification = Notification.Name("providerWillLoadLocalData") // Object is the Manager
         public static let providerDidLoadLocalDataNotification  = Notification.Name("providerDidLoadLocalData")  // Object is the Manager
 
+        public static let facilityWillCreateNotification        = Notification.Name("facilityWillCreate") // Object is nil
+        public static let facilityDidCreateNotification         = Notification.Name("facilityDidCreate")  // Object is the ObservingFacilityRep
         public static let facilityWillLoadNotification          = Notification.Name("facilityWillLoad")   // Object is the ObservingFacilityRep
         public static let facilityDidLoadNotification           = Notification.Name("facilityDidLoad")    // Object is the ObservingFacilityRep
         public static let facilityDidChangeNotification         = Notification.Name("facilityDidChange")  // Object is the ObservingFacilityRep
@@ -255,6 +257,7 @@ public extension PolisProviderManager {
         }
 
         //TODO: 5. If needed, sync with remote providers
+        // Q: Do we need to create Remote Server Initial Data? Perhaps this is a choice of the Provider Owner?
 
         // 6: Post a notification that the local copy is ready to be used and finalise
         nc.post(name: StatusChangeNotification.providerDidLoadLocalDataNotification, object: manager)
@@ -262,6 +265,15 @@ public extension PolisProviderManager {
         PolisProviderManager.currentProviderManager = manager
 
         return manager
+    }
+
+    internal func flush(item: any StorableItem) throws {
+        var currentItem: (any StorableItem)? = item
+
+        while currentItem != nil {
+            try currentItem?.flashUsing(manager: self)
+            currentItem = currentItem?.parentItem()
+        }
     }
 
     /// Call this method before terminating the process and wait for the notification
@@ -354,16 +366,6 @@ extension PolisProviderManager {
     /// If `true` we can start loading data or doing other changes to the local POLIS provider
     private func ensureMinimalLocalPolisConfiguration() -> Bool {
         return checkPolisDirectoryPathsExistence(paths: polisDirectoryPaths()) && checkPolisFilesExistence(paths: essentialPolisFiles())
-    }
-
-
-    private func flush(item: any StorableItem) throws {
-        var currentItem: (any StorableItem)? = item
-
-        while currentItem != nil {
-            try currentItem?.flashUsing(manager: self)
-            currentItem = currentItem?.parentItem()
-        }
     }
 }
 

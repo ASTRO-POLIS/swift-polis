@@ -50,10 +50,11 @@ open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
 
         let dirEntry              = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: result.identity)
 
-        nc.post(name: PolisProviderManager.StatusChangeNotification.facilityWillLoadNotification, object: result)
-        provider.facilityDirectory.addObservingFacility(reference: dirEntry)
+        nc.post(name: PolisProviderManager.StatusChangeNotification.facilityWillCreateNotification, object: nil)
+        provider.facilityDirectory.addOrUpdateObservingFacility(reference: dirEntry)
+        try provider.flush(item: provider.facilityDirectory)
         provider.facilities.append(result)
-        nc.post(name: PolisProviderManager.StatusChangeNotification.facilityDidLoadNotification, object: result)
+        nc.post(name: PolisProviderManager.StatusChangeNotification.facilityDidCreateNotification, object: result)
 
         return result
     }

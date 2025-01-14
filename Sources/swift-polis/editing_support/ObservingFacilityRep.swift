@@ -19,38 +19,62 @@ open class ObservingFacilityRep {
 
     // Polis Identity defined
     public let id: UUID
-    public var externalReferences: [String]?
-    public var lastUpdateDate: Date
-    public var name: String
-    public var localName: String?
-    public var abbreviation: String?
-    public var shortDescription: String?
-    public var startDate: Date?
-    public var endDate: Date?
-    public var polisRegistrationDate: Date?
+    public var externalReferences: [String]? { didSet { identityDidChange = true } }
+    public var lastUpdateDate: Date          { didSet { identityDidChange = true } }
+    public var name: String                  { didSet { identityDidChange = true } }
+    public var localName: String?            { didSet { identityDidChange = true } }
+    public var abbreviation: String?         { didSet { identityDidChange = true } }
+    public var shortDescription: String?     { didSet { identityDidChange = true } }
+    public var startDate: Date?              { didSet { identityDidChange = true } }
+    public var endDate: Date?                { didSet { identityDidChange = true } }
+    public var polisRegistrationDate: Date?  { didSet { identityDidChange = true } }
+    private var identityDidChange: Bool = false
 
     // Polis Item defined
-    public var owner: PolisOwner?
-    public var parentID: UUID?
-    public var automationLabel: String?
-    public var lifecycleStatus: PolisLifecycleStatus = PolisLifecycleStatus.unknown
-    public var media: PolisMediaSource?
+    public var owner: PolisOwner?                                                   { didSet { detailsDidChange = true } }
+    public var parentID: UUID?                                                      { didSet { detailsDidChange = true } }
+    public var automationLabel: String?                                             { didSet { detailsDidChange = true } }
+    public var lifecycleStatus: PolisLifecycleStatus = PolisLifecycleStatus.unknown { didSet { detailsDidChange = true } }
+    public var media: PolisMediaSource?                                             { didSet { detailsDidChange = true } }
 
     // Polis Observing Facility Details defined
-    public var gravitationalBodyRelationship = PolisObservingFacility.ObservingFacilityLocationType.surfaceFixed
-    public var placeInTheSolarSystem         = PolisObservingFacility.PlaceInTheSolarSystem.earth
-    public var observingFacilityCode: String?
-    public var solarSystemBodyName: String?
-    public var orbitingAroundPlaceInTheSolarSystemNamed: String?
-    public var facilityLocationID: UUID?                                   // Points to dictionary with some predefined (standard) keys
-    public var astronomicalCode: String?                                   // Minor planet codes, etc.
+    public var gravitationalBodyRelationship = PolisObservingFacility.ObservingFacilityLocationType.surfaceFixed { didSet { detailsDidChange = true } }
+    public var placeInTheSolarSystem         = PolisObservingFacility.PlaceInTheSolarSystem.earth                { didSet { detailsDidChange = true } }
+    public var observingFacilityCode: String?                                                                    { didSet { detailsDidChange = true } }
+    public var solarSystemBodyName: String?                                                                      { didSet { detailsDidChange = true } }
+    public var orbitingAroundPlaceInTheSolarSystemNamed: String?                                                 { didSet { detailsDidChange = true } }
+    // Points to dictionary with some predefined (standard) keys
+    public var facilityLocationID: UUID?                                                                         { didSet { detailsDidChange = true } }
+    // Minor planet codes, etc.
+    public var astronomicalCode: String?                                                                         { didSet { detailsDidChange = true } }
+    private var detailsDidChange: Bool = false
 
     public func flush() async throws {
-        let manager = PolisProviderManager.currentProviderManager!
-//
-//        try manager.facilityDirectory.flashUsing(manager: PolisProviderManager.currentProviderManager)
-//
-//        // Item
+        let provider = PolisProviderManager.currentProviderManager!
+
+        // Identity
+        if identityDidChange {
+            let identity = PolisIdentity(id: id,
+                                         externalReferences: externalReferences,
+                                         lastUpdateDate: lastUpdateDate,
+                                         name: name,
+                                         localName: localName,
+                                         abbreviation: abbreviation,
+                                         shortDescription: shortDescription,
+                                         startDate: startDate,
+                                         endDate: endDate,
+                                         polisRegistrationDate:polisRegistrationDate)
+            let dirEntry = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: identity)
+
+            provider.facilityDirectory.addOrUpdateObservingFacility(reference: dirEntry)
+            try provider.flush(item: provider.facilityDirectory)
+        }
+
+        //TODO: Continue here!
+
+        //
+        //        try manager.facilityDirectory.flashUsing(manager: PolisProviderManager.currentProviderManager)
+
 //        item.identity        = identity
 //        item.owner           = owner
 //        item.parentID        = parentID
