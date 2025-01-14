@@ -265,7 +265,9 @@ extension PolisDirectory.ProviderDirectoryEntry {
         guard let data = data else { throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFile }
 
         do {
-            let entry = try JSONDecoder().decode(PolisDirectory.ProviderDirectoryEntry.self, from: data)
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+            let entry = try decoder.decode(PolisDirectory.ProviderDirectoryEntry.self, from: data)
 
             return entry as AnyObject
         }
@@ -303,7 +305,9 @@ extension PolisDirectory {
         guard let data = data else { throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFile }
 
         do {
-            let entry = try JSONDecoder().decode(PolisDirectory.self, from: data)
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+            let entry = try decoder.decode(PolisDirectory.self, from: data)
 
             return entry as AnyObject
         }
@@ -343,7 +347,9 @@ extension PolisObservingFacilityDirectory {
         guard let data = data else { throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFile }
 
         do {
-            let entry = try JSONDecoder().decode(PolisObservingFacilityDirectory.self, from: data)
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+            let entry = try decoder.decode(PolisObservingFacilityDirectory.self, from: data)
 
             return entry as AnyObject
         }
