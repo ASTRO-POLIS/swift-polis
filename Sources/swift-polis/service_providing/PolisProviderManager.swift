@@ -250,6 +250,13 @@ public extension PolisProviderManager {
         // 3. Check and try to load the facility directory
         manager.facilityDirectory = try PolisObservingFacilityDirectory.loadFromLocalFileSystemUsing(manager: manager) as? PolisObservingFacilityDirectory
 
+        //TODO: Please check it: Georg
+        // 6: Post a notification that the local copy is ready to be used and finalise
+        nc.post(name: StatusChangeNotification.providerDidLoadLocalDataNotification, object: manager)
+        isConfigured = true
+        PolisProviderManager.currentProviderManager = manager
+
+
         // 4. Prepare the list of all currently available observing facilities
         for facility in manager.facilityDirectory!.observingFacilityReferences {
             //FIXME: This is a hack! We assume all facilities are earth-based and fixed. Later we need to check facility's type
@@ -258,11 +265,6 @@ public extension PolisProviderManager {
 
         //TODO: 5. If needed, sync with remote providers
         // Q: Do we need to create Remote Server Initial Data? Perhaps this is a choice of the Provider Owner?
-
-        // 6: Post a notification that the local copy is ready to be used and finalise
-        nc.post(name: StatusChangeNotification.providerDidLoadLocalDataNotification, object: manager)
-        isConfigured = true
-        PolisProviderManager.currentProviderManager = manager
 
         return manager
     }
