@@ -1,4 +1,4 @@
-//
+
 //  PolisProviderManagerManager.swift
 //  swift-polis
 //
@@ -115,7 +115,7 @@ open class PolisProviderManager {
     ///
     ///  Before calling, make sure that `localPolisRootPath` is set to proper existing path
     init() throws {
-        guard PolisProviderManager.currentProviderManager == nil else { throw PolisProviderManagerError.cannotRegisterMultipleManagerInstances }
+        guard try PolisProviderManager.canConfigure() else { throw PolisProviderManagerError.cannotRegisterMultipleManagerInstances }
 
         self.polisImplementation = PolisProviderManager.latestWorkingPolisVersion
 
@@ -123,7 +123,7 @@ open class PolisProviderManager {
             self.polisFileResourceFinder = try PolisFileResourceFinder(at: url, supportedImplementation: self.polisImplementation)
         }
         else {
-            logger.error("Cannot create URL from rootFolder")
+            logger.error("Cannot create URL from root folder: \(PolisProviderManager.localPolisRootPath)")
             throw PolisProviderManagerError.rootPolisPathUnaccessible
         }
 
@@ -160,7 +160,7 @@ public extension PolisProviderManager {
     static func createLocalProviderWith(configuration: PolisProviderConfiguration, isExperimentalVersion: Bool = false) throws -> PolisProviderManager? {
         let nc = NotificationCenter.default
 
-        try canConfigure()
+        _ = try canConfigure()
 
         // 1. Make sure no POLIS data already exists
         let manager = try PolisProviderManager()
@@ -208,7 +208,7 @@ public extension PolisProviderManager {
     ///
     /// - Parameter useExperimentalVersion: if `true` it tries to connect to a well known experimental test server
     static func createLocalProviderByUsingExistingRemoteProvider(isExperimentalVersion: Bool = false, isEditable: Bool = false) async throws -> PolisProviderManager? {
-        try canConfigure()
+        _ = try canConfigure()
 
         //FIXME: Act as if there is no remote server
         throw PolisProviderManagerError.noRemoteDataFound
@@ -231,7 +231,7 @@ public extension PolisProviderManager {
     static func useExistingLocalProvider() throws -> PolisProviderManager {
         let nc = NotificationCenter.default
 
-        try canConfigure()
+        _ = try canConfigure()
 
         // 1. Make sure POLIS data already exists
         let manager = try PolisProviderManager()
@@ -291,10 +291,11 @@ public extension PolisProviderManager {
     }
 
     //MARK: Private stuff
-    private static func canConfigure() throws {
+    private static func canConfigure() throws -> Bool {
         if isConfigured || (PolisProviderManager.currentProviderManager != nil) {
             throw PolisProviderManagerError.providerAtTheSameRootPathAlreadyConfigured
         }
+        return true
     }
 }
 

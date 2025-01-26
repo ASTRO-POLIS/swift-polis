@@ -11,6 +11,8 @@ import XCTest
 
 final class PolisProviderManagerTests: XCTestCase {
 
+    let testingFolder = "/Users/Shared/Work/polis_tests"
+
     //MARK: - Setup & Teardown -
     var providerWillCreateNotificationExpectation: XCTNSNotificationExpectation!
     var providerDidCreateNotificationExpectation: XCTNSNotificationExpectation!
@@ -34,13 +36,14 @@ final class PolisProviderManagerTests: XCTestCase {
     override func tearDownWithError() throws {
         print("In tearDown.")
         PolisProviderManager.currentProviderManager = nil
+
         try super.tearDownWithError()
     }
 
     //MARK: - Tests -
     func test_PolisProviderManager_creation_shouldSucceed() throws {
         // Given
-        PolisProviderManager.localPolisRootPath = "/tmp/polis_test"
+        PolisProviderManager.localPolisRootPath = testingFolder
 
         let sut = try PolisProviderManager()
 
@@ -50,16 +53,16 @@ final class PolisProviderManagerTests: XCTestCase {
 
     func test_PolisProviderManager_creatingAndStoringProvider_shouldSucceed() async throws {
         // Given
-        PolisProviderManager.localPolisRootPath = "/tmp/polis_test"
+        PolisProviderManager.localPolisRootPath = testingFolder
 
-        let sut = try PolisProviderManager()
         let config = PolisProviderConfiguration(name: "BigBang", adminName: "admin", adminEmail:  "admin@admin.nirvana")
 
         // When
         //FIXME: !
-//        try await sut.createLocalProvider(configuration: config)
-        
+        let sut = try PolisProviderManager.createLocalProviderWith(configuration: config, isExperimentalVersion: true)
+
         // Then
+        XCTAssertNotNil(sut)
         await fulfillment(of: [providerWillCreateNotificationExpectation, providerDidCreateNotificationExpectation],
                           timeout: 5,
                           enforceOrder: true)
