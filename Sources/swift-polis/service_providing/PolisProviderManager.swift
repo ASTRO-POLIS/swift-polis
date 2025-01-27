@@ -179,6 +179,7 @@ public extension PolisProviderManager {
 
         try manager.newLocalConfiguration(isEditable: true , isTesting: isExperimentalVersion)
         try manager.updateLocalConfiguration()
+        PolisProviderManager.currentProviderManager = manager
 
         // 4. Create the provider root
         manager.polisProviderConfigurationEntry = directory
@@ -195,7 +196,6 @@ public extension PolisProviderManager {
         // 7. Finalise
         nc.post(name: StatusChangeNotification.providerDidCreateNotification, object: self)
         isConfigured = true
-        PolisProviderManager.currentProviderManager = manager
 
         return manager
     }
