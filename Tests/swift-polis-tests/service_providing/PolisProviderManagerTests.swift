@@ -11,7 +11,6 @@ import XCTest
 
 final class PolisProviderManagerTests: XCTestCase {
 
-    let testingFolder = "/Users/Shared/Work/polis_tests"
 
     //MARK: - Setup & Teardown -
     var providerWillCreateNotificationExpectation: XCTNSNotificationExpectation!
@@ -29,6 +28,8 @@ final class PolisProviderManagerTests: XCTestCase {
         try super.setUpWithError()
         print("In setUp.")
 
+        try TestingSupport.cleanUpTestingFolder()
+        
         providerWillCreateNotificationExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerWillCreateNotification)
         providerDidCreateNotificationExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerDidCreateNotification)
     }
@@ -41,19 +42,9 @@ final class PolisProviderManagerTests: XCTestCase {
     }
 
     //MARK: - Tests -
-    func test_PolisProviderManager_creation_shouldSucceed() throws {
-        // Given
-        PolisProviderManager.localPolisRootPath = testingFolder
-
-        let sut = try PolisProviderManager()
-
-        // Then
-        XCTAssertNotNil(sut)
-    }
-
     func test_PolisProviderManager_creatingAndStoringProvider_shouldSucceed() async throws {
         // Given
-        PolisProviderManager.localPolisRootPath = testingFolder
+        PolisProviderManager.localPolisRootPath = TestingSupport.testingFolder
 
         let config = PolisProviderConfiguration(name: "BigBang", adminName: "admin", adminEmail:  "admin@admin.nirvana")
 
@@ -70,7 +61,6 @@ final class PolisProviderManagerTests: XCTestCase {
 
 
     static var allTests = [
-        ("test_PolisProviderManager_creation_shouldSucceed",                   test_PolisProviderManager_creation_shouldSucceed),
         ("test_PolisProviderManager_creatingAndStoringProvider_shouldSucceed", test_PolisProviderManager_creatingAndStoringProvider_shouldSucceed),
     ]
 

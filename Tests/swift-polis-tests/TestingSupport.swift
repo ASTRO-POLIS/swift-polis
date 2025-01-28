@@ -20,6 +20,14 @@ import swift_polis
 
 struct TestingSupport {
 
+    static let testingFolder = "/Users/Shared/Work/polis_tests"
+
+    //MARK: Supporting methods
+    static func cleanUpTestingFolder() throws {
+        try FileManager.default.removeItem(atPath: testingFolder)
+        try FileManager.default.createDirectory(atPath: testingFolder, withIntermediateDirectories: true)
+    }
+
     //MARK: - String for Decoding Data -
 
 
