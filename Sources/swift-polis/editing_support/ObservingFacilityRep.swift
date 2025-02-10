@@ -9,14 +9,6 @@ import Foundation
 
 open class ObservingFacilityRep {
 
-    //TODO: This needs to be part of PolisProviderManager
-    public static func facility(with id: UUID) async throws -> ObservingFacilityRep? {
-
-        //TODO: Implement me!
-
-        return nil
-    }
-
     // Polis Identity defined
     public let id: UUID
     public var externalReferences: [String]? { didSet { identityDidChange = true } }
@@ -54,67 +46,46 @@ open class ObservingFacilityRep {
 
         // Identity
         if identityDidChange {
-            let identity = PolisIdentity(id: id,
-                                         externalReferences: externalReferences,
-                                         lastUpdateDate: lastUpdateDate,
-                                         name: name,
-                                         localName: localName,
-                                         abbreviation: abbreviation,
-                                         shortDescription: shortDescription,
-                                         startDate: startDate,
-                                         endDate: endDate,
-                                         polisRegistrationDate:polisRegistrationDate)
             let dirEntry = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: identity)
 
             provider.facilityDirectory.addOrUpdateObservingFacility(reference: dirEntry)
             try provider.flush(item: provider.facilityDirectory)
+
+            if detailsDidChange {
+                let facilityDetails                                      = PolisObservingFacility(item: item,
+                                                                                                  gravitationalBodyRelationship: gravitationalBodyRelationship,
+                                                                                                  placeInTheSolarSystem: placeInTheSolarSystem)
+                facilityDetails.observingFacilityCode                    = observingFacilityCode
+                facilityDetails.solarSystemBodyName                      = solarSystemBodyName
+                facilityDetails.orbitingAroundPlaceInTheSolarSystemNamed = orbitingAroundPlaceInTheSolarSystemNamed
+                facilityDetails.facilityLocationID                       = facilityLocationID
+                facilityDetails.astronomicalCode                         = astronomicalCode
+
+                try await ensureFacilityFolderDoesExist()
+
+                let detailsPath = manager.polisFileResourceFinder.observingFacilityFile(observingFacilityID: identity.id)
+
+                do {
+                    let data = try manager.jsonEncoder.encode(facilityDetails)
+                    //TODO: remove later solution will be found
+                    let path = "file://\(detailsPath)"
+                    try data.write(to: URL(string: path.normalisedFolderPath())!)
+                }
+                catch {
+                    PolisLogger.shared.error("Cannot encode or save facility details to: \(detailsPath)")
+                    throw PolisProviderManager.PolisProviderManagerError.cannotWriteFile
+                }
+            }
         }
-
-        //TODO: Continue here!
-
-        //
-        //        try manager.facilityDirectory.flashUsing(manager: PolisProviderManager.currentProviderManager)
-
-//        item.identity        = identity
-//        item.owner           = owner
-//        item.parentID        = parentID
-//        item.media           = media
-//        item.lifecycleStatus = lifecycleStatus
-//
-//        let facility = PolisObservingFacility(item: item, gravitationalBodyRelationship: PolisObservingFacility.ObservingFacilityLocationType.surfaceFixed, placeInTheSolarSystem: PolisObservingFacility.PlaceInTheSolarSystem.earth)
-//
-//        facility.gravitationalBodyRelationship            = gravitationalBodyRelationship
-//        facility.placeInTheSolarSystem                    = placeInTheSolarSystem
-//        facility.observingFacilityCode                    = observingFacilityCode
-//        facility.solarSystemBodyName                      = solarSystemBodyName
-//        facility.orbitingAroundPlaceInTheSolarSystemNamed = orbitingAroundPlaceInTheSolarSystemNamed
-//        facility.facilityLocationID                       = facilityLocationID
-//        facility.astronomicalCode                         = astronomicalCode
-//
-//        try await ensureFacilityFolderDoesExist()
-//
-//        let detailsPath = manager.polisFileResourceFinder.observingFacilityFile(observingFacilityID: identity.id)
-//
-//        do {
-//            let data = try manager.jsonEncoder.encode(facility)
-////TODO: remove later solution will be found
-//            let path = "file://\(detailsPath)"
-//            try data.write(to: URL(string: path.normalisedFolderPath())!)
-//        }
-//        catch {
-//            PolisLogger.shared.error("Cannot encode or save facility details to: \(detailsPath)")
-//            throw PolisProviderManager.PolisProviderManagerError.cannotWriteFile
-//        }
     }
 
     func ensureFacilityFolderDoesExist() async throws {
-//        let manager = PolisProviderManager.currentProviderManager!
-//        let path    = manager.polisFileResourceFinder.observingFacilityFolder(observingFacilityID: identity.id)
-//
-//        if !manager.tryToEnsureFoldersExistence(paths: [path]) {
-//            PolisLogger.shared.error("Cannot create or access facility forlder: \(path)")
-//            throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFolder
-//        }
+        let path = manager.polisFileResourceFinder.observingFacilityFolder(observingFacilityID: identity.id)
+
+        if !manager.tryToEnsureFoldersExistence(paths: [path]) {
+            PolisLogger.shared.error("Cannot create or access facility forlder: \(path)")
+            throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFolder
+        }
     }
 
     var identity: PolisIdentity {
@@ -144,8 +115,11 @@ open class ObservingFacilityRep {
     }
 
     init(id: UUID, lastUpdateDate: Date = Date(), name: String) {
-        self.id = id
+        self.id             = id
         self.lastUpdateDate = lastUpdateDate
-        self.name = name
+        self.name           = name
+        manager             = PolisProviderManager.currentProviderManager!
     }
+
+    private let manager: PolisProviderManager!
 }

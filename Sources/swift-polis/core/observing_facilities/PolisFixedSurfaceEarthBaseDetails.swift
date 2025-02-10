@@ -76,7 +76,23 @@ public class PolisFixedSurfaceEarthBaseDetails: PolisObservingFacility {
     }
 
     //MARK: Make Swift compiler happy! 💩
-    public required override init(item: PolisItem, gravitationalBodyRelationship: ObservingFacilityLocationType, placeInTheSolarSystem: PlaceInTheSolarSystem, observingFacilityCode: String? = nil, solarSystemBodyName: String? = nil, orbitingAroundPlaceInTheSolarSystemNamed: String? = nil, facilityLocationID: UUID? = nil, astronomicalCode: String? = nil, parentObservingFacilityID: UUID? = nil, observatoryIDs: Set<UUID>? = nil, deviceIDs: Set<UUID>? = nil, website: URL? = nil, scientificObjectives: String? = nil, history: String? = nil, fixedSurfaceEarthBaseDetailsID: UUID? = nil, mobileSurfaceEarthBaseDetailsID: UUID? = nil, airborneEarthBaseDetailsID: UUID? = nil) {
+    public required override init(item: PolisItem,
+                                  gravitationalBodyRelationship: ObservingFacilityLocationType,
+                                  placeInTheSolarSystem: PlaceInTheSolarSystem,
+                                  observingFacilityCode: String?                    = nil,
+                                  solarSystemBodyName: String?                      = nil,
+                                  orbitingAroundPlaceInTheSolarSystemNamed: String? = nil,
+                                  facilityLocationID: UUID?                         = nil,
+                                  astronomicalCode: String?                         = nil,
+                                  parentObservingFacilityID: UUID?                  = nil,
+                                  observatoryIDs: Set<UUID>?                        = nil,
+                                  deviceIDs: Set<UUID>?                             = nil,
+                                  website: URL?                                     = nil,
+                                  scientificObjectives: String?                     = nil,
+                                  history: String?                                  = nil,
+                                  fixedSurfaceEarthBaseDetailsID: UUID?             = nil,
+                                  mobileSurfaceEarthBaseDetailsID: UUID?            = nil,
+                                  airborneEarthBaseDetailsID: UUID?                 = nil) {
         fatalError("init(item:gravitationalBodyRelationship:placeInTheSolarSystem:observingFacilityCode:solarSystemBodyName:orbitingAroundPlaceInTheSolarSystemNamed:facilityLocationID:astronomicalCode:parentObservingFacilityID:observatoryIDs:deviceIDs:website:scientificObjectives:history:fixedSurfaceEarthBaseDetailsID:mobileSurfaceEarthBaseDetailsID:airborneEarthBaseDetailsID:) has not been implemented")
     }
     

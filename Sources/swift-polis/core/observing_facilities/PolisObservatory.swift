@@ -12,7 +12,7 @@ public enum PolisModeOfOperation: String, Codable {
     case autonomous  // no dynamic schedular
     case remote
     case robotic
-    case mixed                                       // e.g. in case of Network
+    case mixed       // e.g. in case of Network
     case other
     case unknown
 }
@@ -28,7 +28,6 @@ public enum PolisElectromagneticSpectrumCoverage: String, Codable {
     case gravitational
     case other
     case unknown
-
     case neutrino
 }
 
@@ -58,9 +57,9 @@ public class PolisObservatory: Identifiable, Codable {
     public init(identity: PolisIdentity,
                 electromagneticSpectrumCoverage: PolisElectromagneticSpectrumCoverage,
                 observatoryType: ObservatoryType,
-                location: PolisPlace?         = nil,
-                configurationIDs: Set<UUID>?  = nil,
-                deviceIDs: Set<UUID>?         = nil) {
+                location: PolisPlace?        = nil,
+                configurationIDs: Set<UUID>? = nil,
+                deviceIDs: Set<UUID>?        = nil) {
         self.identity                        = identity
         self.electromagneticSpectrumCoverage = electromagneticSpectrumCoverage
         self.observatoryType                 = observatoryType
