@@ -61,6 +61,7 @@ open class ObservingFacilityRep {
                 facilityDetails.facilityLocationID                       = facilityLocationID
                 facilityDetails.astronomicalCode                         = astronomicalCode
 
+                //TODO: This should be rewritten when the PolisFacility implements StorableItem
                 try await ensureFacilityFolderDoesExist()
 
                 let detailsPath = manager.polisFileResourceFinder.observingFacilityFile(observingFacilityID: identity.id)
@@ -79,6 +80,7 @@ open class ObservingFacilityRep {
         }
     }
 
+    //TODO: Move to the Polis type!
     func ensureFacilityFolderDoesExist() async throws {
         let path = manager.polisFileResourceFinder.observingFacilityFolder(observingFacilityID: identity.id)
 
