@@ -69,7 +69,7 @@ import Foundation
 ///          "is_repeating": true
 ///       }
 ///   ],
-///   "note": "By or after heavy rain, the road to the observatory could be closed. Check the weather forcast before planning your visit."
+///   "note": "By or after heavy rain, the road to the observatory could be closed. Check the weather forecast before planning your visit."
 ///}
 
 
