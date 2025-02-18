@@ -16,6 +16,9 @@ final class PolisProviderManagerTests: XCTestCase {
     var providerWillCreateNotificationExpectation: XCTNSNotificationExpectation!
     var providerDidCreateNotificationExpectation: XCTNSNotificationExpectation!
 
+    var facilityInfoWillCreateExpectation: XCTNSNotificationExpectation!
+    var facilityInfoDidCreateExpectation: XCTNSNotificationExpectation!
+
     override class func setUp() {
         print("In class setUp.")
     }
@@ -32,6 +35,10 @@ final class PolisProviderManagerTests: XCTestCase {
         
         providerWillCreateNotificationExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerWillCreateNotification)
         providerDidCreateNotificationExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerDidCreateNotification)
+
+        facilityInfoWillCreateExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.facilityInfoWillCreateNotification)
+        facilityInfoDidCreateExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.facilityInfoDidCreateNotification)
+
     }
 
     override func tearDownWithError() throws {
@@ -46,15 +53,17 @@ final class PolisProviderManagerTests: XCTestCase {
         // Given
         PolisProviderManager.localPolisRootPath = TestingSupport.testingFolder
 
-        let config = PolisProviderConfiguration(name: "BigBang", adminName: "admin", adminEmail:  "admin@admin.nirvana")
-
+        let config   = PolisProviderConfiguration(name: "BigBang", adminName: "admin", adminEmail:  "admin@admin.nirvana")
+//FIXME:        let facility = TestingSupport.exampleFacility()
+        
         // When
         //FIXME: !
         let sut = try PolisProviderManager.createLocalProviderWith(configuration: config, isExperimentalVersion: true)
 
         // Then
         XCTAssertNotNil(sut)
-        await fulfillment(of: [providerWillCreateNotificationExpectation, providerDidCreateNotificationExpectation],
+        await fulfillment(of: [providerWillCreateNotificationExpectation, providerDidCreateNotificationExpectation,
+                              facilityInfoWillCreateExpectation, facilityInfoDidCreateExpectation,],
                           timeout: 5,
                           enforceOrder: true)
     }

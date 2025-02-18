@@ -59,9 +59,12 @@ open class PolisProviderManager {
         public static let providerWillLoadLocalDataNotification = Notification.Name("providerWillLoadLocalData") // Object is the Manager
         public static let providerDidLoadLocalDataNotification  = Notification.Name("providerDidLoadLocalData")  // Object is the Manager
 
-        public static let facilityWillCreateNotification        = Notification.Name("facilityWillCreate") // Object is nil
-        public static let facilityDidCreateNotification         = Notification.Name("facilityDidCreate")  // Object is the ObservingFacilityRep
-        public static let facilityWillLoadNotification          = Notification.Name("facilityWillLoad")   // Object is the ObservingFacilityRep
+        public static let facilityInfoWillCreateNotification    = Notification.Name("facilityInfoWillCreate") // Object is nil
+        public static let facilityInfoDidCreateNotification     = Notification.Name("facilityInfoDidCreate")  // Object is the ObservingFacilityRep
+        public static let facilityDetailsWillCreateNotification = Notification.Name("facilityDetailsWillCreate") // Object is nil
+        public static let facilityDetailsDidCreateNotification  = Notification.Name("facilityDetailsDidCreate")  // Object is the ObservingFacilityRep
+
+        public static let facilityWillLoadNotification          = Notification.Name("facilityWillLoad")   // Object nil
         public static let facilityDidLoadNotification           = Notification.Name("facilityDidLoad")    // Object is the ObservingFacilityRep
         public static let facilityDidChangeNotification         = Notification.Name("facilityDidChange")  // Object is the ObservingFacilityRep
     }
@@ -78,6 +81,7 @@ open class PolisProviderManager {
         case cannotEncodePolisType                      // JSON encoding
         case cannotDecodePolisType                      // JSON decoding
         case cannotWriteFile
+        case polisDataMismatch                          // e.g. expects Earth based observatory but gets a Mars rover
     }
 
     //MARK: Static configurations
@@ -156,6 +160,7 @@ public extension PolisProviderManager {
     ///  Before calling, make sure that `localPolisRootPath` is set to proper existing path
     ///
     /// - Parameter configuration: contains all information needed to create a new POLIS provider
+    /// - Parameter isExperimentalVersion: defines if the new provider is a sandbox for experimenting or enhancing the standard 
     /// - Returns: an instance of `PolisProviderManager`
     static func createLocalProviderWith(configuration: PolisProviderConfiguration, isExperimentalVersion: Bool = false) throws -> PolisProviderManager? {
         let nc = NotificationCenter.default

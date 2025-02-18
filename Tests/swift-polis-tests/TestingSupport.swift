@@ -46,6 +46,13 @@ struct TestingSupport {
         )
     }
 
+    static func examplePolisItemBAO() -> PolisItem {
+        PolisItem(identity: TestingSupport.examplePolisIdentityBAO(),
+                  owner: TestingSupport.exampleOwner(),
+                  automationLabel: "BAO",
+                  lifecycleStatus: .active)
+    }
+
     static func exampleOwner() -> PolisOwner {
         PolisOwner(ownershipType: .government,
                         personalOwnerIDs: Set([UUID(uuidString: "6FDA06D1-9AB1-4EF2-AD13-0DAF28940C52")!]),
@@ -95,6 +102,34 @@ struct TestingSupport {
     static func examplePerson() -> PolisPerson {
         PolisPerson(name: "Amon Ra", email: "ra@god.cun", communication: exampleCommunicationChannel(), address: exampleAddress())
     }
+
+//    static func exampleFacility() -> PolisFixedSurfaceEarthBaseDetails {
+//        PolisFixedSurfaceEarthBaseDetails(location: PolisPlace?                                 = nil,
+//                                          openingHours: PolisVisitingHours?                     = nil,
+//                                          averageClearNightsPerYear: UInt?                      = nil,
+//                                          averageSeeingConditions: PolisPropertyValue?          = nil,
+//                                          traditionalLandOwners: String?                        = nil,
+//                                          dominantWindDirection: PolisDirection.RoughDirection? = nil,
+//                                          surfaceSize: PolisPropertyValue?                      = nil,
+//                                          item: PolisItem,
+//                                          gravitationalBodyRelationship: ObservingFacilityLocationType,
+//                                          placeInTheSolarSystem: PlaceInTheSolarSystem,
+//                                          observingFacilityCode: String?                        = nil,
+//                                          solarSystemBodyName: String?                          = nil,
+//                                          orbitingAroundPlaceInTheSolarSystemNamed: String?     = nil,
+//                                          facilityLocationID: UUID?                             = nil,
+//                                          astronomicalCode: String?                             = nil,
+//                                          parentObservingFacilityID: UUID?                      = nil,
+//                                          observatoryIDs: Set<UUID>?                            = nil,
+//                                          deviceIDs: Set<UUID>?                                 = nil,
+//                                          website: URL?                                         = nil,
+//                                          scientificObjectives: String?                         = nil,
+//                                          history: String?                                      = nil,
+//                                          fixedSurfaceEarthBaseDetailsID: UUID?                 = nil,
+//                                          mobileSurfaceEarthBaseDetailsID: UUID?                = nil,
+//                                          airborneEarthBaseDetailsID: UUID?                     = nil)
+//        PolisFixedSurfaceEarthBaseDetails(item: TestingSupport.exampleItem(), gravitationalBodyRelationship: .surfaceFixed, placeInTheSolarSystem: .earth)
+//    }
 
     static func exampleItem() -> PolisItem {
         PolisItem(identity: examplePolisIdentityBAO())

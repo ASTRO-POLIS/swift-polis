@@ -10,7 +10,7 @@ import Foundation
 open class ObservingFacilityRep {
 
     // Polis Identity defined
-    public let id: UUID
+    public var id: UUID
     public var externalReferences: [String]? { didSet { identityDidChange = true } }
     public var lastUpdateDate: Date          { didSet { identityDidChange = true } }
     public var name: String                  { didSet { identityDidChange = true } }
@@ -103,6 +103,18 @@ open class ObservingFacilityRep {
                           endDate: endDate,
                           polisRegistrationDate: polisRegistrationDate)
         }
+        set {
+            id                 = newValue.id
+            externalReferences = newValue.externalReferences
+            lastUpdateDate     = newValue.lastUpdateDate
+            name               = newValue.name
+            localName          = newValue.localName
+            abbreviation       = newValue.abbreviation
+            shortDescription   = newValue.shortDescription
+            startDate          = newValue.startDate
+            endDate            = newValue.endDate
+            identityDidChange  = false
+        }
     }
 
     var item: PolisItem {
@@ -114,6 +126,15 @@ open class ObservingFacilityRep {
                       lifecycleStatus: lifecycleStatus,
                       media: media)
         }
+        set {
+            identity         = newValue.identity
+            owner            = newValue.owner
+            parentID         = newValue.parentID
+            automationLabel  = newValue.automationLabel
+            lifecycleStatus  = newValue.lifecycleStatus
+            media            = newValue.media
+            detailsDidChange = false
+       }
     }
 
     init(id: UUID, lastUpdateDate: Date = Date(), name: String) {
