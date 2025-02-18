@@ -208,22 +208,20 @@ public struct PolisObservingFacilityDirectory: Codable, StorableItem {
     }
 
     public mutating func addOrUpdateObservingFacility(reference: ObservingFacilityReference) {
-        for var ref in observingFacilityReferences {
-            if ref.id == reference.id {
-                ref.identity.externalReferences    = reference.identity.externalReferences
-                ref.identity.lastUpdateDate        = reference.identity.lastUpdateDate
-                ref.identity.name                  = reference.identity.name
-                ref.identity.localName             = reference.identity.localName
-                ref.identity.abbreviation          = reference.identity.abbreviation
-                ref.identity.shortDescription      = reference.identity.shortDescription
-                ref.identity.startDate             = reference.identity.startDate
-                ref.identity.endDate               = reference.identity.endDate
-                ref.identity.polisRegistrationDate = reference.identity.polisRegistrationDate
+        if let index = observingFacilityReferences.firstIndex(where: {$0.id == reference.id} ) {
+            observingFacilityReferences[index].identity.externalReferences    = reference.identity.externalReferences
+            observingFacilityReferences[index].identity.lastUpdateDate        = reference.identity.lastUpdateDate
+            observingFacilityReferences[index].identity.name                  = reference.identity.name
+            observingFacilityReferences[index].identity.localName             = reference.identity.localName
+            observingFacilityReferences[index].identity.abbreviation          = reference.identity.abbreviation
+            observingFacilityReferences[index].identity.shortDescription      = reference.identity.shortDescription
+            observingFacilityReferences[index].identity.startDate             = reference.identity.startDate
+            observingFacilityReferences[index].identity.endDate               = reference.identity.endDate
+            observingFacilityReferences[index].identity.polisRegistrationDate = reference.identity.polisRegistrationDate
 
-                return
-            }
+            return
         }
-        
+
         observingFacilityReferences.append(reference)
         lastUpdate = Date.now
     }
