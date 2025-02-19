@@ -54,7 +54,7 @@ final class PolisProviderManagerTests: XCTestCase {
         PolisProviderManager.localPolisRootPath = TestingSupport.testingFolder
 
         let config   = PolisProviderConfiguration(name: "BigBang", adminName: "admin", adminEmail:  "admin@admin.nirvana")
-//FIXME:        let facility = TestingSupport.exampleFacility()
+        let facility = TestingSupport.exampleFacility()
         
         // When
         //FIXME: !

@@ -74,7 +74,7 @@ open class PolisProviderManager {
         case cannotRegisterMultipleManagerInstances
         case rootPolisPathUnaccessible
         case requiredPolisDataMissing
-        case noRemoteDataFound 
+        case noRemoteDataFound
         case cannotAccessOrCreateStandardPolisFolder
         case cannotAccessOrCreateStandardPolisFile
         case providerAtTheSameRootPathAlreadyConfigured // Thrown by attempting to call multiple configuration methods
@@ -100,6 +100,13 @@ open class PolisProviderManager {
     ///
     /// **Note:** Make sure the public init() was called before trying to access this within the framework
     public static var currentProviderManager: PolisProviderManager!
+
+    
+    /// Defines the sorting method used by methods returning a list of facilities
+    ///
+    /// Set this ivar before calling facility related method.
+    /// Default value is `none` meaning no sorting is done.
+    public var facilitySortingMethod = PolisSorting.none
 
     //MARK: Polis Provider Manager internal configuration
     var jsonEncoder = PrettyJSONEncoder()
@@ -132,7 +139,7 @@ open class PolisProviderManager {
         }
 
         //TODO: This should be responsibility of the static factory methods!
-//        if !ensurePolisFoldersExistence() { throw PolisProviderManagerError.cannotAccessOrCreateStandardPolisFolder }
+        //        if !ensurePolisFoldersExistence() { throw PolisProviderManagerError.cannotAccessOrCreateStandardPolisFolder }
     }
 
 
@@ -147,6 +154,7 @@ open class PolisProviderManager {
     private var logger          = PolisLogger.shared
 
     private var localConfiguration: LocalConfiguration!
+
 }
 
 //MARK: - Configuration of the POLIS Service Provider -
@@ -306,6 +314,11 @@ public extension PolisProviderManager {
 
 //MARK: - Working with Observing Facilities -
 public extension PolisProviderManager {
+
+    func allFacilities() -> [ObservingFacilityRep] {
+        //TODO: Sorting!
+        return facilities
+    }
 
     //TODO: Implement me!
 

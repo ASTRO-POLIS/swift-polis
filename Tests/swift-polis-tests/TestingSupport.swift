@@ -103,33 +103,32 @@ struct TestingSupport {
         PolisPerson(name: "Amon Ra", email: "ra@god.cun", communication: exampleCommunicationChannel(), address: exampleAddress())
     }
 
-//    static func exampleFacility() -> PolisFixedSurfaceEarthBaseDetails {
-//        PolisFixedSurfaceEarthBaseDetails(location: PolisPlace?                                 = nil,
-//                                          openingHours: PolisVisitingHours?                     = nil,
-//                                          averageClearNightsPerYear: UInt?                      = nil,
-//                                          averageSeeingConditions: PolisPropertyValue?          = nil,
-//                                          traditionalLandOwners: String?                        = nil,
-//                                          dominantWindDirection: PolisDirection.RoughDirection? = nil,
-//                                          surfaceSize: PolisPropertyValue?                      = nil,
-//                                          item: PolisItem,
-//                                          gravitationalBodyRelationship: ObservingFacilityLocationType,
-//                                          placeInTheSolarSystem: PlaceInTheSolarSystem,
-//                                          observingFacilityCode: String?                        = nil,
-//                                          solarSystemBodyName: String?                          = nil,
-//                                          orbitingAroundPlaceInTheSolarSystemNamed: String?     = nil,
-//                                          facilityLocationID: UUID?                             = nil,
-//                                          astronomicalCode: String?                             = nil,
-//                                          parentObservingFacilityID: UUID?                      = nil,
-//                                          observatoryIDs: Set<UUID>?                            = nil,
-//                                          deviceIDs: Set<UUID>?                                 = nil,
-//                                          website: URL?                                         = nil,
-//                                          scientificObjectives: String?                         = nil,
-//                                          history: String?                                      = nil,
-//                                          fixedSurfaceEarthBaseDetailsID: UUID?                 = nil,
-//                                          mobileSurfaceEarthBaseDetailsID: UUID?                = nil,
-//                                          airborneEarthBaseDetailsID: UUID?                     = nil)
-//        PolisFixedSurfaceEarthBaseDetails(item: TestingSupport.exampleItem(), gravitationalBodyRelationship: .surfaceFixed, placeInTheSolarSystem: .earth)
-//    }
+    static func exampleFacility() -> PolisFixedSurfaceEarthBaseDetails {
+        PolisFixedSurfaceEarthBaseDetails(location: TestingSupport.exampleAddress(),
+                                          openingHours: nil,                                           //FIXME:
+                                          averageClearNightsPerYear: nil,                              //FIXME:
+                                          averageSeeingConditions: nil,                                //FIXME:
+                                          traditionalLandOwners: "An ancient civilisation",
+                                          dominantWindDirection: .eastSouthEast,
+                                          surfaceSize:  nil,                                           //FIXME:
+                                          item: examplePolisItemBAO(),
+                                          gravitationalBodyRelationship: .surfaceFixed,
+                                          placeInTheSolarSystem: .earth,
+                                          observingFacilityCode: "BAO",
+                                          solarSystemBodyName: "Earth",
+                                          orbitingAroundPlaceInTheSolarSystemNamed: nil,               //FIXME:
+                                          facilityLocationID: nil,                                     //FIXME:
+                                          astronomicalCode: "BAO",
+                                          parentObservingFacilityID: nil,                              //FIXME:
+                                          observatoryIDs: nil,                                         //FIXME:
+                                          deviceIDs: nil,                                              //FIXME:
+                                          website: nil,                                                //FIXME:
+                                          scientificObjectives: "To create a catalogue of galaxies",
+                                          history: "Created by Victor Ambartzumyan",                   //FIXME:
+                                          fixedSurfaceEarthBaseDetailsID: nil,                         //FIXME:
+                                          mobileSurfaceEarthBaseDetailsID: nil,                        //FIXME:
+                                          airborneEarthBaseDetailsID: nil)                             //FIXME:
+    }
 
     static func exampleItem() -> PolisItem {
         PolisItem(identity: examplePolisIdentityBAO())
