@@ -79,7 +79,7 @@ open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
         }
 
         // Announce that we will start loading the facility data
-        nc.post(name: PolisProviderManager.StatusChangeNotification.facilityWillLoadNotification, object: nil)
+        nc.post(name: PolisProviderManager.StatusChangeNotification.facilityInfoWillLoadNotification, object: nil)
 
         //TODO: Now set local properties
         result.item = polisData.item      // Everything we need for the POLIS item
@@ -89,7 +89,7 @@ open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
         //TODO: Register the object into the global list of facilities
 
         // Register notifications
-        nc.post(name: PolisProviderManager.StatusChangeNotification.facilityDidLoadNotification, object: result)
+        nc.post(name: PolisProviderManager.StatusChangeNotification.facilityInfoDidLoadNotification, object: result)
 
         return result
     }

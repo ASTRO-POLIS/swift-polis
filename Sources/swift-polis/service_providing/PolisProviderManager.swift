@@ -53,20 +53,26 @@ open class PolisProviderManager {
 
     //MARK: Notifications
     public struct StatusChangeNotification {
-        public static let providerWillCreateNotification        = Notification.Name("providerWillCreate")  // Object is the Manager
-        public static let providerDidCreateNotification         = Notification.Name("providerWDidCreate")  // Object is the Manager
+        // Provider related
+        public static let providerWillCreateNotification        = Notification.Name("providerWillCreate")        // Object is the Manager
+        public static let providerDidCreateNotification         = Notification.Name("providerWDidCreate")        // Object is the Manager
 
         public static let providerWillLoadLocalDataNotification = Notification.Name("providerWillLoadLocalData") // Object is the Manager
         public static let providerDidLoadLocalDataNotification  = Notification.Name("providerDidLoadLocalData")  // Object is the Manager
 
-        public static let facilityInfoWillCreateNotification    = Notification.Name("facilityInfoWillCreate") // Object is nil
-        public static let facilityInfoDidCreateNotification     = Notification.Name("facilityInfoDidCreate")  // Object is the ObservingFacilityRep
+        // Facility related
+        public static let facilityInfoWillLoadNotification      = Notification.Name("facilityInfoWillLoad")      // Object nil
+        public static let facilityInfoDidLoadNotification       = Notification.Name("facilityInfoDidLoad")       // Object is the ObservingFacilityRep
+        public static let facilityInfoWillCreateNotification    = Notification.Name("facilityInfoWillCreate")    // Object is nil
+        public static let facilityInfoDidCreateNotification     = Notification.Name("facilityInfoDidCreate")     // Object is the ObservingFacilityRep
+
+        public static let facilityDetailWillLoadNotification    = Notification.Name("facilityDetailWillLoad")    // Object ObservingFacilityRep
+        public static let facilityDetailDidLoadNotification     = Notification.Name("facilityDetailDidLoad")     // Object is the ObservingFacilityRep
         public static let facilityDetailsWillCreateNotification = Notification.Name("facilityDetailsWillCreate") // Object is nil
         public static let facilityDetailsDidCreateNotification  = Notification.Name("facilityDetailsDidCreate")  // Object is the ObservingFacilityRep
 
-        public static let facilityWillLoadNotification          = Notification.Name("facilityWillLoad")   // Object nil
-        public static let facilityDidLoadNotification           = Notification.Name("facilityDidLoad")    // Object is the ObservingFacilityRep
-        public static let facilityDidChangeNotification         = Notification.Name("facilityDidChange")  // Object is the ObservingFacilityRep
+        public static let facilityDidChangeNotification         = Notification.Name("facilityInfoDidChange")     // Object is the ObservingFacilityRep
+
     }
 
     //MARK: Error definitions
