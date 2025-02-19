@@ -105,7 +105,7 @@ struct TestingSupport {
 
     static func exampleFacility() -> PolisFixedSurfaceEarthBaseDetails {
         PolisFixedSurfaceEarthBaseDetails(location: TestingSupport.exampleAddress(),
-                                          openingHours: nil,                                           //FIXME:
+                                          visitingHours: nil,                                          //FIXME:
                                           averageClearNightsPerYear: nil,                              //FIXME:
                                           averageSeeingConditions: nil,                                //FIXME:
                                           traditionalLandOwners: "An ancient civilisation",

@@ -12,7 +12,7 @@ public class PolisFixedSurfaceEarthBaseDetails: PolisObservingFacility {
     public var location: PolisPlace?
 
     // General info
-    public var openingHours: PolisVisitingHours?
+    public var visitingHours: PolisVisitingHours?
     public var accessRestrictions: String?
 
     public var averageClearNightsPerYear: UInt?
@@ -25,7 +25,7 @@ public class PolisFixedSurfaceEarthBaseDetails: PolisObservingFacility {
     public var surfaceSize: PolisPropertyValue?             // [m^2]
 
     public init(location: PolisPlace?                                 = nil,
-                openingHours: PolisVisitingHours?                     = nil,
+                visitingHours: PolisVisitingHours?                    = nil,
                 averageClearNightsPerYear: UInt?                      = nil,
                 averageSeeingConditions: PolisPropertyValue?          = nil,
                 traditionalLandOwners: String?                        = nil,
@@ -49,7 +49,7 @@ public class PolisFixedSurfaceEarthBaseDetails: PolisObservingFacility {
                 mobileSurfaceEarthBaseDetailsID: UUID?                = nil,
                 airborneEarthBaseDetailsID: UUID?                     = nil) {
         self.location                  = location
-        self.openingHours              = openingHours
+        self.visitingHours             = visitingHours
         self.averageClearNightsPerYear = averageClearNightsPerYear
         self.averageSeeingConditions   = averageSeeingConditions
         self.traditionalLandOwners     = traditionalLandOwners
@@ -103,7 +103,7 @@ public class PolisFixedSurfaceEarthBaseDetails: PolisObservingFacility {
 public extension PolisFixedSurfaceEarthBaseDetails {
     enum CodingKeys: String, CodingKey {
         case location
-        case openingHours                             = "opening_hours"
+        case visitingHours                            = "visiting_hours"
         case accessRestrictions                       = "access_restrictions"
         case averageClearNightsPerYear                = "average_clear_nights_per_year"
         case averageSeeingConditions                  = "average_seeing_conditions"

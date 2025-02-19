@@ -56,7 +56,7 @@ import Foundation
 ///          "applicable_years": [2024, 2025],
 ///          "applicable_months": [7, 8, 9],
 ///          "applicable_weekdays": ["Saturday"],
-///          "opening_period": [ { "from": "14:00", "to": "16:00" } ],
+///          "visiting_period": [ { "from": "14:00", "to": "16:00" } ],
 ///          "only_group_visits": true,
 ///          "is_repeating": true
 ///       },
@@ -64,7 +64,7 @@ import Foundation
 ///          "applicable_years": [2024, 2025],
 ///          "applicable_months": [7, 8, 9],
 ///          "applicable_weekdays": ["Sunday"],
-///          "opening_period": [ { "from": "09:00", "to": "12:00" }, { "from": "14:00", "to": "16:00" } ],
+///          "visiting_period": [ { "from": "09:00", "to": "12:00" }, { "from": "14:00", "to": "16:00" } ],
 ///          "only_group_visits": false,
 ///          "is_repeating": true
 ///       }
@@ -119,7 +119,7 @@ public struct PolisVisitingHours: Codable {
         public var applicableYears: [Int]?
         public var applicableMonths: [Int]?
         public var applicableWeekdays: [DayOfTheWeek]?
-        public var openingPeriod: [TimePeriod]?
+        public var visitingPeriod: [TimePeriod]?
 
         public var minVisitingGroupSize: Int?
         public var maxVisitingGroupSize: Int?
@@ -131,7 +131,7 @@ public struct PolisVisitingHours: Codable {
         public init(applicableYears: [Int]?             = nil,
                     applicableMonths: [Int]?            = nil,
                     applicableWeekdays: [DayOfTheWeek]? = nil,
-                    openingPeriod: [TimePeriod]?        = nil,
+                    visitingPeriod: [TimePeriod]?       = nil,
                     minVisitingGroupSize: Int?          = nil,
                     maxVisitingGroupSize: Int?          = nil,
                     onlyGroupVisits: Bool               = false,
@@ -140,7 +140,7 @@ public struct PolisVisitingHours: Codable {
             self.applicableYears      = applicableYears
             self.applicableMonths     = applicableMonths
             self.applicableWeekdays   = applicableWeekdays
-            self.openingPeriod        = openingPeriod
+            self.visitingPeriod       = visitingPeriod
             self.minVisitingGroupSize = minVisitingGroupSize
             self.maxVisitingGroupSize = maxVisitingGroupSize
             self.onlyGroupVisits      = onlyGroupVisits
@@ -170,7 +170,7 @@ public extension PolisVisitingHours.VisitingPossibility {
         case applicableYears      = "applicable_years"
         case applicableMonths     = "applicable_months"
         case applicableWeekdays   = "applicable_weekdays"
-        case openingPeriod        = "opening_period"
+        case visitingPeriod       = "visiting_period"
         case minVisitingGroupSize = "min_visiting_group_size"
         case maxVisitingGroupSize = "max_visiting_group_size"
         case onlyGroupVisits      = "only_group_visits"

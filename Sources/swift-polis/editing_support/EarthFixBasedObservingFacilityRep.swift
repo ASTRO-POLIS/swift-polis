@@ -135,7 +135,7 @@ open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
     public var timeZoneIdentifier: String?        // .. as defined with `TimeZone.knownTimeZoneIdentifiers`
 
     // General info
-    public var openingHours: PolisVisitingHours?
+    public var visitingHours: PolisVisitingHours?
     public var accessRestrictions: String?
 
     public var averageClearNightsPerYear: UInt?
@@ -172,7 +172,7 @@ open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
          altitude: PolisPropertyValue?                         = nil,
          addressNote: String?                                  = nil,
          timeZoneIdentifier: String?                           = nil,
-         openingHours: PolisVisitingHours?                     = nil,
+         visitingHours: PolisVisitingHours?                    = nil,
          accessRestrictions: String?                           = nil,
          averageClearNightsPerYear: UInt?                      = nil,
          averageSeeingConditions: PolisPropertyValue?          = nil,
@@ -197,7 +197,7 @@ open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
         self.altitude                  = altitude
         self.addressNote               = addressNote
         self.timeZoneIdentifier        = timeZoneIdentifier
-        self.openingHours              = openingHours
+        self.visitingHours             = visitingHours
         self.accessRestrictions        = accessRestrictions
         self.averageClearNightsPerYear = averageClearNightsPerYear
         self.averageSeeingConditions   = averageSeeingConditions

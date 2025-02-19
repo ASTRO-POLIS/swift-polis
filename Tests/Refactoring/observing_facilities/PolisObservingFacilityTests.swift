@@ -103,7 +103,7 @@ final class PolisObservingFacilityTests: XCTestCase {
                                                    website:URL(string: "https://sau.sa"),
                                                    scientificObjectives: "To make cool observations",
                                                    history: "Somewhere on the table Mountains people built an observatory",
-                                                   openingHours: PolisVisitingHours(note: "From time to time"),
+                                                   visitingours: PolisVisitingHours(note: "From time to time"),
                                                    accessRestrictions: "Might meet lions",
                                                    averageClearNightsPerYear: 311,
                                                    averageSeeingConditions: PolisPropertyValue(valueKind: .double, value: "31", unit: "magnitude"),
