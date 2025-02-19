@@ -57,15 +57,20 @@ final class PolisProviderManagerTests: XCTestCase {
         let facility = TestingSupport.exampleFacility()
         
         // When
-        //FIXME: !
         let sut = try PolisProviderManager.createLocalProviderWith(configuration: config, isExperimentalVersion: true)
+
+        let facilityRep = try EarthFixBasedObservingFacilityRep.registerNewEarthBasedFacilityFrom(polisData: facility)
 
         // Then
         XCTAssertNotNil(sut)
+        XCTAssertNotNil(facilityRep)
+
         await fulfillment(of: [providerWillCreateNotificationExpectation, providerDidCreateNotificationExpectation,
                               facilityInfoWillCreateExpectation, facilityInfoDidCreateExpectation,],
                           timeout: 5,
                           enforceOrder: true)
+
+        //TODO: Test if the Facility dir has first zero and then 1 entry!
     }
 
 
