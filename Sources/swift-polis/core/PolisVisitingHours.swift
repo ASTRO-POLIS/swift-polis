@@ -48,7 +48,7 @@ import Foundation
 ///```
 ///
 /// - In 2024 and 2025, between July and September, every Saturday between 14:00 and 16:00 (only for groups), and every Sunday between
- // 9:00 and 12:00 and between 14:00 and 17:00.
+/// 9:00 and 12:00 and between 14:00 and 17:00.
 ///```json
 ///{
 ///   "visiting_possibilities": [
@@ -147,7 +147,7 @@ public struct PolisVisitingHours: Codable {
             self.isRepeating          = isRepeating
             self.note                 = note
         }
-  }
+    }
 
     public var visitingPossibilities: [VisitingPossibility]?
 
@@ -157,7 +157,8 @@ public struct PolisVisitingHours: Codable {
                 note: String?                                 = nil) {
         self.visitingPossibilities = visitingPossibilities
         self.note                  = note
-    }}
+    }
+}
 
 
 //MARK: - Type extensions -

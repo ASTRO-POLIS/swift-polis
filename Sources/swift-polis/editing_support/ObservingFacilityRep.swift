@@ -51,6 +51,7 @@ open class ObservingFacilityRep {
             provider.facilityDirectory.addOrUpdateObservingFacility(reference: dirEntry)
             try provider.flush(item: provider.facilityDirectory)
 
+            // Details
             if detailsDidChange {
                 let facilityDetails                                      = PolisObservingFacility(item: item,
                                                                                                   gravitationalBodyRelationship: gravitationalBodyRelationship,
