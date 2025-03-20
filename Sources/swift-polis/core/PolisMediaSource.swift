@@ -37,7 +37,7 @@ public struct PolisMediaSource: Identifiable {
     }
 
     /// A type defining the author's copyright claims on the image.
-    public enum CopyrightHolderType: String, Codable {
+    public enum CopyrightHolderType: String, Codable, CaseIterable {
 
         /// The POLIS contributor took the photo
         ///
