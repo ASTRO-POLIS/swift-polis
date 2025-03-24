@@ -61,10 +61,10 @@ open class PolisProviderManager {
         public static let providerDidLoadLocalDataNotification  = Notification.Name("providerDidLoadLocalData")  // Object is the Manager
 
         // Facility related
-        public static let facilityInfoWillLoadNotification      = Notification.Name("facilityInfoWillLoad")      // Object nil
-        public static let facilityInfoDidLoadNotification       = Notification.Name("facilityInfoDidLoad")       // Object is the ObservingFacilityRep
         public static let facilityInfoWillCreateNotification    = Notification.Name("facilityInfoWillCreate")    // Object is nil
         public static let facilityInfoDidCreateNotification     = Notification.Name("facilityInfoDidCreate")     // Object is the ObservingFacilityRep
+        public static let facilityInfoWillLoadNotification      = Notification.Name("facilityInfoWillLoad")      // Object nil
+        public static let facilityInfoDidLoadNotification       = Notification.Name("facilityInfoDidLoad")       // Object is the ObservingFacilityRep
 
         public static let facilityDetailWillLoadNotification    = Notification.Name("facilityDetailWillLoad")    // Object ObservingFacilityRep
         public static let facilityDetailDidLoadNotification     = Notification.Name("facilityDetailDidLoad")     // Object is the ObservingFacilityRep
@@ -279,7 +279,7 @@ public extension PolisProviderManager {
         // 4. Prepare the list of all currently available observing facilities
         for facility in manager.facilityDirectory!.observingFacilityReferences {
             //FIXME: This is a hack! We assume all facilities are earth-based and fixed. Later we need to check facility's type
-            try EarthFixBasedObservingFacilityRep.registerEarthFixBasedFacility(with: facility.identity)
+//            try EarthFixBasedObservingFacilityRep.registerEarthFixBasedFacility(with: facility.identity)
         }
 
         //TODO: 5. If needed, sync with remote providers

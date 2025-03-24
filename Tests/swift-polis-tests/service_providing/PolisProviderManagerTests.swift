@@ -57,12 +57,14 @@ final class PolisProviderManagerTests: XCTestCase {
         let facility = TestingSupport.exampleFacility()
         
         // When
-        let sut = try PolisProviderManager.createLocalProviderWith(configuration: config, isExperimentalVersion: true)
-
-        let facilityRep = try EarthFixBasedObservingFacilityRep.registerNewEarthBasedFacilityFrom(polisData: facility)
+        let sut         = try PolisProviderManager.createLocalProviderWith(configuration: config, isExperimentalVersion: true)
+        let facilityRep = try EarthFixBasedObservingFacilityRep.registerNewEarthBasedFacilityFrom(polisData: facility, shouldCreateNewEntity: true)
 
         // Then
         XCTAssertNotNil(sut)
+        XCTAssertNotNil(sut?.facilityDirectory)
+        XCTAssertEqual(sut?.facilityDirectory.observingFacilityReferences.count, 1)
+
         XCTAssertNotNil(facilityRep)
 
         await fulfillment(of: [providerWillCreateNotificationExpectation, providerDidCreateNotificationExpectation,

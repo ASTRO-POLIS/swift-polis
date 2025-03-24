@@ -33,14 +33,17 @@ public struct PolisDirectory: StorableItem  {
     public struct ProviderDirectoryEntry: StorableItem, Identifiable {
         /// `ProviderType` defines different types of POLIS Providers.
         ///
-        /// In general, only `public` and `mirror` types should be used by clients. Astro clubs and other communities might
+        /// In general, only `publicPrimary` and `mirror` types should be used by clients. Astro clubs and other communities might
         /// access `private` providers, but they will probably only allow restricted access to members only.
         public enum ProviderType: String, Codable {
 
             /// Only `public` provider should be used in production or by publicly available client apps or websites. Public
             /// providers should run on servers with enough bandwidth and computational power capable of accommodating multiple
             /// parallel client requests every second.
-            case `public`
+            case publicPrimary   = "public_primary"
+
+            //TODO: Docs! See discussion with Rick!
+            case publicSecondary = "public_secondary"
 
             /// A `private` provider's main purpose is to act as a local cache for a larger organisation and should not be accessed
             /// from outside. An organisation like amateur clubs might also maintain private providers. They might require user

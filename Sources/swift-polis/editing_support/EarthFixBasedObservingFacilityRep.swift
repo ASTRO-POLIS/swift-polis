@@ -9,6 +9,52 @@ import Foundation
 
 open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
 
+
+    public static func createEarthFixBasedFacility(with id: UUID                 = UUID(),
+                                                   externalReferences: [String]? = nil,
+                                                   lastUpdateDate: Date          = Date(),
+                                                   name: String                  = "Unknown Facility",
+                                                   localName: String?            = nil,
+                                                   abbreviation: String?         = nil,
+                                                   shortDescription: String?     = nil,
+                                                   startDate: Date?              = nil,
+                                                   endDate: Date?                = nil,
+                                                   polisRegistrationDate: Date?  = nil) throws -> EarthFixBasedObservingFacilityRep {
+        let nc       = NotificationCenter.default
+        let provider = PolisProviderManager.currentProviderManager!
+
+        nc.post(name: PolisProviderManager.StatusChangeNotification.facilityInfoWillCreateNotification, object: nil)
+
+        let result   = try EarthFixBasedObservingFacilityRep.registerNewEarthFixBasedFacility(with: id,
+                                                                                              externalReferences: externalReferences,
+                                                                                              lastUpdateDate: lastUpdateDate,
+                                                                                              name: name,
+                                                                                              localName: localName,
+                                                                                              abbreviation: abbreviation,
+                                                                                              shortDescription: shortDescription,
+                                                                                              startDate: startDate,
+                                                                                              endDate: endDate,
+                                                                                              polisRegistrationDate: polisRegistrationDate)
+
+        try provider.flush(item: provider.facilityDirectory)
+        nc.post(name: PolisProviderManager.StatusChangeNotification.facilityInfoDidCreateNotification, object: result)
+
+        return result
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /// Tries to register a new Earth-based facility
     /// 
     /// In case facility with the same `id` already exists, `facilityAlreadyExists` is thrown.
@@ -35,26 +81,25 @@ open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
                                                         shortDescription: String?     = nil,
                                                         startDate: Date?              = nil,
                                                         endDate: Date?                = nil,
-                                                        polisRegistrationDate: Date?  = nil,
-                                                        shouldCreateNewEntity: Bool   = false) throws -> EarthFixBasedObservingFacilityRep {
+                                                        polisRegistrationDate: Date?  = nil) throws -> EarthFixBasedObservingFacilityRep {
         //TODO: Check if this is true (In case facility with the same `id` already exists, `facilityAlreadyExists` is thrown)
-        let provider              = PolisProviderManager.currentProviderManager!
-        let result                = EarthFixBasedObservingFacilityRep(id: id, name: name)
-        let nc                    = NotificationCenter.default
+        let provider                 = PolisProviderManager.currentProviderManager!
+        let result                   = EarthFixBasedObservingFacilityRep(id: id, name: name)
+        let nc                       = NotificationCenter.default
 
-        result.externalReferences = externalReferences
-        result.lastUpdateDate     = lastUpdateDate
-        result.localName          = localName
-        result.abbreviation       = abbreviation
-        result.shortDescription   = shortDescription
-        result.startDate          = startDate
-        result.endDate            = endDate
+        result.externalReferences    = externalReferences
+        result.lastUpdateDate        = lastUpdateDate
+        result.localName             = localName
+        result.abbreviation          = abbreviation
+        result.shortDescription      = shortDescription
+        result.startDate             = startDate
+        result.endDate               = endDate
+        result.polisRegistrationDate = polisRegistrationDate
 
-        let dirEntry              = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: result.identity)
+        let dirEntry                 = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: result.identity)
 
         nc.post(name: PolisProviderManager.StatusChangeNotification.facilityInfoWillCreateNotification, object: nil)
         provider.facilityDirectory.addOrUpdateObservingFacility(reference: dirEntry)
-        if shouldCreateNewEntity { try provider.flush(item: provider.facilityDirectory) }
         provider.facilities.append(result)
         nc.post(name: PolisProviderManager.StatusChangeNotification.facilityInfoDidCreateNotification, object: result)
 
@@ -66,49 +111,66 @@ open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
     /// The POLIS data will be transferred into equivalent Rep class and registered to the Provider manager. Corresponding notifications will be posted.
     ///
     /// - Parameter polisData: hopefully correct facility data
+    ///   - shouldCreateNewEntity: if `true` then the facility will be written to the local file system
     /// - Returns: `EarthFixBasedObservingFacilityRep` object if the POLIS data is from the correct type/
-    public static func registerNewEarthBasedFacilityFrom(polisData: PolisObservingFacility) throws -> EarthFixBasedObservingFacilityRep {
+    public static func registerNewEarthBasedFacilityFrom(polisData: PolisObservingFacility,
+                                                         shouldCreateNewEntity: Bool = false) throws -> EarthFixBasedObservingFacilityRep {
+        let result = try createEarthFixBasedFacility(with: polisData.id,
+                                                     externalReferences: polisData.item.identity.externalReferences,
+                                                     lastUpdateDate: polisData.item.identity.lastUpdateDate,
+                                                     name: polisData.item.identity.name,
+                                                     localName: polisData.item.identity.localName,
+                                                     abbreviation: polisData.item.identity.abbreviation,
+                                                     shortDescription: polisData.item.identity.shortDescription,
+                                                     startDate: polisData.item.identity.startDate,
+                                                     endDate: polisData.item.identity.endDate,
+                                                     polisRegistrationDate: polisData.item.identity.polisRegistrationDate)
+
+
+
+
+
+
 //        let provider = PolisProviderManager.currentProviderManager!
-        let result   = EarthFixBasedObservingFacilityRep(id: polisData.id, name: polisData.item.identity.name)
-        let nc       = NotificationCenter.default
-
-        // First check if we are getting correct data - should be from Earth and fixed based
-        if (polisData.placeInTheSolarSystem != .earth) || (polisData.gravitationalBodyRelationship != .surfaceFixed) {
-            PolisLogger.shared.error("Wrong POLIS data type received! Expended Earth based fixed facility")
-            throw PolisProviderManager.PolisProviderManagerError.polisDataMismatch
-        }
-
-        // Announce that we will start loading the facility data
-        nc.post(name: PolisProviderManager.StatusChangeNotification.facilityInfoWillCreateNotification, object: nil)
-
-        //TODO: Now set local properties
-        result.item = polisData.item      // Everything we need for the POLIS item
-
-        //TODO: ... and now somehow we need here the location...
-
-        //TODO: Register the object into the global list of facilities
-
-        // Register notifications
-        nc.post(name: PolisProviderManager.StatusChangeNotification.facilityInfoDidCreateNotification, object: result)
+//        let nc       = NotificationCenter.default
+//
+//        // First check if we are getting correct data - should be from Earth and fixed based
+//        if (polisData.placeInTheSolarSystem != .earth) || (polisData.gravitationalBodyRelationship != .surfaceFixed) {
+//            PolisLogger.shared.error("Wrong POLIS data type received! Expended Earth based fixed facility")
+//            throw PolisProviderManager.PolisProviderManagerError.polisDataMismatch
+//        }
+//
+//        // Announce that we will start loading the facility data
+//        nc.post(name: PolisProviderManager.StatusChangeNotification.facilityInfoWillCreateNotification, object: nil)
+//
+//        //TODO: Now set local properties
+//        result.item = polisData.item      // Everything we need for the POLIS item
+//
+//        //TODO: ... and now somehow we need here the location...
+//
+//        //TODO: Register the object into the global list of facilities
+//
+//        // Register notifications
+//        nc.post(name: PolisProviderManager.StatusChangeNotification.facilityInfoDidCreateNotification, object: result)
 
         return result
     }
 
-    /// Used to register facilities from existing local data
-    ///
-    /// This method is used internally only
-    static func registerEarthFixBasedFacility(with identity: PolisIdentity) throws  {
-        _ = try EarthFixBasedObservingFacilityRep.registerNewEarthFixBasedFacility(with: identity.id,
-                                                                                   externalReferences: identity.externalReferences,
-                                                                                   lastUpdateDate: identity.lastUpdateDate,
-                                                                                   name: identity.name,
-                                                                                   localName: identity.localName,
-                                                                                   abbreviation: identity.abbreviation,
-                                                                                   shortDescription: identity.shortDescription,
-                                                                                   startDate: identity.startDate,
-                                                                                   endDate: identity.endDate,
-                                                                                   polisRegistrationDate: identity.polisRegistrationDate)
-    }
+//    /// Used to register facilities from existing local data
+//    ///
+//    /// This method is used internally only
+//    static func registerEarthFixBasedFacility(with identity: PolisIdentity) throws  {
+//        _ = try EarthFixBasedObservingFacilityRep.registerNewEarthFixBasedFacility(with: identity.id,
+//                                                                                   externalReferences: identity.externalReferences,
+//                                                                                   lastUpdateDate: identity.lastUpdateDate,
+//                                                                                   name: identity.name,
+//                                                                                   localName: identity.localName,
+//                                                                                   abbreviation: identity.abbreviation,
+//                                                                                   shortDescription: identity.shortDescription,
+//                                                                                   startDate: identity.startDate,
+//                                                                                   endDate: identity.endDate,
+//                                                                                   polisRegistrationDate: identity.polisRegistrationDate)
+//    }
 
     // Address related
     public var street: String?
@@ -229,4 +291,6 @@ open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
     //TODO: Implement me!
 //    convenience init(item: PolisItem) {
 //    }
+
+
 }
