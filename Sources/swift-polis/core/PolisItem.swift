@@ -25,7 +25,7 @@ import Foundation
 /// is used to mark that the item does not follow the POLIS standard, or violates community rules. Normally entities
 /// will be warned first, and if they continue to break standards and rules, they will be deleted.
 /// - `unknown`   - do not sync, but continue monitoring
-public enum PolisLifecycleStatus: String, Codable {
+public enum PolisLifecycleStatus: String, Codable, Equatable {
 
     /// `inactive` indicates new, being edited, or in process of being upgraded by the provider(s).
     case inactive
@@ -53,7 +53,7 @@ public enum PolisLifecycleStatus: String, Codable {
 }
 
 
-public struct PolisItem: Codable {
+public struct PolisItem: Codable, Equatable {
 
     public var identity: PolisIdentity
     public var owner: PolisOwner?

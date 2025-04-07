@@ -8,13 +8,6 @@
 import Foundation
 import SoftwareEtudesUtilities
 
-protocol StorableItem {
-    static func loadFromLocalFileSystemUsing(manager: PolisProviderManager) throws -> AnyObject
-    func parentItem() -> (any StorableItem)?
-    mutating func flashUsing(manager: PolisProviderManager) throws
-}
-
-
 //TODO: $$$GT Add documentation
 public struct PolisProviderConfiguration {
     public var reachability                                     = PolisDirectory.ProviderDirectoryEntry.ServiceReachability.localUseOnly
@@ -326,7 +319,11 @@ public extension PolisProviderManager {
         return facilities
     }
 
-    //TODO: Implement me!
+    private func loadFacilityWith(id: UUID,
+                                  locationType: PolisObservingFacility.ObservingFacilityLocationType = .surfaceFixed,
+                                  solarSystemBody: PolisObservingFacility.PlaceInTheSolarSystem = .earth) throws {
+        //TODO: Implement me!
+    }
 
 }
 

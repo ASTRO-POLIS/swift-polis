@@ -75,7 +75,7 @@ public enum PolisOwnershipType: String, Codable {
 ///
 /// In case the owner claims ownership over a single `PolisItem` the owner's data should be stored together with the Item's
 /// data. Otherwise shared ownership is recommended.
-public struct PolisOwner: Codable {
+public struct PolisOwner: Codable, Equatable {
     /// The ownership type as defined by `PolisOwnershipType`
     public var ownershipType: PolisOwnershipType
 
@@ -95,9 +95,9 @@ public struct PolisOwner: Codable {
 }
 
 //MARK: - PolisAddress -
-public struct PolisPlace: Codable {
+public struct PolisPlace: Codable, Equatable {
 
-    public enum EarthContinent: String, Codable {
+    public enum EarthContinent: String, Codable, Equatable {
         case europe       = "Europe"
         case northAmerica = "North America"
         case southAmerica = "South America"

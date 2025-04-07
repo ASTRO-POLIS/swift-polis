@@ -72,8 +72,22 @@ final class PolisIdentityTests: XCTestCase {
         XCTAssertNoThrow(try jsonDecoder.decode(PolisIdentity.self, from: string!.data(using: .utf8)!))
     }
 
+    func test_PolisIdentity_EquatableCompliance_shouldComply() throws {
+        // Given
+        let sut1 = TestingSupport.examplePolisIdentityBAO()
+        var sut2 = sut1
+
+        // When
+        sut2.name = "New name"
+
+        // Then
+        XCTAssertEqual(sut1, sut1)
+        XCTAssertNotEqual(sut1, sut2)
+    }
+
     static var allTests = [
-        ("test_PolisIdentity_codingSupport_shouldSucceed", test_PolisIdentity_codingSupport_shouldSucceed),
+        ("test_PolisIdentity_codingSupport_shouldSucceed",      test_PolisIdentity_codingSupport_shouldSucceed),
+        ("test_PolisIdentity_EquatableCompliance_shouldComply", test_PolisIdentity_EquatableCompliance_shouldComply),
     ]
 
     //MARK: - Templates

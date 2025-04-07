@@ -12,3 +12,11 @@ public enum PolisSorting {
     case dateAndTime
     case lastUpdated
 }
+
+protocol StorableItem {
+    static func loadFromLocalFileSystemUsing(manager: PolisProviderManager) throws -> AnyObject
+    func parentItem() -> (any StorableItem)?
+    mutating func flashUsing(manager: PolisProviderManager) throws
+}
+
+

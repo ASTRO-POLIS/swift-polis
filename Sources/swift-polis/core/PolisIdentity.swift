@@ -26,7 +26,7 @@ import Foundation
 /// `PolisIdentity` is an essential a part of nearly every POLIS type. Identities are needed to uniquely identify and describe each item (object)
 /// and to establish parent-child relationships between them, as well as provide enough information for the syncing of POLIS Providers by defining
 /// last modification timestamps and versions (if applicable).
-public struct PolisIdentity: Codable, Identifiable {
+public struct PolisIdentity: Codable, Identifiable, Equatable {
 
     /// Globally unique identifier (UUID version 4) (ID in XML). The `id` is needed for `Identifiable` protocol
     /// conformance.

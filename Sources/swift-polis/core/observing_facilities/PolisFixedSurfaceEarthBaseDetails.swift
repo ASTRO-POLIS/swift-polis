@@ -113,6 +113,7 @@ public extension PolisFixedSurfaceEarthBaseDetails {
         case surfaceSize                              = "surface_size"
 
         case item
+        
         case gravitationalBodyRelationship            = "gravitational_body_relationship"
         case placeInTheSolarSystem                    = "place_in_the_solar_system"
         case observingFacilityCode                    = "observing_facility_code"
@@ -129,5 +130,39 @@ public extension PolisFixedSurfaceEarthBaseDetails {
         case fixedSurfaceEarthBaseDetailsID           = "fixed_surface_earth_base_details_id"
         case mobileSurfaceEarthBaseDetailsID          = "mobile_surface_earth_base_details_id"
         case airborneEarthBaseDetailsID               = "airborne_earth_base_details_id"
+    }
+}
+
+//MARK: - Equatable Implementation -
+extension PolisFixedSurfaceEarthBaseDetails {
+    public static func == (lhs: PolisFixedSurfaceEarthBaseDetails, rhs: PolisFixedSurfaceEarthBaseDetails) -> Bool {
+        // PolisObservingFacility
+        (lhs.item == rhs.item) &&
+        (lhs.gravitationalBodyRelationship == rhs.gravitationalBodyRelationship) &&
+        (lhs.placeInTheSolarSystem == rhs.placeInTheSolarSystem) &&
+        (lhs.observingFacilityCode == rhs.observingFacilityCode) &&
+        (lhs.solarSystemBodyName == rhs.solarSystemBodyName) &&
+        (lhs.orbitingAroundPlaceInTheSolarSystemNamed == rhs.orbitingAroundPlaceInTheSolarSystemNamed) &&
+        (lhs.facilityLocationID == rhs.facilityLocationID)  &&
+        (lhs.astronomicalCode == rhs.astronomicalCode) &&
+        (lhs.parentObservingFacilityID == rhs.parentObservingFacilityID) &&
+        (lhs.observatoryIDs == rhs.observatoryIDs) &&
+        (lhs.deviceIDs == rhs.deviceIDs) &&
+        (lhs.website == rhs.website) &&
+        (lhs.scientificObjectives == rhs.scientificObjectives) &&
+        (lhs.history == rhs.history) &&
+        (lhs.fixedSurfaceEarthBaseDetailsID == rhs.fixedSurfaceEarthBaseDetailsID) &&
+        (lhs.mobileSurfaceEarthBaseDetailsID == rhs.mobileSurfaceEarthBaseDetailsID) &&
+        (lhs.airborneEarthBaseDetailsID == rhs.airborneEarthBaseDetailsID) &&
+        // PolisFixedSurfaceEarthBaseDetails
+        (lhs.location == rhs.location) &&
+        (lhs.visitingHours == rhs.visitingHours) &&
+        (lhs.accessRestrictions == rhs.accessRestrictions) &&
+        (lhs.averageClearNightsPerYear == rhs.averageClearNightsPerYear) &&
+        (lhs.averageSeeingConditions == rhs.averageSeeingConditions) &&
+        (lhs.averageSkyQuality == rhs.averageSkyQuality) &&
+        (lhs.traditionalLandOwners == rhs.traditionalLandOwners) &&
+        (lhs.dominantWindDirection == rhs.dominantWindDirection) &&
+        (lhs.surfaceSize == rhs.surfaceSize)
     }
 }

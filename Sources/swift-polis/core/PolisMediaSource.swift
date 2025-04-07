@@ -27,9 +27,9 @@ import Foundation
 /// information about the copyright holder and copyright type).
 ///
 /// **Important note:** POLIS providers should only use images that are either open source or have explicitly requested and received rights of use from the copyright holder!
-public struct PolisMediaSource: Identifiable {
+public struct PolisMediaSource: Identifiable, Equatable {
 
-    public enum MediaType: String, Codable {
+    public enum MediaType: String, Codable, Equatable {
         case image
         case movie
         case audio
@@ -76,7 +76,7 @@ public struct PolisMediaSource: Identifiable {
     /// It is important to note that POLIS data may be viewed by kids. Therefore, all images shall be verified before made public. The `lastUpdate` attribute
     /// can help the curator of the data set to verify new entries. If the POLIS service provider is used by educational applications, it is recommended, that a local
     /// cache of verified images is maintained, or at least image hashes, that can guarantee, that the original image was unchanged.
-    public struct MediaItem: Identifiable {
+    public struct MediaItem: Identifiable, Equatable {
         public enum MediaItemError: Error {
             case copyrightHolderReferenceMissing
             case copyrightHolderReferenceOrNoteMissing

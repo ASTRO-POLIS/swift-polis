@@ -73,7 +73,7 @@ import Foundation
 ///}
 
 
-public struct PolisVisitingHours: Codable {
+public struct PolisVisitingHours: Codable, Equatable {
 
     /// Simplified string that represents hours and minutes in the format `HH:mm`
     ///
@@ -90,9 +90,9 @@ public struct PolisVisitingHours: Codable {
 
     /// `VisitingPossibility` ...
     //TODO: Finish documentation!
-    public struct VisitingPossibility: Codable {
+    public struct VisitingPossibility: Codable, Equatable {
 
-        public enum DayOfTheWeek: String, Codable, CaseIterable, Identifiable {
+        public enum DayOfTheWeek: String, Codable, CaseIterable, Identifiable, Equatable {
             public var id: Self {
                 return self
             }
@@ -106,7 +106,7 @@ public struct PolisVisitingHours: Codable {
             case sunday    = "Sunday"
         }
 
-        public struct TimePeriod: Codable {
+        public struct TimePeriod: Codable, Equatable {
             public var from: HoursAndMinutes
             public var to: HoursAndMinutes
 

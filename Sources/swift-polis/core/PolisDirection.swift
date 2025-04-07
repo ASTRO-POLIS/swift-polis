@@ -22,7 +22,7 @@ import Foundation
 ///
 /// Directions are used to describe information such as dominant wind direction of observing facilities, or 
 /// direction of doors of different types of enclosures.
-public struct PolisDirection: Codable {
+public struct PolisDirection: Codable, Equatable {
 
     /// `RoughDirection` - a list of 16 rough directions.
     ///
@@ -32,7 +32,7 @@ public struct PolisDirection: Codable {
     ///
     /// Rough direction could be used when it is not important to know or impossible to measure the exact
     /// direction. Examples include the wind direction, or the orientations of the doors of a clamshell enclosure.
-    public enum RoughDirection: String, Codable, CaseIterable, Identifiable {
+    public enum RoughDirection: String, Codable, CaseIterable, Identifiable, Equatable {
         public var id: Self {
             return self
         }
