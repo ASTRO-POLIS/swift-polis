@@ -101,7 +101,6 @@ open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
         provider.facilityDirectory.addOrUpdateObservingFacility(reference: dirEntry)
         provider.facilities.append(result)
         nc.post(name: PolisProviderManager.StatusChangeNotification.facilityInfoDidCreateNotification, object: result)
-        result.polisFileResourceFinder = provider.polisFileResourceFinder
 
         return result
     }
@@ -202,12 +201,6 @@ open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
 
     public var dominantWindDirection: PolisDirection.RoughDirection?
     public var surfaceSize: PolisPropertyValue?             // [m^2]
-
-    public override func flush() async throws {
-        try await super.flush()
-
-        //TODO: Implement me!
-    }
 
     init(id: UUID,
          name: String,

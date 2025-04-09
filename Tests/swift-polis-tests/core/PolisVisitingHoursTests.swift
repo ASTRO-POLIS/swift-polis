@@ -62,6 +62,7 @@ final class PolisVisitingHoursTests: XCTestCase {
     // JSON Examples
     private let onlyANote = """
 {
+   "id": "65BEF6F8-C383-40D4-9E53-B4517ACD348E",
    "only_group_visits": false,
    "note": "For group and individual visits, please call the observatory office every working day between 14:00h and 16:00h."
 }
@@ -69,6 +70,7 @@ final class PolisVisitingHoursTests: XCTestCase {
 
     private let everyYearEveryMonthEverySunday = """
 {
+   "id": "65BEF6F8-C383-40D4-9E53-B4517ACD348E",
    "visiting_possibilities": [
       {
          "applicable_weekdays": ["Sunday"],
@@ -84,6 +86,7 @@ final class PolisVisitingHoursTests: XCTestCase {
     // 9:00 and 12:00 and between 14:00 and 17:00.
     private let complexVisitingHours = """
 {
+   "id": "65BEF6F8-C383-40D4-9E53-B4517ACD348E",
    "visiting_possibilities": [
       {
          "applicable_years": [2024, 2025],

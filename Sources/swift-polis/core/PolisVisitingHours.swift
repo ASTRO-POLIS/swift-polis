@@ -28,6 +28,7 @@ import Foundation
 /// - A very simple example only with a note
 ///  ```json
 ///{
+///   "id": "65BEF6F8-C383-40D4-9E53-B4517ACD348E",
 ///   "only_group_visits": false,
 ///   "note": "For group and individual visits, please call the observatory office every working day between 14:00h and 16:00h."
 ///}
@@ -36,6 +37,7 @@ import Foundation
 ///  - Every Sunday, every month, every year
 ///  ```json
 ///{
+///    "id": "65BEF6F8-C383-40D4-9E53-B4517ACD348E",
 ///    "visiting_possibilities": [
 ///        {
 ///           "applicable_weekdays": ["Sunday"],
@@ -51,6 +53,7 @@ import Foundation
 /// 9:00 and 12:00 and between 14:00 and 17:00.
 ///```json
 ///{
+///   "id": "65BEF6F8-C383-40D4-9E53-B4517ACD348E",
 ///   "visiting_possibilities": [
 ///       {
 ///          "applicable_years": [2024, 2025],
@@ -73,7 +76,7 @@ import Foundation
 ///}
 
 
-public struct PolisVisitingHours: Codable, Equatable {
+public struct PolisVisitingHours: Codable, Equatable, Identifiable {
 
     /// Simplified string that represents hours and minutes in the format `HH:mm`
     ///
@@ -149,12 +152,16 @@ public struct PolisVisitingHours: Codable, Equatable {
         }
     }
 
+    public var id: UUID
+
     public var visitingPossibilities: [VisitingPossibility]?
 
     public var note: String?
 
-    public init(visitingPossibilities: [VisitingPossibility]? = nil,
+    public init(id: UUID                                      = UUID(),
+                visitingPossibilities: [VisitingPossibility]? = nil,
                 note: String?                                 = nil) {
+        self.id                    = id
         self.visitingPossibilities = visitingPossibilities
         self.note                  = note
     }
@@ -183,6 +190,7 @@ public extension PolisVisitingHours.VisitingPossibility {
 //MARK: - PolisVisitingHours
 public extension PolisVisitingHours {
     enum CodingKeys: String, CodingKey {
+        case id
         case visitingPossibilities = "visiting_possibilities"
         case note
     }

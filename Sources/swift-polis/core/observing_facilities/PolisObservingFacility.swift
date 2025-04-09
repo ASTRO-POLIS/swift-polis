@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class PolisObservingFacility: PersistentItem, Identifiable, Codable, StorableItem, Equatable {
+public struct PolisObservingFacility: Identifiable, Codable, StorableItem, Equatable {
 
 
     public enum ObservingFacilityLocationType: String, Codable, CaseIterable, Equatable {
@@ -167,28 +167,5 @@ extension PolisObservingFacility {
     func facilityPath() -> String {
         let manager = PolisProviderManager.currentProviderManager!
         return manager.polisFileResourceFinder.observingFacilityFolder(observingFacilityID: item.identity.id)
-    }
-}
-
-//MARK: - Equatable Implementation -
-extension PolisObservingFacility {
-    public static func == (lhs: PolisObservingFacility, rhs: PolisObservingFacility) -> Bool {
-        (lhs.item == rhs.item) &&
-        (lhs.gravitationalBodyRelationship == rhs.gravitationalBodyRelationship) &&
-        (lhs.placeInTheSolarSystem == rhs.placeInTheSolarSystem) &&
-        (lhs.observingFacilityCode == rhs.observingFacilityCode) &&
-        (lhs.solarSystemBodyName == rhs.solarSystemBodyName) &&
-        (lhs.orbitingAroundPlaceInTheSolarSystemNamed == rhs.orbitingAroundPlaceInTheSolarSystemNamed) &&
-        (lhs.facilityLocationID == rhs.facilityLocationID)  &&
-        (lhs.astronomicalCode == rhs.astronomicalCode) &&
-        (lhs.parentObservingFacilityID == rhs.parentObservingFacilityID) &&
-        (lhs.observatoryIDs == rhs.observatoryIDs) &&
-        (lhs.deviceIDs == rhs.deviceIDs) &&
-        (lhs.website == rhs.website) &&
-        (lhs.scientificObjectives == rhs.scientificObjectives) &&
-        (lhs.history == rhs.history) &&
-        (lhs.fixedSurfaceEarthBaseDetailsID == rhs.fixedSurfaceEarthBaseDetailsID) &&
-        (lhs.mobileSurfaceEarthBaseDetailsID == rhs.mobileSurfaceEarthBaseDetailsID) &&
-        (lhs.airborneEarthBaseDetailsID == rhs.airborneEarthBaseDetailsID)
     }
 }

@@ -7,11 +7,13 @@
 
 import Foundation
 
-public class PolisFixedSurfaceEarthBaseDetails: PolisObservingFacility {
+public struct PolisFixedSurfaceEarthBaseDetails: Identifiable, Codable, StorableItem, Equatable {
 
     public var location: PolisPlace?
 
     // General info
+    public var id: UUID
+    public var facility: PolisObservingFacility
     public var visitingHours: PolisVisitingHours?
     public var accessRestrictions: String?
 
@@ -24,30 +26,17 @@ public class PolisFixedSurfaceEarthBaseDetails: PolisObservingFacility {
     public var dominantWindDirection: PolisDirection.RoughDirection?
     public var surfaceSize: PolisPropertyValue?             // [m^2]
 
-    public init(location: PolisPlace?                                 = nil,
+    public init(id: UUID                                              = UUID(),
+                facility: PolisObservingFacility,
+                location: PolisPlace?                                 = nil,
                 visitingHours: PolisVisitingHours?                    = nil,
                 averageClearNightsPerYear: UInt?                      = nil,
                 averageSeeingConditions: PolisPropertyValue?          = nil,
                 traditionalLandOwners: String?                        = nil,
                 dominantWindDirection: PolisDirection.RoughDirection? = nil,
-                surfaceSize: PolisPropertyValue?                      = nil,
-                item: PolisItem,
-                gravitationalBodyRelationship: ObservingFacilityLocationType,
-                placeInTheSolarSystem: PlaceInTheSolarSystem,
-                observingFacilityCode: String?                        = nil,
-                solarSystemBodyName: String?                          = nil,
-                orbitingAroundPlaceInTheSolarSystemNamed: String?     = nil,
-                facilityLocationID: UUID?                             = nil,
-                astronomicalCode: String?                             = nil,
-                parentObservingFacilityID: UUID?                      = nil,
-                observatoryIDs: Set<UUID>?                            = nil,
-                deviceIDs: Set<UUID>?                                 = nil,
-                website: URL?                                         = nil,
-                scientificObjectives: String?                         = nil,
-                history: String?                                      = nil,
-                fixedSurfaceEarthBaseDetailsID: UUID?                 = nil,
-                mobileSurfaceEarthBaseDetailsID: UUID?                = nil,
-                airborneEarthBaseDetailsID: UUID?                     = nil) {
+                surfaceSize: PolisPropertyValue?                      = nil) {
+        self.id                        = id
+        self.facility                 = facility
         self.location                  = location
         self.visitingHours             = visitingHours
         self.averageClearNightsPerYear = averageClearNightsPerYear
@@ -56,52 +45,13 @@ public class PolisFixedSurfaceEarthBaseDetails: PolisObservingFacility {
         self.dominantWindDirection     = dominantWindDirection
         self.surfaceSize               = surfaceSize
 
-        super.init(item: item,
-                   gravitationalBodyRelationship: gravitationalBodyRelationship,
-                   placeInTheSolarSystem: placeInTheSolarSystem,
-                   observingFacilityCode: observingFacilityCode,
-                   solarSystemBodyName: solarSystemBodyName,
-                   orbitingAroundPlaceInTheSolarSystemNamed: orbitingAroundPlaceInTheSolarSystemNamed,
-                   facilityLocationID: facilityLocationID,
-                   astronomicalCode: astronomicalCode,
-                   parentObservingFacilityID:parentObservingFacilityID,
-                   observatoryIDs: observatoryIDs,
-                   deviceIDs: deviceIDs,
-                   website: website,
-                   scientificObjectives: scientificObjectives,
-                   history: history,
-                   fixedSurfaceEarthBaseDetailsID: fixedSurfaceEarthBaseDetailsID,
-                   mobileSurfaceEarthBaseDetailsID: mobileSurfaceEarthBaseDetailsID,
-                   airborneEarthBaseDetailsID: airborneEarthBaseDetailsID)
     }
-
-    //MARK: Make Swift compiler happy! 💩
-    public required override init(item: PolisItem,
-                                  gravitationalBodyRelationship: ObservingFacilityLocationType,
-                                  placeInTheSolarSystem: PlaceInTheSolarSystem,
-                                  observingFacilityCode: String?                    = nil,
-                                  solarSystemBodyName: String?                      = nil,
-                                  orbitingAroundPlaceInTheSolarSystemNamed: String? = nil,
-                                  facilityLocationID: UUID?                         = nil,
-                                  astronomicalCode: String?                         = nil,
-                                  parentObservingFacilityID: UUID?                  = nil,
-                                  observatoryIDs: Set<UUID>?                        = nil,
-                                  deviceIDs: Set<UUID>?                             = nil,
-                                  website: URL?                                     = nil,
-                                  scientificObjectives: String?                     = nil,
-                                  history: String?                                  = nil,
-                                  fixedSurfaceEarthBaseDetailsID: UUID?             = nil,
-                                  mobileSurfaceEarthBaseDetailsID: UUID?            = nil,
-                                  airborneEarthBaseDetailsID: UUID?                 = nil) {
-        fatalError("init(item:gravitationalBodyRelationship:placeInTheSolarSystem:observingFacilityCode:solarSystemBodyName:orbitingAroundPlaceInTheSolarSystemNamed:facilityLocationID:astronomicalCode:parentObservingFacilityID:observatoryIDs:deviceIDs:website:scientificObjectives:history:fixedSurfaceEarthBaseDetailsID:mobileSurfaceEarthBaseDetailsID:airborneEarthBaseDetailsID:) has not been implemented")
-    }
-    
-    required public init(from decoder: any Decoder) throws { fatalError("init(from:) has not been implemented") }
-
 }
 
 public extension PolisFixedSurfaceEarthBaseDetails {
     enum CodingKeys: String, CodingKey {
+        case id
+        case facility
         case location
         case visitingHours                            = "visiting_hours"
         case accessRestrictions                       = "access_restrictions"
@@ -111,58 +61,35 @@ public extension PolisFixedSurfaceEarthBaseDetails {
         case traditionalLandOwners                    = "traditionalLand_owners"
         case dominantWindDirection                    = "'dominant_wind_direction'"
         case surfaceSize                              = "surface_size"
-
-        case item
-        
-        case gravitationalBodyRelationship            = "gravitational_body_relationship"
-        case placeInTheSolarSystem                    = "place_in_the_solar_system"
-        case observingFacilityCode                    = "observing_facility_code"
-        case solarSystemBodyName                      = "solar_system_body_name"
-        case orbitingAroundPlaceInTheSolarSystemNamed = "orbiting_around_place_in_the_solar_system_named"
-        case facilityLocationID                       = "facility_location_id"
-        case astronomicalCode                         = "astronomical_code"
-        case parentObservingFacilityID                = "parent_observing_facility_id"
-        case observatoryIDs                           = "observatory_ids"
-        case deviceIDs                                = "device_ids"
-        case website
-        case scientificObjectives                     = "scientific_objectives"
-        case history
-        case fixedSurfaceEarthBaseDetailsID           = "fixed_surface_earth_base_details_id"
-        case mobileSurfaceEarthBaseDetailsID          = "mobile_surface_earth_base_details_id"
-        case airborneEarthBaseDetailsID               = "airborne_earth_base_details_id"
     }
 }
 
-//MARK: - Equatable Implementation -
+//MARK: - StorableItem Implementation -
 extension PolisFixedSurfaceEarthBaseDetails {
-    public static func == (lhs: PolisFixedSurfaceEarthBaseDetails, rhs: PolisFixedSurfaceEarthBaseDetails) -> Bool {
-        // PolisObservingFacility
-        (lhs.item == rhs.item) &&
-        (lhs.gravitationalBodyRelationship == rhs.gravitationalBodyRelationship) &&
-        (lhs.placeInTheSolarSystem == rhs.placeInTheSolarSystem) &&
-        (lhs.observingFacilityCode == rhs.observingFacilityCode) &&
-        (lhs.solarSystemBodyName == rhs.solarSystemBodyName) &&
-        (lhs.orbitingAroundPlaceInTheSolarSystemNamed == rhs.orbitingAroundPlaceInTheSolarSystemNamed) &&
-        (lhs.facilityLocationID == rhs.facilityLocationID)  &&
-        (lhs.astronomicalCode == rhs.astronomicalCode) &&
-        (lhs.parentObservingFacilityID == rhs.parentObservingFacilityID) &&
-        (lhs.observatoryIDs == rhs.observatoryIDs) &&
-        (lhs.deviceIDs == rhs.deviceIDs) &&
-        (lhs.website == rhs.website) &&
-        (lhs.scientificObjectives == rhs.scientificObjectives) &&
-        (lhs.history == rhs.history) &&
-        (lhs.fixedSurfaceEarthBaseDetailsID == rhs.fixedSurfaceEarthBaseDetailsID) &&
-        (lhs.mobileSurfaceEarthBaseDetailsID == rhs.mobileSurfaceEarthBaseDetailsID) &&
-        (lhs.airborneEarthBaseDetailsID == rhs.airborneEarthBaseDetailsID) &&
-        // PolisFixedSurfaceEarthBaseDetails
-        (lhs.location == rhs.location) &&
-        (lhs.visitingHours == rhs.visitingHours) &&
-        (lhs.accessRestrictions == rhs.accessRestrictions) &&
-        (lhs.averageClearNightsPerYear == rhs.averageClearNightsPerYear) &&
-        (lhs.averageSeeingConditions == rhs.averageSeeingConditions) &&
-        (lhs.averageSkyQuality == rhs.averageSkyQuality) &&
-        (lhs.traditionalLandOwners == rhs.traditionalLandOwners) &&
-        (lhs.dominantWindDirection == rhs.dominantWindDirection) &&
-        (lhs.surfaceSize == rhs.surfaceSize)
+    static func loadFromLocalFileSystemUsing(manager: PolisProviderManager) throws -> AnyObject {
+        //TODO: Implement me!
+        throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFile
+    }
+
+    func parentItem() -> (any StorableItem)? { PolisProviderManager.currentProviderManager.facilityDirectory }
+
+    func flashUsing(manager: PolisProviderManager) throws {
+        try ensureFacilityFolderDoesExist()
+
+        //TODO: Implement me!
+    }
+
+    func ensureFacilityFolderDoesExist() throws {
+        let manager = PolisProviderManager.currentProviderManager!
+
+        if !manager.tryToEnsureFoldersExistence(paths: [facilityPath()]) {
+            PolisLogger.shared.error("Cannot create or access facility folder: \(facilityPath())")
+            throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFolder
+        }
+    }
+
+    func facilityPath() -> String {
+        let manager = PolisProviderManager.currentProviderManager!
+        return manager.polisFileResourceFinder.observingFacilityFolder(observingFacilityID: facility.item.identity.id)
     }
 }

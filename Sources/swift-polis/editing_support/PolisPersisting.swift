@@ -5,11 +5,12 @@
 //  Created by Georg Tuparev on 28.03.25.
 //
 
+import Foundation
+
 /// `PolisPersisting` is an API that regulate persistency and syncing for all in-memory objects having local file system representation.
 public protocol PolisPersisting {
 
-    /// `polisFileResourceFinder` should be set before any of the methods are called
-    var polisFileResourceFinder: PolisFileResourceFinder! { get set }
+    var manager: PolisProviderManager! { get set }
 
     /// Saves all changes to the local file system
     ///
@@ -35,7 +36,8 @@ public protocol PolisPersisting {
 /// `PersistentItem` is an abstract tat should be always subclassed by all in-memory objects
 open class PersistentItem: PolisPersisting {
 
-    public var polisFileResourceFinder: PolisFileResourceFinder!
+    // PolisPersisting
+    public var manager: PolisProviderManager!
 
     public func saveChanges() throws { }
     public func revertToSaved() throws { }
@@ -44,5 +46,74 @@ open class PersistentItem: PolisPersisting {
 
     public func didChange() -> Bool { false }
 
+    // Polis Identity defined
+    public var id: UUID
+    public var externalReferences: [String]?
+    public var lastUpdateDate: Date
+    public var name: String
+    public var localName: String?
+    public var abbreviation: String?
+    public var shortDescription: String?
+    public var startDate: Date?
+    public var endDate: Date?
+    public var polisRegistrationDate: Date?
 
+    // Polis Item defined
+    public var owner: PolisOwner?
+    public var parentID: UUID?
+    public var automationLabel: String?
+    public var lifecycleStatus: PolisLifecycleStatus = PolisLifecycleStatus.unknown
+    public var mediaSourceID: UUID?
+
+    init(id: UUID, lastUpdateDate: Date = Date(), name: String) {
+        self.id             = id
+        self.lastUpdateDate = lastUpdateDate
+        self.name           = name
+        manager             = PolisProviderManager.currentProviderManager!
+    }
+
+    var identity: PolisIdentity {
+        get {
+            PolisIdentity(id: id,
+                          externalReferences: externalReferences,
+                          lastUpdateDate: lastUpdateDate,
+                          name: name,
+                          localName: localName,
+                          abbreviation: abbreviation,
+                          shortDescription: shortDescription,
+                          startDate: startDate,
+                          endDate: endDate,
+                          polisRegistrationDate: polisRegistrationDate)
+        }
+        set {
+            id                 = newValue.id
+            externalReferences = newValue.externalReferences
+            lastUpdateDate     = newValue.lastUpdateDate
+            name               = newValue.name
+            localName          = newValue.localName
+            abbreviation       = newValue.abbreviation
+            shortDescription   = newValue.shortDescription
+            startDate          = newValue.startDate
+            endDate            = newValue.endDate
+        }
+    }
+
+    var item: PolisItem {
+        get {
+            PolisItem(identity: identity,
+                      owner: owner,
+                      parentID: parentID,
+                      automationLabel: automationLabel,
+                      lifecycleStatus: lifecycleStatus,
+                      mediaSourceID: mediaSourceID)
+        }
+        set {
+            identity         = newValue.identity
+            owner            = newValue.owner
+            parentID         = newValue.parentID
+            automationLabel  = newValue.automationLabel
+            lifecycleStatus  = newValue.lifecycleStatus
+            mediaSourceID    = newValue.mediaSourceID
+        }
+    }
 }

@@ -12,7 +12,7 @@ public protocol PolisParty: Codable {
     var name: String                              { get set }
     var email: String                             { get set }
     var communication: PolisCommunicationChannel? { get set }
-    var address: PolisPlace?                      { get set }
+    var addressIDs: Set<UUID>?                    { get set }
     var note: String?                             { get set }
 }
 
@@ -94,8 +94,8 @@ public struct PolisOwner: Codable, Equatable {
     }
 }
 
-//MARK: - PolisAddress -
-public struct PolisPlace: Codable, Equatable {
+//MARK: - PolisPlace -
+public struct PolisPlace: Codable, Equatable, Identifiable {
 
     public enum EarthContinent: String, Codable, Equatable {
         case europe       = "Europe"
@@ -107,6 +107,7 @@ public struct PolisPlace: Codable, Equatable {
         case antarctica   = "Antarctica"
     }
 
+    public var id: UUID
     public var attentionOff: String?
     public var houseName: String?
     public var street: String?
@@ -147,7 +148,8 @@ public struct PolisPlace: Codable, Equatable {
 
     public var timeZoneIdentifier: String?        // .. as defined with `TimeZone.knownTimeZoneIdentifiers`
 
-    public init(attentionOff: String?              = nil,
+    public init(id: UUID                           = UUID(),
+                attentionOff: String?              = nil,
                 houseName: String?                 = nil,
                 street: String?                    = nil,
                 houseNumber: Int?                  = nil,
@@ -178,6 +180,7 @@ public struct PolisPlace: Codable, Equatable {
                 streetLine6: String?               = nil,
                 note: String?                      = nil,
                 timeZoneIdentifier: String?        = nil) {
+        self.id                 = id
         self.attentionOff       = attentionOff
         self.houseName          = houseName
         self.street             = street
@@ -217,14 +220,14 @@ public struct PolisPerson: PolisParty {
     public var name: String
     public var email: String
     public var communication: PolisCommunicationChannel?
-    public var address: PolisPlace?
+    public var addressIDs: Set<UUID>?
     public var note: String?
 
-    public init(name: String, email: String, communication: PolisCommunicationChannel? = nil, address: PolisPlace? = nil, note: String? = nil) {
+    public init(name: String, email: String, communication: PolisCommunicationChannel? = nil, addressIDs: Set<UUID>? = nil, note: String? = nil) {
         self.name          = name
         self.email         = email
         self.communication = communication
-        self.address       = address
+        self.addressIDs    = addressIDs
         self.note          = note
     }
 }
@@ -235,7 +238,7 @@ public struct PolisOrganisation: PolisParty {
     public var email: String
     public var name: String
     public var communication: PolisCommunicationChannel?
-    public var address: PolisPlace?
+    public var addressIDs: Set<UUID>?
     public var note: String?
     public var url: URL?
     public let abbreviation: String?   // e.g. MIT. MONET, BAO, ...
@@ -243,7 +246,7 @@ public struct PolisOrganisation: PolisParty {
     public init(organisationType: PolisOwnershipType       = .other,
                 name: String, email: String,
                 communication: PolisCommunicationChannel? = nil,
-                address: PolisPlace?                      = nil,
+                addressIDs: Set<UUID>?                    = nil,
                 note: String?                             = nil,
                 url: URL?                                 = nil,
                 abbreviation: String?                     = nil) {
@@ -251,7 +254,7 @@ public struct PolisOrganisation: PolisParty {
         self.name             = name
         self.email            = email
         self.communication    = communication
-        self.address          = address
+        self.addressIDs       = addressIDs
         self.note             = note
         self.url              = url
         self.abbreviation     = abbreviation
@@ -275,6 +278,7 @@ extension PolisCommunicationChannel {
 //MARK: - PolisAddress
 extension PolisPlace {
     public enum CodingKeys: String, CodingKey {
+        case id
         case attentionOff       = "attention_off"
         case houseName          = "house_name"
         case street
@@ -323,7 +327,7 @@ extension PolisPerson {
         case name
         case email
         case communication
-        case address
+        case addressIDs     = "address_ids"
         case note
     }
 }
@@ -335,7 +339,7 @@ extension PolisOrganisation {
         case name
         case email
         case communication
-        case address
+        case addressIDs       = "address_ids"
         case note
         case url
         case abbreviation

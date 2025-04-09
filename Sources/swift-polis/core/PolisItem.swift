@@ -64,19 +64,19 @@ public struct PolisItem: Codable, Equatable {
 
     public var lifecycleStatus: PolisLifecycleStatus
 
-    public var media: PolisMediaSource?
+    public var mediaSourceID: UUID?
 
     public init(identity: PolisIdentity,
                 owner: PolisOwner?                    = nil,
                 parentID: UUID?                       = nil,
                 automationLabel: String?              = nil,
                 lifecycleStatus: PolisLifecycleStatus = .unknown,
-                media: PolisMediaSource?              = nil) {
+                mediaSourceID: UUID?                  = nil) {
         self.identity        = identity
         self.owner           = owner
         self.parentID        = parentID
         self.lifecycleStatus = lifecycleStatus
-        self.media           = media
+        self.mediaSourceID   = mediaSourceID
     }
 
     public          func childrenIDs() -> Set<UUID> { _childrenIDs }
@@ -94,7 +94,7 @@ public extension PolisItem {
         case parentID        = "parent_id"
         case automationLabel = "automation_label"
         case lifecycleStatus = "lifecycle_status"
-        case media
+        case mediaSourceID   = "media_source_id"
     }
 }
 

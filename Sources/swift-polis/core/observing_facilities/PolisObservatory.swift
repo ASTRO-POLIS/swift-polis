@@ -44,7 +44,7 @@ public class PolisObservatory: Identifiable, Codable {
     }
 
     public var identity: PolisIdentity
-    public var electromagneticSpectrumCoverage: PolisElectromagneticSpectrumCoverage
+    public var electromagneticSpectrumCoverage: [PolisElectromagneticSpectrumCoverage]?
     public var observatoryType: ObservatoryType
 
     public var location: PolisPlace?
@@ -55,17 +55,17 @@ public class PolisObservatory: Identifiable, Codable {
     public var id: UUID { identity.id }
 
     public init(identity: PolisIdentity,
-                electromagneticSpectrumCoverage: PolisElectromagneticSpectrumCoverage,
+                electromagneticSpectrumCoverage: [PolisElectromagneticSpectrumCoverage]? = nil,
                 observatoryType: ObservatoryType,
-                location: PolisPlace?        = nil,
-                configurationIDs: Set<UUID>? = nil,
-                deviceIDs: Set<UUID>?        = nil) {
-        self.identity                        = identity
-        self.electromagneticSpectrumCoverage = electromagneticSpectrumCoverage
-        self.observatoryType                 = observatoryType
-        self.location                        = location
-        self.configurationIDs                = configurationIDs
-        self.deviceIDs                       = deviceIDs
+                location: PolisPlace?                                                    = nil,
+                configurationIDs: Set<UUID>?                                             = nil,
+                deviceIDs: Set<UUID>?                                                    = nil) {
+        self.identity                                                                    = identity
+        self.electromagneticSpectrumCoverage                                             = electromagneticSpectrumCoverage
+        self.observatoryType                                                             = observatoryType
+        self.location                                                                    = location
+        self.configurationIDs                                                            = configurationIDs
+        self.deviceIDs                                                                   = deviceIDs
     }
 }
 

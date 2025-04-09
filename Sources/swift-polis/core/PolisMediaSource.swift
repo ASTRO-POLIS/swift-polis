@@ -85,6 +85,7 @@ public struct PolisMediaSource: Identifiable, Equatable {
 
         public let id: UUID
         public let mediaType: MediaType
+        public var mediaFormat: String? // e.g. 2x2, header, full_image, 10k, ...
         public var lastUpdateDate: Date
         public let originalSource: URL
 
@@ -100,6 +101,7 @@ public struct PolisMediaSource: Identifiable, Equatable {
 
         public init(id: UUID                                 = UUID(),
                     mediaType: MediaType                     = .image,
+                    mediaFormat: String?                     = nil,
                     lastUpdateDate: Date                     = Date.now,
                     originalSource: URL,
                     shortDescription: String?                = nil,
@@ -171,6 +173,7 @@ extension PolisMediaSource.MediaItem: Codable {
     public enum CodingKeys: String, CodingKey {
         case id
         case mediaType                = "media_type"
+        case mediaFormat              = "media_format"
         case lastUpdateDate           = "last_update_date"
         case originalSource           = "original_source"
         case shortDescription         = "short_description"
