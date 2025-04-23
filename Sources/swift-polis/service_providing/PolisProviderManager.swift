@@ -319,6 +319,14 @@ public extension PolisProviderManager {
         return facilities
     }
 
+    /// Returns the `identity` of the facility stored into the facility directory or nil if it is not found.
+    func directoryEntryForFacilityWith(id: UUID) -> PolisObservingFacilityDirectory.ObservingFacilityReference? {
+        for anEntry in facilityDirectory.observingFacilityReferences {
+            if anEntry.id == id { return anEntry }
+        }
+        return nil
+    }
+
     private func loadFacilityWith(id: UUID,
                                   locationType: PolisObservingFacility.ObservingFacilityLocationType = .surfaceFixed,
                                   solarSystemBody: PolisObservingFacility.PlaceInTheSolarSystem = .earth) throws {

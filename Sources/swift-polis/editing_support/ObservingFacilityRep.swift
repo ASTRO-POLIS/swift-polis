@@ -76,21 +76,22 @@ open class ObservingFacilityRep: PersistentItem {
         super.init(id: id, lastUpdateDate: lastUpdateDate, name: name)
     }
 
-    //MARK: - Private properties -
-//    private let manager: PolisProviderManager!
-
     //MARK: - PolisPersisting implementation -
+    /// This  method saves possible changes only in the facility directory.
+    ///
+    /// Subclasses should manage  facility details and auxiliary types related to the facility.
     public override func saveChanges() throws {
-        //TODO: Implement me!
+        // 1. Check if I am part of the facility directory, and if not - add myself
+        if let directoryEntry = manager.directoryEntryForFacilityWith(id: self.id) {
+            let savedIdentity = directoryEntry.identity
 
-        // 1. Check if I exist as POLIS file, and if not, create myself
+            if savedIdentity != identity { manager.facilityDirectory.addOrUpdateObservingFacility(reference: directoryEntry) }
+        }
+        else {
+            let newEntry = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: identity)
 
-        // 2. Check if I did changed
-
-        // 3. If I changed,
-        // 3.1. Update PolisObservingFacility file
-        // 3.2. Update the POLIS cache in Provider Manager
-        // 3.3. Update the provider directory cache in Provider Manager
+            manager.facilityDirectory.addOrUpdateObservingFacility(reference:newEntry)
+        }
     }
 
     public override func revertToSaved() throws {

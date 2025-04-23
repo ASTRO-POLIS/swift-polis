@@ -211,6 +211,7 @@ public struct PolisObservingFacilityDirectory: Codable, StorableItem {
     }
 
     public mutating func addOrUpdateObservingFacility(reference: ObservingFacilityReference) {
+
         if let index = observingFacilityReferences.firstIndex(where: {$0.id == reference.id} ) {
             observingFacilityReferences[index].identity.externalReferences    = reference.identity.externalReferences
             observingFacilityReferences[index].identity.lastUpdateDate        = reference.identity.lastUpdateDate
@@ -221,12 +222,12 @@ public struct PolisObservingFacilityDirectory: Codable, StorableItem {
             observingFacilityReferences[index].identity.startDate             = reference.identity.startDate
             observingFacilityReferences[index].identity.endDate               = reference.identity.endDate
             observingFacilityReferences[index].identity.polisRegistrationDate = reference.identity.polisRegistrationDate
-
-            return
         }
-
-        observingFacilityReferences.append(reference)
+        
         lastUpdate = Date.now
+        observingFacilityReferences.append(reference)
+
+        try? self.flashUsing(manager: PolisProviderManager.currentProviderManager)
     }
 }
 
