@@ -34,21 +34,16 @@ public struct PolisCommunicationChannel: Codable {
     /// Instagram user id, e.g. @AstroPolis. "@" is expected to be part of the id.
     public var instagramIDs: [String]?
 
-    /// Skype user id
-    public var skypeIDs: [String]?
-
     public init(twitterIDs: [String]?           = nil,
                 mastodonIDs: [String]?          = nil,
                 whatsappPhoneNumbers: [String]? = nil,
                 facebookIDs: [String]?          = nil,
-                instagramIDs: [String]?         = nil,
-                skypeIDs: [String]?             = nil) {
+                instagramIDs: [String]?         = nil) {
         self.twitterIDs           = twitterIDs
         self.mastodonIDs          = mastodonIDs
         self.whatsappPhoneNumbers = whatsappPhoneNumbers
         self.facebookIDs          = facebookIDs
         self.instagramIDs         = instagramIDs
-        self.skypeIDs             = skypeIDs
     }
 }
 
@@ -271,7 +266,6 @@ extension PolisCommunicationChannel {
         case whatsappPhoneNumbers = "whatsapp_phone_numbers"
         case facebookIDs          = "facebook_ids"
         case instagramIDs         = "instagram_ids"
-        case skypeIDs             = "skype_ids"
     }
 }
 

@@ -132,8 +132,7 @@ struct TestingSupport {
                                   mastodonIDs: ["@GalaxyFarAway@mastodon.social"],
                                   whatsappPhoneNumbers: ["+1 900 1234567"],
                                   facebookIDs: ["916735592641"],
-                                  instagramIDs: ["GalaxyFarAway"],
-                                  skypeIDs: ["cool_astro"])
+                                  instagramIDs: ["GalaxyFarAway"])
     }
     
     //MARK: PolisPlace
