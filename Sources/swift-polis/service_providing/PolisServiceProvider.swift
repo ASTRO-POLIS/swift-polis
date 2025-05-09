@@ -194,11 +194,17 @@ public struct PolisObservingFacilityDirectory: Codable, StorableItem {
     ///  **Note:** Only root facility (e.g. without a parent facility) should be listed!
     public struct ObservingFacilityReference: Codable, Identifiable {
         public var identity: PolisIdentity
+        public var gravitationalBodyRelationship: PolisObservingFacilityLocationType
+        public var placeInTheSolarSystem : PolisPlaceInTheSolarSystem
 
         public var id: UUID { identity.id }
 
-        public init(identity: PolisIdentity) {
+        public init(identity: PolisIdentity,
+                    gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
+                    placeInTheSolarSystem : PolisPlaceInTheSolarSystem                = .earth) {
             self.identity = identity
+            self.gravitationalBodyRelationship = gravitationalBodyRelationship
+            self.placeInTheSolarSystem         = placeInTheSolarSystem
         }
     }
 
@@ -258,6 +264,8 @@ extension PolisDirectory: Codable {
 extension PolisObservingFacilityDirectory.ObservingFacilityReference {
     public enum CodingKeys: String, CodingKey {
         case identity
+        case gravitationalBodyRelationship = "gravitational_body_relationship"
+        case placeInTheSolarSystem         = "place_in_the_solar_system"
     }
 }
 

@@ -328,8 +328,8 @@ public extension PolisProviderManager {
     }
 
     private func loadFacilityWith(id: UUID,
-                                  locationType: PolisObservingFacility.ObservingFacilityLocationType = .surfaceFixed,
-                                  solarSystemBody: PolisObservingFacility.PlaceInTheSolarSystem = .earth) throws {
+                                  locationType: PolisObservingFacilityLocationType = .surfaceFixed,
+                                  solarSystemBody: PolisPlaceInTheSolarSystem      = .earth) throws {
         //TODO: Implement me!
     }
 

@@ -9,9 +9,22 @@ import Foundation
 
 open class ObservingFacilityRep: PersistentItem {
 
+    //MARK: Error definitions
+    public enum ObservingFacilityRepError: Error {
+        case foundFacilityWithTypeMismatch
+    }
+
+    public static func findOrRegisterObservingFacilityWith(
+        identity: PolisIdentity,
+        gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
+        placeInTheSolarSystem : PolisPlaceInTheSolarSystem                = .earth
+    ) throws -> ObservingFacilityRep {
+        throw ObservingFacilityRepError.foundFacilityWithTypeMismatch
+    }
+
     // Polis Observing Facility Details defined
-    public var gravitationalBodyRelationship = PolisObservingFacility.ObservingFacilityLocationType.surfaceFixed
-    public var placeInTheSolarSystem         = PolisObservingFacility.PlaceInTheSolarSystem.earth
+    public var gravitationalBodyRelationship = PolisObservingFacilityLocationType.surfaceFixed
+    public var placeInTheSolarSystem         = PolisPlaceInTheSolarSystem.earth
     public var observingFacilityCode: String?
     public var solarSystemBodyName: String?
     public var orbitingAroundPlaceInTheSolarSystemNamed: String?

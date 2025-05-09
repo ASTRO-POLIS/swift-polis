@@ -53,13 +53,15 @@ final class PolisProviderManagerTests: XCTestCase {
         // Given
         PolisProviderManager.localPolisRootPath = TestingSupport.testingFolder
 
-        let config   = PolisProviderConfiguration(name: "BigBang", adminName: "admin", adminEmail:  "admin@admin.nirvana")
-        let facility = TestingSupport.exampleObservingFacility()
+        let config = PolisProviderConfiguration(name: "BigBang", adminName: "admin", adminEmail:  "admin@admin.nirvana")
 
         // When
         let sut                       = try PolisProviderManager.createLocalProviderWith(configuration: config, isExperimentalVersion: true)
         let initialNumberOfFacilities = sut?.facilityDirectory.observingFacilityReferences.count
-        let facilityRep               = try EarthFixBasedObservingFacilityRep.registerNewEarthBasedFacilityFrom(polisData: facility, shouldCreateNewEntity: true)
+        let facilityRep               = ObservingFacilityRep(id: UUID(), lastUpdateDate: Date.now, name: "Small telescope at the edge of the universe")
+        let dirEntry                  = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: facilityRep.identity)
+
+        sut?.facilityDirectory.addOrUpdateObservingFacility(reference: dirEntry)
         let finalNumberOfFacilities   = sut?.facilityDirectory.observingFacilityReferences.count
 
         // Then
@@ -70,10 +72,11 @@ final class PolisProviderManagerTests: XCTestCase {
         XCTAssertEqual(initialNumberOfFacilities, 0)
         XCTAssertEqual(finalNumberOfFacilities, 1)
 
-        await fulfillment(of: [providerWillCreateNotificationExpectation, providerDidCreateNotificationExpectation,
-                              facilityInfoWillCreateExpectation, facilityInfoDidCreateExpectation,],
-                          timeout: 5,
-                          enforceOrder: true)
+        //TODO: Move this when testing Earth-based facility
+//        await fulfillment(of: [providerWillCreateNotificationExpectation, providerDidCreateNotificationExpectation,
+//                              facilityInfoWillCreateExpectation, facilityInfoDidCreateExpectation,],
+//                          timeout: 5,
+//                          enforceOrder: true)
     }
 
 

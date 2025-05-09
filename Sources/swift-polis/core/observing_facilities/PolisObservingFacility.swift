@@ -9,44 +9,10 @@ import Foundation
 
 public struct PolisObservingFacility: Identifiable, Codable, StorableItem, Equatable {
 
-
-    public enum ObservingFacilityLocationType: String, Codable, CaseIterable, Equatable {
-        case surfaceFixed          = "surface_fixed"
-        case surfaceMobile         = "surface_mobile"
-        case airborneSelfPropelled = "airborne_self_propelled"
-        case airborneBallon        = "airborne_ballon"
-        case keplerianOrbital      = "keplerian_orbital"
-        case nonKeplerianOrbital   = "non_keplerian_orbital"
-        case unboundInterplanetary = "unbound_interplanetary"
-        case other
-    }
-
-    public enum PlaceInTheSolarSystem: String, Codable, CaseIterable, Equatable {
-        case sun         = "Sun"
-
-        // Planets & Dwarfs
-        case mercury     = "Mercury"
-        case venus       = "Venus"
-        case earth       = "Earth"
-        case mars        = "Mars"
-        case jupiter     = "Jupiter"
-        case saturn      = "Saturn"
-        case uranus      = "Uranus"
-        case neptune     = "Neptune"
-        case pluto       = "Pluto"
-        case ceres       = "Ceres"
-
-        // Miscellaneous
-        case dwarfPlanet = "dwarf_planet"
-        case moon
-        case asteroid
-        case comet
-    }
-
-    // Identification and type 
+    // Identification and type
     public var item: PolisItem
-    public var gravitationalBodyRelationship: ObservingFacilityLocationType
-    public var placeInTheSolarSystem: PlaceInTheSolarSystem
+    public var gravitationalBodyRelationship: PolisObservingFacilityLocationType
+    public var placeInTheSolarSystem: PolisPlaceInTheSolarSystem
     public var observingFacilityCode: String?
 
     // Where in the Solar system
@@ -82,8 +48,8 @@ public struct PolisObservingFacility: Identifiable, Codable, StorableItem, Equat
 
 
     public init(item: PolisItem,
-                gravitationalBodyRelationship: ObservingFacilityLocationType,
-                placeInTheSolarSystem: PlaceInTheSolarSystem,
+                gravitationalBodyRelationship: PolisObservingFacilityLocationType,
+                placeInTheSolarSystem: PolisPlaceInTheSolarSystem,
                 observingFacilityCode: String?                    = nil,
                 solarSystemBodyName: String?                      = nil,
                 orbitingAroundPlaceInTheSolarSystemNamed: String? = nil,
