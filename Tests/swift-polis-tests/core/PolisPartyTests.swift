@@ -65,11 +65,11 @@ final class PolisPartyTests: XCTestCase {
         // Given
 
         // When
-        data   = try? jsonEncoder.encode(TestingSupport.exampleAddress())
+        data   = try? jsonEncoder.encode(TestingSupport.examplePolisPlace())
         string = String(data: data!, encoding: .utf8)
 
         // Then
-        XCTAssertNotNil(TestingSupport.exampleAddress())
+        XCTAssertNotNil(TestingSupport.examplePolisPlace())
         XCTAssertNoThrow(try jsonDecoder.decode(PolisPlace.self, from: string!.data(using: .utf8)!))
     }
 
@@ -81,7 +81,7 @@ final class PolisPartyTests: XCTestCase {
         string = String(data: data!, encoding: .utf8)
 
         // Then
-        XCTAssertNotNil(TestingSupport.exampleAddress())
+        XCTAssertNotNil(TestingSupport.examplePolisPlace())
         XCTAssertNoThrow(try jsonDecoder.decode(PolisPerson.self, from: string!.data(using: .utf8)!))
     }
 

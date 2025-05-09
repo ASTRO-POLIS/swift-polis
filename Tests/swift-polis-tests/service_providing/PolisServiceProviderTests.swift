@@ -231,7 +231,7 @@ final class PolisServiceProviderTests: XCTestCase {
         XCTAssertNoThrow(try jsonDecoder.decode(PolisObservingFacilityDirectory.self, from: string!.data(using: .utf8)!))
     }
 
-    func test_PolisResourceFacilityDirectory_codingSupport_shouldSucceed() throws {
+    func test_PolisResourceDirectory_codingSupport_shouldSucceed() throws {
         // Given
         let identity  = PolisIdentity(lastUpdateDate: Date(),
                                       name: "AstroSystemeAustria",
@@ -255,8 +255,7 @@ final class PolisServiceProviderTests: XCTestCase {
         ("test_PolisDirectory_codingSupport_shouldSucceed",                      test_PolisDirectory_codingSupport_shouldSucceed),
         ("test_ObservingFacilityReference_codingSupport_shouldSucceed",          test_ObservingFacilityReference_codingSupport_shouldSucceed),
         ("test_PolisObservingFacilityDirectory_codingSupport_shouldSucceed",     test_PolisObservingFacilityDirectory_codingSupport_shouldSucceed),
-        ("test_PolisResourceFacilityDirectory_codingSupport_shouldSucceed",      test_PolisResourceFacilityDirectory_codingSupport_shouldSucceed),
-        ("test_PolisResourceFacilityDirectory_codingSupport_shouldSucceed",      test_PolisResourceFacilityDirectory_codingSupport_shouldSucceed),
+        ("test_PolisResourceDirectory_codingSupport_shouldSucceed",              test_PolisResourceDirectory_codingSupport_shouldSucceed),
     ]
 
     //MARK: - Templates

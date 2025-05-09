@@ -81,6 +81,8 @@ struct TestingSupport {
 
 
     //MARK: - Factory Static Methods -
+
+    //MARK: PolisIdentity
     static func examplePolisIdentityBAO() -> PolisIdentity {
         PolisIdentity(externalReferences:    ["https://bao.am/device?id=1234", "https://bao.am/rtml?dump-1234"],
                       lastUpdateDate:        Date(),
@@ -94,19 +96,37 @@ struct TestingSupport {
         )
     }
 
-    static func examplePolisItemBAO() -> PolisItem {
-        PolisItem(identity: TestingSupport.examplePolisIdentityBAO(),
-                  owner: TestingSupport.exampleOwner(),
-                  automationLabel: "BAO",
-                  lifecycleStatus: .active)
+    static func examplePolisIdentityASA() -> PolisIdentity {
+        PolisIdentity(externalReferences:    ["https://www.astrosysteme.com?id=1234", "https://www.astrosysteme.com/dump-1234"],
+                      lastUpdateDate:        Date(),
+                      name:                  "Astro Systeme Austria",
+                      localName:             "Astro Systeme Osterreich",
+                      abbreviation:          "asa",
+                      shortDescription:      "Testing ASA site",
+                      startDate:             Date.now,
+                      endDate:               Date.now,
+                      polisRegistrationDate: Date.now)
+
     }
 
+    //MARK: PolisItem
+    static func examplePolisItemBAO() -> PolisItem {
+        PolisItem(identity: examplePolisIdentityBAO(),
+                  owner: exampleOwner(),
+                  parentID: nil,
+                  automationLabel: "BAO",
+                  lifecycleStatus: PolisLifecycleStatus.active,
+                  mediaSourceID: nil)                            //FIXME: more data
+    }
+
+    //MARK: PolisOwner
     static func exampleOwner() -> PolisOwner {
         PolisOwner(ownershipType: .government,
                         personalOwnerIDs: Set([UUID(uuidString: "6FDA06D1-9AB1-4EF2-AD13-0DAF28940C52")!]),
                         organisationalOwnerIDs: Set([UUID(uuidString: "2CE0491C-AC1F-4B84-A4C5-D752E9AE95D4")!, UUID(uuidString: "FD0D5301-9C0F-4239-BD52-FAF8DBA2A2EF")!]))
     }
 
+    //MARK: PolisCommunicationChannel
     static func exampleCommunicationChannel() -> PolisCommunicationChannel {
         PolisCommunicationChannel(twitterIDs: ["@CoolAstro", "@GalaxyFarAway"],
                                   mastodonIDs: ["@GalaxyFarAway@mastodon.social"],
@@ -116,7 +136,8 @@ struct TestingSupport {
                                   skypeIDs: ["cool_astro"])
     }
     
-    static func exampleAddress() -> PolisPlace {
+    //MARK: PolisPlace
+    static func examplePolisPlace() -> PolisPlace {
         PolisPlace(attentionOff: "Mrs. Royal Astronomer",
                      houseName: "Galaxy.",
                      street: "Observatory str.",
@@ -147,17 +168,19 @@ struct TestingSupport {
                      note: "Send only stars and love")
     }
     
+    //MARK: PolisPerson
     static func examplePerson() -> PolisPerson {
-        PolisPerson(name: "Amon Ra", email: "ra@god.cun", communication: exampleCommunicationChannel(), addressIDs: Set(arrayLiteral: exampleAddress().id))
+        PolisPerson(name: "Amon Ra", email: "ra@god.cun", communication: exampleCommunicationChannel(), addressIDs: Set(arrayLiteral: examplePolisPlace().id))
     }
 
+    //MARK: PolisObservingFacility
     static func exampleObservingFacility() -> PolisObservingFacility {
         PolisObservingFacility(item: examplePolisItemBAO(), gravitationalBodyRelationship: PolisObservingFacility.ObservingFacilityLocationType.surfaceFixed, placeInTheSolarSystem: PolisObservingFacility.PlaceInTheSolarSystem.earth)
     }
     
     static func exampleFixedSurfaceEarthBaseDetails() -> PolisFixedSurfaceEarthBaseDetails {
         PolisFixedSurfaceEarthBaseDetails(facility: exampleObservingFacility(),
-                                          location: exampleAddress(),
+                                          location: examplePolisPlace(),
                                           visitingHours: nil,                                                 //FIXME: more data
                                           averageClearNightsPerYear: 211,
                                           averageSeeingConditions: nil,                                       //FIXME: more data
@@ -165,14 +188,4 @@ struct TestingSupport {
                                           dominantWindDirection: PolisDirection.RoughDirection.eastNorthEast,
                                           surfaceSize:  nil)                                                  //FIXME: more data
     }
-
-    static func exampleItem() -> PolisItem {
-        PolisItem(identity: examplePolisIdentityBAO(),
-                  owner: exampleOwner(),
-                  parentID: nil,
-                  automationLabel: "BAO",
-                  lifecycleStatus: PolisLifecycleStatus.active,
-                  mediaSourceID: nil)                            //FIXME: more data
-    }
-
 }
