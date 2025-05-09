@@ -100,67 +100,31 @@ struct TestingSupport {
     }
     
     static func examplePerson() -> PolisPerson {
-        PolisPerson(name: "Amon Ra", email: "ra@god.cun", communication: exampleCommunicationChannel(), addressIDs: nil)
+        PolisPerson(name: "Amon Ra", email: "ra@god.cun", communication: exampleCommunicationChannel(), addressIDs: Set(arrayLiteral: exampleAddress().id))
     }
-
-//    static func exampleFacility() -> PolisFixedSurfaceEarthBaseDetails {
-//        PolisFixedSurfaceEarthBaseDetails(location: TestingSupport.exampleAddress(),
-//                                          visitingHours: nil,                                          //FIXME:
-//                                          averageClearNightsPerYear: nil,                              //FIXME:
-//                                          averageSeeingConditions: nil,                                //FIXME:
-//                                          traditionalLandOwners: "An ancient civilisation",
-//                                          dominantWindDirection: .eastSouthEast,
-//                                          surfaceSize:  nil,                                           //FIXME:
-//                                          item: examplePolisItemBAO(),
-//                                          gravitationalBodyRelationship: .surfaceFixed,
-//                                          placeInTheSolarSystem: .earth,
-//                                          observingFacilityCode: "BAO",
-//                                          solarSystemBodyName: "Earth",
-//                                          orbitingAroundPlaceInTheSolarSystemNamed: nil,               //FIXME:
-//                                          facilityLocationID: nil,                                     //FIXME:
-//                                          astronomicalCode: "BAO",
-//                                          parentObservingFacilityID: nil,                              //FIXME:
-//                                          observatoryIDs: nil,                                         //FIXME:
-//                                          deviceIDs: nil,                                              //FIXME:
-//                                          website: nil,                                                //FIXME:
-//                                          scientificObjectives: "To create a catalogue of galaxies",
-//                                          history: "Created by Victor Ambartzumyan",                   //FIXME:
-//                                          fixedSurfaceEarthBaseDetailsID: nil,                         //FIXME:
-//                                          mobileSurfaceEarthBaseDetailsID: nil,                        //FIXME:
-//                                          airborneEarthBaseDetailsID: nil)                             //FIXME:
-//    }
-
-    static func exampleItem() -> PolisItem {
-        PolisItem(identity: examplePolisIdentityBAO())
-    /*
-     owner: Owner?                         = nil,
-     parentID: UUID?                       = nil,
-     lifecycleStatus: PolisLifecycleStatus = .unknown,
-     automationLabel: String?              = nil,
-     media: PolisMediaSource?              = nil) {
-
-     */
-    }
-
 
     static func exampleObservingFacility() -> PolisObservingFacility {
-        PolisObservingFacility(item: exampleItem(), gravitationalBodyRelationship: PolisObservingFacility.ObservingFacilityLocationType.surfaceFixed, placeInTheSolarSystem: PolisObservingFacility.PlaceInTheSolarSystem.earth)
-        /*
-         observingFacilityCode: String?                    = nil,
-         solarSystemBodyName: String?                      = nil,
-         orbitingAroundPlaceInTheSolarSystemNamed: String? = nil,
-         facilityLocationID: UUID?                         = nil,
-         astronomicalCode: String?                         = nil,
-         parentObservingFacilityID: UUID?                  = nil,
-         observatoryIDs: Set<UUID>?                        = nil,
-         deviceIDs: Set<UUID>?                             = nil,
-         website: URL?                                     = nil,
-         scientificObjectives: String?                     = nil,
-         history: String?                                  = nil,
-         fixedSurfaceEarthBaseDetailsID: UUID?             = nil,
-         mobileSurfaceEarthBaseDetailsID: UUID?            = nil,
-         airborneEarthBaseDetailsID: UUID?                 = nil) {
-
-         */
+        PolisObservingFacility(item: examplePolisItemBAO(), gravitationalBodyRelationship: PolisObservingFacility.ObservingFacilityLocationType.surfaceFixed, placeInTheSolarSystem: PolisObservingFacility.PlaceInTheSolarSystem.earth)
     }
+    
+    static func exampleFixedSurfaceEarthBaseDetails() -> PolisFixedSurfaceEarthBaseDetails {
+        PolisFixedSurfaceEarthBaseDetails(facility: exampleObservingFacility(),
+                                          location: exampleAddress(),
+                                          visitingHours: nil,                                                 //FIXME: more data
+                                          averageClearNightsPerYear: 211,
+                                          averageSeeingConditions: nil,                                       //FIXME: more data
+                                          traditionalLandOwners: "A Ferengi tribe",
+                                          dominantWindDirection: PolisDirection.RoughDirection.eastNorthEast,
+                                          surfaceSize:  nil)                                                  //FIXME: more data
+    }
+
+    static func exampleItem() -> PolisItem {
+        PolisItem(identity: examplePolisIdentityBAO(),
+                  owner: exampleOwner(),
+                  parentID: nil,
+                  automationLabel: "BAO",
+                  lifecycleStatus: PolisLifecycleStatus.active,
+                  mediaSourceID: nil)                            //FIXME: more data
+    }
+
 }

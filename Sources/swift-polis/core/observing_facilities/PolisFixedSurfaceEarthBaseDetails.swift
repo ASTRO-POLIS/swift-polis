@@ -36,7 +36,7 @@ public struct PolisFixedSurfaceEarthBaseDetails: Identifiable, Codable, Storable
                 dominantWindDirection: PolisDirection.RoughDirection? = nil,
                 surfaceSize: PolisPropertyValue?                      = nil) {
         self.id                        = id
-        self.facility                 = facility
+        self.facility                  = facility
         self.location                  = location
         self.visitingHours             = visitingHours
         self.averageClearNightsPerYear = averageClearNightsPerYear

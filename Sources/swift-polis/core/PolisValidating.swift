@@ -15,6 +15,6 @@ public enum PolisValidationErrors: String {
 public protocol PolisValidating {
     var allProperties: [String]      { get }
     var requiredProperties: [String] { get }
-    
+
     func validateFor(property: String, value: String) -> (result: Bool, validationErrors: [PolisValidationErrors]?)
 }

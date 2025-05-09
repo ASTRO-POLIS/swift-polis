@@ -65,6 +65,7 @@ open class PersistentItem: PolisPersisting {
     public var lifecycleStatus: PolisLifecycleStatus = PolisLifecycleStatus.unknown
     public var mediaSourceID: UUID?
 
+    // Non-public API
     init(id: UUID, lastUpdateDate: Date = Date(), name: String) {
         self.id             = id
         self.lastUpdateDate = lastUpdateDate
