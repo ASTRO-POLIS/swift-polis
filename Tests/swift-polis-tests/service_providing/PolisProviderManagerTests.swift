@@ -50,29 +50,30 @@ final class PolisProviderManagerTests: XCTestCase {
 
     //MARK: - Tests -
     func test_PolisProviderManager_creatingAndStoringProvider_shouldSucceed() async throws {
-//        // Given
-//        PolisProviderManager.localPolisRootPath = TestingSupport.testingFolder
-//
-//        let config   = PolisProviderConfiguration(name: "BigBang", adminName: "admin", adminEmail:  "admin@admin.nirvana")
-//        let facility = TestingSupport.exampleFacility()
-//        
-//        // When
-//        let sut         = try PolisProviderManager.createLocalProviderWith(configuration: config, isExperimentalVersion: true)
-//        let facilityRep = try EarthFixBasedObservingFacilityRep.registerNewEarthBasedFacilityFrom(polisData: facility, shouldCreateNewEntity: true)
-//
-//        // Then
-//        XCTAssertNotNil(sut)
-//        XCTAssertNotNil(sut?.facilityDirectory)
-//        XCTAssertEqual(sut?.facilityDirectory.observingFacilityReferences.count, 1)
-//
-//        XCTAssertNotNil(facilityRep)
-//
-//        await fulfillment(of: [providerWillCreateNotificationExpectation, providerDidCreateNotificationExpectation,
-//                              facilityInfoWillCreateExpectation, facilityInfoDidCreateExpectation,],
-//                          timeout: 5,
-//                          enforceOrder: true)
-//
-//        //TODO: Test if the Facility dir has first zero and then 1 entry!
+        // Given
+        PolisProviderManager.localPolisRootPath = TestingSupport.testingFolder
+
+        let config   = PolisProviderConfiguration(name: "BigBang", adminName: "admin", adminEmail:  "admin@admin.nirvana")
+        let facility = TestingSupport.exampleObservingFacility()
+
+        // When
+        let sut                       = try PolisProviderManager.createLocalProviderWith(configuration: config, isExperimentalVersion: true)
+        let initialNumberOfFacilities = sut?.facilityDirectory.observingFacilityReferences.count
+        let facilityRep               = try EarthFixBasedObservingFacilityRep.registerNewEarthBasedFacilityFrom(polisData: facility, shouldCreateNewEntity: true)
+        let finalNumberOfFacilities   = sut?.facilityDirectory.observingFacilityReferences.count
+
+        // Then
+        XCTAssertNotNil(sut)
+        XCTAssertNotNil(facilityRep)
+
+        XCTAssertNotNil(sut?.facilityDirectory)
+        XCTAssertEqual(initialNumberOfFacilities, 0)
+        XCTAssertEqual(finalNumberOfFacilities, 1)
+
+        await fulfillment(of: [providerWillCreateNotificationExpectation, providerDidCreateNotificationExpectation,
+                              facilityInfoWillCreateExpectation, facilityInfoDidCreateExpectation,],
+                          timeout: 5,
+                          enforceOrder: true)
     }
 
 
