@@ -59,56 +59,6 @@ final class PolisVisitingHoursTests: XCTestCase {
         try super.tearDownWithError()
     }
 
-    // JSON Examples
-    private let onlyANote = """
-{
-   "id": "65BEF6F8-C383-40D4-9E53-B4517ACD348E",
-   "only_group_visits": false,
-   "note": "For group and individual visits, please call the observatory office every working day between 14:00h and 16:00h."
-}
-""".data(using: .utf8)!
-
-    private let everyYearEveryMonthEverySunday = """
-{
-   "id": "65BEF6F8-C383-40D4-9E53-B4517ACD348E",
-   "visiting_possibilities": [
-      {
-         "applicable_weekdays": ["Sunday"],
-         "only_group_visits": true,
-         "is_repeating": true
-      },
-   ],
-   "note": "Please call before visiting."
-}
-""".data(using: .utf8)!
-
-    // In 2024 and 2025, between July and September, every Saturday between 14:00 and 16:00 (only for groups), and every Sunday between
-    // 9:00 and 12:00 and between 14:00 and 17:00.
-    private let complexVisitingHours = """
-{
-   "id": "65BEF6F8-C383-40D4-9E53-B4517ACD348E",
-   "visiting_possibilities": [
-      {
-         "applicable_years": [2024, 2025],
-         "applicable_months": [7, 8, 9],
-         "applicable_weekdays": ["Saturday"],
-         "visiting_period": [ { "from": "14:00", "to": "16:00" } ],
-         "only_group_visits": true,
-         "is_repeating": true
-      },
-      {
-         "applicable_years": [2024, 2025],
-         "applicable_months": [7, 8, 9],
-         "applicable_weekdays": ["Sunday"],
-         "visiting_period": [ { "from": "09:00", "to": "12:00" }, { "from": "14:00", "to": "16:00" } ],
-         "only_group_visits": false,
-         "is_repeating": true
-      }
-   ],
-   "note": "By or after heavy rain, the road to the observatory could be closed. Check the weather forcast before planning your visit."
-}
-""".data(using: .utf8)!
-
     //MARK: - Tests -
     func test_PolisVisitingHours_creation_shouldSucceed() throws {
         // Given
@@ -136,7 +86,7 @@ final class PolisVisitingHoursTests: XCTestCase {
 
     func test_PolisVisitingHours_onlyNote_shouldSucceed() throws {
         // Given
-        let sut = try? jsonDecoder.decode(PolisVisitingHours.self, from: onlyANote)
+        let sut = try? jsonDecoder.decode(PolisVisitingHours.self, from: TestingSupport.onlyANoteVisitingHours)
 
         // Then
         XCTAssertNotNil(sut)
@@ -145,7 +95,7 @@ final class PolisVisitingHoursTests: XCTestCase {
 
     func test_PolisVisitingHours_simpleVisitingPossibility_shouldSucceed() throws {
         // Given
-        let sut = try? jsonDecoder.decode(PolisVisitingHours.self, from: everyYearEveryMonthEverySunday)
+        let sut = try? jsonDecoder.decode(PolisVisitingHours.self, from: TestingSupport.everyYearEveryMonthEverySundayVisitingHours)
 
         // Then
         XCTAssertNotNil(sut)
@@ -155,7 +105,7 @@ final class PolisVisitingHoursTests: XCTestCase {
 
     func test_PolisVisitingHours_complexVisitingHours_shouldSucceed() throws {
         // Given
-        let sut = try? jsonDecoder.decode(PolisVisitingHours.self, from: complexVisitingHours)
+        let sut = try? jsonDecoder.decode(PolisVisitingHours.self, from: TestingSupport.complexVisitingHoursVisitingHours)
 
         // When
 
