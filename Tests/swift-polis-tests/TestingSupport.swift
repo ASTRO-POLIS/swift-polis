@@ -174,7 +174,7 @@ struct TestingSupport {
 
     //MARK: PolisObservingFacility
     static func exampleObservingFacility() -> PolisObservingFacility {
-        PolisObservingFacility(item: examplePolisItemBAO(), gravitationalBodyRelationship: PolisObservingFacilityLocationType.surfaceFixed, placeInTheSolarSystem: PolisPlaceInTheSolarSystem.earth)
+        PolisObservingFacility(item: examplePolisItemBAO())
     }
     
     static func exampleFixedSurfaceEarthBaseDetails() -> PolisFixedSurfaceEarthBaseDetails {

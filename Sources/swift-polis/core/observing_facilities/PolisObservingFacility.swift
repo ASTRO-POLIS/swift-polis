@@ -11,8 +11,6 @@ public struct PolisObservingFacility: Identifiable, Codable, StorableItem, Equat
 
     // Identification and type
     public var item: PolisItem
-    public var gravitationalBodyRelationship: PolisObservingFacilityLocationType
-    public var placeInTheSolarSystem: PolisPlaceInTheSolarSystem
     public var observingFacilityCode: String?
 
     // Where in the Solar system
@@ -48,8 +46,6 @@ public struct PolisObservingFacility: Identifiable, Codable, StorableItem, Equat
 
 
     public init(item: PolisItem,
-                gravitationalBodyRelationship: PolisObservingFacilityLocationType,
-                placeInTheSolarSystem: PolisPlaceInTheSolarSystem,
                 observingFacilityCode: String?                    = nil,
                 solarSystemBodyName: String?                      = nil,
                 orbitingAroundPlaceInTheSolarSystemNamed: String? = nil,
@@ -63,10 +59,9 @@ public struct PolisObservingFacility: Identifiable, Codable, StorableItem, Equat
                 history: String?                                  = nil,
                 fixedSurfaceEarthBaseDetailsID: UUID?             = nil,
                 mobileSurfaceEarthBaseDetailsID: UUID?            = nil,
-                airborneEarthBaseDetailsID: UUID?                 = nil) {
+                airborneEarthBaseDetailsID: UUID?                 = nil,
+                artifactIDs: Set<UUID>?                           = nil) {
         self.item                                     = item
-        self.gravitationalBodyRelationship            = gravitationalBodyRelationship
-        self.placeInTheSolarSystem                    = placeInTheSolarSystem
         self.observingFacilityCode                    = observingFacilityCode
         self.solarSystemBodyName                      = solarSystemBodyName
         self.orbitingAroundPlaceInTheSolarSystemNamed = orbitingAroundPlaceInTheSolarSystemNamed
@@ -81,14 +76,13 @@ public struct PolisObservingFacility: Identifiable, Codable, StorableItem, Equat
         self.fixedSurfaceEarthBaseDetailsID           = fixedSurfaceEarthBaseDetailsID
         self.mobileSurfaceEarthBaseDetailsID          = mobileSurfaceEarthBaseDetailsID
         self.airborneEarthBaseDetailsID               = airborneEarthBaseDetailsID
+        self.artifactIDs                              = artifactIDs
     }
 }
 
 public extension PolisObservingFacility {
     enum CodingKeys: String, CodingKey {
         case item
-        case gravitationalBodyRelationship            = "gravitational_body_relationship"
-        case placeInTheSolarSystem                    = "place_in_the_solar_system"
         case observingFacilityCode                    = "observing_facility_code"
         case solarSystemBodyName                      = "solar_system_body_name"
         case orbitingAroundPlaceInTheSolarSystemNamed = "orbiting_around_place_in_the_solar_system_named"

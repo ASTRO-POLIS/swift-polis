@@ -100,7 +100,6 @@ open class PolisProviderManager {
     /// **Note:** Make sure the public init() was called before trying to access this within the framework
     public static var currentProviderManager: PolisProviderManager!
 
-    
     /// Defines the sorting method used by methods returning a list of facilities
     ///
     /// Set this ivar before calling facility related method.
@@ -119,7 +118,9 @@ open class PolisProviderManager {
     var polisProviderDirectory: PolisDirectory!
     var facilityDirectory: PolisObservingFacilityDirectory!
 
-    var facilities = [ObservingFacilityRep]()
+    // Caches
+    var facilities      = [ObservingFacilityRep]()
+    var facilityDetails = [PolisObservingFacility]()
 
     /// Designate initialiser
     ///
