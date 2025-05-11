@@ -7,11 +7,17 @@
 
 import Foundation
 
+public protocol PolisRemoteSynchronisationProviding {
+    func pullChanges() throws
+    func pushChanges() throws
+}
+
 /// `PolisPersisting` is an API that regulate persistency and syncing for all in-memory objects having local file system representation.
 public protocol PolisPersisting {
 
     var manager: PolisProviderManager! { get set }
-
+    var synchronisationProvider: PolisRemoteSynchronisationProviding? { get set }
+    
     /// Saves all changes to the local file system
     ///
     /// The method should compare the POLIS data stored in the file system (or cached) and perform file system changes only in case both datasets differ from
@@ -38,13 +44,7 @@ open class PersistentItem: PolisPersisting {
 
     // PolisPersisting
     public var manager: PolisProviderManager!
-
-    public func saveChanges() throws { }
-    public func revertToSaved() throws { }
-    public func delete() throws { }
-    public func loadWithID(_ id: String) throws -> PolisPersisting { self }
-
-    public func didChange() -> Bool { false }
+    public var synchronisationProvider: PolisRemoteSynchronisationProviding?
 
     // Polis Identity defined
     public var id: UUID
@@ -117,4 +117,30 @@ open class PersistentItem: PolisPersisting {
             mediaSourceID    = newValue.mediaSourceID
         }
     }
+}
+
+open class PersistentAuxiliaryItem: PolisPersisting {
+    // PolisPersisting
+    public var manager: PolisProviderManager!
+    public var synchronisationProvider: PolisRemoteSynchronisationProviding?
+
+    // Identification and containing folder
+    public var id: UUID
+    public var localFolder: String
+
+    init(id: UUID, localFolder: String) {
+        self.id          = id
+        self.localFolder = localFolder
+        self.manager     = PolisProviderManager.currentProviderManager!
+    }
+}
+
+// Some useful defaults
+extension PolisPersisting {
+    public func saveChanges() throws { }
+    public func revertToSaved() throws { }
+    public func delete() throws { }
+    public func loadWithID(_ id: String) throws -> PolisPersisting { self }
+
+    public func didChange() -> Bool { false }
 }

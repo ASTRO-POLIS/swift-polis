@@ -72,7 +72,7 @@ open class ObservingFacilityRep: PersistentItem {
     /// This  method saves possible changes only in the facility directory.
     ///
     /// Subclasses should manage  facility details and auxiliary types related to the facility.
-    public override func saveChanges() throws {
+    public func saveChanges() throws {
         // 1. Check if I am part of the facility directory, and if not - add myself
         if let directoryEntry = manager.directoryEntryForFacilityWith(id: self.id) {
             let savedIdentity = directoryEntry.identity
@@ -84,63 +84,25 @@ open class ObservingFacilityRep: PersistentItem {
 
             manager.facilityDirectory.addOrUpdateObservingFacility(reference:newEntry)
         }
-    }
 
-    public override func revertToSaved() throws {
+        //TODO: Implement me!
+   }
+
+    public func revertToSaved() throws {
         //TODO: Implement me!
     }
 
-    public override func delete() throws {
+    public func delete() throws {
         //TODO: Implement me!
     }
 
-    public override func didChange() -> Bool {
+    public func didChange() -> Bool {
         //TODO: Implement me!
         false
     }
 
 
-
-
-
-    /// This is used to update the in memory objects and (possibly) POLIS related files in the local file system.
-    ///
-    /// To reflect the changes to the local copy of  POLIS files, use ``StorableItem``'s `flashUsing(manager: )` method.
-//    public func flush() async throws {
-//        let provider = PolisProviderManager.currentProviderManager!
-//
-//        // Identity
-//        let dirEntry = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: identity)
-//
-//        provider.facilityDirectory.addOrUpdateObservingFacility(reference: dirEntry)
-//        try provider.flush(item: provider.facilityDirectory)
-//
-//        // Details
-//        let facilityDetails                                      = PolisObservingFacility(item: item,
-//                                                                                          gravitationalBodyRelationship: gravitationalBodyRelationship,
-//                                                                                          placeInTheSolarSystem: placeInTheSolarSystem)
-//        facilityDetails.observingFacilityCode                    = observingFacilityCode
-//        facilityDetails.solarSystemBodyName                      = solarSystemBodyName
-//        facilityDetails.orbitingAroundPlaceInTheSolarSystemNamed = orbitingAroundPlaceInTheSolarSystemNamed
-//        facilityDetails.facilityLocationID                       = facilityLocationID
-//        facilityDetails.astronomicalCode                         = astronomicalCode
-//
-//        //TODO: This should be rewritten when the PolisFacility implements StorableItem
-//        try await ensureFacilityFolderDoesExist()
-//
-//        let detailsPath = manager.polisFileResourceFinder.observingFacilityFile(observingFacilityID: identity.id)
-//
-//        do {
-//            let data = try manager.jsonEncoder.encode(facilityDetails)
-//            //TODO: remove later solution will be found
-//            let path = "file://\(detailsPath)"
-//            try data.write(to: URL(string: path.normalisedFolderPath())!)
-//        }
-//        catch {
-//            PolisLogger.shared.error("Cannot encode or save facility details to: \(detailsPath)")
-//            throw PolisProviderManager.PolisProviderManagerError.cannotWriteFile
-//        }
-//    }
+    //MARK: Non-private APIs
 
     var facilityDetails: PolisObservingFacility {
         get {
@@ -185,7 +147,7 @@ open class ObservingFacilityRep: PersistentItem {
         let path = manager.polisFileResourceFinder.observingFacilityFolder(observingFacilityID: identity.id)
 
         if !manager.tryToEnsureFoldersExistence(paths: [path]) {
-            PolisLogger.shared.error("Cannot create or access facility forlder: \(path)")
+            PolisLogger.shared.error("Cannot create or access facility folder: \(path)")
             throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFolder
         }
     }
@@ -198,15 +160,16 @@ open class ObservingFacilityRep: PersistentItem {
         placeInTheSolarSystem : PolisPlaceInTheSolarSystem                = .earth
     ) throws -> ObservingFacilityRep {
         if (gravitationalBodyRelationship == .surfaceFixed) && (placeInTheSolarSystem == .earth) {
-            var result = EarthFixBasedObservingFacilityRep(id: identity.id, lastUpdateDate: identity.lastUpdateDate, name: identity.name)
+            let result = EarthFixBasedObservingFacilityRep(id: identity.id, lastUpdateDate: identity.lastUpdateDate, name: identity.name)
 
             result.localName        = identity.localName
             result.abbreviation     = identity.abbreviation
             result.shortDescription = identity.shortDescription
             result.startDate        = identity.startDate
 
-            //TODO: Implement me!
-//            result.manager.facilityDetails.append(result)
+            result.manager.facilityDetails.append(result.facilityDetails)
+
+            return result
         }
       //TODO: Implement me!
       throw ObservingFacilityRepError.foundFacilityWithTypeMismatch

@@ -50,6 +50,8 @@ open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
 
     //MARK: - PolisPersisting implementation -
     public override func saveChanges() throws {
+        try super.saveChanges()
+
         //TODO: Implement me!
 
         // 1. Check if I exist as POLIS file, and if not, create myself
@@ -76,7 +78,7 @@ open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
         false
     }
 
-    
+
     //MARK: Non-private APIs
     static func registerFacilityWithExisting(identity: PolisIdentity) throws -> ObservingFacilityRep {
         //TODO: Implement me!

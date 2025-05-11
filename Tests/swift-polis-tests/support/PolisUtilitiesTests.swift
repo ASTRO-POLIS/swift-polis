@@ -36,51 +36,9 @@ final class PolisUtilitiesTests: XCTestCase {
     //MARK: - Tests -
     // Example UUID string: F666D608-DFFD-43F5-922D-201FB13CDC2C
 
-    func test_PolisUtilities_checkingPolisReference_shouldSucceed() throws {
-        // Given
-        let sut = "\(PolisConstants.polisReferencePrefix)\(UUID().uuidString)"
-
-        // Then
-        XCTAssertTrue(isPolisReference(sut))
-    }
-
-    func test_PolisUtilities_checkingPolisReference_shouldFail() throws {
-        // Given
-        let sut = "\(PolisConstants.polisReferencePrefix)%^#^)&"
-
-        // Then
-        XCTAssertFalse(isPolisReference(sut))
-    }
-
-    func test_PolisUtilities_uuidFromReference_shouldGenerate() throws {
-        // Given
-        let sut = "\(PolisConstants.polisReferencePrefix)F666D608-DFFD-43F5-922D-201FB13CDC2C"
-
-        // When
-        let uuidString = uuidFromPolis(reference: sut)
-
-        // Then
-        XCTAssertEqual(uuidString, "F666D608-DFFD-43F5-922D-201FB13CDC2C")
-    }
-
-    func test_PolisUtilities_referenceFromUUID_shouldGenerate() throws {
-        // Given
-        let sut = UUID(uuidString: "F666D608-DFFD-43F5-922D-201FB13CDC2C")!
-
-        // When
-        let reference = polisReferenceFrom(uuid: sut)
-
-        // Then
-        XCTAssertEqual(reference, "\(PolisConstants.polisReferencePrefix)F666D608-DFFD-43F5-922D-201FB13CDC2C")
-    }
-
-    static var allTests = [
-        ("test_PolisUtilities_checkingPolisReference_shouldSucceed", test_PolisUtilities_checkingPolisReference_shouldSucceed),
-        ("test_PolisUtilities_checkingPolisReference_shouldFail",    test_PolisUtilities_checkingPolisReference_shouldFail),
-        ("test_PolisUtilities_uuidFromReference_shouldGenerate",     test_PolisUtilities_uuidFromReference_shouldGenerate),
-        ("test_PolisUtilities_referenceFromUUID_shouldGenerate",     test_PolisUtilities_referenceFromUUID_shouldGenerate),
-    ]
-
+//    static var allTests = [
+//    ]
+//
     //MARK: - Templates
     /*
      func test_Type_stateUnderTest_expectedBehaviour() throws {

@@ -11,19 +11,9 @@ import Foundation
 
 // These are several convenience global functions that work on POLIS references
 
-/// Checks if the string is a valid POLIS reference
-public func isPolisReference(_ candidate: String) -> Bool { candidate.hasPrefix(PolisConstants.polisReferencePrefix) && (uuidFromPolis(reference: candidate) != nil)}
-
 /// Extracts UUID string from a valid POLIS reference
 public func uuidFromPolis(reference: String) -> String? {
     guard let candidate = reference.components(separatedBy: "//").last else { return nil }
     if UUID(uuidString: candidate) == nil { return nil }
     return candidate
 }
-
-/// Creates a new POLIS reference from a valid UUID
-public func polisReferenceFrom(uuid: UUID) -> String { "\(PolisConstants.polisReferencePrefix)\(uuid.uuidString)" }
-
-//TODO: Add reverse functions and also support for references of different type (e.g. Manufacturer)
-public func localUUID(form id: UUID)     -> String { "\(PolisConstants.polisLocalPrefix)\(id)" }
-public func referenceUUID(form id: UUID) -> String { "\(PolisConstants.polisReferencePrefix)\(id)" }

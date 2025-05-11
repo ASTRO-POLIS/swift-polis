@@ -38,16 +38,6 @@ public struct PolisConstants {
     /// features and is guaranteed to exit as well.
     public static let testBigBangPolisDomain   = "https://test.polis.observer"
 
-    /// All global references should start with this string
-    ///
-    /// The meaning of *global* is defined elsewhere in the standard
-    public static let polisReferencePrefix     = "ref://"
-
-    /// All local references should start with this string
-    ///
-    /// The meaning of *local* is defined elsewhere in the standard
-    public static let polisLocalPrefix         = "local://"
-
     /// This file is not part of the POLIS standard, but it is needed if `swift-polis` is used to manage
     /// the POLIS Provider. It is supposed to be in the folder that contains the `../polis/` root folder.
     public static let polisLocalConfigFileName = "polis_config.json"
