@@ -7,31 +7,30 @@
 
 import Foundation
 
-public struct PolisReference {
+// Note: The use of `PolisReference` assumes, that the Directory type data is always stored locally
+// (but allow for out-of-sync) with remote directory data!
 
-    public static var remoteServiceProvider = PolisConstants.bigBangPolisDomain
-    public static var auxiliaryServiceHosts = [String : String]()
+struct PolisReference {
 
-    public struct ReferencePrefixes {
+    static var polisFileResourceFinder: PolisFileResourceFinder!
+    static var polisRemoteResourceFinder: PolisRemoteResourceFinder!
+    static var auxiliaryServiceHosts = [String : String]()
+
+    struct ReferencePrefixes {
         /// All remote references should start with this string
         ///
         /// The meaning of *remote* is defined elsewhere in the standard
-        public static let polisRemotePrefix     = "remote://"
+        static let polisRemotePrefix = "remote://"
 
         /// All local references should start with this string
         ///
         /// The meaning of *local* is defined elsewhere in the standard
-        public static let polisLocalPrefix         = "local://"
-
-
-    }
-    public enum ReferenceKind {
-        case localCopy
-        case owner
-        case manufacturer
+        static let polisLocalPrefix  = "local://"
     }
 
-    public var id: UUID
-    public var kind: ReferenceKind
-    public var fileType: PolisImplementation.DataFormat
+    var id: String
+    var parentId: String?                           // e.g. observing facility
+    var isShared: Bool
+    var fileType: PolisImplementation.DataFormat
+
 }

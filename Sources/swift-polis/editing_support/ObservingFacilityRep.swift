@@ -35,6 +35,10 @@ open class ObservingFacilityRep: PersistentItem {
         throw ObservingFacilityRepError.foundFacilityWithTypeMismatch
     }
 
+    public func loadAllData() {
+
+    }
+
     // Defined by the PolisObservingFacilityDirectory.ObservingFacilityReference
     public var gravitationalBodyRelationship = PolisObservingFacilityLocationType.surfaceFixed
     public var placeInTheSolarSystem         = PolisPlaceInTheSolarSystem.earth

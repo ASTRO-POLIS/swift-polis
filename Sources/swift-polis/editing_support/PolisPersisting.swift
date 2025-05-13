@@ -66,6 +66,8 @@ open class PersistentItem: PolisPersisting {
     public var mediaSourceID: UUID?
 
     //MARK: Non-public API
+    var  persistanceReferenceL: PersistentItem!
+
     init(id: UUID, lastUpdateDate: Date = Date(), name: String) {
         self.id             = id
         self.lastUpdateDate = lastUpdateDate
@@ -143,4 +145,10 @@ extension PolisPersisting {
     public func loadWithID(_ id: String) throws -> PolisPersisting { self }
 
     public func didChange() -> Bool { false }
+}
+
+
+extension PolisRemoteSynchronisationProviding {
+    func pullChanges() throws { }
+    func pushChanges() throws { }
 }
