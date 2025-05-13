@@ -66,7 +66,7 @@ final class PolisProviderManagerTests: XCTestCase {
         let initialNumberOfFacilities = sut?.facilityDirectory.observingFacilityReferences.count
         let facilityRep               = try ObservingFacilityRep.findOrRegisterObservingFacilityWith(identity: TestingSupport.examplePolisIdentityBAO())
         let finalNumberOfFacilities   = sut?.facilityDirectory.observingFacilityReferences.count
-
+        let facilityRepCount          = sut?.allFacilities().count
         // Then
         XCTAssertNotNil(sut)
         XCTAssertNotNil(facilityRep)
@@ -74,6 +74,7 @@ final class PolisProviderManagerTests: XCTestCase {
         XCTAssertNotNil(sut?.facilityDirectory)
         XCTAssertEqual(initialNumberOfFacilities, 0)
         XCTAssertEqual(finalNumberOfFacilities, 1)
+        XCTAssertEqual(facilityRepCount, 1)
 
         //TODO: Move this when testing Earth-based facility
         await fulfillment(of: [providerWillCreateNotificationExpectation, providerDidCreateNotificationExpectation,

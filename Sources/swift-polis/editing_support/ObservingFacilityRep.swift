@@ -190,6 +190,8 @@ open class ObservingFacilityRep: PersistentItem {
             result.manager.facilityDetails.append(result.facilityDetails)
 
             manager?.facilityDirectory.observingFacilityReferences.append(facilityReference)
+            manager?.facilities.append(result)
+            
             try manager?.facilityDirectory.flashUsing(manager: manager!)
             nc.post(name: PolisProviderManager.StatusChangeNotification.facilityReferenceDidCreateNotification, object: nil)
 
