@@ -44,6 +44,35 @@ public struct PolisProviderConfiguration {
 
 open class PolisProviderManager {
 
+    //MARK: Static configurations
+
+    /// `localPolisRootPath` is the root path of the locally created POLIS provider.
+    ///
+    /// **Note:** `localPolisRootPath` must be set prior any other factory method is called.
+    public static var localPolisRootPath = "/tmp/"
+
+    ///  The remote Service Provider domain used to sync the static data
+    ///
+    ///  **Note:** The default value is set to `https://polis.observer`. This domain is guaranteed to exist.
+    public static var remoteDomain       = PolisConstants.bigBangPolisDomain
+
+    /// The (latest) version that will be used to sync working copy of the data for read access and editing
+    ///
+    /// Later implementations might sync also other (older) versions, but this is not required. Default implementation will use the newest possible software version.
+    public static var latestWorkingPolisVersion = PolisConstants.frameworkSupportedImplementation.last
+
+    /// Semi replacement for singleton
+    ///
+    /// **Note:** Make sure the public init() was called before trying to access this within the framework
+    public static var currentProviderManager: PolisProviderManager!
+
+    /// Defines the sorting method used by methods returning a list of facilities
+    ///
+    /// Set this ivar before calling facility related method.
+    /// Default value is `none` meaning no sorting is done.
+    public var facilitySortingMethod = PolisSorting.none
+
+
     //MARK: Notifications
     public struct StatusChangeNotification {
         // Provider related
@@ -86,29 +115,6 @@ open class PolisProviderManager {
         case polisDataMismatch                          // e.g. expects Earth based observatory but gets a Mars rover
     }
 
-    //MARK: Static configurations
-
-    /// `localPolisRootPath` is the root path of the locally created POLIS provider.
-    ///
-    /// **Note:** `localPolisRootPath` must be set prior any other factory method is called.
-    public static var localPolisRootPath: String = "/tmp/"
-
-    /// The (latest) version that will be used to sync working copy of the data for read access and editing
-    ///
-    /// Later implementations might sync also other (older) versions, but this is not required. Default implementation will use the newest possible software version.
-    public static var latestWorkingPolisVersion = PolisConstants.frameworkSupportedImplementation.last
-
-    /// Semi replacement for singleton
-    ///
-    /// **Note:** Make sure the public init() was called before trying to access this within the framework
-    public static var currentProviderManager: PolisProviderManager!
-
-    /// Defines the sorting method used by methods returning a list of facilities
-    ///
-    /// Set this ivar before calling facility related method.
-    /// Default value is `none` meaning no sorting is done.
-    public var facilitySortingMethod = PolisSorting.none
-
     //MARK: Polis Provider Manager internal configuration
     var jsonEncoder = PrettyJSONEncoder()
     var jsonDecoder = PrettyJSONDecoder()
@@ -138,6 +144,14 @@ open class PolisProviderManager {
         }
         else {
             logger.error("Cannot create URL from root folder: \(PolisProviderManager.localPolisRootPath)")
+            throw PolisProviderManagerError.rootPolisPathUnaccessible
+        }
+
+        if let remoteURL = URL(string: PolisProviderManager.remoteDomain) {
+            try polisRemoteResourceFinder = PolisRemoteResourceFinder(at: remoteURL, supportedImplementation: PolisConstants.frameworkSupportedImplementation.last!)
+        }
+        else {
+            logger.error("Cannot create URL from remote service provider: \(PolisProviderManager.remoteDomain)")
             throw PolisProviderManagerError.rootPolisPathUnaccessible
         }
 
