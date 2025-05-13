@@ -315,25 +315,20 @@ public extension PolisProviderManager {
 //MARK: - Working with Observing Facilities -
 public extension PolisProviderManager {
 
+    /// Initially all `ObservingFacilityRep` (and subclasses) are not fully loaded. Ca;; `loadData()` and observe status change notifications to ensure all
+    /// detail data is fully loaded and synced.
     func allFacilities() -> [ObservingFacilityRep] {
         //TODO: Sorting!
         return facilities
     }
 
-    /// Returns the `identity` of the facility stored into the facility directory or nil if it is not found.
+    /// Returns the `ObservingFacilityReference` of the facility stored into the facility directory or nil if it is not found.
     func directoryEntryForFacilityWith(id: UUID) -> PolisObservingFacilityDirectory.ObservingFacilityReference? {
         for anEntry in facilityDirectory.observingFacilityReferences {
             if anEntry.id == id { return anEntry }
         }
         return nil
     }
-
-    private func loadFacilityWith(id: UUID,
-                                  locationType: PolisObservingFacilityLocationType = .surfaceFixed,
-                                  solarSystemBody: PolisPlaceInTheSolarSystem      = .earth) throws {
-        //TODO: Implement me!
-    }
-
 }
 
 //MARK: - Working with files and folders -

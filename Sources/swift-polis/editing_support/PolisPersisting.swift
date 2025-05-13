@@ -37,6 +37,14 @@ public protocol PolisPersisting {
 
     /// Returns the result of the comparison between the stored POLIS item and the corresponding in-memory representation
     func didChange() -> Bool
+
+    /// This method forces the corresponding `Rep` to load either local or remote detail data, linked to the main type (e.g. Facility)
+    ///
+    /// **Note:** This method is not async on purpose. If all data is stored locally, the data will be loaded immediately, but in case remote syncing is required,
+    /// there will be some delay. Therefore types using `Rep` types should observe status change notifications.
+    func loadAllData() throws
+
+
 }
 
 /// `PersistentItem` is an abstract tat should be always subclassed by all in-memory objects
@@ -145,6 +153,8 @@ extension PolisPersisting {
     public func loadWithID(_ id: String) throws -> PolisPersisting { self }
 
     public func didChange() -> Bool { false }
+
+    public func loadAllData() throws { }
 }
 
 

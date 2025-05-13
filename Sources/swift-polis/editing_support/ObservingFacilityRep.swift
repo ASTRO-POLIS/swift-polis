@@ -14,7 +14,16 @@ open class ObservingFacilityRep: PersistentItem {
         case foundFacilityWithTypeMismatch
         case unavailableOrUnreadableLocalData
     }
-
+    
+    /// Finds an existing or creates a new `ObservingFacility`
+    ///
+    /// In case of facility type mismatch, an exception will be thrown. The facility that is returned might be not be fully initiated. Call `loadData()` and observe
+    /// status change notifications.
+    /// - Parameters:
+    ///   - identity: a facility identity as it is described as entry of the facility directory
+    ///   - gravitationalBodyRelationship: e.g. surface fixed, satellite, rover, etc.
+    ///   - placeInTheSolarSystem: e.g.  Earth, Mars, Sun, ...
+    /// - Returns: in most (all) cases returns a concrete `ObservingFacilityRep` subclass
     public static func findOrRegisterObservingFacilityWith(
         identity: PolisIdentity,
         gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
@@ -33,10 +42,6 @@ open class ObservingFacilityRep: PersistentItem {
         }
         //TODO: Implement other facility types when framework provides support for them.
         throw ObservingFacilityRepError.foundFacilityWithTypeMismatch
-    }
-
-    public func loadAllData() {
-
     }
 
     // Defined by the PolisObservingFacilityDirectory.ObservingFacilityReference
