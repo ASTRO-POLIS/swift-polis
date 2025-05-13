@@ -16,6 +16,9 @@ final class PolisProviderManagerTests: XCTestCase {
     var providerWillCreateNotificationExpectation: XCTNSNotificationExpectation!
     var providerDidCreateNotificationExpectation: XCTNSNotificationExpectation!
 
+    var facilityReferenceWillCreateExpectation: XCTNSNotificationExpectation!
+    var facilityReferenceDidCreateExpectation: XCTNSNotificationExpectation!
+
     var facilityInfoWillCreateExpectation: XCTNSNotificationExpectation!
     var facilityInfoDidCreateExpectation: XCTNSNotificationExpectation!
 
@@ -35,6 +38,9 @@ final class PolisProviderManagerTests: XCTestCase {
         
         providerWillCreateNotificationExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerWillCreateNotification)
         providerDidCreateNotificationExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerDidCreateNotification)
+
+        facilityReferenceWillCreateExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.facilityReferenceWillCreateNotification)
+        facilityReferenceDidCreateExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.facilityReferenceDidCreateNotification)
 
         facilityInfoWillCreateExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.facilityInfoWillCreateNotification)
         facilityInfoDidCreateExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.facilityInfoDidCreateNotification)
@@ -58,10 +64,7 @@ final class PolisProviderManagerTests: XCTestCase {
         // When
         let sut                       = try PolisProviderManager.createLocalProviderWith(configuration: config, isExperimentalVersion: true)
         let initialNumberOfFacilities = sut?.facilityDirectory.observingFacilityReferences.count
-        let facilityRep               = ObservingFacilityRep(id: UUID(), lastUpdateDate: Date.now, name: "Small telescope at the edge of the universe")
-        let dirEntry                  = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: facilityRep.identity)
-
-        sut?.facilityDirectory.addOrUpdateObservingFacility(reference: dirEntry)
+        let facilityRep               = try ObservingFacilityRep.findOrRegisterObservingFacilityWith(identity: TestingSupport.examplePolisIdentityBAO())
         let finalNumberOfFacilities   = sut?.facilityDirectory.observingFacilityReferences.count
 
         // Then
@@ -73,10 +76,11 @@ final class PolisProviderManagerTests: XCTestCase {
         XCTAssertEqual(finalNumberOfFacilities, 1)
 
         //TODO: Move this when testing Earth-based facility
-//        await fulfillment(of: [providerWillCreateNotificationExpectation, providerDidCreateNotificationExpectation,
-//                              facilityInfoWillCreateExpectation, facilityInfoDidCreateExpectation,],
-//                          timeout: 5,
-//                          enforceOrder: true)
+        await fulfillment(of: [providerWillCreateNotificationExpectation, providerDidCreateNotificationExpectation,
+                               facilityReferenceWillCreateExpectation, facilityReferenceDidCreateExpectation,
+                               /*facilityInfoWillCreateExpectation, facilityInfoDidCreateExpectation,*/],
+                          timeout: 5,
+                          enforceOrder: true)
     }
 
 

@@ -54,6 +54,9 @@ open class PolisProviderManager {
         public static let providerDidLoadLocalDataNotification  = Notification.Name("providerDidLoadLocalData")  // Object is the Manager
 
         // Facility related
+        public static let facilityReferenceWillCreateNotification = Notification.Name("facilityReferenceWillCreate") // Object is nil
+        public static let facilityReferenceDidCreateNotification  = Notification.Name("facilityReferenceDidCreate")  // Object is the ObservingFacilityReference
+
         public static let facilityInfoWillCreateNotification    = Notification.Name("facilityInfoWillCreate")    // Object is nil
         public static let facilityInfoDidCreateNotification     = Notification.Name("facilityInfoDidCreate")     // Object is the ObservingFacilityRep
         public static let facilityInfoWillLoadNotification      = Notification.Name("facilityInfoWillLoad")      // Object nil

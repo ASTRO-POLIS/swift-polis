@@ -163,12 +163,23 @@ open class ObservingFacilityRep: PersistentItem {
 
 
     //MARK: Private APIs
+    // Utility properties
+    private let nc = NotificationCenter.default
+
     private static func createObservingFacilityWith(
         identity: PolisIdentity,
         gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
         placeInTheSolarSystem : PolisPlaceInTheSolarSystem                = .earth
     ) throws -> ObservingFacilityRep {
+        let nc      = NotificationCenter.default
+        let manager = PolisProviderManager.currentProviderManager
+
         if (gravitationalBodyRelationship == .surfaceFixed) && (placeInTheSolarSystem == .earth) {
+            nc.post(name: PolisProviderManager.StatusChangeNotification.facilityReferenceWillCreateNotification, object: nil)
+
+            let facilityReference = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: identity,
+                                                                                               gravitationalBodyRelationship:gravitationalBodyRelationship,
+                                                                                               placeInTheSolarSystem: placeInTheSolarSystem)
             let result = EarthFixBasedObservingFacilityRep(id: identity.id, lastUpdateDate: identity.lastUpdateDate, name: identity.name)
 
             result.localName        = identity.localName
@@ -177,6 +188,10 @@ open class ObservingFacilityRep: PersistentItem {
             result.startDate        = identity.startDate
 
             result.manager.facilityDetails.append(result.facilityDetails)
+
+            manager?.facilityDirectory.observingFacilityReferences.append(facilityReference)
+            try manager?.facilityDirectory.flashUsing(manager: manager!)
+            nc.post(name: PolisProviderManager.StatusChangeNotification.facilityReferenceDidCreateNotification, object: nil)
 
             return result
         }
