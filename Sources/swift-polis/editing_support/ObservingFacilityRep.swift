@@ -13,6 +13,7 @@ open class ObservingFacilityRep: PersistentItem {
     public enum ObservingFacilityRepError: Error {
         case foundFacilityWithTypeMismatch
         case unavailableOrUnreadableLocalData
+        case cannotWritePolisFile
     }
     
     /// Finds an existing or creates a new `ObservingFacility`
@@ -89,13 +90,25 @@ open class ObservingFacilityRep: PersistentItem {
             if savedIdentity != identity { manager.facilityDirectory.addOrUpdateObservingFacility(reference: directoryEntry) }
         }
         else {
-            let newEntry = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: identity)
+            let newEntry       = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: identity)
+            let facilityFolder = manager.polisFileResourceFinder.observingFacilityFolder(observingFacilityID: self.identity.id)
 
             manager.facilityDirectory.addOrUpdateObservingFacility(reference:newEntry)
-        }
+            manager?.facilities.append(self)
 
-        //TODO: Implement me!
-   }
+            if !(fm.fileExists(atPath: facilityFolder, isDirectory: &isDir) && (isDir.boolValue)) {
+                try fm.createDirectory(atPath: facilityFolder, withIntermediateDirectories: true)
+            }
+
+            if !persistenceReference.hasLocalCopy{
+                jsonData = try jsonEncoder.encode(facilityInfo())
+
+                if !fm.createFile(atPath: persistenceReference.localPath, contents: jsonData) {
+                    throw ObservingFacilityRepError.cannotWritePolisFile
+                }
+            }
+        }
+    }
 
     public func revertToSaved() throws {
         //TODO: Implement me!
@@ -105,10 +118,16 @@ open class ObservingFacilityRep: PersistentItem {
         //TODO: Implement me!
     }
 
+    public func loadWithID(_ id: String) throws -> PolisPersisting { self }
+
     public func didChange() -> Bool {
         //TODO: Implement me!
         false
     }
+
+    public func loadAllData() throws { }
+
+
 
 
     //MARK: Non-private APIs
@@ -164,41 +183,53 @@ open class ObservingFacilityRep: PersistentItem {
 
     //MARK: Private APIs
     // Utility properties
-    private let nc = NotificationCenter.default
 
     private static func createObservingFacilityWith(
         identity: PolisIdentity,
         gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
         placeInTheSolarSystem : PolisPlaceInTheSolarSystem                = .earth
     ) throws -> ObservingFacilityRep {
-        let nc      = NotificationCenter.default
         let manager = PolisProviderManager.currentProviderManager
 
         if (gravitationalBodyRelationship == .surfaceFixed) && (placeInTheSolarSystem == .earth) {
-            nc.post(name: PolisProviderManager.StatusChangeNotification.facilityReferenceWillCreateNotification, object: nil)
 
-            let facilityReference = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: identity,
-                                                                                               gravitationalBodyRelationship:gravitationalBodyRelationship,
-                                                                                               placeInTheSolarSystem: placeInTheSolarSystem)
             let result = EarthFixBasedObservingFacilityRep(id: identity.id, lastUpdateDate: identity.lastUpdateDate, name: identity.name)
+            let ref    = try PolisReference(id: identity.id)
 
-            result.localName        = identity.localName
-            result.abbreviation     = identity.abbreviation
-            result.shortDescription = identity.shortDescription
-            result.startDate        = identity.startDate
+            result.nc.post(name: PolisProviderManager.StatusChangeNotification.facilityReferenceWillCreateNotification, object: nil)
 
-            result.manager.facilityDetails.append(result.facilityDetails)
+            result.persistenceReference = ref
+            result.localName            = identity.localName
+            result.abbreviation         = identity.abbreviation
+            result.shortDescription     = identity.shortDescription
+            result.startDate            = identity.startDate
 
-            manager?.facilityDirectory.observingFacilityReferences.append(facilityReference)
-            manager?.facilities.append(result)
-            
+            try result.saveChanges()
             try manager?.facilityDirectory.flashUsing(manager: manager!)
-            nc.post(name: PolisProviderManager.StatusChangeNotification.facilityReferenceDidCreateNotification, object: nil)
+            result.nc.post(name: PolisProviderManager.StatusChangeNotification.facilityReferenceDidCreateNotification, object: nil)
 
             return result
         }
       //TODO: Implement me!
       throw ObservingFacilityRepError.foundFacilityWithTypeMismatch
     }
-}
 
+    private func facilityInfo() -> PolisObservingFacility {
+        PolisObservingFacility(item: item,
+                               observingFacilityCode: observingFacilityCode,
+                               solarSystemBodyName: solarSystemBodyName,
+                               orbitingAroundPlaceInTheSolarSystemNamed: orbitingAroundPlaceInTheSolarSystemNamed,
+                               facilityLocationID: facilityLocationID,
+                               astronomicalCode: astronomicalCode,
+                               parentObservingFacilityID: parentObservingFacilityID,
+                               observatoryIDs: observatoryIDs,
+                               deviceIDs: deviceIDs,
+                               website: website,
+                               scientificObjectives: scientificObjectives,
+                               history: history,
+                               fixedSurfaceEarthBaseDetailsID: fixedSurfaceEarthBaseDetailsID,
+                               mobileSurfaceEarthBaseDetailsID: mobileSurfaceEarthBaseDetailsID,
+                               airborneEarthBaseDetailsID: airborneEarthBaseDetailsID,
+                               artifactIDs: artifactIDs)
+    }
+}

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SoftwareEtudesUtilities
 
 public protocol PolisRemoteSynchronisationProviding {
     func pullChanges() throws
@@ -17,7 +18,7 @@ public protocol PolisPersisting {
 
     var manager: PolisProviderManager! { get set }
     var synchronisationProvider: PolisRemoteSynchronisationProviding? { get set }
-    
+
     /// Saves all changes to the local file system
     ///
     /// The method should compare the POLIS data stored in the file system (or cached) and perform file system changes only in case both datasets differ from
@@ -74,8 +75,19 @@ open class PersistentItem: PolisPersisting {
     public var mediaSourceID: UUID?
 
     //MARK: Non-public API
-    var  persistanceReferenceL: PersistentItem!
 
+    // Used by subclasses
+    let nc              = NotificationCenter.default
+    let fm              = FileManager.default
+    var isDir: ObjCBool = false
+    var jsonEncoder     = PrettyJSONEncoder()
+    var jsonDecoder     = PrettyJSONDecoder()
+    var jsonData: Data!
+
+    // Persistence support
+    var persistenceReference: PolisReference!
+
+    /// Designated initialiser
     init(id: UUID, lastUpdateDate: Date = Date(), name: String) {
         self.id             = id
         self.lastUpdateDate = lastUpdateDate
@@ -119,12 +131,12 @@ open class PersistentItem: PolisPersisting {
                       mediaSourceID: mediaSourceID)
         }
         set {
-            identity         = newValue.identity
-            owner            = newValue.owner
-            parentID         = newValue.parentID
-            automationLabel  = newValue.automationLabel
-            lifecycleStatus  = newValue.lifecycleStatus
-            mediaSourceID    = newValue.mediaSourceID
+            identity        = newValue.identity
+            owner           = newValue.owner
+            parentID        = newValue.parentID
+            automationLabel = newValue.automationLabel
+            lifecycleStatus = newValue.lifecycleStatus
+            mediaSourceID   = newValue.mediaSourceID
         }
     }
 }

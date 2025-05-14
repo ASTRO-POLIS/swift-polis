@@ -155,6 +155,9 @@ open class PolisProviderManager {
             throw PolisProviderManagerError.rootPolisPathUnaccessible
         }
 
+        PolisReference.polisFileResourceFinder   = self.polisFileResourceFinder
+        PolisReference.polisRemoteResourceFinder = self.polisRemoteResourceFinder
+
         //TODO: This should be responsibility of the static factory methods!
         //        if !ensurePolisFoldersExistence() { throw PolisProviderManagerError.cannotAccessOrCreateStandardPolisFolder }
     }

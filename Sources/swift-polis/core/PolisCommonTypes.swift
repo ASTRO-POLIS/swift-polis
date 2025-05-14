@@ -7,6 +7,13 @@
 
 import Foundation
 
+/// Defines the type to be used where to store local data the stored data
+public enum PolisRepresentingStoredObjectType {
+    case observingFacility // Cannot be shared
+    case observatory       // Can be shared
+    case device            // Can be shared
+}
+
 public enum PolisObservingFacilityLocationType: String, Codable, CaseIterable, Equatable {
     case surfaceFixed          = "surface_fixed"
     case surfaceMobile         = "surface_mobile"

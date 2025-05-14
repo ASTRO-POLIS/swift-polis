@@ -50,19 +50,22 @@ open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
 
     //MARK: - PolisPersisting implementation -
     public override func saveChanges() throws {
-        try super.saveChanges()
+        if didChange() {
 
-        //TODO: Implement me!
+            try super.saveChanges()
 
-        // 1. Check if I exist as POLIS file, and if not, create myself
+            //TODO: Implement me!
 
-        // 2. Check if I did changed
+            // 1. Check if I exist as POLIS file, and if not, create myself
 
-        // 3. If I changed,
-        // 3.1. Update `super` properties and called the super's `saveChanges()`
-        // 3.1. Update PolisObservingFacilityLocation file
-        // 3.2. Update the POLIS cache in Provider Manager
-        // 3.3. Update the provider directory cache in Provider Manager
+            // 2. Check if I did changed
+
+            // 3. If I changed,
+            // 3.1. Update `super` properties and called the super's `saveChanges()`
+            // 3.1. Update PolisObservingFacilityLocation file
+            // 3.2. Update the POLIS cache in Provider Manager
+            // 3.3. Update the provider directory cache in Provider Manager
+        }
     }
 
     public override func revertToSaved() throws {
@@ -73,11 +76,19 @@ open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
         //TODO: Implement me!
     }
 
-    public override func didChange() -> Bool {
+    public override func loadWithID(_ id: String) throws -> PolisPersisting {
         //TODO: Implement me!
-        false
+        self
     }
 
+    public override func didChange() -> Bool {
+        //TODO: Implement me!
+        true
+    }
+
+    public override func loadAllData() throws {
+        //TODO: Implement me!
+    }
 
     //MARK: Non-private APIs
     static func registerFacilityWithExisting(identity: PolisIdentity) throws -> ObservingFacilityRep {
@@ -296,27 +307,12 @@ open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
 //        super.init(id: id, name: name)
 //    }
 
-//    func setIdentity( _ identity: PolisIdentity, isNewValue: Bool = false) {
-//        id                 = identity.id
-//        externalReferences = identity.externalReferences
-//        lastUpdateDate     = identity.lastUpdateDate
-//        name               = identity.name
-//        localName          = identity.localName
-//        abbreviation       = identity.abbreviation
-//        shortDescription   = identity.shortDescription
-//        startDate          = identity.startDate
-//        endDate            = identity.endDate
-////        identityDidChange  = isNewValue
-//    }
+    //MARK: Private APIs
 
-    //TODO: Implement me!
-//    convenience init(identity: PolisIdentity) {
-//    }
-
-    //TODO: Implement me!
-//    convenience init(item: PolisItem) {
-//    }
-
+//    private func facilityInfo
+    private func saveFacilityInfo() throws {
+        //TODO: Implement me!
+    }
 
 
 }

@@ -30,17 +30,22 @@ public struct PolisConstants {
     /// Software packages trying for the first time to connect to a POLIS service provider should use this
     /// URL. In the future there might be (hopefully) many more service providers, but an initial search
     /// is mostly guaranteed to be successful if `bigBangPolisDomain` is used.
-    public static let bigBangPolisDomain       = "https://polis.observer"
+    public static let bigBangPolisDomain           = "https://polis.observer"
 
     /// This constant defines the URL to the initial POLIS Test Service Provider.
     ///
     /// `testBigBangPolisDomain` is an experimental domain that is used to test new POLIS
     /// features and is guaranteed to exit as well.
-    public static let testBigBangPolisDomain   = "https://test.polis.observer"
+    public static let testBigBangPolisDomain       = "https://test.polis.observer"
 
     /// This file is not part of the POLIS standard, but it is needed if `swift-polis` is used to manage
     /// the POLIS Provider. It is supposed to be in the folder that contains the `../polis/` root folder.
-    public static let polisLocalConfigFileName = "polis_config.json"
+    public static let polisLocalConfigFileName     = "polis_config.json"
+
+    /// The key for finding auxiliaryServiceHost
+    ///
+    /// See ``PolisReference``
+    public static let auxiliaryServiceHostsPushKey = "ServiceHostsPushKey"
 
     /// A list of supported implementations for this concrete framework.
     ///
