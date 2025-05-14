@@ -9,7 +9,9 @@ import Foundation
 
 open class ObservingFacilityRep: PersistentItem {
 
-    //MARK: Error definitions
+    //MARK: - Public APIs
+
+    /// Error definitions
     public enum ObservingFacilityRepError: Error {
         case foundFacilityWithTypeMismatch
         case unavailableOrUnreadableLocalData
@@ -76,7 +78,7 @@ open class ObservingFacilityRep: PersistentItem {
     public var airborneEarthBaseDetailsID: UUID?
 
     // Arifacts of interest could be also on other solar system bodies (e.g. Apollo landing site)
-    public var artifactIDs: Set<UUID>?
+    public private(set) var artifacts = [ArtifactRep]()
 
     //MARK: - PolisPersisting implementation -
     /// This  method saves possible changes only in the facility directory.
@@ -100,14 +102,16 @@ open class ObservingFacilityRep: PersistentItem {
                 try fm.createDirectory(atPath: facilityFolder, withIntermediateDirectories: true)
             }
 
-            if !persistenceReference.hasLocalCopy{
+            if !persistenceReference.hasLocalCopy {
                 jsonData = try jsonEncoder.encode(facilityInfo())
 
                 if !fm.createFile(atPath: persistenceReference.localPath, contents: jsonData) {
                     throw ObservingFacilityRepError.cannotWritePolisFile
                 }
+                persistenceReference.hasLocalCopy = true
             }
         }
+        //TODO: Implement me!
     }
 
     public func revertToSaved() throws {
@@ -127,10 +131,18 @@ open class ObservingFacilityRep: PersistentItem {
 
     public func loadAllData() throws { }
 
+    //MARK: Working with artifacts
+    public func addArtifact(artifactType: PolisArtifact.ArtifactType, visitingOpportunities: String? = nil, media: MediaSourceRep) throws {
+        //TODO: Implement me!
+    }
+
+    public func removeArtifact(withID artifactID: UUID) throws {
+        //TODO: Implement me!
+    }
 
 
-
-    //MARK: Non-private APIs
+    //MARK: - Non-private APIs -
+    var artifactIDs: Set<UUID>?
 
     var facilityDetails: PolisObservingFacility {
         get {
