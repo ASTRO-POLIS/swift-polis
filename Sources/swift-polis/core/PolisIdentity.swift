@@ -39,8 +39,8 @@ public struct PolisIdentity: Codable, Identifiable, Equatable {
     /// Latest update time. Used primarily for syncing.
     public var lastUpdateDate: Date
 
-    /// Human readable name of the item (object). It is recommended to assign a unique English name to avoid potential confusions.
-    public var name: String
+    /// Human readable name of the item (object). It is recommended to assign a unique English name to avoid potential confusions if the name is meaningful.
+    public var name: String?
 
     /// Human readable name of the item in a local script.
     public var localName: String?
@@ -68,7 +68,7 @@ public struct PolisIdentity: Codable, Identifiable, Equatable {
     public init(id: UUID                      = UUID(),
                 externalReferences: [String]? = nil,
                 lastUpdateDate: Date          = Date(),
-                name: String,
+                name: String?                 = nil,
                 localName: String?            = nil,
                 abbreviation: String?         = nil,
                 shortDescription: String?     = nil,

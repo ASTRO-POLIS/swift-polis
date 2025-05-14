@@ -14,7 +14,7 @@ public protocol PolisRemoteSynchronisationProviding {
 }
 
 /// `PolisPersisting` is an API that regulate persistency and syncing for all in-memory objects having local file system representation.
-public protocol PolisPersisting {
+public protocol PolisPersisting: Identifiable {
 
     var manager: PolisProviderManager! { get set }
     var synchronisationProvider: PolisRemoteSynchronisationProviding? { get set }
@@ -34,7 +34,7 @@ public protocol PolisPersisting {
     func delete() throws
 
     /// Loading data from all related POLIS files
-    func loadWithID(_ id: String) throws -> PolisPersisting
+    func loadWithID(_ id: String) throws -> any PolisPersisting
 
     /// Returns the result of the comparison between the stored POLIS item and the corresponding in-memory representation
     func didChange() -> Bool
@@ -44,8 +44,6 @@ public protocol PolisPersisting {
     /// **Note:** This method is not async on purpose. If all data is stored locally, the data will be loaded immediately, but in case remote syncing is required,
     /// there will be some delay. Therefore types using `Rep` types should observe status change notifications.
     func loadAllData() throws
-
-
 }
 
 /// `PersistentItem` is an abstract tat should be always subclassed by all in-memory objects
@@ -112,7 +110,7 @@ open class PersistentItem: PolisPersisting {
             id                 = newValue.id
             externalReferences = newValue.externalReferences
             lastUpdateDate     = newValue.lastUpdateDate
-            name               = newValue.name
+            name               = newValue.name ?? "<unnamed>"
             localName          = newValue.localName
             abbreviation       = newValue.abbreviation
             shortDescription   = newValue.shortDescription
@@ -146,14 +144,53 @@ open class PersistentAuxiliaryItem: PolisPersisting {
     public var manager: PolisProviderManager!
     public var synchronisationProvider: PolisRemoteSynchronisationProviding?
 
-    // Identification and containing folder
+    // Polis Identity defined
     public var id: UUID
-    public var localFolder: String
+    public var externalReferences: [String]?
+    public var lastUpdateDate: Date
+    public var name: String
+    public var localName: String?
+    public var abbreviation: String?
+    public var shortDescription: String?
+    public var startDate: Date?
+    public var endDate: Date?
+    public var polisRegistrationDate: Date?
 
-    init(id: UUID, localFolder: String) {
-        self.id          = id
-        self.localFolder = localFolder
-        self.manager     = PolisProviderManager.currentProviderManager!
+    // Persistence support
+    var persistenceReference: PolisReference!
+
+    /// Designated initialiser
+    init(id: UUID, lastUpdateDate: Date = Date(), name: String) {
+        self.id             = id
+        self.lastUpdateDate = lastUpdateDate
+        self.name           = name
+        manager             = PolisProviderManager.currentProviderManager!
+    }
+
+    var identity: PolisIdentity {
+        get {
+            PolisIdentity(id: id,
+                          externalReferences: externalReferences,
+                          lastUpdateDate: lastUpdateDate,
+                          name: name,
+                          localName: localName,
+                          abbreviation: abbreviation,
+                          shortDescription: shortDescription,
+                          startDate: startDate,
+                          endDate: endDate,
+                          polisRegistrationDate: polisRegistrationDate)
+        }
+        set {
+            id                 = newValue.id
+            externalReferences = newValue.externalReferences
+            lastUpdateDate     = newValue.lastUpdateDate
+            name               = newValue.name ?? "<unnamed>"
+            localName          = newValue.localName
+            abbreviation       = newValue.abbreviation
+            shortDescription   = newValue.shortDescription
+            startDate          = newValue.startDate
+            endDate            = newValue.endDate
+        }
     }
 }
 
@@ -162,7 +199,7 @@ extension PolisPersisting {
     public func saveChanges() throws { }
     public func revertToSaved() throws { }
     public func delete() throws { }
-    public func loadWithID(_ id: String) throws -> PolisPersisting { self }
+    public func loadWithID(_ id: String) throws -> any PolisPersisting { self }
 
     public func didChange() -> Bool { false }
 

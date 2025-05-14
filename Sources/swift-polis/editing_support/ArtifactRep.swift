@@ -8,8 +8,7 @@
 import Foundation
 
 
-open class ArtifactRep: PersistentItem {
-
+open class ArtifactRep: PersistentAuxiliaryItem {
 
     public var artifactType: PolisArtifact.ArtifactType
     public var visitingOpportunities: String?
@@ -17,12 +16,16 @@ open class ArtifactRep: PersistentItem {
 
     var facility: ObservingFacilityRep
 
-    init(artifactType: PolisArtifact.ArtifactType = .unknown, visitingOpportunities: String? = nil, mediaID: UUID? = nil, facility: ObservingFacilityRep) {
-        self.artifactType = artifactType
+    init(identity: PolisIdentity,
+         artifactType: PolisArtifact.ArtifactType = .unknown,
+         visitingOpportunities: String?           = nil,
+         mediaID: UUID?                           = nil,
+         facility: ObservingFacilityRep) {
+        self.artifactType          = artifactType
         self.visitingOpportunities = visitingOpportunities
-        self.mediaID = mediaID
-        self.facility = facility
+        self.mediaID               = mediaID
+        self.facility              = facility
 
-        super.init(id: UUID(), lastUpdateDate: Date.now, name: "<unnamed>")
+        super.init(id: identity.id, lastUpdateDate: identity.lastUpdateDate, name: identity.name ?? "<unnamed>")
     }
 }

@@ -76,7 +76,7 @@ open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
         //TODO: Implement me!
     }
 
-    public override func loadWithID(_ id: String) throws -> PolisPersisting {
+    public override func loadWithID(_ id: String) throws -> any PolisPersisting {
         //TODO: Implement me!
         self
     }

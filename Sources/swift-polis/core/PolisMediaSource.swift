@@ -134,12 +134,14 @@ public struct PolisMediaSource: Identifiable, Equatable {
         }
     }
 
-    public let id: UUID
+    public var identity: PolisIdentity
 
     /// The metadata of the images associated with this `PolisImageSource`.
     public var mediaItems = [MediaItem]()
 
-    public init(id: UUID = UUID()) { self.id = id }
+    public var id: UUID { identity.id }
+
+    public init(identity: PolisIdentity) { self.identity = identity }
 
     /// Add an image to this image source.
     /// - Parameter item: The `ImageItem` associated with the image to be added.
@@ -188,7 +190,7 @@ extension PolisMediaSource.MediaItem: Codable {
 
 extension PolisMediaSource: Codable {
     public enum CodingKeys: String, CodingKey {
-        case id
+        case identity
         case mediaItems = "media_items"
     }
 }

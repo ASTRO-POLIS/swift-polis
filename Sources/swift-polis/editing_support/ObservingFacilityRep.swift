@@ -122,7 +122,7 @@ open class ObservingFacilityRep: PersistentItem {
         //TODO: Implement me!
     }
 
-    public func loadWithID(_ id: String) throws -> PolisPersisting { self }
+    public func loadWithID(_ id: String) throws -> any PolisPersisting { self }
 
     public func didChange() -> Bool {
         //TODO: Implement me!
@@ -205,7 +205,7 @@ open class ObservingFacilityRep: PersistentItem {
 
         if (gravitationalBodyRelationship == .surfaceFixed) && (placeInTheSolarSystem == .earth) {
 
-            let result = EarthFixBasedObservingFacilityRep(id: identity.id, lastUpdateDate: identity.lastUpdateDate, name: identity.name)
+            let result = EarthFixBasedObservingFacilityRep(id: identity.id, lastUpdateDate: identity.lastUpdateDate, name: identity.name ?? "<unnamed>")
             let ref    = try PolisReference(id: identity.id)
 
             result.nc.post(name: PolisProviderManager.StatusChangeNotification.facilityReferenceWillCreateNotification, object: nil)
