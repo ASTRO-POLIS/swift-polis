@@ -22,6 +22,9 @@ final class PolisProviderManagerTests: XCTestCase {
     var facilityInfoWillCreateExpectation: XCTNSNotificationExpectation!
     var facilityInfoDidCreateExpectation: XCTNSNotificationExpectation!
 
+    var artifactWillCreateExpectation: XCTNSNotificationExpectation!
+    var artifactDidCreateExpectation: XCTNSNotificationExpectation!
+
     override class func setUp() {
         print("In class setUp.")
     }
@@ -45,6 +48,8 @@ final class PolisProviderManagerTests: XCTestCase {
         facilityInfoWillCreateExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.facilityInfoWillCreateNotification)
         facilityInfoDidCreateExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.facilityInfoDidCreateNotification)
 
+        artifactWillCreateExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.artifactWillCreateNotification)
+        artifactDidCreateExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.artifactDidCreateNotification)
     }
 
     override func tearDownWithError() throws {
@@ -67,6 +72,9 @@ final class PolisProviderManagerTests: XCTestCase {
         let facilityRep               = try ObservingFacilityRep.findOrRegisterObservingFacilityWith(identity: TestingSupport.examplePolisIdentityBAO())
         let finalNumberOfFacilities   = sut?.facilityDirectory.observingFacilityReferences.count
         let facilityRepCount          = sut?.allFacilities().count
+
+        try facilityRep.addArtifact(artifactType: PolisArtifact.ArtifactType.monument, visitingOpportunities: "Every day opened")
+        
         // Then
         XCTAssertNotNil(sut)
         XCTAssertNotNil(facilityRep)
@@ -79,7 +87,8 @@ final class PolisProviderManagerTests: XCTestCase {
         //TODO: Move this when testing Earth-based facility
         await fulfillment(of: [providerWillCreateNotificationExpectation, providerDidCreateNotificationExpectation,
                                facilityReferenceWillCreateExpectation, facilityReferenceDidCreateExpectation,
-                               /*facilityInfoWillCreateExpectation, facilityInfoDidCreateExpectation,*/],
+                               /*facilityInfoWillCreateExpectation, facilityInfoDidCreateExpectation,*/
+                               artifactWillCreateExpectation, artifactDidCreateExpectation,],
                           timeout: 5,
                           enforceOrder: true)
     }

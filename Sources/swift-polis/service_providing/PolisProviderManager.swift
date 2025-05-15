@@ -82,10 +82,11 @@ open class PolisProviderManager {
         public static let providerWillLoadLocalDataNotification = Notification.Name("providerWillLoadLocalData") // Object is the Manager
         public static let providerDidLoadLocalDataNotification  = Notification.Name("providerDidLoadLocalData")  // Object is the Manager
 
-        // Facility related
+        // Facility reference related
         public static let facilityReferenceWillCreateNotification = Notification.Name("facilityReferenceWillCreate") // Object is nil
         public static let facilityReferenceDidCreateNotification  = Notification.Name("facilityReferenceDidCreate")  // Object is the ObservingFacilityReference
 
+        // Facility detail (info) reference related
         public static let facilityInfoWillCreateNotification    = Notification.Name("facilityInfoWillCreate")    // Object is nil
         public static let facilityInfoDidCreateNotification     = Notification.Name("facilityInfoDidCreate")     // Object is the ObservingFacilityRep
         public static let facilityInfoWillLoadNotification      = Notification.Name("facilityInfoWillLoad")      // Object nil
@@ -97,6 +98,12 @@ open class PolisProviderManager {
         public static let facilityDetailsDidCreateNotification  = Notification.Name("facilityDetailsDidCreate")  // Object is the ObservingFacilityRep
 
         public static let facilityDidChangeNotification         = Notification.Name("facilityInfoDidChange")     // Object is the ObservingFacilityRep
+
+        // Artifacts
+        public static let artifactWillCreateNotification       = Notification.Name("artifactWillCreate")         // Object is nil
+        public static let artifactDidCreateNotification        = Notification.Name("artifactDidCreate")          // Object is the ArtifactRep
+        public static let artifactWillChangeNotification       = Notification.Name("artifactWillChange")         // Object is the ArtifactRep
+        public static let artifactDidChangeNotification        = Notification.Name("artifactDidChange")          // Object is the ArtifactRep
 
     }
 

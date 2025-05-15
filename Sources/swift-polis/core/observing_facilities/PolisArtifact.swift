@@ -43,16 +43,20 @@ public struct PolisArtifact: Codable, Identifiable {
     /// Mostly images (photos)
     public var mediaID: UUID?
 
+    public var website: URL?
+
     public var id: UUID { identity.id }
 
     public init(identity: PolisIdentity,
                 artifactType: ArtifactType     = .unknown,
                 visitingOpportunities: String? = nil,
-                mediaID: UUID?                 = nil) {
+                mediaID: UUID?                 = nil,
+                website: URL?                  = nil) {
         self.identity              = identity
         self.artifactType          = artifactType
         self.visitingOpportunities = visitingOpportunities
         self.mediaID               = mediaID
+        self.website               = website
     }
 }
 
@@ -62,5 +66,6 @@ public extension PolisArtifact {
         case artifactType          = "artifact_type"
         case visitingOpportunities = "visiting_opportunities"
         case mediaID               = "media_id"
+        case website
     }
 }

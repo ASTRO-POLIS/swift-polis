@@ -159,6 +159,13 @@ open class PersistentAuxiliaryItem: PolisPersisting {
     // Persistence support
     var persistenceReference: PolisReference!
 
+    let nc              = NotificationCenter.default
+    let fm              = FileManager.default
+    var isDir: ObjCBool = false
+    var jsonEncoder     = PrettyJSONEncoder()
+    var jsonDecoder     = PrettyJSONDecoder()
+    var jsonData: Data!
+
     /// Designated initialiser
     init(id: UUID, lastUpdateDate: Date = Date(), name: String) {
         self.id             = id

@@ -132,8 +132,23 @@ open class ObservingFacilityRep: PersistentItem {
     public func loadAllData() throws { }
 
     //MARK: Working with artifacts
-    public func addArtifact(artifactType: PolisArtifact.ArtifactType, visitingOpportunities: String? = nil, media: MediaSourceRep) throws {
-        //TODO: Implement me!
+    public func addArtifact(artifactType: PolisArtifact.ArtifactType, visitingOpportunities: String? = nil, media: MediaSourceRep? = nil) throws {
+        let artifactIdentity = PolisIdentity(id: UUID())
+        let reference        = try PolisReference(facilityID: self.id, polisObjectID: artifactIdentity.id, representingStoredObjectType: .artifact)
+        let artifact         = ArtifactRep(identity: artifactIdentity,
+                                           artifactType: artifactType,
+                                           visitingOpportunities: visitingOpportunities,
+                                           media: media,
+                                           facility: self)
+
+        artifact.persistenceReference = reference
+        artifacts.append(artifact)
+        try artifact.saveChanges()
+
+        if artifactIDs == nil { artifactIDs = [] }
+        artifactIDs!.insert(artifactIdentity.id)
+
+        nc.post(name: PolisProviderManager.StatusChangeNotification.facilityDidChangeNotification, object: nil)
     }
 
     public func removeArtifact(withID artifactID: UUID) throws {
@@ -206,7 +221,7 @@ open class ObservingFacilityRep: PersistentItem {
         if (gravitationalBodyRelationship == .surfaceFixed) && (placeInTheSolarSystem == .earth) {
 
             let result = EarthFixBasedObservingFacilityRep(id: identity.id, lastUpdateDate: identity.lastUpdateDate, name: identity.name ?? "<unnamed>")
-            let ref    = try PolisReference(id: identity.id)
+            let ref    = try PolisReference(facilityID: identity.id, polisObjectID: identity.id)
 
             result.nc.post(name: PolisProviderManager.StatusChangeNotification.facilityReferenceWillCreateNotification, object: nil)
 

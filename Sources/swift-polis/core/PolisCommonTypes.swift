@@ -12,6 +12,7 @@ public enum PolisRepresentingStoredObjectType {
     case observingFacility // Cannot be shared
     case observatory       // Can be shared
     case device            // Can be shared
+    case artifact          // Canmot be shared
 }
 
 public enum PolisObservingFacilityLocationType: String, Codable, CaseIterable, Equatable {

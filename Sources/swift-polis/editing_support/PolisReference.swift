@@ -21,6 +21,7 @@ struct PolisReference {
     enum PolisReferenceError: Error {
         case classNotInitialised
         case referenceTypeNotImplemented
+        case missingFacilityID
     }
 
     var localPath: String!
@@ -33,20 +34,33 @@ struct PolisReference {
     var representingStoredObjectType: PolisRepresentingStoredObjectType
     var fileType: PolisImplementation.DataFormat
 
-    init(id: UUID,
+    init(facilityID: UUID?,
+         polisObjectID: UUID,
          isReferenced: Bool = false,
          hasLocalCopy: Bool = false,
          representingStoredObjectType: PolisRepresentingStoredObjectType = .observingFacility,
          fileType: PolisImplementation.DataFormat = .json) throws {
-
         if let polisFileResourceFinder = PolisReference.polisFileResourceFinder, let polisRemoteResourceFinder = PolisReference.polisRemoteResourceFinder {
-            let idString = id.uuidString
-            let fileName = "\(idString)/\(idString).\(fileType)"
+            let facilityIDString = facilityID?.uuidString
+            let polisIdString    = polisObjectID.uuidString
 
             switch representingStoredObjectType {
                 case .observingFacility:
-                    localPath      = "\(polisFileResourceFinder.observingFacilitiesFolder())\(fileName)"
-                    remoteReadPath = "\(polisRemoteResourceFinder.polisProviderDirectoryURL())\(fileName)"
+                    if let facilityIDString = facilityIDString {
+                        let fileName   = "\(facilityIDString)/\(polisIdString).\(fileType)"
+
+                        localPath      = "\(polisFileResourceFinder.observingFacilitiesFolder())\(fileName)"
+                        remoteReadPath = "\(polisRemoteResourceFinder.polisProviderDirectoryURL())\(fileName)"
+                    }
+                    else { throw PolisReferenceError.missingFacilityID }
+                case .artifact:
+                    if let facilityID = facilityID {
+                        let fileName   = "\(polisIdString).\(fileType)"
+
+                        localPath      = "\(polisFileResourceFinder.observingFacilityFolder(observingFacilityID: facilityID))\(fileName)"
+                        remoteReadPath = "\(polisRemoteResourceFinder.observingFacilityURL(observingFacilityID: facilityID))\(fileName)"
+                    }
+                    else { throw PolisReferenceError.missingFacilityID }
                 default: throw PolisReferenceError.referenceTypeNotImplemented
             }
 
