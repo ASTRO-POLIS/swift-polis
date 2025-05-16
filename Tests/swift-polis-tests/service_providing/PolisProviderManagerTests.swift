@@ -13,6 +13,8 @@ final class PolisProviderManagerTests: XCTestCase {
 
 
     //MARK: - Setup & Teardown -
+    var config: PolisProviderConfiguration!
+
     var providerWillCreateNotificationExpectation: XCTNSNotificationExpectation!
     var providerDidCreateNotificationExpectation: XCTNSNotificationExpectation!
 
@@ -37,8 +39,6 @@ final class PolisProviderManagerTests: XCTestCase {
         try super.setUpWithError()
         print("In setUp.")
 
-        try TestingSupport.cleanUpTestingFolder()
-        
         providerWillCreateNotificationExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerWillCreateNotification)
         providerDidCreateNotificationExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerDidCreateNotification)
 
@@ -54,17 +54,33 @@ final class PolisProviderManagerTests: XCTestCase {
 
     override func tearDownWithError() throws {
         print("In tearDown.")
-        PolisProviderManager.currentProviderManager = nil
+        PolisProviderManager.prepareForTesting()
 
         try super.tearDownWithError()
+    }
+
+    func prepareData(shouldStartWithCleanFolder: Bool = true) throws {
+        if shouldStartWithCleanFolder { try TestingSupport.cleanUpTestingFolder() }
+
+        PolisProviderManager.localPolisRootPath = TestingSupport.testingFolder
+        config = PolisProviderConfiguration(name: "BigBang", adminName: "admin", adminEmail:  "admin@admin.nirvana")
+    }
+
+    func createTestDataForReading() throws {
+        try prepareData()
+        PolisProviderManager.prepareForTesting()
+
+        let manager  = try PolisProviderManager.createLocalProviderWith(configuration: config, isExperimentalVersion: true)
+        let facility = try ObservingFacilityRep.findOrRegisterObservingFacilityWith(identity: TestingSupport.examplePolisIdentityBAO())
+        try facility.addArtifact(artifactType: PolisArtifact.ArtifactType.monument, visitingOpportunities: "Every day opened")
+
+        PolisProviderManager.currentProviderManager = nil
     }
 
     //MARK: - Tests -
     func test_PolisProviderManager_creatingAndStoringProvider_shouldSucceed() async throws {
         // Given
-        PolisProviderManager.localPolisRootPath = TestingSupport.testingFolder
-
-        let config = PolisProviderConfiguration(name: "BigBang", adminName: "admin", adminEmail:  "admin@admin.nirvana")
+        try prepareData()
 
         // When
         let sut                       = try PolisProviderManager.createLocalProviderWith(configuration: config, isExperimentalVersion: true)
@@ -93,9 +109,22 @@ final class PolisProviderManagerTests: XCTestCase {
                           enforceOrder: true)
     }
 
+    func test_PolisProviderManager_readExistingData_shouldSucceed() throws {
+        // Given
+        try prepareData(shouldStartWithCleanFolder: false)
+        try createTestDataForReading()
+        PolisProviderManager.prepareForTesting()
+        
+        // When
+        let managerSut = try PolisProviderManager.useExistingLocalProvider()
+        
+        // Then
+
+    }
 
     static var allTests = [
         ("test_PolisProviderManager_creatingAndStoringProvider_shouldSucceed", test_PolisProviderManager_creatingAndStoringProvider_shouldSucceed),
+        ("test_PolisProviderManager_readExistingData_shouldSucceed",           test_PolisProviderManager_readExistingData_shouldSucceed),
     ]
 
 

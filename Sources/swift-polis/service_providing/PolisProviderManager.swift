@@ -330,6 +330,13 @@ public extension PolisProviderManager {
         //TODO: N. Post ReadyToTerminate notification.
     }
 
+    #if DEBUG
+    static func prepareForTesting() {
+        isConfigured           = false
+        currentProviderManager = nil
+    }
+    #endif
+    
     //MARK: Private stuff
     private static func canConfigure() throws -> Bool {
         if isConfigured || (PolisProviderManager.currentProviderManager != nil) {
