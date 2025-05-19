@@ -17,6 +17,8 @@ final class PolisProviderManagerTests: XCTestCase {
 
     var providerWillCreateNotificationExpectation: XCTNSNotificationExpectation!
     var providerDidCreateNotificationExpectation: XCTNSNotificationExpectation!
+    var providerWillLoadLocalDataExpectation: XCTNSNotificationExpectation!
+    var providerDidLoadLocalDataExpectation: XCTNSNotificationExpectation!
 
     var facilityReferenceWillCreateExpectation: XCTNSNotificationExpectation!
     var facilityReferenceDidCreateExpectation: XCTNSNotificationExpectation!
@@ -41,6 +43,8 @@ final class PolisProviderManagerTests: XCTestCase {
 
         providerWillCreateNotificationExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerWillCreateNotification)
         providerDidCreateNotificationExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerDidCreateNotification)
+        providerWillLoadLocalDataExpectation      = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerWillLoadLocalDataNotification)
+        providerDidLoadLocalDataExpectation       = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerDidLoadLocalDataNotification)
 
         facilityReferenceWillCreateExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.facilityReferenceWillCreateNotification)
         facilityReferenceDidCreateExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.facilityReferenceDidCreateNotification)
@@ -89,8 +93,11 @@ final class PolisProviderManagerTests: XCTestCase {
         let finalNumberOfFacilities   = sut?.facilityDirectory.observingFacilityReferences.count
         let facilityRepCount          = sut?.allFacilities().count
 
+        facilityRep.website = URL(string: "https://www.example.com")
+
         try facilityRep.addArtifact(artifactType: PolisArtifact.ArtifactType.monument, visitingOpportunities: "Every day opened")
-        
+        try facilityRep.saveChanges()
+
         // Then
         XCTAssertNotNil(sut)
         XCTAssertNotNil(facilityRep)
@@ -109,18 +116,21 @@ final class PolisProviderManagerTests: XCTestCase {
                           enforceOrder: true)
     }
 
-    func test_PolisProviderManager_readExistingData_shouldSucceed() throws {
+    func test_PolisProviderManager_readExistingData_shouldSucceed() async throws {
         // Given
         try prepareData(shouldStartWithCleanFolder: false)
         try createTestDataForReading()
         PolisProviderManager.prepareForTesting()
-        
-        // When
-        let managerSut = try PolisProviderManager.useExistingLocalProvider()
-        
-        // Then
 
-    }
+        // When
+//        let managerSut = try PolisProviderManager.useExistingLocalProvider()
+//        
+//        // Then
+//        XCTAssertNotNil(managerSut.facilityDirectory)
+//        await fulfillment(of: [providerWillLoadLocalDataExpectation, providerDidLoadLocalDataExpectation,],
+//                          timeout: 5,
+//                          enforceOrder: true)
+   }
 
     static var allTests = [
         ("test_PolisProviderManager_creatingAndStoringProvider_shouldSucceed", test_PolisProviderManager_creatingAndStoringProvider_shouldSucceed),

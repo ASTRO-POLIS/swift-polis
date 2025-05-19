@@ -19,6 +19,8 @@ public protocol PolisPersisting: Identifiable {
     var manager: PolisProviderManager! { get set }
     var synchronisationProvider: PolisRemoteSynchronisationProviding? { get set }
 
+    func canEdit() -> Bool
+
     /// Saves all changes to the local file system
     ///
     /// The method should compare the POLIS data stored in the file system (or cached) and perform file system changes only in case both datasets differ from
@@ -36,7 +38,7 @@ public protocol PolisPersisting: Identifiable {
     /// Loading data from all related POLIS files
     func loadWithID(_ id: String) throws -> any PolisPersisting
 
-    /// Returns the result of the comparison between the stored POLIS item and the corresponding in-memory representation
+    /// Returns the result of the comparison between the locally stored POLIS item and the corresponding in-memory representation
     func didChange() -> Bool
 
     /// This method forces the corresponding `Rep` to load either local or remote detail data, linked to the main type (e.g. Facility)
@@ -204,6 +206,7 @@ open class PersistentAuxiliaryItem: PolisPersisting {
 // Some useful defaults
 extension PolisPersisting {
     public func saveChanges() throws { }
+    public func canEdit() -> Bool { true }
     public func revertToSaved() throws { }
     public func delete() throws { }
     public func loadWithID(_ id: String) throws -> any PolisPersisting { self }

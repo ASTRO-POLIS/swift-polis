@@ -177,11 +177,13 @@ public struct PolisDirectory: StorableItem  {
         self.lastUpdate               = lastUpdate
         self.providerDirectoryEntries = providerDirectoryEntries
     }
+
+    //MARK: Non-public APIs
+    static var isSynced = false
+    static var syncDate = Date.distantPast
 }
 
 //MARK: - Observing Facility Directory -
-fileprivate let fm = FileManager.default
-fileprivate var data: Data?
 
 /// A compact list of all known Observing Facilities
 public struct PolisObservingFacilityDirectory: Codable, StorableItem {
@@ -235,6 +237,10 @@ public struct PolisObservingFacilityDirectory: Codable, StorableItem {
 
         try? self.flashUsing(manager: PolisProviderManager.currentProviderManager)
     }
+
+    //MARK: Non-public APIs
+    static var isSynced = false
+    static var syncDate = Date.distantPast
 }
 
 //MARK: - Making types Codable -
@@ -400,3 +406,8 @@ extension PolisObservingFacilityDirectory {
         try manager.polisProviderConfigurationEntry.flashUsing(manager: manager)
     }
 }
+
+//MARK: Private global APIs
+fileprivate let fm = FileManager.default
+fileprivate var data: Data?
+

@@ -101,16 +101,19 @@ open class ObservingFacilityRep: PersistentItem {
             if !(fm.fileExists(atPath: facilityFolder, isDirectory: &isDir) && (isDir.boolValue)) {
                 try fm.createDirectory(atPath: facilityFolder, withIntermediateDirectories: true)
             }
-
-            if !persistenceReference.hasLocalCopy {
-                jsonData = try jsonEncoder.encode(facilityInfo())
-
-                if !fm.createFile(atPath: persistenceReference.localPath, contents: jsonData) {
-                    throw ObservingFacilityRepError.cannotWritePolisFile
-                }
-                persistenceReference.hasLocalCopy = true
-            }
         }
+
+        jsonData = try jsonEncoder.encode(facilityDetails)
+
+        if fm.fileExists(atPath: persistenceReference.localPath) {
+            try? fm.removeItem(atPath: persistenceReference.localPath)
+        }
+        
+        if !fm.createFile(atPath: persistenceReference.localPath, contents: jsonData) {
+            throw ObservingFacilityRepError.cannotWritePolisFile
+        }
+        persistenceReference.hasLocalCopy = true
+
         //TODO: Implement me!
     }
 
@@ -129,7 +132,15 @@ open class ObservingFacilityRep: PersistentItem {
         false
     }
 
-    public func loadAllData() throws { }
+    public func loadAllData() throws {
+        let myDataPath = manager.polisFileResourceFinder.observingFacilityFile(observingFacilityID: identity.id)
+
+        jsonData = fm.contents(atPath: myDataPath)
+        if let jsonData = jsonData {
+            let observingFacility = try JSONDecoder().decode(PolisObservingFacility.self, from: jsonData)
+        }
+        //TODO: Implement me!
+    }
 
     //MARK: Working with artifacts
     public func addArtifact(artifactType: PolisArtifact.ArtifactType, visitingOpportunities: String? = nil, media: MediaSourceRep? = nil) throws {
@@ -239,24 +250,5 @@ open class ObservingFacilityRep: PersistentItem {
         }
       //TODO: Implement me!
       throw ObservingFacilityRepError.foundFacilityWithTypeMismatch
-    }
-
-    private func facilityInfo() -> PolisObservingFacility {
-        PolisObservingFacility(item: item,
-                               observingFacilityCode: observingFacilityCode,
-                               solarSystemBodyName: solarSystemBodyName,
-                               orbitingAroundPlaceInTheSolarSystemNamed: orbitingAroundPlaceInTheSolarSystemNamed,
-                               facilityLocationID: facilityLocationID,
-                               astronomicalCode: astronomicalCode,
-                               parentObservingFacilityID: parentObservingFacilityID,
-                               observatoryIDs: observatoryIDs,
-                               deviceIDs: deviceIDs,
-                               website: website,
-                               scientificObjectives: scientificObjectives,
-                               history: history,
-                               fixedSurfaceEarthBaseDetailsID: fixedSurfaceEarthBaseDetailsID,
-                               mobileSurfaceEarthBaseDetailsID: mobileSurfaceEarthBaseDetailsID,
-                               airborneEarthBaseDetailsID: airborneEarthBaseDetailsID,
-                               artifactIDs: artifactIDs)
     }
 }

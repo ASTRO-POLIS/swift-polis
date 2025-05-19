@@ -290,18 +290,15 @@ public extension PolisProviderManager {
         // 3. Check and try to load the facility directory
         manager.facilityDirectory = try PolisObservingFacilityDirectory.loadFromLocalFileSystemUsing(manager: manager) as? PolisObservingFacilityDirectory
 
-        //TODO: Please check it: Georg
-        // 6: Post a notification that the local copy is ready to be used and finalise
-        nc.post(name: StatusChangeNotification.providerDidLoadLocalDataNotification, object: manager)
-        isConfigured = true
-        PolisProviderManager.currentProviderManager = manager
-
-
         // 4. Prepare the list of all currently available observing facilities
         for facility in manager.facilityDirectory!.observingFacilityReferences {
-            //FIXME: This is a hack! We assume all facilities are earth-based and fixed. Later we need to check facility's type
-//            try EarthFixBasedObservingFacilityRep.registerEarthFixBasedFacility(with: facility.identity)
+            let observingFacility = try ObservingFacilityRep.findOrRegisterObservingFacilityWith(identity: facility.identity)
         }
+
+        // 5: Post a notification that the local copy is ready to be used and finalise
+        isConfigured = true
+        PolisProviderManager.currentProviderManager = manager
+        nc.post(name: StatusChangeNotification.providerDidLoadLocalDataNotification, object: manager)
 
         //TODO: 5. If needed, sync with remote providers
         // Q: Do we need to create Remote Server Initial Data? Perhaps this is a choice of the Provider Owner?
@@ -325,7 +322,7 @@ public extension PolisProviderManager {
     /// automatic data recovery will be performed next time the process is executed.
     func prepareToTerminate() async throws {
         //TODO: Implement me!
-        //TODO: Perhaps we need a delegate to complete the task> Like execute the script that Douglas is writing? The delegate
+        //TODO: Perhaps we need a delegate to complete the task? Like execute the script that Douglas is writing? The delegate
         // should have methods to sync different POLIS files one by one if they are modified.
         //TODO: N. Post ReadyToTerminate notification.
     }
@@ -348,6 +345,13 @@ public extension PolisProviderManager {
 
 //MARK: - Working with Observing Facilities -
 public extension PolisProviderManager {
+
+    /// Try to add or delete a facility only if `canAddOrDeleteFacility()` returns `true`
+    ///
+    /// In case one attempts to add or delete a facility hen the method returns `false`, exception will be thrown.
+//    func canAddOrDeleteFacility() -> Bool { PolisDirectory.isSynced && PolisObservingFacilityDirectory.isSynced }
+    //FIXME: Needs proper implementation!
+    func canAddOrDeleteFacility() -> Bool { true }
 
     /// Initially all `ObservingFacilityRep` (and subclasses) are not fully loaded. Ca;; `loadData()` and observe status change notifications to ensure all
     /// detail data is fully loaded and synced.

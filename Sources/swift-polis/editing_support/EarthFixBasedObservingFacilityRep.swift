@@ -52,8 +52,6 @@ open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
     public override func saveChanges() throws {
         if didChange() {
 
-            try super.saveChanges()
-
             //TODO: Implement me!
 
             // 1. Check if I exist as POLIS file, and if not, create myself
@@ -66,6 +64,7 @@ open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
             // 3.2. Update the POLIS cache in Provider Manager
             // 3.3. Update the provider directory cache in Provider Manager
         }
+        try super.saveChanges()
     }
 
     public override func revertToSaved() throws {
@@ -87,17 +86,25 @@ open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
     }
 
     public override func loadAllData() throws {
+        try super.loadAllData()
+
         //TODO: Implement me!
     }
 
     //MARK: Non-private APIs
     static func registerFacilityWithExisting(identity: PolisIdentity) throws -> ObservingFacilityRep {
-        //TODO: Implement me!
-       throw ObservingFacilityRepError.unavailableOrUnreadableLocalData
-    }
+        let result = EarthFixBasedObservingFacilityRep(id: identity.id, lastUpdateDate: identity.lastUpdateDate, name: identity.name ?? "<unnamed>")
 
-    static func createObservingFacilityFrom(details: PolisObservingFacility) {
-        //TODO: Implement me!
+        result.localName            = identity.localName
+        result.abbreviation         = identity.abbreviation
+        result.shortDescription     = identity.shortDescription
+        result.startDate            = identity.startDate
+
+        try result.loadAllData()
+
+        result.nc.post(name: PolisProviderManager.StatusChangeNotification.facilityDetailWillLoadNotification, object: nil)
+
+        return result
     }
 
 //    public static func createEarthFixBasedFacility(with id: UUID                 = UUID(),
