@@ -84,49 +84,58 @@ final class PolisProviderManagerTests: XCTestCase {
     //MARK: - Tests -
     func test_PolisProviderManager_creatingAndStoringProvider_shouldSucceed() async throws {
         // Given
-        try prepareData()
+//        try prepareData()
+//
+//        // When
+//        let sut                       = try PolisProviderManager.createLocalProviderWith(configuration: config, isExperimentalVersion: true)
+//        let initialNumberOfFacilities = sut?.facilityDirectory.observingFacilityReferences.count
+//        let facilityRep               = try ObservingFacilityRep.findOrRegisterObservingFacilityWith(identity: TestingSupport.examplePolisIdentityBAO())
+//        let finalNumberOfFacilities   = sut?.facilityDirectory.observingFacilityReferences.count
+//        let facilityRepCount          = sut?.allFacilities().count
+//
+//        facilityRep.website = URL(string: "https://www.example.com")
+//
+//        try facilityRep.addArtifact(artifactType: PolisArtifact.ArtifactType.monument, visitingOpportunities: "Every day opened")
+//        try facilityRep.saveChanges()
+//
+//        // Then
+//        XCTAssertNotNil(sut)
+//        XCTAssertNotNil(facilityRep)
+//
+//        XCTAssertNotNil(sut?.facilityDirectory)
+//        XCTAssertEqual(initialNumberOfFacilities, 0)
+//        XCTAssertEqual(finalNumberOfFacilities, 1)
+//        XCTAssertEqual(facilityRepCount, 1)
+//
+//        //TODO: Move this when testing Earth-based facility
+//        await fulfillment(of: [providerWillCreateNotificationExpectation, providerDidCreateNotificationExpectation,
+//                               facilityReferenceWillCreateExpectation, facilityReferenceDidCreateExpectation,
+//                               /*facilityInfoWillCreateExpectation, facilityInfoDidCreateExpectation,*/
+//                               artifactWillCreateExpectation, artifactDidCreateExpectation,],
+//                          timeout: 5,
+//                          enforceOrder: true)
+    }
 
-        // When
-        let sut                       = try PolisProviderManager.createLocalProviderWith(configuration: config, isExperimentalVersion: true)
-        let initialNumberOfFacilities = sut?.facilityDirectory.observingFacilityReferences.count
-        let facilityRep               = try ObservingFacilityRep.findOrRegisterObservingFacilityWith(identity: TestingSupport.examplePolisIdentityBAO())
-        let finalNumberOfFacilities   = sut?.facilityDirectory.observingFacilityReferences.count
-        let facilityRepCount          = sut?.allFacilities().count
+    func test_PolisProviderManager_readExistingData_shouldSucceed() async throws {
+        // Given
+        try prepareData()
+        let manager     = try PolisProviderManager.createLocalProviderWith(configuration: config, isExperimentalVersion: true)
+        let facilityRep = try ObservingFacilityRep.findOrRegisterObservingFacilityWith(identity: TestingSupport.examplePolisIdentityBAO())
 
         facilityRep.website = URL(string: "https://www.example.com")
 
         try facilityRep.addArtifact(artifactType: PolisArtifact.ArtifactType.monument, visitingOpportunities: "Every day opened")
         try facilityRep.saveChanges()
 
-        // Then
-        XCTAssertNotNil(sut)
-        XCTAssertNotNil(facilityRep)
-
-        XCTAssertNotNil(sut?.facilityDirectory)
-        XCTAssertEqual(initialNumberOfFacilities, 0)
-        XCTAssertEqual(finalNumberOfFacilities, 1)
-        XCTAssertEqual(facilityRepCount, 1)
-
-        //TODO: Move this when testing Earth-based facility
-        await fulfillment(of: [providerWillCreateNotificationExpectation, providerDidCreateNotificationExpectation,
-                               facilityReferenceWillCreateExpectation, facilityReferenceDidCreateExpectation,
-                               /*facilityInfoWillCreateExpectation, facilityInfoDidCreateExpectation,*/
-                               artifactWillCreateExpectation, artifactDidCreateExpectation,],
-                          timeout: 5,
-                          enforceOrder: true)
-    }
-
-    func test_PolisProviderManager_readExistingData_shouldSucceed() async throws {
-        // Given
-        try prepareData(shouldStartWithCleanFolder: false)
-        try createTestDataForReading()
         PolisProviderManager.prepareForTesting()
+        try prepareData(shouldStartWithCleanFolder: false)
+
 
         // When
-//        let managerSut = try PolisProviderManager.useExistingLocalProvider()
-//        
-//        // Then
-//        XCTAssertNotNil(managerSut.facilityDirectory)
+        let sut = try PolisProviderManager.useExistingLocalProvider()
+
+        // Then
+        XCTAssertNotNil(sut.facilityDirectory)
 //        await fulfillment(of: [providerWillLoadLocalDataExpectation, providerDidLoadLocalDataExpectation,],
 //                          timeout: 5,
 //                          enforceOrder: true)

@@ -276,6 +276,8 @@ public extension PolisProviderManager {
         // 1. Make sure POLIS data already exists
         let manager = try PolisProviderManager()
         if !manager.ensureMinimalLocalPolisConfiguration() { throw PolisProviderManagerError.requiredPolisDataMissing }
+        PolisProviderManager.currentProviderManager = manager
+
         nc.post(name: StatusChangeNotification.providerWillLoadLocalDataNotification, object: manager)
 
         // 0. Load the configuration data
@@ -292,7 +294,7 @@ public extension PolisProviderManager {
 
         // 4. Prepare the list of all currently available observing facilities
         for facility in manager.facilityDirectory!.observingFacilityReferences {
-            let observingFacility = try ObservingFacilityRep.findOrRegisterObservingFacilityWith(identity: facility.identity)
+//            let observingFacility = try ObservingFacilityRep.findOrRegisterObservingFacilityWith(identity: facility.identity)
         }
 
         // 5: Post a notification that the local copy is ready to be used and finalise

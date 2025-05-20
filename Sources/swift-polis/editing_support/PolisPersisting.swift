@@ -19,14 +19,22 @@ public protocol PolisPersisting: Identifiable {
     var manager: PolisProviderManager! { get set }
     var synchronisationProvider: PolisRemoteSynchronisationProviding? { get set }
 
+    /// Defines if a `*Rep` instance can be edited
+    ///
+    /// Wen instances could be edited:
+    ///  - If the the shared ``PolisProviderManager`` is created in a editing mode, and
+    ///  - If the locally stored instance is synced with the remote instance (if it exists), and
+    ///  - If the locally stored instance (if exists) is equal to the in-memory copy
     func canEdit() -> Bool
 
     /// Saves all changes to the local file system
     ///
     /// The method should compare the POLIS data stored in the file system (or cached) and perform file system changes only in case both datasets differ from
     /// each other.
-    /// 
-    /// **Note:** if there are in-memory changes this method could change multiple files (and always at least two files).
+    ///
+    /// **Notes:**
+    ///  - Child instances (e.g. location, device, etc) receive `saveChanges()` after the parent instance (e.g. the facility) saves its changes
+    ///  - Subclasses call superclass' `saveChanges()` prior saving its own changes
     func saveChanges() throws
 
     /// Replaces the in-memory representation of a Polis item with data from the local file system
@@ -35,17 +43,16 @@ public protocol PolisPersisting: Identifiable {
     /// Deletes the item from both - the memory cache and from the local file system
     func delete() throws
 
-    /// Loading data from all related POLIS files
-    func loadWithID(_ id: String) throws -> any PolisPersisting
+    /// This method forces the corresponding `*Rep`instance  to load  locally stored data
+    ///
+    /// **Notes:**
+    ///  - Child instances receive `loadData()` after the parent instance
+    ///  - Subclasses call first superclass' `loadData()` prior to their own data loading
+    func loadData() throws
 
     /// Returns the result of the comparison between the locally stored POLIS item and the corresponding in-memory representation
     func didChange() -> Bool
 
-    /// This method forces the corresponding `Rep` to load either local or remote detail data, linked to the main type (e.g. Facility)
-    ///
-    /// **Note:** This method is not async on purpose. If all data is stored locally, the data will be loaded immediately, but in case remote syncing is required,
-    /// there will be some delay. Therefore types using `Rep` types should observe status change notifications.
-    func loadAllData() throws
 }
 
 /// `PersistentItem` is an abstract tat should be always subclassed by all in-memory objects
@@ -85,10 +92,10 @@ open class PersistentItem: PolisPersisting {
     var jsonData: Data!
 
     // Persistence support
-    var persistenceReference: PolisReference!
+//    var persistenceReference: PolisReference!
 
     /// Designated initialiser
-    init(id: UUID, lastUpdateDate: Date = Date(), name: String) {
+    init(id: UUID, lastUpdateDate: Date = Date(), name: String) throws {
         self.id             = id
         self.lastUpdateDate = lastUpdateDate
         self.name           = name
@@ -205,15 +212,14 @@ open class PersistentAuxiliaryItem: PolisPersisting {
 
 // Some useful defaults
 extension PolisPersisting {
-    public func saveChanges() throws { }
     public func canEdit() -> Bool { true }
+    public func saveChanges() throws { }
     public func revertToSaved() throws { }
     public func delete() throws { }
-    public func loadWithID(_ id: String) throws -> any PolisPersisting { self }
+    public func loadData() throws { }
 
     public func didChange() -> Bool { false }
 
-    public func loadAllData() throws { }
 }
 
 

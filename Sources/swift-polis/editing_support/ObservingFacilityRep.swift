@@ -16,9 +16,10 @@ open class ObservingFacilityRep: PersistentItem {
         case foundFacilityWithTypeMismatch
         case unavailableOrUnreadableLocalData
         case cannotWritePolisFile
+        case instanceCannotBeEdited
     }
     
-    /// Finds an existing or creates a new `ObservingFacility`
+    /// Finds an existing or creates a new `ObservingFacility` instance of a corresponding type
     ///
     /// In case of facility type mismatch, an exception will be thrown. The facility that is returned might be not be fully initiated. Call `loadData()` and observe
     /// status change notifications.
@@ -33,9 +34,13 @@ open class ObservingFacilityRep: PersistentItem {
         placeInTheSolarSystem : PolisPlaceInTheSolarSystem                = .earth
     ) throws -> ObservingFacilityRep {
         if let existingFacilityDirectoryEntry = PolisProviderManager.currentProviderManager?.directoryEntryForFacilityWith(id: identity.id) {
+            // So, this facility is already registered into the Facility Directory
             if (existingFacilityDirectoryEntry.gravitationalBodyRelationship == .surfaceFixed) &&
                 (existingFacilityDirectoryEntry.placeInTheSolarSystem == .earth) {
-                return try EarthFixBasedObservingFacilityRep.registerFacilityWithExisting(identity: identity)
+                // It seams this is an earth-based fixed facility
+                let facility = try ObservingFacilityRep(id: identity.id, lastUpdateDate: identity.lastUpdateDate, name: identity.name ?? "<unnamed>")
+
+
             }
         }
         else {
@@ -72,18 +77,18 @@ open class ObservingFacilityRep: PersistentItem {
     public var scientificObjectives: String?
     public var history: String?
 
-    // Facility details UUIDs - one and only one type could be assigned!
-    public var fixedSurfaceEarthBaseDetailsID: UUID?
-    public var mobileSurfaceEarthBaseDetailsID: UUID?
-    public var airborneEarthBaseDetailsID: UUID?
+    // Facility concrete type details
+    public var earthFixBasedObservingFacilityRep: EarthFixBasedObservingFacilityRep?
 
     // Arifacts of interest could be also on other solar system bodies (e.g. Apollo landing site)
     public private(set) var artifacts = [ArtifactRep]()
 
     //MARK: - PolisPersisting implementation -
-    /// This  method saves possible changes only in the facility directory.
-    ///
-    /// Subclasses should manage  facility details and auxiliary types related to the facility.
+    public func canEdit() -> Bool {
+        //TODO: Implement me!
+        true
+    }
+
     public func saveChanges() throws {
         // 1. Check if I am part of the facility directory, and if not - add myself
         if let directoryEntry = manager.directoryEntryForFacilityWith(id: self.id) {
@@ -105,14 +110,14 @@ open class ObservingFacilityRep: PersistentItem {
 
         jsonData = try jsonEncoder.encode(facilityDetails)
 
-        if fm.fileExists(atPath: persistenceReference.localPath) {
-            try? fm.removeItem(atPath: persistenceReference.localPath)
+        if fm.fileExists(atPath: detailsPersistenceReference.localPath) {
+            try? fm.removeItem(atPath: detailsPersistenceReference.localPath)
         }
         
-        if !fm.createFile(atPath: persistenceReference.localPath, contents: jsonData) {
+        if !fm.createFile(atPath: detailsPersistenceReference.localPath, contents: jsonData) {
             throw ObservingFacilityRepError.cannotWritePolisFile
         }
-        persistenceReference.hasLocalCopy = true
+        detailsPersistenceReference.hasLocalCopy = true
 
         //TODO: Implement me!
     }
@@ -125,20 +130,18 @@ open class ObservingFacilityRep: PersistentItem {
         //TODO: Implement me!
     }
 
-    public func loadWithID(_ id: String) throws -> any PolisPersisting { self }
-
-    public func didChange() -> Bool {
-        //TODO: Implement me!
-        false
-    }
-
-    public func loadAllData() throws {
+    public func loadData() throws {
         let myDataPath = manager.polisFileResourceFinder.observingFacilityFile(observingFacilityID: identity.id)
 
         jsonData = fm.contents(atPath: myDataPath)
         if let jsonData = jsonData {
             let observingFacility = try JSONDecoder().decode(PolisObservingFacility.self, from: jsonData)
         }
+        //TODO: Implement me!
+    }
+
+    public func didChange() -> Bool {
+        false
         //TODO: Implement me!
     }
 
@@ -168,7 +171,15 @@ open class ObservingFacilityRep: PersistentItem {
 
 
     //MARK: - Non-private APIs -
+
+    var fixedSurfaceEarthBaseDetailsID: UUID?
+    var mobileSurfaceEarthBaseDetailsID: UUID?
+    var airborneEarthBaseDetailsID: UUID?
     var artifactIDs: Set<UUID>?
+
+    var detailsPersistenceReference: PolisReference!
+
+    // Utility properties
 
     var facilityDetails: PolisObservingFacility {
         get {
@@ -209,6 +220,12 @@ open class ObservingFacilityRep: PersistentItem {
       }
     }
 
+    override init(id: UUID, lastUpdateDate: Date = Date(), name: String) throws {
+        try super.init(id: id, lastUpdateDate: lastUpdateDate, name: name)
+
+        detailsPersistenceReference = try PolisReference(facilityID: identity.id, polisObjectID: identity.id)
+    }
+
     func ensureFacilityFolderDoesExist() async throws {
         let path = manager.polisFileResourceFinder.observingFacilityFolder(observingFacilityID: identity.id)
 
@@ -220,7 +237,6 @@ open class ObservingFacilityRep: PersistentItem {
 
 
     //MARK: Private APIs
-    // Utility properties
 
     private static func createObservingFacilityWith(
         identity: PolisIdentity,
@@ -230,13 +246,10 @@ open class ObservingFacilityRep: PersistentItem {
         let manager = PolisProviderManager.currentProviderManager
 
         if (gravitationalBodyRelationship == .surfaceFixed) && (placeInTheSolarSystem == .earth) {
-
-            let result = EarthFixBasedObservingFacilityRep(id: identity.id, lastUpdateDate: identity.lastUpdateDate, name: identity.name ?? "<unnamed>")
-            let ref    = try PolisReference(facilityID: identity.id, polisObjectID: identity.id)
+            let result = try ObservingFacilityRep(id: identity.id, lastUpdateDate: identity.lastUpdateDate, name: identity.name ?? "<unnamed>")
 
             result.nc.post(name: PolisProviderManager.StatusChangeNotification.facilityReferenceWillCreateNotification, object: nil)
 
-            result.persistenceReference = ref
             result.localName            = identity.localName
             result.abbreviation         = identity.abbreviation
             result.shortDescription     = identity.shortDescription
@@ -251,4 +264,34 @@ open class ObservingFacilityRep: PersistentItem {
       //TODO: Implement me!
       throw ObservingFacilityRepError.foundFacilityWithTypeMismatch
     }
+
+    private static func registerObservingFacilityWith(identity: PolisIdentity,
+        gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
+        placeInTheSolarSystem : PolisPlaceInTheSolarSystem                = .earth
+    ) throws -> ObservingFacilityRep {
+        let manager = PolisProviderManager.currentProviderManager
+
+        if (gravitationalBodyRelationship == .surfaceFixed) && (placeInTheSolarSystem == .earth) {
+
+            let result = try ObservingFacilityRep(id: identity.id, lastUpdateDate: identity.lastUpdateDate, name: identity.name ?? "<unnamed>")
+
+            result.detailsPersistenceReference = try PolisReference(facilityID: identity.id, polisObjectID: identity.id)
+
+            result.nc.post(name: PolisProviderManager.StatusChangeNotification.facilityReferenceWillCreateNotification, object: nil)
+
+            result.localName        = identity.localName
+            result.abbreviation     = identity.abbreviation
+            result.shortDescription = identity.shortDescription
+            result.startDate        = identity.startDate
+
+            try result.saveChanges()
+            try manager?.facilityDirectory.flashUsing(manager: manager!)
+            result.nc.post(name: PolisProviderManager.StatusChangeNotification.facilityReferenceDidCreateNotification, object: nil)
+
+            return result
+        }
+        //TODO: Implement me!
+        throw ObservingFacilityRepError.foundFacilityWithTypeMismatch
+    }
+
 }

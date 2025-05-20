@@ -7,7 +7,7 @@
 
 import Foundation
 
-open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
+open class EarthFixBasedObservingFacilityRep: PersistentItem {
 
     //MARK: Public APIs
 
@@ -49,7 +49,7 @@ open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
     public var surfaceSize: PolisPropertyValue?             // [m^2]
 
     //MARK: - PolisPersisting implementation -
-    public override func saveChanges() throws {
+    public  func saveChanges() throws {
         if didChange() {
 
             //TODO: Implement me!
@@ -64,45 +64,36 @@ open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
             // 3.2. Update the POLIS cache in Provider Manager
             // 3.3. Update the provider directory cache in Provider Manager
         }
-        try super.saveChanges()
     }
 
-    public override func revertToSaved() throws {
+    public func revertToSaved() throws {
         //TODO: Implement me!
     }
 
-    public override func delete() throws {
+    public func delete() throws {
         //TODO: Implement me!
     }
 
-    public override func loadWithID(_ id: String) throws -> any PolisPersisting {
+    public func loadData() throws {
+        try super.loadData()
+
         //TODO: Implement me!
-        self
     }
 
-    public override func didChange() -> Bool {
+    public func didChange() -> Bool {
         //TODO: Implement me!
         true
     }
 
-    public override func loadAllData() throws {
-        try super.loadAllData()
-
-        //TODO: Implement me!
-    }
 
     //MARK: Non-private APIs
-    static func registerFacilityWithExisting(identity: PolisIdentity) throws -> ObservingFacilityRep {
-        let result = EarthFixBasedObservingFacilityRep(id: identity.id, lastUpdateDate: identity.lastUpdateDate, name: identity.name ?? "<unnamed>")
+    static func registerFacilityWithExisting(identity: PolisIdentity) throws -> EarthFixBasedObservingFacilityRep {
+        let result = try EarthFixBasedObservingFacilityRep(id: identity.id, lastUpdateDate: identity.lastUpdateDate, name: identity.name ?? "<unnamed>")
 
-        result.localName            = identity.localName
-        result.abbreviation         = identity.abbreviation
-        result.shortDescription     = identity.shortDescription
-        result.startDate            = identity.startDate
-
-        try result.loadAllData()
-
-        result.nc.post(name: PolisProviderManager.StatusChangeNotification.facilityDetailWillLoadNotification, object: nil)
+        result.localName        = identity.localName
+        result.abbreviation     = identity.abbreviation
+        result.shortDescription = identity.shortDescription
+        result.startDate        = identity.startDate
 
         return result
     }
@@ -235,27 +226,13 @@ open class EarthFixBasedObservingFacilityRep: ObservingFacilityRep {
 //        return result
 //    }
 
-//    /// Used to register facilities from existing local data
-//    ///
-//    /// This method is used internally only
-//    static func registerEarthFixBasedFacility(with identity: PolisIdentity) throws  {
-//        _ = try EarthFixBasedObservingFacilityRep.registerNewEarthFixBasedFacility(with: identity.id,
-//                                                                                   externalReferences: identity.externalReferences,
-//                                                                                   lastUpdateDate: identity.lastUpdateDate,
-//                                                                                   name: identity.name,
-//                                                                                   localName: identity.localName,
-//                                                                                   abbreviation: identity.abbreviation,
-//                                                                                   shortDescription: identity.shortDescription,
-//                                                                                   startDate: identity.startDate,
-//                                                                                   endDate: identity.endDate,
-//                                                                                   polisRegistrationDate: identity.polisRegistrationDate)
-//    }
+    var fixedSurfaceEarthBaseDetailsPersistenceReference: PolisReference!
 
-    override init(id: UUID, lastUpdateDate: Date = Date(), name: String) {
-        super.init(id: id, lastUpdateDate: lastUpdateDate, name: name)
+    override init(id: UUID, lastUpdateDate: Date = Date(), name: String) throws {
+        try super.init(id: id, lastUpdateDate: lastUpdateDate, name: name)
 
-        self.gravitationalBodyRelationship = .surfaceFixed
-        self.placeInTheSolarSystem = .earth
+        fixedSurfaceEarthBaseDetailsPersistenceReference = try PolisReference(facilityID: identity.id, polisObjectID: identity.id)
+
     }
 
 //    init(id: UUID,

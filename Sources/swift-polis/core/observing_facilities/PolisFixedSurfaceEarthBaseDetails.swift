@@ -26,6 +26,8 @@ public struct PolisFixedSurfaceEarthBaseDetails: Identifiable, Codable, Storable
     public var dominantWindDirection: PolisDirection.RoughDirection?
     public var surfaceSize: PolisPropertyValue?             // [m^2]
 
+    public var placeID: UUID?
+
     public init(id: UUID                                              = UUID(),
                 facility: PolisObservingFacility,
                 location: PolisPlace?                                 = nil,
@@ -34,7 +36,8 @@ public struct PolisFixedSurfaceEarthBaseDetails: Identifiable, Codable, Storable
                 averageSeeingConditions: PolisPropertyValue?          = nil,
                 traditionalLandOwners: String?                        = nil,
                 dominantWindDirection: PolisDirection.RoughDirection? = nil,
-                surfaceSize: PolisPropertyValue?                      = nil) {
+                surfaceSize: PolisPropertyValue?                      = nil,
+                placeID: UUID?                                        = nil) {
         self.id                        = id
         self.facility                  = facility
         self.location                  = location
@@ -44,7 +47,7 @@ public struct PolisFixedSurfaceEarthBaseDetails: Identifiable, Codable, Storable
         self.traditionalLandOwners     = traditionalLandOwners
         self.dominantWindDirection     = dominantWindDirection
         self.surfaceSize               = surfaceSize
-
+        self.placeID                   = placeID
     }
 }
 
@@ -53,14 +56,15 @@ public extension PolisFixedSurfaceEarthBaseDetails {
         case id
         case facility
         case location
-        case visitingHours                            = "visiting_hours"
-        case accessRestrictions                       = "access_restrictions"
-        case averageClearNightsPerYear                = "average_clear_nights_per_year"
-        case averageSeeingConditions                  = "average_seeing_conditions"
-        case averageSkyQuality                        = "average_sky_quality"
-        case traditionalLandOwners                    = "traditionalLand_owners"
-        case dominantWindDirection                    = "'dominant_wind_direction'"
-        case surfaceSize                              = "surface_size"
+        case visitingHours             = "visiting_hours"
+        case accessRestrictions        = "access_restrictions"
+        case averageClearNightsPerYear = "average_clear_nights_per_year"
+        case averageSeeingConditions   = "average_seeing_conditions"
+        case averageSkyQuality         = "average_sky_quality"
+        case traditionalLandOwners     = "traditionalLand_owners"
+        case dominantWindDirection     = "'dominant_wind_direction'"
+        case surfaceSize               = "surface_size"
+        case placeID                   = "place_id"
     }
 }
 
