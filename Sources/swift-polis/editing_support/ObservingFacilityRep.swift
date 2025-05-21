@@ -93,10 +93,13 @@ open class ObservingFacilityRep: PersistentItem {
     //MARK: - PolisPersisting implementation -
     public func canEdit() -> Bool {
         //TODO: Implement me!
-        true
+        manager.isEditable()
     }
 
     public func saveChanges() throws {
+        // 0. Are we allowed to save?
+        if !canEdit() { throw ObservingFacilityRepError.instanceCannotBeEdited }
+        
         // 1. Check if I am part of the facility directory, and if not - add myself
         let directoryEntry = manager.directoryEntryForFacilityWith(id: self.id)
 

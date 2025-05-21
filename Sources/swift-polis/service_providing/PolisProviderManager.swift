@@ -220,7 +220,7 @@ public extension PolisProviderManager {
         try manager.newLocalConfiguration(isEditable: true , isTesting: isExperimentalVersion)
         try manager.updateLocalConfiguration()
         PolisProviderManager.currentProviderManager = manager
-
+        
         // 4. Create the provider root
         manager.polisProviderConfigurationEntry = directory
         try manager.flush(item: manager.polisProviderConfigurationEntry)
@@ -268,7 +268,7 @@ public extension PolisProviderManager {
     /// If there is already an existing local copy of the POLIS dataset use this method to access it
     ///
     ///  Before calling, make sure that `localPolisRootPath` is set to proper existing path
-    static func useExistingLocalProvider() throws -> PolisProviderManager {
+    static func useExistingLocalProvider(isEditable: Bool = false) throws -> PolisProviderManager {
         let nc = NotificationCenter.default
 
         _ = try canConfigure()
@@ -277,6 +277,13 @@ public extension PolisProviderManager {
         let manager = try PolisProviderManager()
         if !manager.ensureMinimalLocalPolisConfiguration() { throw PolisProviderManagerError.requiredPolisDataMissing }
         PolisProviderManager.currentProviderManager = manager
+
+        try manager.loadLocalConfiguration()
+#if DEBUG
+        manager.localConfiguration.isEditable = true
+#else
+        manager.localConfiguration.isEditable = isEditable
+#endif
 
         nc.post(name: StatusChangeNotification.providerWillLoadLocalDataNotification, object: manager)
 
@@ -308,15 +315,6 @@ public extension PolisProviderManager {
         return manager
     }
 
-    internal func flush(item: any StorableItem) throws {
-        var currentItem: (any StorableItem)? = item
-
-        while currentItem != nil {
-            try currentItem?.flashUsing(manager: self)
-            currentItem = currentItem?.parentItem()
-        }
-    }
-
     /// Call this method before terminating the process and wait for the notification
     ///
     /// In order to avoid data inconsistency, or loss of new or updated data, always call this method before exiting the process (tool or app, and wait for the notification. If
@@ -335,7 +333,19 @@ public extension PolisProviderManager {
         currentProviderManager = nil
     }
     #endif
-    
+
+    //MARK: Non-public APIs
+    internal func flush(item: any StorableItem) throws {
+        var currentItem: (any StorableItem)? = item
+
+        while currentItem != nil {
+            try currentItem?.flashUsing(manager: self)
+            currentItem = currentItem?.parentItem()
+        }
+    }
+
+    internal func isEditable() -> Bool { localConfiguration.isTesting }
+
     //MARK: Private stuff
     private static func canConfigure() throws -> Bool {
         if isConfigured || (PolisProviderManager.currentProviderManager != nil) {
@@ -459,8 +469,6 @@ extension PolisProviderManager {
     }
 
     private func updateLocalConfiguration() throws {
-        localConfiguration.lastSyncDate = Date.now
-
         do    { data = try jsonEncoder.encode(localConfiguration) }
         catch {
             PolisLogger.shared.error("Cannot encode POLIS Configuration Data")
@@ -471,7 +479,8 @@ extension PolisProviderManager {
             PolisLogger.shared.error("Cannot save POLIS Configuration Data to: \(configurationFilePath())")
             throw PolisProviderManager.PolisProviderManagerError.cannotWriteFile
         }
-    }
+        localConfiguration.lastSyncDate = Date.now
+   }
 
     private func loadLocalConfiguration() throws {
         if fm.fileExists(atPath: configurationFilePath()) {
