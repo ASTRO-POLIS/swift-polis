@@ -11,6 +11,10 @@ open class ObservingFacilityRep: PersistentItem {
 
     //MARK: - Public APIs
 
+    public enum FacilityRepType {
+        case fixedEarthBased
+    }
+
     /// Error definitions
     public enum ObservingFacilityRepError: Error {
         case foundFacilityWithTypeMismatch
@@ -51,6 +55,9 @@ open class ObservingFacilityRep: PersistentItem {
         //TODO: Implement other facility types when framework provides support for them.
         throw ObservingFacilityRepError.foundFacilityWithTypeMismatch
     }
+
+    /// Defines the facility type based on the values of `gravitationalBodyRelationship` and `placeInTheSolarSystem`
+    public private(set) var facilityType = FacilityRepType.fixedEarthBased
 
     // Defined by the PolisObservingFacilityDirectory.ObservingFacilityReference
     public var gravitationalBodyRelationship = PolisObservingFacilityLocationType.surfaceFixed
