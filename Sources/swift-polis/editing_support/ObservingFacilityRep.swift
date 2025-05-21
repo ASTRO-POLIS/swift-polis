@@ -98,12 +98,9 @@ open class ObservingFacilityRep: PersistentItem {
 
     public func saveChanges() throws {
         // 1. Check if I am part of the facility directory, and if not - add myself
-        if let directoryEntry = manager.directoryEntryForFacilityWith(id: self.id) {
-            let savedIdentity = directoryEntry.identity
+        let directoryEntry = manager.directoryEntryForFacilityWith(id: self.id)
 
-            if savedIdentity != identity { manager.facilityDirectory.addOrUpdateObservingFacility(reference: directoryEntry) }
-        }
-        else {
+        if directoryEntry == nil {
             let newEntry       = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: identity)
             let facilityFolder = manager.polisFileResourceFinder.observingFacilityFolder(observingFacilityID: self.identity.id)
 
