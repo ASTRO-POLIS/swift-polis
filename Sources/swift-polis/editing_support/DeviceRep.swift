@@ -7,6 +7,6 @@
 
 import Foundation
 
-open class DeviceRep: PersistentAuxiliaryItem {
+open class DeviceRep: SimplePersistentItem {
     
 }

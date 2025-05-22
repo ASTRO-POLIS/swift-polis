@@ -56,9 +56,7 @@ public protocol PolisPersisting: Identifiable {
     func setHasChanges(_ hasChanges: Bool)
 }
 
-/// `PersistentItem` is an abstract tat should be always subclassed by all in-memory objects
-open class PersistentItem: PolisPersisting {
-
+open class SimplePersistentItem: PolisPersisting {
     // PolisPersisting
     public var manager: PolisProviderManager!
     public var synchronisationProvider: PolisRemoteSynchronisationProviding?
@@ -75,18 +73,9 @@ open class PersistentItem: PolisPersisting {
     public var endDate: Date?
     public var polisRegistrationDate: Date?
 
-    // Polis Item defined
-    public var owner: PolisOwner?
-    public var parentID: UUID?
-    public var automationLabel: String?
-    public var lifecycleStatus: PolisLifecycleStatus = PolisLifecycleStatus.unknown
-    public var mediaSourceID: UUID?
+    // Persistence support
+    var persistenceReference: PolisReference!
 
-    public func setHasChanges(_ hasChanges: Bool = true) { self.hasChanges = hasChanges }
-
-    //MARK: Non-public API
-
-    // Used by subclasses
     let nc              = NotificationCenter.default
     let fm              = FileManager.default
     var isDir: ObjCBool = false
@@ -95,9 +84,6 @@ open class PersistentItem: PolisPersisting {
     var jsonData: Data!
 
     var hasChanges      = false
-
-    // Persistence support
-//    var persistenceReference: PolisReference!
 
     /// Designated initialiser
     init(id: UUID, lastUpdateDate: Date = Date(), name: String) throws {
@@ -132,7 +118,22 @@ open class PersistentItem: PolisPersisting {
             endDate            = newValue.endDate
         }
     }
+}
 
+
+/// `PersistentItem` is an abstract tat should be always subclassed by all in-memory objects
+open class PersistentItem: SimplePersistentItem {
+
+    // Polis Item defined
+    public var owner: PolisOwner?
+    public var parentID: UUID?
+    public var automationLabel: String?
+    public var lifecycleStatus: PolisLifecycleStatus = PolisLifecycleStatus.unknown
+    public var mediaSourceID: UUID?
+
+    public func setHasChanges(_ hasChanges: Bool = true) { self.hasChanges = hasChanges }
+
+    //MARK: Non-public API
     var item: PolisItem {
         get {
             PolisItem(identity: identity,
@@ -149,70 +150,6 @@ open class PersistentItem: PolisPersisting {
             automationLabel = newValue.automationLabel
             lifecycleStatus = newValue.lifecycleStatus
             mediaSourceID   = newValue.mediaSourceID
-        }
-    }
-}
-
-open class PersistentAuxiliaryItem: PolisPersisting {
-    // PolisPersisting
-    public var manager: PolisProviderManager!
-    public var synchronisationProvider: PolisRemoteSynchronisationProviding?
-
-    // Polis Identity defined
-    public var id: UUID
-    public var externalReferences: [String]?
-    public var lastUpdateDate: Date
-    public var name: String
-    public var localName: String?
-    public var abbreviation: String?
-    public var shortDescription: String?
-    public var startDate: Date?
-    public var endDate: Date?
-    public var polisRegistrationDate: Date?
-
-    // Persistence support
-    var persistenceReference: PolisReference!
-
-    let nc              = NotificationCenter.default
-    let fm              = FileManager.default
-    var isDir: ObjCBool = false
-    var jsonEncoder     = PrettyJSONEncoder()
-    var jsonDecoder     = PrettyJSONDecoder()
-    var jsonData: Data!
-
-    var hasChanges      = false
-    
-    /// Designated initialiser
-    init(id: UUID, lastUpdateDate: Date = Date(), name: String) {
-        self.id             = id
-        self.lastUpdateDate = lastUpdateDate
-        self.name           = name
-        manager             = PolisProviderManager.currentProviderManager!
-    }
-
-    var identity: PolisIdentity {
-        get {
-            PolisIdentity(id: id,
-                          externalReferences: externalReferences,
-                          lastUpdateDate: lastUpdateDate,
-                          name: name,
-                          localName: localName,
-                          abbreviation: abbreviation,
-                          shortDescription: shortDescription,
-                          startDate: startDate,
-                          endDate: endDate,
-                          polisRegistrationDate: polisRegistrationDate)
-        }
-        set {
-            id                 = newValue.id
-            externalReferences = newValue.externalReferences
-            lastUpdateDate     = newValue.lastUpdateDate
-            name               = newValue.name ?? "<unnamed>"
-            localName          = newValue.localName
-            abbreviation       = newValue.abbreviation
-            shortDescription   = newValue.shortDescription
-            startDate          = newValue.startDate
-            endDate            = newValue.endDate
         }
     }
 }

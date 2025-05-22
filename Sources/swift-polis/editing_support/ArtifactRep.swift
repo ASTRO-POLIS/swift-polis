@@ -8,38 +8,38 @@
 import Foundation
 
 
-open class ArtifactRep: PersistentAuxiliaryItem {
+open class ArtifactRep: SimplePersistentItem {
 
     public var artifactType: PolisArtifact.ArtifactType
     public var visitingOpportunities: String?
-    public var media: MediaSourceRep?
+    public var mediaID: UUID?
     public var website: URL?
-
-    var mediaID: UUID?
 
     var facility: ObservingFacilityRep
 
     init(identity: PolisIdentity,
          artifactType: PolisArtifact.ArtifactType = .unknown,
          visitingOpportunities: String?           = nil,
-         media: MediaSourceRep?                   = nil,
+         mediaID: UUID?                           = nil,
          website: URL?                            = nil,
-         facility: ObservingFacilityRep) {
+         facility: ObservingFacilityRep) throws {
         self.artifactType          = artifactType
         self.visitingOpportunities = visitingOpportunities
-        self.media                 = media
+        self.mediaID               = mediaID
         self.website               = website
         self.facility              = facility
 
-        super.init(id: identity.id, lastUpdateDate: identity.lastUpdateDate, name: identity.name ?? "<unnamed>")
+        try super.init(id: identity.id, lastUpdateDate: identity.lastUpdateDate, name: identity.name ?? "<unnamed>")
     }
 
     //MARK: - PolisPersisting implementation -
+    public func canEdit() -> Bool { true }
+
     public func saveChanges() throws {
         if !persistenceReference.hasLocalCopy {
             nc.post(name: PolisProviderManager.StatusChangeNotification.artifactWillCreateNotification, object: nil)
 
-            jsonData = try jsonEncoder.encode(artifact())
+            jsonData = try jsonEncoder.encode(artifact)
             if !fm.createFile(atPath: persistenceReference.localPath, contents: jsonData) {
                 throw ObservingFacilityRep.ObservingFacilityRepError.cannotWritePolisFile
             }
@@ -49,10 +49,9 @@ open class ArtifactRep: PersistentAuxiliaryItem {
             facility.artifactIDs!.insert(identity.id)
             facility.setHasChanges()
             try facility.saveChanges()
-            
+
             nc.post(name: PolisProviderManager.StatusChangeNotification.artifactDidCreateNotification, object: self)
         }
-        //TODO: Implement me!
     }
 
     public func revertToSaved() throws {
@@ -63,28 +62,32 @@ open class ArtifactRep: PersistentAuxiliaryItem {
         //TODO: Implement me!
     }
 
-    public func loadWithID(_ id: String) throws -> any PolisPersisting {
-        //TODO: Implement me!
-        self
-    }
+    public func loadData() throws { }
 
     public func didChange() -> Bool {
         //TODO: Implement me!
         true
     }
 
-    public func loadAllData() throws {
-        //TODO: Implement me!
-    }
+    public func setHasChanges(_ hasChanges: Bool = true) { }
 
     //MARK: - Private APIs -
-    private func artifact() -> PolisArtifact {
-        PolisArtifact(
-            identity: identity,
-            artifactType: artifactType,
-            visitingOpportunities: visitingOpportunities,
-            mediaID: mediaID,
-            website: website
-        )
+    var artifact: PolisArtifact {
+        get {
+            PolisArtifact(
+                identity: identity,
+                artifactType: artifactType,
+                visitingOpportunities: visitingOpportunities,
+                mediaID: mediaID,
+                website: website
+            )
+        }
+        set {
+            identity        = newValue.identity
+            artifactType   = newValue.artifactType
+            visitingOpportunities = newValue.visitingOpportunities
+            mediaID = newValue.mediaID
+
+        }
     }
 }

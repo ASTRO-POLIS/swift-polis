@@ -96,9 +96,6 @@ open class ObservingFacilityRep: PersistentItem {
     // Facility concrete type details
     public var earthFixBasedObservingFacilityRep: EarthFixBasedObservingFacilityRep?
 
-    // Arifacts of interest could be also on other solar system bodies (e.g. Apollo landing site)
-    public private(set) var artifacts = [ArtifactRep]()
-
     //MARK: - PolisPersisting implementation -
     public func canEdit() -> Bool {
         //TODO: Implement me!
@@ -109,7 +106,7 @@ open class ObservingFacilityRep: PersistentItem {
         // 0. Are we allowed to save and is there anything to change?
         if !hasChanges { return }
         if !canEdit()  { throw ObservingFacilityRepError.instanceCannotBeEdited }
-        
+
         // 1. Check if I am part of the facility directory, and if not - add myself
         let directoryEntry = manager.directoryEntryForFacilityWith(id: self.id)
 
@@ -162,37 +159,14 @@ open class ObservingFacilityRep: PersistentItem {
         //TODO: Implement me!
     }
 
-    //MARK: Working with artifacts
-    public func addArtifact(artifactType: PolisArtifact.ArtifactType, visitingOpportunities: String? = nil, media: MediaSourceRep? = nil) throws {
-        let artifactIdentity = PolisIdentity(id: UUID())
-        let reference        = try PolisReference(facilityID: self.id, polisObjectID: artifactIdentity.id, representingStoredObjectType: .artifact)
-        let artifact         = ArtifactRep(identity: artifactIdentity,
-                                           artifactType: artifactType,
-                                           visitingOpportunities: visitingOpportunities,
-                                           media: media,
-                                           facility: self)
-
-        artifact.persistenceReference = reference
-        artifacts.append(artifact)
-        try artifact.saveChanges()
-
-        if artifactIDs == nil { artifactIDs = [] }
-        artifactIDs!.insert(artifactIdentity.id)
-
-        nc.post(name: PolisProviderManager.StatusChangeNotification.facilityDidChangeNotification, object: nil)
-    }
-
-    public func removeArtifact(withID artifactID: UUID) throws {
-        //TODO: Implement me!
-    }
-
-
     //MARK: - Non-private APIs -
 
     var fixedSurfaceEarthBaseDetailsID: UUID?
     var mobileSurfaceEarthBaseDetailsID: UUID?
     var airborneEarthBaseDetailsID: UUID?
+
     var artifactIDs: Set<UUID>?
+    private(set) var artifacts: [ArtifactRep]?
 
     var detailsPersistenceReference: PolisReference!
 
@@ -310,6 +284,54 @@ open class ObservingFacilityRep: PersistentItem {
         }
         //TODO: Implement me!
         throw ObservingFacilityRepError.foundFacilityWithTypeMismatch
+    }
+}
+
+//MARK: Working with artifacts
+public extension ObservingFacilityRep {
+    // Arifacts of interest could be also on other solar system bodies (e.g. Apollo landing site)
+
+    func allArtifacts() throws -> [ArtifactRep] {
+        if artifacts == nil { artifacts = [] }
+        if let artifactIDs = artifactIDs {
+            if artifacts!.count != artifactIDs.count {
+                for artifactID in artifactIDs {
+
+                }
+            }
+        }
+
+        return artifacts!
+    }
+
+    func addArtifact(artifactType: PolisArtifact.ArtifactType, visitingOpportunities: String? = nil, media: MediaSourceRep? = nil) throws {
+        let artifactIdentity = PolisIdentity(id: UUID())
+        let reference        = try PolisReference(facilityID: self.id, polisObjectID: artifactIdentity.id, representingStoredObjectType: .artifact)
+        let artifact         = ArtifactRep(identity: artifactIdentity,
+                                           artifactType: artifactType,
+                                           visitingOpportunities: visitingOpportunities,
+                                           media: media,
+                                           facility: self)
+
+        artifact.persistenceReference = reference
+        artifacts!.append(artifact)
+        try artifact.saveChanges()
+
+        if artifactIDs == nil { artifactIDs = [] }
+        artifactIDs!.insert(artifactIdentity.id)
+
+        nc.post(name: PolisProviderManager.StatusChangeNotification.facilityDidChangeNotification, object: nil)
+    }
+
+    func removeArtifact(withID artifactID: UUID) throws {
+        //TODO: Implement me!
+    }
+
+    private func artifactWithID(_ artifactID: UUID) throws -> ArtifactRep? {
+        for artifact in try self.allArtifacts() {
+            if artifact.identity.id == artifactID { return artifact }
+        }
+        return nil
     }
 
 }
