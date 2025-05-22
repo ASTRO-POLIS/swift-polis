@@ -278,17 +278,16 @@ public extension PolisProviderManager {
         if !manager.ensureMinimalLocalPolisConfiguration() { throw PolisProviderManagerError.requiredPolisDataMissing }
         PolisProviderManager.currentProviderManager = manager
 
+
+        nc.post(name: StatusChangeNotification.providerWillLoadLocalDataNotification, object: manager)
+
+        // 0. Load the configuration data
         try manager.loadLocalConfiguration()
 #if DEBUG
         manager.localConfiguration.isEditable = true
 #else
         manager.localConfiguration.isEditable = isEditable
 #endif
-
-        nc.post(name: StatusChangeNotification.providerWillLoadLocalDataNotification, object: manager)
-
-        // 0. Load the configuration data
-        try manager.loadLocalConfiguration()
 
         // 1. Check and try to load the provider root
         manager.polisProviderConfigurationEntry = try PolisDirectory.ProviderDirectoryEntry.loadFromLocalFileSystemUsing(manager: manager) as? PolisDirectory.ProviderDirectoryEntry
@@ -301,7 +300,7 @@ public extension PolisProviderManager {
 
         // 4. Prepare the list of all currently available observing facilities
         for facility in manager.facilityDirectory!.observingFacilityReferences {
-//            let observingFacility = try ObservingFacilityRep.findOrRegisterObservingFacilityWith(identity: facility.identity)
+            let observingFacility = try ObservingFacilityRep.findOrRegisterObservingFacilityWith(identity: facility.identity)
         }
 
         // 5: Post a notification that the local copy is ready to be used and finalise

@@ -21,6 +21,7 @@ open class ObservingFacilityRep: PersistentItem {
         case unavailableOrUnreadableLocalData
         case cannotWritePolisFile
         case instanceCannotBeEdited
+        case providerManagerNotInitialized
     }
     
     /// Finds an existing or creates a new `ObservingFacility` instance of a corresponding type
@@ -37,23 +38,31 @@ open class ObservingFacilityRep: PersistentItem {
         gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
         placeInTheSolarSystem : PolisPlaceInTheSolarSystem                = .earth
     ) throws -> ObservingFacilityRep {
-        if let existingFacilityDirectoryEntry = PolisProviderManager.currentProviderManager?.directoryEntryForFacilityWith(id: identity.id) {
-            // So, this facility is already registered into the Facility Directory
-            if (existingFacilityDirectoryEntry.gravitationalBodyRelationship == .surfaceFixed) &&
-                (existingFacilityDirectoryEntry.placeInTheSolarSystem == .earth) {
-                // It seams this is an earth-based fixed facility
-                let facility = try ObservingFacilityRep(id: identity.id, lastUpdateDate: identity.lastUpdateDate, name: identity.name ?? "<unnamed>")
 
+        if let manager = PolisProviderManager.currentProviderManager {
 
+            if let existingFacilityDirectoryEntry = manager.directoryEntryForFacilityWith(id: identity.id) {
+                // So, this facility is already registered into the Facility Directory
+                if (existingFacilityDirectoryEntry.gravitationalBodyRelationship == .surfaceFixed) &&
+                    (existingFacilityDirectoryEntry.placeInTheSolarSystem == .earth) {
+                    // It seams this is an earth-based fixed facility
+                    let facility = try ObservingFacilityRep(id: identity.id, lastUpdateDate: identity.lastUpdateDate, name: identity.name ?? "<unnamed>")
+
+                    facility.facilityType = .fixedEarthBased
+                    manager.facilities.append(facility)
+
+                    return facility
+                }
+                else { throw ObservingFacilityRepError.foundFacilityWithTypeMismatch }
+            }
+            else {
+                return try ObservingFacilityRep.createObservingFacilityWith(identity: identity,
+                                                                            gravitationalBodyRelationship: gravitationalBodyRelationship,
+                                                                            placeInTheSolarSystem: placeInTheSolarSystem)
             }
         }
-        else {
-            return try ObservingFacilityRep.createObservingFacilityWith(identity: identity,
-                                                                        gravitationalBodyRelationship: gravitationalBodyRelationship,
-                                                                        placeInTheSolarSystem: placeInTheSolarSystem)
-        }
+        else { throw ObservingFacilityRepError.providerManagerNotInitialized }
         //TODO: Implement other facility types when framework provides support for them.
-        throw ObservingFacilityRepError.foundFacilityWithTypeMismatch
     }
 
     /// Defines the facility type based on the values of `gravitationalBodyRelationship` and `placeInTheSolarSystem`
