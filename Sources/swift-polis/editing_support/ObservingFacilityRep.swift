@@ -106,8 +106,9 @@ open class ObservingFacilityRep: PersistentItem {
     }
 
     public func saveChanges() throws {
-        // 0. Are we allowed to save?
-        if !canEdit() { throw ObservingFacilityRepError.instanceCannotBeEdited }
+        // 0. Are we allowed to save and is there anything to change?
+        if !hasChanges { return }
+        if !canEdit()  { throw ObservingFacilityRepError.instanceCannotBeEdited }
         
         // 1. Check if I am part of the facility directory, and if not - add myself
         let directoryEntry = manager.directoryEntryForFacilityWith(id: self.id)
@@ -240,6 +241,7 @@ open class ObservingFacilityRep: PersistentItem {
         try super.init(id: id, lastUpdateDate: lastUpdateDate, name: name)
 
         detailsPersistenceReference = try PolisReference(facilityID: identity.id, polisObjectID: identity.id)
+        setHasChanges()
     }
 
     func ensureFacilityFolderDoesExist() async throws {

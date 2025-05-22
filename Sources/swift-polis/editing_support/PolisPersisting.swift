@@ -53,6 +53,7 @@ public protocol PolisPersisting: Identifiable {
     /// Returns the result of the comparison between the locally stored POLIS item and the corresponding in-memory representation
     func didChange() -> Bool
 
+    func setHasChanges(_ hasChanges: Bool)
 }
 
 /// `PersistentItem` is an abstract tat should be always subclassed by all in-memory objects
@@ -81,6 +82,8 @@ open class PersistentItem: PolisPersisting {
     public var lifecycleStatus: PolisLifecycleStatus = PolisLifecycleStatus.unknown
     public var mediaSourceID: UUID?
 
+    public func setHasChanges(_ hasChanges: Bool = true) { self.hasChanges = hasChanges }
+
     //MARK: Non-public API
 
     // Used by subclasses
@@ -90,6 +93,8 @@ open class PersistentItem: PolisPersisting {
     var jsonEncoder     = PrettyJSONEncoder()
     var jsonDecoder     = PrettyJSONDecoder()
     var jsonData: Data!
+
+    var hasChanges      = false
 
     // Persistence support
 //    var persistenceReference: PolisReference!
@@ -175,6 +180,8 @@ open class PersistentAuxiliaryItem: PolisPersisting {
     var jsonDecoder     = PrettyJSONDecoder()
     var jsonData: Data!
 
+    var hasChanges      = false
+    
     /// Designated initialiser
     init(id: UUID, lastUpdateDate: Date = Date(), name: String) {
         self.id             = id
@@ -219,7 +226,7 @@ extension PolisPersisting {
     public func loadData() throws { }
 
     public func didChange() -> Bool { false }
-
+    public func setHasChanges(_ hasChanges: Bool = true) { }
 }
 
 

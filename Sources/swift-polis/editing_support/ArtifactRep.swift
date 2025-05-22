@@ -45,6 +45,11 @@ open class ArtifactRep: PersistentAuxiliaryItem {
             }
             persistenceReference.hasLocalCopy = true
 
+            if facility.artifactIDs == nil { facility.artifactIDs = Set<UUID>() }
+            facility.artifactIDs!.insert(identity.id)
+            facility.setHasChanges()
+            try facility.saveChanges()
+            
             nc.post(name: PolisProviderManager.StatusChangeNotification.artifactDidCreateNotification, object: self)
         }
         //TODO: Implement me!

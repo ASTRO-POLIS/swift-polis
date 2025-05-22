@@ -124,6 +124,7 @@ final class PolisProviderManagerTests: XCTestCase {
 
         facilityRep.website = URL(string: "https://www.example.com")
 
+        //TODO: Add proper Artefact example!
         try facilityRep.addArtifact(artifactType: PolisArtifact.ArtifactType.monument, visitingOpportunities: "Every day opened")
         try facilityRep.saveChanges()
 

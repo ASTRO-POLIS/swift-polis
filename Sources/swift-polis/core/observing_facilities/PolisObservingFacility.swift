@@ -97,6 +97,7 @@ public extension PolisObservingFacility {
         case fixedSurfaceEarthBaseDetailsID           = "fixed_surface_earth_base_details_id"
         case mobileSurfaceEarthBaseDetailsID          = "mobile_surface_earth_base_details_id"
         case airborneEarthBaseDetailsID               = "airborne_earth_base_details_id"
+        case artifactIDs                              = "artifact_ids"
     }
 }
 
