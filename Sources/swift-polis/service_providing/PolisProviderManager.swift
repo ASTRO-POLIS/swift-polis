@@ -298,10 +298,12 @@ public extension PolisProviderManager {
         // 3. Check and try to load the facility directory
         manager.facilityDirectory = try PolisObservingFacilityDirectory.loadFromLocalFileSystemUsing(manager: manager) as? PolisObservingFacilityDirectory
 
-        // 4. Prepare the list of all currently available observing facilities
+        // 4. Prepare the list of all currently available observing facilities and schedule loading
         for facility in manager.facilityDirectory!.observingFacilityReferences {
             let observingFacility = try ObservingFacilityRep.findOrRegisterObservingFacilityWith(identity: facility.identity)
+            manager.scheduleForLoading(observingFacility)
         }
+        try manager.startLoading()
 
         // 5: Post a notification that the local copy is ready to be used and finalise
         isConfigured = true
@@ -377,6 +379,21 @@ public extension PolisProviderManager {
             if anEntry.id == id { return anEntry }
         }
         return nil
+    }
+}
+
+//MARK: - Async loading of data -
+public extension PolisProviderManager {
+    func scheduleForLoading(_ item: any PolisPersisting) {
+        Task {
+            await PolisLocalDataLoader.shared.scheduleForLoading(item)
+        }
+    }
+
+    func startLoading() throws {
+        Task {
+           try await PolisLocalDataLoader.shared.startLoading()
+        }
     }
 }
 

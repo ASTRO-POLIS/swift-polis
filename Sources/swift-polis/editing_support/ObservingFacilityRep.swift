@@ -150,6 +150,7 @@ open class ObservingFacilityRep: PersistentItem {
         jsonData = fm.contents(atPath: myDataPath)
         if let jsonData = jsonData {
             let observingFacility = try JSONDecoder().decode(PolisObservingFacility.self, from: jsonData)
+            self.facilityDetails = observingFacility
         }
         //TODO: Implement me!
     }
@@ -296,7 +297,7 @@ public extension ObservingFacilityRep {
         if let artifactIDs = artifactIDs {
             if artifacts!.count != artifactIDs.count {
                 for artifactID in artifactIDs {
-
+                    //TODO: Implement me!
                 }
             }
         }
@@ -304,16 +305,17 @@ public extension ObservingFacilityRep {
         return artifacts!
     }
 
-    func addArtifact(artifactType: PolisArtifact.ArtifactType, visitingOpportunities: String? = nil, media: MediaSourceRep? = nil) throws {
+    func addArtifact(artifactType: PolisArtifact.ArtifactType, visitingOpportunities: String? = nil, mediaID: UUID? = nil) throws {
         let artifactIdentity = PolisIdentity(id: UUID())
         let reference        = try PolisReference(facilityID: self.id, polisObjectID: artifactIdentity.id, representingStoredObjectType: .artifact)
-        let artifact         = ArtifactRep(identity: artifactIdentity,
-                                           artifactType: artifactType,
-                                           visitingOpportunities: visitingOpportunities,
-                                           media: media,
-                                           facility: self)
+        let artifact         = try ArtifactRep(identity: artifactIdentity,
+                                               artifactType: artifactType,
+                                               visitingOpportunities: visitingOpportunities,
+                                               mediaID: mediaID,
+                                               facility: self)
 
         artifact.persistenceReference = reference
+        if artifacts == nil { artifacts = [] }
         artifacts!.append(artifact)
         try artifact.saveChanges()
 

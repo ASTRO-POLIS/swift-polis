@@ -7,6 +7,6 @@
 
 import Foundation
 
-open class ObservatoryRep: PersistentAuxiliaryItem {
+open class ObservatoryRep: SimplePersistentItem {
 
 }

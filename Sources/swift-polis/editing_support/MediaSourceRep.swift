@@ -7,6 +7,6 @@
 
 import Foundation
 
-open class MediaSourceRep: PersistentAuxiliaryItem {
+open class MediaSourceRep: SimplePersistentItem {
 
 }
