@@ -22,6 +22,8 @@ final class PolisProviderManagerTests: XCTestCase {
 
     var facilityReferenceWillCreateExpectation: XCTNSNotificationExpectation!
     var facilityReferenceDidCreateExpectation: XCTNSNotificationExpectation!
+    var facilityInfoWillLoadExpectation: XCTNSNotificationExpectation!
+    var facilityInfoDidLoadExpectation: XCTNSNotificationExpectation!
 
     var facilityInfoWillCreateExpectation: XCTNSNotificationExpectation!
     var facilityInfoDidCreateExpectation: XCTNSNotificationExpectation!
@@ -48,6 +50,8 @@ final class PolisProviderManagerTests: XCTestCase {
 
         facilityReferenceWillCreateExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.facilityReferenceWillCreateNotification)
         facilityReferenceDidCreateExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.facilityReferenceDidCreateNotification)
+        facilityInfoWillLoadExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.facilityInfoWillLoadNotification)
+        facilityInfoDidLoadExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.facilityInfoDidLoadNotification)
 
         facilityInfoWillCreateExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.facilityInfoWillCreateNotification)
         facilityInfoDidCreateExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.facilityInfoDidCreateNotification)
@@ -111,7 +115,7 @@ final class PolisProviderManagerTests: XCTestCase {
         await fulfillment(of: [providerWillCreateExpectation, providerDidCreateExpectation,
                                facilityReferenceWillCreateExpectation, facilityReferenceDidCreateExpectation,
                                facilityInfoWillCreateExpectation, facilityInfoDidCreateExpectation,
-                               artifactWillCreateExpectation, artifactDidCreateExpectation,artifactWillCreateNotification
+                               artifactWillCreateExpectation, artifactDidCreateExpectation,
                               ],
                           timeout: 5,
                           enforceOrder: true)
@@ -138,7 +142,8 @@ final class PolisProviderManagerTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(sut.facilityDirectory)
-        await fulfillment(of: [providerWillLoadLocalDataExpectation, providerDidLoadLocalDataExpectation,],
+        await fulfillment(of: [providerWillLoadLocalDataExpectation, providerDidLoadLocalDataExpectation,
+                               facilityInfoWillLoadExpectation, facilityInfoDidLoadExpectation, ],
                           timeout: 5,
                           enforceOrder: true)
    }

@@ -27,10 +27,11 @@ actor PolisLocalDataLoader {
     }
 
     //MARK: Private APIs
+    private let nc = NotificationCenter.default
     private var localPolisDataToLoad = [any PolisPersisting]()
 
     private func postWillLoadNotification(item: any PolisPersisting) {
-        if      let item = item as? ObservingFacilityRep { }
+        if      let item = item as? ObservingFacilityRep { nc.post(name: PolisProviderManager.StatusChangeNotification.facilityInfoWillLoadNotification, object: item) }
         else if let item = item as? EarthFixBasedObservingFacilityRep { }
         else if let item = item as? ObservatoryRep { }
         else if let item = item as? DeviceRep { }
@@ -40,7 +41,7 @@ actor PolisLocalDataLoader {
    }
 
     private func postDidLoadNotification(item: any PolisPersisting) {
-        if      let item = item as? ObservingFacilityRep { }
+        if      let item = item as? ObservingFacilityRep { nc.post(name: PolisProviderManager.StatusChangeNotification.facilityInfoDidLoadNotification, object: item) }
         else if let item = item as? EarthFixBasedObservingFacilityRep { }
         else if let item = item as? ObservatoryRep { }
         else if let item = item as? DeviceRep { }

@@ -89,8 +89,8 @@ open class PolisProviderManager {
         // Facility detail (info) reference related
         public static let facilityInfoWillCreateNotification    = Notification.Name("facilityInfoWillCreate")    // ✅ Object is nil
         public static let facilityInfoDidCreateNotification     = Notification.Name("facilityInfoDidCreate")     // ✅ Object is the ObservingFacilityRep
-        public static let facilityInfoWillLoadNotification      = Notification.Name("facilityInfoWillLoad")      // Object nil
-        public static let facilityInfoDidLoadNotification       = Notification.Name("facilityInfoDidLoad")       // Object is the ObservingFacilityRep
+        public static let facilityInfoWillLoadNotification      = Notification.Name("facilityInfoWillLoad")      // ✅ Object nil
+        public static let facilityInfoDidLoadNotification       = Notification.Name("facilityInfoDidLoad")       // ✅ Object is the ObservingFacilityRep
 
         public static let facilityDetailWillLoadNotification    = Notification.Name("facilityDetailWillLoad")    // Object ObservingFacilityRep
         public static let facilityDetailDidLoadNotification     = Notification.Name("facilityDetailDidLoad")     // Object is the ObservingFacilityRep
