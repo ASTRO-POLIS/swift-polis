@@ -15,8 +15,8 @@ final class PolisProviderManagerTests: XCTestCase {
     //MARK: - Setup & Teardown -
     var config: PolisProviderConfiguration!
 
-    var providerWillCreateNotificationExpectation: XCTNSNotificationExpectation!
-    var providerDidCreateNotificationExpectation: XCTNSNotificationExpectation!
+    var providerWillCreateExpectation: XCTNSNotificationExpectation!
+    var providerDidCreateExpectation: XCTNSNotificationExpectation!
     var providerWillLoadLocalDataExpectation: XCTNSNotificationExpectation!
     var providerDidLoadLocalDataExpectation: XCTNSNotificationExpectation!
 
@@ -41,8 +41,8 @@ final class PolisProviderManagerTests: XCTestCase {
         try super.setUpWithError()
         print("In setUp.")
 
-        providerWillCreateNotificationExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerWillCreateNotification)
-        providerDidCreateNotificationExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerDidCreateNotification)
+        providerWillCreateExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerWillCreateNotification)
+        providerDidCreateExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerDidCreateNotification)
         providerWillLoadLocalDataExpectation      = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerWillLoadLocalDataNotification)
         providerDidLoadLocalDataExpectation       = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerDidLoadLocalDataNotification)
 
@@ -108,10 +108,11 @@ final class PolisProviderManagerTests: XCTestCase {
         XCTAssertEqual(facilityRepCount, 1)
 
         //TODO: Move this when testing Earth-based facility
-        await fulfillment(of: [providerWillCreateNotificationExpectation, providerDidCreateNotificationExpectation,
+        await fulfillment(of: [providerWillCreateExpectation, providerDidCreateExpectation,
                                facilityReferenceWillCreateExpectation, facilityReferenceDidCreateExpectation,
-                               /*facilityInfoWillCreateExpectation, facilityInfoDidCreateExpectation,*/
-                               artifactWillCreateExpectation, artifactDidCreateExpectation,],
+                               facilityInfoWillCreateExpectation, facilityInfoDidCreateExpectation,
+                               artifactWillCreateExpectation, artifactDidCreateExpectation,artifactWillCreateNotification
+                              ],
                           timeout: 5,
                           enforceOrder: true)
     }

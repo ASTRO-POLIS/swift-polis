@@ -247,10 +247,12 @@ open class ObservingFacilityRep: PersistentItem {
             result.abbreviation         = identity.abbreviation
             result.shortDescription     = identity.shortDescription
             result.startDate            = identity.startDate
+            result.nc.post(name: PolisProviderManager.StatusChangeNotification.facilityReferenceDidCreateNotification, object: result)
 
+            result.nc.post(name: PolisProviderManager.StatusChangeNotification.facilityInfoWillCreateNotification, object: nil)
             try result.saveChanges()
             try manager?.facilityDirectory.flashUsing(manager: manager!)
-            result.nc.post(name: PolisProviderManager.StatusChangeNotification.facilityReferenceDidCreateNotification, object: nil)
+            result.nc.post(name: PolisProviderManager.StatusChangeNotification.facilityInfoDidCreateNotification, object: result)
 
             return result
         }

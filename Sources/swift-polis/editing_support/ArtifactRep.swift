@@ -52,6 +52,9 @@ open class ArtifactRep: SimplePersistentItem {
 
             nc.post(name: PolisProviderManager.StatusChangeNotification.artifactDidCreateNotification, object: self)
         }
+        else {  // Overwrite data
+            //TODO: Implement me!
+        }
     }
 
     public func revertToSaved() throws {
