@@ -131,9 +131,11 @@ open class ObservingFacilityRep: PersistentItem {
         if !fm.createFile(atPath: detailsPersistenceReference.localPath, contents: jsonData) {
             throw ObservingFacilityRepError.cannotWritePolisFile
         }
-        detailsPersistenceReference.hasLocalCopy = true
 
-        //TODO: Implement me!
+        detailsPersistenceReference.hasLocalCopy                     = true
+        detailsPersistenceReference.dataStatus.existenceStatusLocal  = .created
+        detailsPersistenceReference.dataStatus.existenceStatusRemote = .notCreated
+        detailsPersistenceReference.dataStatus.loadingStatus         = .loadedNotSynced
     }
 
     public func revertToSaved() throws {
@@ -152,7 +154,10 @@ open class ObservingFacilityRep: PersistentItem {
             let observingFacility = try JSONDecoder().decode(PolisObservingFacility.self, from: jsonData)
             self.facilityDetails = observingFacility
         }
-        //TODO: Implement me!
+        detailsPersistenceReference.hasLocalCopy                     = true
+        detailsPersistenceReference.dataStatus.existenceStatusLocal  = .created
+        detailsPersistenceReference.dataStatus.existenceStatusRemote = .unknown
+        detailsPersistenceReference.dataStatus.loadingStatus         = .loadedNotSynced
     }
 
     public func didChange() -> Bool {

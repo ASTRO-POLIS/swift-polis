@@ -26,7 +26,7 @@ struct PolisReference {
     enum DataLoadingStatus {
         case unknown
         case notLoaded
-        case LoadedNotSynced
+        case loadedNotSynced
         case loadedSynced
     }
 
