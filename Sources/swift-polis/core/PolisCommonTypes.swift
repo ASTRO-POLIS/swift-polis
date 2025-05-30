@@ -10,6 +10,7 @@ import Foundation
 /// Defines the type to be used where to store local data the stored data
 public enum PolisRepresentingStoredObjectType: Int, CaseIterable {
     case observingFacility // Cannot be shared, this is the facility Info (Details)
+    case place             // Cannot be shared
     case observatory       // Can be shared
     case device            // Can be shared
     case artifact          // Cannot be shared

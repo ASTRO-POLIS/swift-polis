@@ -45,8 +45,8 @@ final class PolisProviderManagerTests: XCTestCase {
 
         providerWillCreateExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerWillCreateNotification)
         providerDidCreateExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerDidCreateNotification)
-        providerWillLoadLocalDataExpectation      = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerWillLoadLocalDataNotification)
-        providerDidLoadLocalDataExpectation       = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerDidLoadLocalDataNotification)
+        providerWillLoadLocalDataExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerWillLoadLocalDataNotification)
+        providerDidLoadLocalDataExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerDidLoadLocalDataNotification)
 
         facilityReferenceWillCreateExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.facilityReferenceWillCreateNotification)
         facilityReferenceDidCreateExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.facilityReferenceDidCreateNotification)

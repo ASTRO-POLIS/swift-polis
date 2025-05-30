@@ -178,13 +178,15 @@ struct TestingSupport {
     }
     
     static func exampleFixedSurfaceEarthBaseDetails() -> PolisFixedSurfaceEarthBaseDetails {
-        PolisFixedSurfaceEarthBaseDetails(facility: exampleObservingFacility(),
-                                          location: examplePolisPlace(),
-                                          visitingHours: nil,                                                 //FIXME: more data
-                                          averageClearNightsPerYear: 211,
-                                          averageSeeingConditions: nil,                                       //FIXME: more data
-                                          traditionalLandOwners: "A Ferengi tribe",
-                                          dominantWindDirection: PolisDirection.RoughDirection.eastNorthEast,
-                                          surfaceSize:  nil)                                                  //FIXME: more data
+        let parent        = exampleObservingFacility()
+        let fixedFacility = PolisFixedSurfaceEarthBaseDetails(facilityID: parent.id,
+                                                              visitingHoursID: nil,                                               //FIXME: more data
+                                                              averageClearNightsPerYear: 211,
+                                                              averageSeeingConditions: nil,                                       //FIXME: more data
+                                                              traditionalLandOwners: "A Ferengi tribe",
+                                                              dominantWindDirection: PolisDirection.RoughDirection.eastNorthEast,
+                                                              surfaceSize:  nil)                                                  //FIXME: more data
+
+        return fixedFacility
     }
 }

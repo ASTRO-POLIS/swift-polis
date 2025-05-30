@@ -9,12 +9,13 @@ import Foundation
 
 public struct PolisFixedSurfaceEarthBaseDetails: Identifiable, Codable, StorableItem, Equatable {
 
-    public var location: PolisPlace?
-
     // General info
     public var id: UUID
-    public var facility: PolisObservingFacility
-    public var visitingHours: PolisVisitingHours?
+    public var lastUpdateDate: Date
+    public var facilityID: UUID
+
+    // For visitors
+    public var visitingHoursID: UUID?
     public var accessRestrictions: String?
 
     public var averageClearNightsPerYear: UInt?
@@ -29,9 +30,9 @@ public struct PolisFixedSurfaceEarthBaseDetails: Identifiable, Codable, Storable
     public var placeID: UUID?
 
     public init(id: UUID                                              = UUID(),
-                facility: PolisObservingFacility,
-                location: PolisPlace?                                 = nil,
-                visitingHours: PolisVisitingHours?                    = nil,
+                lastUpdateDate: Date                                  = Date.now,
+                facilityID: UUID,
+                visitingHoursID: UUID?                                = nil,
                 averageClearNightsPerYear: UInt?                      = nil,
                 averageSeeingConditions: PolisPropertyValue?          = nil,
                 traditionalLandOwners: String?                        = nil,
@@ -39,9 +40,9 @@ public struct PolisFixedSurfaceEarthBaseDetails: Identifiable, Codable, Storable
                 surfaceSize: PolisPropertyValue?                      = nil,
                 placeID: UUID?                                        = nil) {
         self.id                        = id
-        self.facility                  = facility
-        self.location                  = location
-        self.visitingHours             = visitingHours
+        self.lastUpdateDate            = lastUpdateDate
+        self.facilityID                = facilityID
+        self.visitingHoursID           = visitingHoursID
         self.averageClearNightsPerYear = averageClearNightsPerYear
         self.averageSeeingConditions   = averageSeeingConditions
         self.traditionalLandOwners     = traditionalLandOwners
@@ -54,9 +55,9 @@ public struct PolisFixedSurfaceEarthBaseDetails: Identifiable, Codable, Storable
 public extension PolisFixedSurfaceEarthBaseDetails {
     enum CodingKeys: String, CodingKey {
         case id
-        case facility
-        case location
-        case visitingHours             = "visiting_hours"
+        case lastUpdateDate            = "last_update_date"
+        case facilityID                = "facility_id"
+        case visitingHoursID           = "visiting_hours_id"
         case accessRestrictions        = "access_restrictions"
         case averageClearNightsPerYear = "average_clear_nights_per_year"
         case averageSeeingConditions   = "average_seeing_conditions"
@@ -94,6 +95,6 @@ extension PolisFixedSurfaceEarthBaseDetails {
 
     func facilityPath() -> String {
         let manager = PolisProviderManager.currentProviderManager!
-        return manager.polisFileResourceFinder.observingFacilityFolder(observingFacilityID: facility.item.identity.id)
+        return manager.polisFileResourceFinder.observingFacilityFolder(observingFacilityID: facilityID)
     }
 }

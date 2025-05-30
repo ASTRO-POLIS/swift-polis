@@ -56,22 +56,13 @@ public protocol PolisPersisting: Identifiable {
     func setHasChanges(_ hasChanges: Bool)
 }
 
-open class SimplePersistentItem: PolisPersisting {
+open class IdentifiablePersistentItem: PolisPersisting {
     // PolisPersisting
     public var manager: PolisProviderManager!
     public var synchronisationProvider: PolisRemoteSynchronisationProviding?
 
-    // Polis Identity defined
     public var id: UUID
-    public var externalReferences: [String]?
     public var lastUpdateDate: Date
-    public var name: String
-    public var localName: String?
-    public var abbreviation: String?
-    public var shortDescription: String?
-    public var startDate: Date?
-    public var endDate: Date?
-    public var polisRegistrationDate: Date?
 
     // Persistence support
     var persistenceReference: PolisReference!
@@ -85,12 +76,29 @@ open class SimplePersistentItem: PolisPersisting {
 
     var hasChanges      = false
 
-    /// Designated initialiser
-    init(id: UUID, lastUpdateDate: Date = Date(), name: String) throws {
+    init(id: UUID, lastUpdateDate: Date) throws {
         self.id             = id
         self.lastUpdateDate = lastUpdateDate
-        self.name           = name
         manager             = PolisProviderManager.currentProviderManager!
+    }
+}
+
+open class SimplePersistentItem: IdentifiablePersistentItem {
+
+    // Polis Identity defined
+    public var externalReferences: [String]?
+    public var name: String
+    public var localName: String?
+    public var abbreviation: String?
+    public var shortDescription: String?
+    public var startDate: Date?
+    public var endDate: Date?
+    public var polisRegistrationDate: Date?
+
+    /// Designated initialiser
+    init(id: UUID, lastUpdateDate: Date = Date(), name: String) throws {
+        self.name = name
+        try super.init(id: id, lastUpdateDate: lastUpdateDate)
     }
 
     var identity: PolisIdentity {
