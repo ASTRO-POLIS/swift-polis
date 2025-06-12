@@ -22,6 +22,8 @@ final class PolisProviderManagerTests: XCTestCase {
 
     var facilityReferenceWillCreateExpectation: XCTNSNotificationExpectation!
     var facilityReferenceDidCreateExpectation: XCTNSNotificationExpectation!
+    var facilityInfoWillSaveExpectation: XCTNSNotificationExpectation!
+    var facilityInfoDidSaveExpectation: XCTNSNotificationExpectation!
     var facilityInfoWillLoadExpectation: XCTNSNotificationExpectation!
     var facilityInfoDidLoadExpectation: XCTNSNotificationExpectation!
 
@@ -43,21 +45,23 @@ final class PolisProviderManagerTests: XCTestCase {
         try super.setUpWithError()
         print("In setUp.")
 
-        providerWillCreateExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerWillCreateNotification)
-        providerDidCreateExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerDidCreateNotification)
-        providerWillLoadLocalDataExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerWillLoadLocalDataNotification)
-        providerDidLoadLocalDataExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.providerDidLoadLocalDataNotification)
+        providerWillCreateExpectation = XCTNSNotificationExpectation(name: StatusChangeNotification.providerWillCreateNotification)
+        providerDidCreateExpectation  = XCTNSNotificationExpectation(name: StatusChangeNotification.providerDidCreateNotification)
+        providerWillLoadLocalDataExpectation = XCTNSNotificationExpectation(name: StatusChangeNotification.providerWillLoadLocalDataNotification)
+        providerDidLoadLocalDataExpectation  = XCTNSNotificationExpectation(name: StatusChangeNotification.providerDidLoadLocalDataNotification)
 
-        facilityReferenceWillCreateExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.facilityReferenceWillCreateNotification)
-        facilityReferenceDidCreateExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.facilityReferenceDidCreateNotification)
-        facilityInfoWillLoadExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.facilityInfoWillLoadNotification)
-        facilityInfoDidLoadExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.facilityInfoDidLoadNotification)
+        facilityReferenceWillCreateExpectation = XCTNSNotificationExpectation(name: StatusChangeNotification.facilityReferenceWillCreateNotification)
+        facilityReferenceDidCreateExpectation  = XCTNSNotificationExpectation(name: StatusChangeNotification.facilityReferenceDidCreateNotification)
+        facilityInfoWillSaveExpectation = XCTNSNotificationExpectation(name: StatusChangeNotification.facilityInfoWillSaveNotification)
+        facilityInfoDidSaveExpectation  = XCTNSNotificationExpectation(name: StatusChangeNotification.facilityInfoDidSaveNotification)
+        facilityInfoWillLoadExpectation = XCTNSNotificationExpectation(name: StatusChangeNotification.facilityInfoWillLoadNotification)
+        facilityInfoDidLoadExpectation  = XCTNSNotificationExpectation(name: StatusChangeNotification.facilityInfoDidLoadNotification)
 
-        facilityInfoWillCreateExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.facilityInfoWillCreateNotification)
-        facilityInfoDidCreateExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.facilityInfoDidCreateNotification)
+        facilityInfoWillCreateExpectation = XCTNSNotificationExpectation(name: StatusChangeNotification.facilityInfoWillCreateNotification)
+        facilityInfoDidCreateExpectation  = XCTNSNotificationExpectation(name: StatusChangeNotification.facilityInfoDidCreateNotification)
 
-        artifactWillCreateExpectation = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.artifactWillCreateNotification)
-        artifactDidCreateExpectation  = XCTNSNotificationExpectation(name: PolisProviderManager.StatusChangeNotification.artifactDidCreateNotification)
+        artifactWillCreateExpectation = XCTNSNotificationExpectation(name: StatusChangeNotification.artifactWillCreateNotification)
+        artifactDidCreateExpectation  = XCTNSNotificationExpectation(name: StatusChangeNotification.artifactDidCreateNotification)
     }
 
     override func tearDownWithError() throws {
@@ -80,7 +84,7 @@ final class PolisProviderManagerTests: XCTestCase {
 
         let manager  = try PolisProviderManager.createLocalProviderWith(configuration: config, isExperimentalVersion: true)
         let facility = try ObservingFacilityRep.findOrRegisterObservingFacilityWith(identity: TestingSupport.examplePolisIdentityBAO())
-        try facility.addArtifact(artifactType: PolisArtifact.ArtifactType.monument, visitingOpportunities: "Every day opened")
+        try _ = facility.addArtifact(artifactType: PolisArtifact.ArtifactType.monument, visitingOpportunities: "Every day opened")
 
         PolisProviderManager.currentProviderManager = nil
     }
@@ -99,7 +103,7 @@ final class PolisProviderManagerTests: XCTestCase {
 
         facilityRep.website = URL(string: "https://www.example.com")
 
-        try facilityRep.addArtifact(artifactType: PolisArtifact.ArtifactType.monument, visitingOpportunities: "Every day opened")
+        try _ = facilityRep.addArtifact(artifactType: PolisArtifact.ArtifactType.monument, visitingOpportunities: "Every day opened")
         try facilityRep.saveChanges()
 
         // Then
@@ -130,7 +134,7 @@ final class PolisProviderManagerTests: XCTestCase {
         facilityRep.website = URL(string: "https://www.example.com")
 
         //TODO: Add proper Artefact example!
-        try facilityRep.addArtifact(artifactType: PolisArtifact.ArtifactType.monument, visitingOpportunities: "Every day opened")
+        try _ = facilityRep.addArtifact(artifactType: PolisArtifact.ArtifactType.monument, visitingOpportunities: "Every day opened")
         try facilityRep.saveChanges()
 
         PolisProviderManager.prepareForTesting()
@@ -143,6 +147,7 @@ final class PolisProviderManagerTests: XCTestCase {
         // Then
         XCTAssertNotNil(sut.facilityDirectory)
         await fulfillment(of: [providerWillLoadLocalDataExpectation, providerDidLoadLocalDataExpectation,
+                               /*facilityInfoWillSaveExpectation, facilityInfoDidSaveExpectation,*/
                                facilityInfoWillLoadExpectation, facilityInfoDidLoadExpectation, ],
                           timeout: 5,
                           enforceOrder: true)

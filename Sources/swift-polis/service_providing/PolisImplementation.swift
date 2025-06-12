@@ -4,7 +4,7 @@
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
-// Copyright (c) 2021-2024 Tuparev Technologies and the ASTRO-POLIS project
+// Copyright (c) 2021-2025 Tuparev Technologies and the ASTRO-POLIS project
 // authors.
 // Licensed under MIT License Modern Variant
 //
@@ -18,10 +18,10 @@
 import Foundation
 import SoftwareEtudesUtilities
 
-/// `PolisImplementation` combines supported data format, API level, and version in a single struct
+/// `PolisImplementation` combines supported data formats, API level, and version in a single struct
 ///
 /// This information is an integral part of the POLIS Service Provider. It is assumed that different clients on
-/// different platforms depend on different combinations of data format, API level, and version. Nevertheless, each
+/// different platforms depend on different combinations of data formats, API levels, and versions. Nevertheless, each
 /// client should be able to search for a service provider that supports its concrete requirements. In addition, every
 /// POLIS Service Provider should be able to maintain the correct list of implementation variants for every other
 /// `public` or `mirror` provider. Only `experimental` Service Providers should be allowed to implement unsupported
@@ -64,17 +64,15 @@ public struct PolisImplementation: Codable, Equatable  {
         case dynamicScheduling = "dynamic_scheduling"
     }
 
-    /// This is used to select the oldest supported implementation info in order to provide default data whenever needed
+    /// This is used to select the latest supported implementation info in order to provide default data whenever needed
     ///
     ///  **Note:** The method assumes that the POLIS Service Provider implements at least one Implementation. Otherwise bad things will happen
-    public static func oldestSupportedImplementation() -> PolisImplementation {
+    public static func latestSupportedImplementation() -> PolisImplementation {
         var currentImplementation: PolisImplementation?
 
         for info in PolisConstants.frameworkSupportedImplementation {
             if currentImplementation != nil {
-                if (currentImplementation!.version > info.version) &&
-                    (currentImplementation!.apiSupport > info.apiSupport) &&
-                    ((currentImplementation!.dataFormat == .xml) && (info.dataFormat == .json)) {
+                if (currentImplementation!.version > info.version) && (currentImplementation!.apiSupport > info.apiSupport) {
                     currentImplementation = info
                 }
             }
@@ -85,6 +83,7 @@ public struct PolisImplementation: Codable, Equatable  {
     }
 
 
+    //MARK: - Private APIs -
     public var dataFormat: DataFormat
     public var apiSupport: APILevel
     public var version: SemanticVersion
@@ -121,7 +120,6 @@ public extension PolisImplementation {
 // This makes `PolisImplementation` Equatable
 extension PolisImplementation: Hashable {
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(dataFormat)
         hasher.combine(apiSupport)
         hasher.combine(version.description)
     }

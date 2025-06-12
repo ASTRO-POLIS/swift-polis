@@ -34,7 +34,7 @@ final class PolisServiceProviderTests: XCTestCase {
     "reachability_status": "reachable_and_responsive",
     "name": "Telescope Observer",
     "short_description": "The Big Bank Source",
-    "last_update": "2023-07-22T12:10:06Z",
+    "last_update_time": "2023-07-22T12:10:06Z",
     "url": "https://polis.net",
     "supported_implementations": [
         {
@@ -156,7 +156,7 @@ final class PolisServiceProviderTests: XCTestCase {
                                                              url: "https://polis.net",
                                                              supportedImplementations: [PolisConstants.frameworkSupportedImplementation.last!],
                                                              providerType: .mirror,
-                                                             contact: TestingSupport.examplePerson())
+                                                             contact: StaticDataTypeTestingSupport.examplePerson())
 
         // When
         data   = try? jsonEncoder.encode(sut)
@@ -179,7 +179,7 @@ final class PolisServiceProviderTests: XCTestCase {
                                                                    url: "https://polis.net",
                                                                    supportedImplementations: [PolisConstants.frameworkSupportedImplementation.last!],
                                                                    providerType: .mirror,
-                                                                   contact: TestingSupport.examplePerson())
+                                                                   contact: StaticDataTypeTestingSupport.examplePerson())
         let sut       = PolisDirectory(providerDirectoryEntries: [sut_entry!])
 
         // When
@@ -193,7 +193,7 @@ final class PolisServiceProviderTests: XCTestCase {
     func test_ObservingFacilityReference_codingSupport_shouldSucceed() throws {
         // Given
         let identity = PolisIdentity(externalReferences: ["1234", "6539"],
-                                     lastUpdateDate: Date(),
+                                     lastUpdateTime: Date(),
                                      name: "TestAttributes",
                                      abbreviation: "abc",
                                      shortDescription: "Testing attributes")
@@ -210,12 +210,12 @@ final class PolisServiceProviderTests: XCTestCase {
     func test_PolisObservingFacilityDirectory_codingSupport_shouldSucceed() throws {
         // Given
         let i1   = PolisIdentity(externalReferences: ["1234", "6539"],
-                                 lastUpdateDate: Date(),
+                                 lastUpdateTime: Date(),
                                  name: "TestAttributes",
                                  abbreviation: "abc",
                                  shortDescription: "Testing attributes")
         let i2   = PolisIdentity(externalReferences: ["1234"],
-                                 lastUpdateDate: Date(),
+                                 lastUpdateTime: Date(),
                                  name: "OldStuff",
                                  abbreviation: "old",
                                  shortDescription: "Very old junk")
@@ -233,7 +233,7 @@ final class PolisServiceProviderTests: XCTestCase {
 
     func test_PolisResourceDirectory_codingSupport_shouldSucceed() throws {
         // Given
-        let identity  = PolisIdentity(lastUpdateDate: Date(),
+        let identity  = PolisIdentity(lastUpdateTime: Date(),
                                       name: "AstroSystemeAustria",
                                       abbreviation: "ASA",
                                       shortDescription: "Austrian major telescope producer")

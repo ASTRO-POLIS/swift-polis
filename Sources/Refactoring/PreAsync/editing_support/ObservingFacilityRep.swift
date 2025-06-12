@@ -107,6 +107,8 @@ open class ObservingFacilityRep: PersistentItem {
         if !hasChanges { return }
         if !canEdit()  { throw ObservingFacilityRepError.instanceCannotBeEdited }
 
+        nc.post(name: StatusChangeNotification.facilityInfoWillSaveNotification, object: nil)
+
         // 1. Check if I am part of the facility directory, and if not - add myself
         let directoryEntry = manager.directoryEntryForFacilityWith(id: self.id)
 
@@ -122,20 +124,23 @@ open class ObservingFacilityRep: PersistentItem {
             }
         }
 
-        jsonData = try jsonEncoder.encode(facilityDetails)
+//        Task {
+            jsonData = try jsonEncoder.encode(facilityDetails)
 
-        if fm.fileExists(atPath: detailsPersistenceReference.localPath) {
-            try? fm.removeItem(atPath: detailsPersistenceReference.localPath)
-        }
-        
-        if !fm.createFile(atPath: detailsPersistenceReference.localPath, contents: jsonData) {
-            throw ObservingFacilityRepError.cannotWritePolisFile
-        }
+            if fm.fileExists(atPath: detailsPersistenceReference.localPath) {
+                try? fm.removeItem(atPath: detailsPersistenceReference.localPath)
+            }
 
-        detailsPersistenceReference.hasLocalCopy                     = true
-        detailsPersistenceReference.dataStatus.existenceStatusLocal  = .created
-        detailsPersistenceReference.dataStatus.existenceStatusRemote = .notCreated
-        detailsPersistenceReference.dataStatus.loadingStatus         = .loadedNotSynced
+            if !fm.createFile(atPath: detailsPersistenceReference.localPath, contents: jsonData) {
+                throw ObservingFacilityRepError.cannotWritePolisFile
+            }
+
+            detailsPersistenceReference.hasLocalCopy                     = true
+            detailsPersistenceReference.dataStatus.existenceStatusLocal  = .created
+            detailsPersistenceReference.dataStatus.existenceStatusRemote = .unknown
+            detailsPersistenceReference.dataStatus.loadingStatus         = .loadedNotSynced
+//        }
+        nc.post(name: StatusChangeNotification.facilityInfoDidSaveNotification, object: self)
     }
 
     public func revertToSaved() throws {
@@ -149,15 +154,35 @@ open class ObservingFacilityRep: PersistentItem {
     public func loadData() throws {
         let myDataPath = manager.polisFileResourceFinder.observingFacilityFile(observingFacilityID: identity.id)
 
-        jsonData = fm.contents(atPath: myDataPath)
-        if let jsonData = jsonData {
-            let observingFacility = try JSONDecoder().decode(PolisObservingFacility.self, from: jsonData)
-            self.facilityDetails = observingFacility
+        if !fm.fileExists(atPath: myDataPath) { throw ObservingFacilityRepError.unavailableOrUnreadableLocalData }
+        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 1")
+
+        Task {
+            nc.post(name: StatusChangeNotification.facilityInfoWillLoadNotification, object: self)
+            print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 2")
+
+            jsonData = fm.contents(atPath: myDataPath)
+            if let jsonData = jsonData {
+                do {
+                    let observingFacility = try JSONDecoder().decode(PolisObservingFacility.self, from: jsonData)
+                    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 3")
+
+                    self.facilityDetails = observingFacility
+                } catch {
+                    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> !!!!!!!!!!!")
+                }
+            }
+            print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 4")
+            detailsPersistenceReference.hasLocalCopy                     = true
+            detailsPersistenceReference.dataStatus.existenceStatusLocal  = .created
+            detailsPersistenceReference.dataStatus.existenceStatusRemote = .unknown
+            detailsPersistenceReference.dataStatus.loadingStatus         = .loadedNotSynced
+
+            print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 5")
+            nc.post(name: StatusChangeNotification.facilityInfoDidLoadNotification, object: self)
+
+            loadReferencedItems()
         }
-        detailsPersistenceReference.hasLocalCopy                     = true
-        detailsPersistenceReference.dataStatus.existenceStatusLocal  = .created
-        detailsPersistenceReference.dataStatus.existenceStatusRemote = .unknown
-        detailsPersistenceReference.dataStatus.loadingStatus         = .loadedNotSynced
     }
 
     public func didChange() -> Bool {
@@ -167,12 +192,12 @@ open class ObservingFacilityRep: PersistentItem {
 
     //MARK: - Non-private APIs -
 
-    var fixedSurfaceEarthBaseDetailsID: UUID?
-    var mobileSurfaceEarthBaseDetailsID: UUID?
-    var airborneEarthBaseDetailsID: UUID?
+    var fixedSurfaceEarthBaseDetailsID: UUID?    //TODO: Load data
+    var mobileSurfaceEarthBaseDetailsID: UUID?   //TODO: Load data
+    var airborneEarthBaseDetailsID: UUID?        //TODO: Load data
 
-    var artifactIDs: Set<UUID>?
-    private(set) var artifacts: [ArtifactRep]?
+    var artifactIDs: Set<UUID>?                  //TODO: Load data
+    private(set) var artifacts: [ArtifactRep]?   //TODO: Load data
 
     var detailsPersistenceReference: PolisReference!
 
@@ -246,18 +271,18 @@ open class ObservingFacilityRep: PersistentItem {
         if (gravitationalBodyRelationship == .surfaceFixed) && (placeInTheSolarSystem == .earth) {
             let result = try ObservingFacilityRep(id: identity.id, lastUpdateDate: identity.lastUpdateDate, name: identity.name ?? "<unnamed>")
 
-            result.nc.post(name: PolisProviderManager.StatusChangeNotification.facilityReferenceWillCreateNotification, object: nil)
+            result.nc.post(name: StatusChangeNotification.facilityReferenceWillCreateNotification, object: nil)
 
             result.localName            = identity.localName
             result.abbreviation         = identity.abbreviation
             result.shortDescription     = identity.shortDescription
             result.startDate            = identity.startDate
-            result.nc.post(name: PolisProviderManager.StatusChangeNotification.facilityReferenceDidCreateNotification, object: result)
+            result.nc.post(name: StatusChangeNotification.facilityReferenceDidCreateNotification, object: result)
 
-            result.nc.post(name: PolisProviderManager.StatusChangeNotification.facilityInfoWillCreateNotification, object: nil)
+            result.nc.post(name: StatusChangeNotification.facilityInfoWillCreateNotification, object: nil)
             try result.saveChanges()
             try manager?.facilityDirectory.flashUsing(manager: manager!)
-            result.nc.post(name: PolisProviderManager.StatusChangeNotification.facilityInfoDidCreateNotification, object: result)
+            result.nc.post(name: StatusChangeNotification.facilityInfoDidCreateNotification, object: result)
 
             return result
         }
@@ -265,33 +290,23 @@ open class ObservingFacilityRep: PersistentItem {
       throw ObservingFacilityRepError.foundFacilityWithTypeMismatch
     }
 
-    private static func registerObservingFacilityWith(identity: PolisIdentity,
-        gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
-        placeInTheSolarSystem : PolisPlaceInTheSolarSystem                = .earth
-    ) throws -> ObservingFacilityRep {
-        let manager = PolisProviderManager.currentProviderManager
-
-        if (gravitationalBodyRelationship == .surfaceFixed) && (placeInTheSolarSystem == .earth) {
-
-            let result = try ObservingFacilityRep(id: identity.id, lastUpdateDate: identity.lastUpdateDate, name: identity.name ?? "<unnamed>")
-
-            result.detailsPersistenceReference = try PolisReference(facilityID: identity.id, polisObjectID: identity.id)
-
-            result.nc.post(name: PolisProviderManager.StatusChangeNotification.facilityReferenceWillCreateNotification, object: nil)
-
-            result.localName        = identity.localName
-            result.abbreviation     = identity.abbreviation
-            result.shortDescription = identity.shortDescription
-            result.startDate        = identity.startDate
-
-            try result.saveChanges()
-            try manager?.facilityDirectory.flashUsing(manager: manager!)
-            result.nc.post(name: PolisProviderManager.StatusChangeNotification.facilityReferenceDidCreateNotification, object: nil)
-
-            return result
-        }
+    private func loadReferencedItems() {
         //TODO: Implement me!
-        throw ObservingFacilityRepError.foundFacilityWithTypeMismatch
+    }
+}
+
+//MARK: Working with Fixed Surface Earth Base Details
+public extension ObservingFacilityRep {
+    func addFixedSurfaceEarthBaseDetails() throws -> EarthFixBasedObservingFacilityRep {
+        let result    = try EarthFixBasedObservingFacilityRep(id: UUID(), facilityID: self.id)
+        let reference = try PolisReference(facilityID: self.id, polisObjectID: result.id, hasLocalCopy: false, representingStoredObjectType: PolisRepresentingStoredObjectType.observingFacility)
+
+        result.fixedSurfaceEarthBaseDetailsPersistenceReference = reference
+
+        //TODO: Implement me!
+
+
+        return result
     }
 }
 
@@ -304,7 +319,7 @@ public extension ObservingFacilityRep {
         if let artifactIDs = artifactIDs {
             if artifacts!.count != artifactIDs.count {
                 for artifactID in artifactIDs {
-                    //TODO: Implement me!
+                    //TODO: Implement me! ... load them...
                 }
             }
         }
@@ -312,7 +327,7 @@ public extension ObservingFacilityRep {
         return artifacts!
     }
 
-    func addArtifact(artifactType: PolisArtifact.ArtifactType, visitingOpportunities: String? = nil, mediaID: UUID? = nil) throws {
+    func addArtifact(artifactType: PolisArtifact.ArtifactType, visitingOpportunities: String? = nil, mediaID: UUID? = nil) throws -> ArtifactRep {
         let artifactIdentity = PolisIdentity(id: UUID())
         let reference        = try PolisReference(facilityID: self.id, polisObjectID: artifactIdentity.id, representingStoredObjectType: .artifact)
         let artifact         = try ArtifactRep(identity: artifactIdentity,
@@ -329,7 +344,9 @@ public extension ObservingFacilityRep {
         if artifactIDs == nil { artifactIDs = [] }
         artifactIDs!.insert(artifactIdentity.id)
 
-        nc.post(name: PolisProviderManager.StatusChangeNotification.facilityDidChangeNotification, object: nil)
+        nc.post(name: StatusChangeNotification.facilityDidChangeNotification, object: nil)
+
+        return artifact
     }
 
     func removeArtifact(withID artifactID: UUID) throws {

@@ -8,10 +8,10 @@
 import Foundation
 import SoftwareEtudesUtilities
 
-public protocol PolisRemoteSynchronisationProviding {
-    func pullChanges() throws
-    func pushChanges() throws
-}
+//public protocol PolisRemoteSynchronisationProviding {
+//    func pullChanges() throws
+//    func pushChanges() throws
+//}
 
 /// `PolisPersisting` is an API that regulate persistency and syncing for all in-memory objects having local file system representation.
 public protocol PolisPersisting: Identifiable {
@@ -47,7 +47,7 @@ public protocol PolisPersisting: Identifiable {
     ///
     /// **Notes:**
     ///  - Child instances receive `loadData()` after the parent instance
-    ///  - Subclasses call first superclass' `loadData()` prior to their own data loading
+    ///  - If the instance has reference to more local data, this should be scheduled to be loaded and notifications should be observed 
     func loadData() throws
 
     /// Returns the result of the comparison between the locally stored POLIS item and the corresponding in-memory representation
@@ -61,18 +61,18 @@ open class IdentifiablePersistentItem: PolisPersisting {
     public var manager: PolisProviderManager!
     public var synchronisationProvider: PolisRemoteSynchronisationProviding?
 
-    public var id: UUID
-    public var lastUpdateDate: Date
+//    public var id: UUID
+//    public var lastUpdateDate: Date
 
     // Persistence support
     var persistenceReference: PolisReference!
 
-    let nc              = NotificationCenter.default
-    let fm              = FileManager.default
-    var isDir: ObjCBool = false
-    var jsonEncoder     = PrettyJSONEncoder()
-    var jsonDecoder     = PrettyJSONDecoder()
-    var jsonData: Data!
+//    let nc              = NotificationCenter.default
+//    let fm              = FileManager.default
+//    var isDir: ObjCBool = false
+//    var jsonEncoder     = PrettyJSONEncoder()
+//    var jsonDecoder     = PrettyJSONDecoder()
+//    var jsonData: Data!
 
     var hasChanges      = false
 
@@ -85,21 +85,21 @@ open class IdentifiablePersistentItem: PolisPersisting {
 
 open class SimplePersistentItem: IdentifiablePersistentItem {
 
-    // Polis Identity defined
-    public var externalReferences: [String]?
-    public var name: String
-    public var localName: String?
-    public var abbreviation: String?
-    public var shortDescription: String?
-    public var startDate: Date?
-    public var endDate: Date?
-    public var polisRegistrationDate: Date?
+//    // Polis Identity defined
+//    public var externalReferences: [String]?
+//    public var name: String
+//    public var localName: String?
+//    public var abbreviation: String?
+//    public var shortDescription: String?
+//    public var startDate: Date?
+//    public var endDate: Date?
+//    public var polisRegistrationDate: Date?
 
-    /// Designated initialiser
-    init(id: UUID, lastUpdateDate: Date = Date(), name: String) throws {
-        self.name = name
-        try super.init(id: id, lastUpdateDate: lastUpdateDate)
-    }
+//    /// Designated initialiser
+//    init(id: UUID, lastUpdateDate: Date = Date(), name: String) throws {
+//        self.name = name
+//        try super.init(id: id, lastUpdateDate: lastUpdateDate)
+//    }
 
     var identity: PolisIdentity {
         get {
@@ -162,17 +162,17 @@ open class PersistentItem: SimplePersistentItem {
     }
 }
 
-// Some useful defaults
-extension PolisPersisting {
-    public func canEdit() -> Bool { true }
-    public func saveChanges() throws { }
-    public func revertToSaved() throws { }
-    public func delete() throws { }
-    public func loadData() throws { }
-
-    public func didChange() -> Bool { false }
-    public func setHasChanges(_ hasChanges: Bool = true) { }
-}
+//// Some useful defaults
+//extension PolisPersisting {
+//    public func canEdit() -> Bool { true }
+//    public func saveChanges() throws { }
+//    public func revertToSaved() throws { }
+//    public func delete() throws { }
+//    public func loadData() throws { }
+//
+//    public func didChange() -> Bool { false }
+//    public func setHasChanges(_ hasChanges: Bool = true) { }
+//}
 
 
 extension PolisRemoteSynchronisationProviding {

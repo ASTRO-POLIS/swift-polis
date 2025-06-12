@@ -12,10 +12,10 @@ import Foundation
 
 struct PolisReference {
 
-    static var polisFileResourceFinder: PolisFileResourceFinder!
-    static var polisRemoteResourceFinder: PolisRemoteResourceFinder!
-    static var auxiliaryServiceHosts = [String : String]()
-    static var remoteWriteAPI: String?
+//    static var polisFileResourceFinder: PolisFileResourceFinder!
+//    static var polisRemoteResourceFinder: PolisRemoteResourceFinder!
+//    static var auxiliaryServiceHosts = [String : String]()
+//    static var remoteWriteAPI: String?
 
     enum DataExistenceStatus {
         case unknown
@@ -48,9 +48,9 @@ struct PolisReference {
     }
 
 
-    var localPath: String!
-    var remoteReadPath: String!
-    var remoteWriteAPI: String? // Basically a push (PUT) remote API with body of the corresponding JSON representation
+//    var localPath: String!
+//    var remoteReadPath: String!
+//    var remoteWriteAPI: String? // Basically a push (PUT) remote API with body of the corresponding JSON representation
 
     var isReferenced = false
     var hasLocalCopy = false

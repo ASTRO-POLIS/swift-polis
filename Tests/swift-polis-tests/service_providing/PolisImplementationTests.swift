@@ -4,7 +4,7 @@
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
-// Copyright (c) 2021-2024 Tuparev Technologies and the ASTRO-POLIS project
+// Copyright (c) 2021-2025 Tuparev Technologies and the ASTRO-POLIS project
 // authors.
 // Licensed under MIT License Modern Variant
 //
@@ -133,9 +133,9 @@ final class PolisImplementationTests: XCTestCase {
         XCTAssertNoThrow(try jsonDecoder.decode(PolisImplementation.self, from: string!.data(using: .utf8)!))
     }
 
-    func test_PolisImplementation_oldestSupportedImplementation_shouldSucceed() {
+    @MainActor func test_PolisImplementation_oldestSupportedImplementation_shouldSucceed() {
         // Given
-        let sut = PolisImplementation.oldestSupportedImplementation()
+        let sut = PolisImplementation.latestSupportedImplementation()
 
         // When
         let first   = PolisConstants.frameworkSupportedImplementation.first!
@@ -149,7 +149,7 @@ final class PolisImplementationTests: XCTestCase {
         XCTAssertEqual(sut.dataFormat, format)
     }
 
-    static var allTests = [
+    static let allTests = [
         ("test_PolisImplementation_dataFormat_shouldSucceed",                   test_PolisImplementation_dataFormat_shouldSucceed),
         ("test_PolisImplementation_apiLevel_shouldSucceed",                     test_PolisImplementation_apiLevel_shouldSucceed),
         ("test_PolisImplementation_supportedImplementation_shouldSucceed",      test_PolisImplementation_supportedImplementation_shouldSucceed),

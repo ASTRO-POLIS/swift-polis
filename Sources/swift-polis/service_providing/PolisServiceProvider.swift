@@ -22,7 +22,7 @@ import SoftwareEtudesUtilities
 ///
 /// To avoid confusion (and potential syncing errors) it is required that the directory does contain the POLIS
 /// service provider entry that serves the directory list.
-public struct PolisDirectory: StorableItem  {
+public struct PolisDirectory {
 
     //MARK: - POLIS Directory Entry
 
@@ -30,19 +30,23 @@ public struct PolisDirectory: StorableItem  {
     ///
     /// `PolisDirectoryEntry` is used to define the Polis provider itself, as well as as an entry in the list of known Polis
     /// providers.
-    public struct ProviderDirectoryEntry: StorableItem, Identifiable {
+    public struct ProviderDirectoryEntry: Identifiable {
+
         /// `ProviderType` defines different types of POLIS Providers.
-        ///
+        /// 
         /// In general, only `publicPrimary` and `mirror` types should be used by clients. Astro clubs and other communities might
         /// access `private` providers, but they will probably only allow restricted access to members only.
         public enum ProviderType: String, Codable {
 
-            /// Only `public` provider should be used in production or by publicly available client apps or websites. Public
+            /// Only `publicPrimary` provider should be used in production or by publicly available client apps or websites. Public
             /// providers should run on servers with enough bandwidth and computational power capable of accommodating multiple
             /// parallel client requests every second.
             case publicPrimary   = "public_primary"
 
-            //TODO: Docs! See discussion with Rick!
+            /// `publicSecondary` is a provider are Service Providers running on servers  with low bandwidth or insufficiently
+            ///  powerful hardware. Examples include university servers, servers at manufacturing sites, or remote facilities with limited
+            ///  bandwidth. These providers could be accessed locally and also synced with other providers, but should not be used as
+            ///  providers for mobile apps or research networks.
             case publicSecondary = "public_secondary"
 
             /// A `private` provider's main purpose is to act as a local cache for a larger organisation and should not be accessed
@@ -50,7 +54,7 @@ public struct PolisDirectory: StorableItem  {
             /// authentication.
             case `private`
 
-            /// `local` could be used for clients running on mobile devices or desktop apps. It is a disposable, local (often
+            /// `local` could be used by client apps running on mobile devices or desktop apps. It is a disposable, local (often
             /// offline) cache.
             case local
 
@@ -69,8 +73,6 @@ public struct PolisDirectory: StorableItem  {
         /// 24h should be sufficient. Also note, that an external server might be unreachable or slow from one location, but reachable and responsive from another.
         /// If your Service Provider cannot reach another Service Provider reliably, first check if this is also observed elsewhere, and if this is the case, only then
         /// change the local reachability status.
-        ///
-        /// During syncing between Service Providers sync only information about reachable hosts!
         public enum ServiceReachability: String, Codable  {
 
             /// `reachableAndResponsive` identifies stable and fast Service Provider.
@@ -97,22 +99,23 @@ public struct PolisDirectory: StorableItem  {
             case mirrorIdNotAssigned
         }
 
-        /// `id` should never be changed.
-        public var id: UUID
+        /// `id` should never be changed
+        public internal(set) var id: UUID
 
+        /// The ID of the Service Provider being mirrored
         public var mirrorID: UUID?
 
         /// The reachability status of a Service Provider entry
         public var reachabilityStatus: ServiceReachability
 
-        /// The name of the Service Provider
+        /// The name of the Service Provider. It is recommended to use names in English
         public var name: String
 
-        /// Optional short description of the Service Provider
+        /// Optional short description of the Service Provider. Use English language is recommended.
         public var shortDescription: String?
 
         /// The last update date. Change this only if the data of the provider is really changed.
-        public var lastUpdate: Date
+        public var lastUpdateTime: Date
 
         /// The fully qualified URL of the service provider, e.g. https://polis.observer
         public var url: String?
@@ -134,7 +137,7 @@ public struct PolisDirectory: StorableItem  {
                     reachabilityStatus:       ServiceReachability = .currentlyUnreachable,
                     name:                     String,
                     shortDescription:         String?             = nil,
-                    lastUpdate:               Date                = Date(),
+                    lastUpdateTime:           Date                = Date(),
                     url:                      String?             = nil,
                     supportedImplementations: [PolisImplementation],
                     providerType:             ProviderType,
@@ -154,7 +157,7 @@ public struct PolisDirectory: StorableItem  {
             self.reachabilityStatus       = reachabilityStatus
             self.name                     = name
             self.shortDescription         = shortDescription
-            self.lastUpdate               = lastUpdate
+            self.lastUpdateTime           = lastUpdateTime
             self.url                      = url
             self.supportedImplementations = filtered
             self.providerType             = providerType
@@ -162,7 +165,7 @@ public struct PolisDirectory: StorableItem  {
         }
     }
 
-    public var lastUpdate: Date                                   // Used for syncing
+    public var lastUpdateTime: Date                               // Used for syncing
     public var providerDirectoryEntries: [ProviderDirectoryEntry] // List of all known providers, including it's own provider entry
 
     /// Designated initialiser.
@@ -170,23 +173,24 @@ public struct PolisDirectory: StorableItem  {
     ///   - lastUpdate: if omitted, the current date and time will be used
     ///   - directoryEntries: possibly empty list of known POSIL service providers. `entries` must contain at least the
     ///   `PolisDirectoryEntry` for its own provider. Otherwise the method returns `nil`.
-    public init?(lastUpdate: Date = Date(),
+    public init?(lastUpdateTime: Date = Date(),
                  providerDirectoryEntries: [ProviderDirectoryEntry]) {
         guard !providerDirectoryEntries.isEmpty else { return nil }
 
-        self.lastUpdate               = lastUpdate
+        self.lastUpdateTime           = lastUpdateTime
         self.providerDirectoryEntries = providerDirectoryEntries
     }
 
-    //MARK: Non-public APIs
-    static var isSynced = false
-    static var syncDate = Date.distantPast
+    //TODO: Move to AppSupport!
+//    //MARK: Non-public APIs
+//    static var isSynced = false
+//    static var syncDate = Date.distantPast
 }
 
 //MARK: - Observing Facility Directory -
 
 /// A compact list of all known Observing Facilities
-public struct PolisObservingFacilityDirectory: Codable, StorableItem {
+public struct PolisObservingFacilityDirectory: Codable {
 
     /// It is expected that the list of observatory facilities is long and each facility's data could be way over 1MB. Therefore a
     /// compact list of facilities references is maintained separately containing only facility's `identity`  It is
@@ -218,29 +222,30 @@ public struct PolisObservingFacilityDirectory: Codable, StorableItem {
         self.observingFacilityReferences = observingFacilityReferences
     }
 
-    public mutating func addOrUpdateObservingFacility(reference: ObservingFacilityReference) {
-
-        if let index = observingFacilityReferences.firstIndex(where: {$0.id == reference.id} ) {
-            observingFacilityReferences[index].identity.externalReferences    = reference.identity.externalReferences
-            observingFacilityReferences[index].identity.lastUpdateDate        = reference.identity.lastUpdateDate
-            observingFacilityReferences[index].identity.name                  = reference.identity.name
-            observingFacilityReferences[index].identity.localName             = reference.identity.localName
-            observingFacilityReferences[index].identity.abbreviation          = reference.identity.abbreviation
-            observingFacilityReferences[index].identity.shortDescription      = reference.identity.shortDescription
-            observingFacilityReferences[index].identity.startDate             = reference.identity.startDate
-            observingFacilityReferences[index].identity.endDate               = reference.identity.endDate
-            observingFacilityReferences[index].identity.polisRegistrationDate = reference.identity.polisRegistrationDate
-        }
-        
-        lastUpdate = Date.now
-        observingFacilityReferences.append(reference)
-
-        try? self.flashUsing(manager: PolisProviderManager.currentProviderManager)
-    }
+    //TODO: Move to AppSupport!
+//    public mutating func addOrUpdateObservingFacility(reference: ObservingFacilityReference) {
+//
+//        if let index = observingFacilityReferences.firstIndex(where: {$0.id == reference.id} ) {
+//            observingFacilityReferences[index].identity.externalReferences    = reference.identity.externalReferences
+//            observingFacilityReferences[index].identity.lastUpdateDate        = reference.identity.lastUpdateDate
+//            observingFacilityReferences[index].identity.name                  = reference.identity.name
+//            observingFacilityReferences[index].identity.localName             = reference.identity.localName
+//            observingFacilityReferences[index].identity.abbreviation          = reference.identity.abbreviation
+//            observingFacilityReferences[index].identity.shortDescription      = reference.identity.shortDescription
+//            observingFacilityReferences[index].identity.startDate             = reference.identity.startDate
+//            observingFacilityReferences[index].identity.endDate               = reference.identity.endDate
+//            observingFacilityReferences[index].identity.polisRegistrationDate = reference.identity.polisRegistrationDate
+//        }
+//        
+//        lastUpdate = Date.now
+//        observingFacilityReferences.append(reference)
+//
+//        try? self.flashUsing(manager: PolisProviderManager.currentProviderManager)
+//    }
 
     //MARK: Non-public APIs
-    static var isSynced = false
-    static var syncDate = Date.distantPast
+//    static var isSynced = false
+//    static var syncDate = Date.distantPast
 }
 
 //MARK: - Making types Codable -
@@ -252,7 +257,7 @@ extension PolisDirectory.ProviderDirectoryEntry: Codable {
         case reachabilityStatus       = "reachability_status"
         case name
         case shortDescription         = "short_description"
-        case lastUpdate               = "last_update"
+        case lastUpdateTime           = "last_update_time"
         case url
         case supportedImplementations = "supported_implementations"
         case providerType             = "provider_type"
@@ -262,7 +267,7 @@ extension PolisDirectory.ProviderDirectoryEntry: Codable {
 
 extension PolisDirectory: Codable {
     public enum CodingKeys: String, CodingKey {
-        case lastUpdate               = "last_updated"
+        case lastUpdateTime           = "last_updated_time"
         case providerDirectoryEntries = "provider_directory_entries"
     }
 }
@@ -281,133 +286,4 @@ extension PolisObservingFacilityDirectory {
         case observingFacilityReferences = "observing_facility_references"
     }
 }
-
-//MARK: - Implementing the StorableItem protocols -
-extension PolisDirectory.ProviderDirectoryEntry {
-    static func loadFromLocalFileSystemUsing(manager: PolisProviderManager) throws -> AnyObject {
-        let finder = manager.polisFileResourceFinder!
-        let path   = finder.configurationFile()
-        let fm     = FileManager.default
-        let data   = fm.contents(atPath: path)
-
-        guard let data = data else { throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFile }
-
-        do {
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
-            let entry = try decoder.decode(PolisDirectory.ProviderDirectoryEntry.self, from: data)
-
-            return entry as AnyObject
-        }
-        catch { throw PolisProviderManager.PolisProviderManagerError.cannotDecodePolisType }
-    }
-
-    func parentItem() -> (any StorableItem)? { nil }
-
-    mutating func flashUsing(manager: PolisProviderManager) throws {
-        let finder = manager.polisFileResourceFinder!
-        let path   = finder.configurationFile()
-
-        self.lastUpdate = Date.now
-
-        do    { data = try manager.jsonEncoder.encode(self) }
-        catch {
-            PolisLogger.shared.error("Cannot encode POLIS Provider Main Configuration Entry")
-            throw PolisProviderManager.PolisProviderManagerError.cannotEncodePolisType
-        }
-
-        if !fm.createFile(atPath: path, contents: data) {
-            PolisLogger.shared.error("Cannot save POLIS Provider Main Configuration Entry to: \(path)")
-            throw PolisProviderManager.PolisProviderManagerError.cannotWriteFile
-        }
-    }
-}
-
-extension PolisDirectory {
-    static func loadFromLocalFileSystemUsing(manager: PolisProviderManager) throws -> AnyObject {
-        let finder = manager.polisFileResourceFinder!
-        let path   = finder.polisProviderDirectoryFile()
-        let fm     = FileManager.default
-        let data   = fm.contents(atPath: path)
-
-        guard let data = data else { throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFile }
-
-        do {
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
-            let entry = try decoder.decode(PolisDirectory.self, from: data)
-
-            return entry as AnyObject
-        }
-        catch { throw PolisProviderManager.PolisProviderManagerError.cannotDecodePolisType }
-    }
-
-    func parentItem() -> (any StorableItem)? { PolisProviderManager.currentProviderManager.polisProviderConfigurationEntry }
-
-    mutating func flashUsing(manager: PolisProviderManager) throws {
-        let finder = manager.polisFileResourceFinder!
-        let path   = finder.polisProviderDirectoryFile()
-
-        self.lastUpdate = Date.now
-
-        do    { data = try manager.jsonEncoder.encode(self) }
-        catch {
-            PolisLogger.shared.error("Cannot encode POLIS Directory")
-            throw PolisProviderManager.PolisProviderManagerError.cannotEncodePolisType
-        }
-
-        if !fm.createFile(atPath: path, contents: data) {
-            PolisLogger.shared.error("Cannot save POLIS Directory to: \(path)")
-            throw PolisProviderManager.PolisProviderManagerError.cannotWriteFile
-        }
-
-        try manager.polisProviderConfigurationEntry.flashUsing(manager: manager)
-    }
-}
-
-extension PolisObservingFacilityDirectory {
-    static func loadFromLocalFileSystemUsing(manager: PolisProviderManager) throws -> AnyObject {
-        let finder = manager.polisFileResourceFinder!
-        let path   = finder.observingFacilitiesDirectoryFile()
-        let fm     = FileManager.default
-        let data   = fm.contents(atPath: path)
-
-        guard let data = data else { throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFile }
-
-        do {
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
-            let entry = try decoder.decode(PolisObservingFacilityDirectory.self, from: data)
-
-            return entry as AnyObject
-        }
-        catch { throw PolisProviderManager.PolisProviderManagerError.cannotDecodePolisType }
-    }
-
-    func parentItem() -> (any StorableItem)? { PolisProviderManager.currentProviderManager.polisProviderDirectory }
-
-    mutating func flashUsing(manager: PolisProviderManager) throws {
-        let finder = manager.polisFileResourceFinder!
-        let path   = finder.observingFacilitiesDirectoryFile()
-
-        self.lastUpdate = Date.now
-
-        do    { data = try manager.jsonEncoder.encode(self) }
-        catch {
-            PolisLogger.shared.error("Cannot encode POLIS Observing Facility Directory")
-            throw PolisProviderManager.PolisProviderManagerError.cannotEncodePolisType
-        }
-
-        if !fm.createFile(atPath: path, contents: data) {
-            PolisLogger.shared.error("Cannot save POLIS Observing Facility Directory to: \(path)")
-            throw PolisProviderManager.PolisProviderManagerError.cannotWriteFile
-        }
-
-        try manager.polisProviderConfigurationEntry.flashUsing(manager: manager)
-    }
-}
-
-//MARK: Private global APIs
-fileprivate let fm = FileManager.default
-fileprivate var data: Data?
 

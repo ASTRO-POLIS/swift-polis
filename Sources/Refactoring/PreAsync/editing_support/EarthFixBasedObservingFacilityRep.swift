@@ -51,7 +51,6 @@ open class EarthFixBasedObservingFacilityRep: IdentifiablePersistentItem {
     }
 
     public func loadData() throws {
-        try super.loadData()
 
         //TODO: Implement me!
     }
@@ -63,12 +62,6 @@ open class EarthFixBasedObservingFacilityRep: IdentifiablePersistentItem {
 
 
     //MARK: Non-private APIs
-//    static func registerFacilityWithExisting(identity: PolisIdentity) throws -> EarthFixBasedObservingFacilityRep {
-//        let result = try EarthFixBasedObservingFacilityRep(id: identity.id, lastUpdateDate: identity.lastUpdateDate, facility)
-//
-//        return result
-//    }
-
     var facilityID: UUID
     var visitingHoursID: UUID??
 

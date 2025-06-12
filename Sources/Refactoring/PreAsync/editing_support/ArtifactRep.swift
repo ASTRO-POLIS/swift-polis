@@ -37,7 +37,7 @@ open class ArtifactRep: SimplePersistentItem {
 
     public func saveChanges() throws {
         if !persistenceReference.hasLocalCopy {
-            nc.post(name: PolisProviderManager.StatusChangeNotification.artifactWillCreateNotification, object: nil)
+            nc.post(name: StatusChangeNotification.artifactWillCreateNotification, object: nil)
 
             jsonData = try jsonEncoder.encode(artifact)
             if !fm.createFile(atPath: persistenceReference.localPath, contents: jsonData) {
@@ -50,7 +50,7 @@ open class ArtifactRep: SimplePersistentItem {
             facility.setHasChanges()
             try facility.saveChanges()
 
-            nc.post(name: PolisProviderManager.StatusChangeNotification.artifactDidCreateNotification, object: self)
+            nc.post(name: StatusChangeNotification.artifactDidCreateNotification, object: self)
         }
         else {  // Overwrite data
             //TODO: Implement me!

@@ -2,7 +2,7 @@
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
-// Copyright (c) 2021-2024 Tuparev Technologies and the ASTRO-POLIS project
+// Copyright (c) 2021-2025 Tuparev Technologies and the ASTRO-POLIS project
 // authors.
 // Licensed under MIT License Modern Variant
 //
@@ -19,17 +19,32 @@ import XCTest
 #if !canImport(ObjectiveC)
 public func allTests() -> [XCTestCaseEntry] {
     return [
+        // app_support
+        XCTestCase(ObjectStoreConfigurationTests),
+        
         // service_provider
         XCTestCase(PolisImplementationTests),
+
+        // static_data_types
+        XCTestCase(PolisIdentityTests),
         
         // support
-        XCTestCase(PolisImplementationTests),
-        XCTestCase(PolisStaticResourceFinderTests),
+        XCTestCase(PolisLoggerTests),
+
+
+
+
+        // service_provider
+//        XCTestCase(PolisImplementationTests),
+        
+        // support
+//        XCTestCase(PolisImplementationTests),
+//        XCTestCase(PolisStaticResourceFinderTests),
 
         // core
-        XCTestCase(PolisDirectionTests),
-        XCTestCase(PolisPropertyValueTests),
-        XCTestCase(PolisVisitingHoursTests),
+//        XCTestCase(PolisDirectionTests),
+//        XCTestCase(PolisPropertyValueTests),
+//        XCTestCase(PolisVisitingHoursTests),
     ]
 }
 #endif

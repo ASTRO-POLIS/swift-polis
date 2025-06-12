@@ -1,8 +1,21 @@
-//
+//===----------------------------------------------------------------------===//
 //  PolisLogger.swift
-//  swift-polis
+//===----------------------------------------------------------------------===//
 //
-//  Created by Georg Tuparev on 9.10.24.
+// This source file is part of the ASTRO-POLIS open source project
+//
+// Copyright (c) 2021-2025 Tuparev Technologies and the ASTRO-POLIS project
+// authors.
+// Licensed under MIT License Modern Variant
+//
+// See LICENSE for license information
+// See CONTRIBUTORS.md for the list of ASTRO-POLIS project authors
+//
+// SPDX-License-Identifier: MIT-Modern-Variant
+//
+//===----------------------------------------------------------------------===//
+//
+//  Created by Georg Tuparev on 09.10.2024
 //
 
 import Foundation
@@ -11,9 +24,11 @@ import Foundation
 ///
 /// This very primitive Logger implementation could be useful mostly for debugging purposes.. Consider using proper Logger in more
 ///  complex applications.
+///
+///  **Note:** Future versions of `swift-polis` will use `SoftwareEtudes`' logging library.
 public class PolisLogger {
 
-    public static var shared = PolisLogger()
+    public static let shared = PolisLogger()
 
     /// Should logging messages be accumulated.
     public var shouldLog = true
