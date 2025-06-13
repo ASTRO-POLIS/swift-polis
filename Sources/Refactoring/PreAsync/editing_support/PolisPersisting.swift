@@ -14,47 +14,47 @@ import SoftwareEtudesUtilities
 //}
 
 /// `PolisPersisting` is an API that regulate persistency and syncing for all in-memory objects having local file system representation.
-public protocol PolisPersisting: Identifiable {
-
-    var manager: PolisProviderManager! { get set }
-    var synchronisationProvider: PolisRemoteSynchronisationProviding? { get set }
-
-    /// Defines if a `*Rep` instance can be edited
-    ///
-    /// Wen instances could be edited:
-    ///  - If the the shared ``PolisProviderManager`` is created in a editing mode, and
-    ///  - If the locally stored instance is synced with the remote instance (if it exists), and
-    ///  - If the locally stored instance (if exists) is equal to the in-memory copy
-    func canEdit() -> Bool
-
-    /// Saves all changes to the local file system
-    ///
-    /// The method should compare the POLIS data stored in the file system (or cached) and perform file system changes only in case both datasets differ from
-    /// each other.
-    ///
-    /// **Notes:**
-    ///  - Child instances (e.g. location, device, etc) receive `saveChanges()` after the parent instance (e.g. the facility) saves its changes
-    ///  - Subclasses call superclass' `saveChanges()` prior saving its own changes
-    func saveChanges() throws
-
-    /// Replaces the in-memory representation of a Polis item with data from the local file system
-    func revertToSaved() throws
-
-    /// Deletes the item from both - the memory cache and from the local file system
-    func delete() throws
-
-    /// This method forces the corresponding `*Rep`instance  to load  locally stored data
-    ///
-    /// **Notes:**
-    ///  - Child instances receive `loadData()` after the parent instance
-    ///  - If the instance has reference to more local data, this should be scheduled to be loaded and notifications should be observed 
-    func loadData() throws
-
-    /// Returns the result of the comparison between the locally stored POLIS item and the corresponding in-memory representation
-    func didChange() -> Bool
-
-    func setHasChanges(_ hasChanges: Bool)
-}
+//public protocol PolisPersisting: Identifiable {
+//
+//    var manager: PolisProviderManager! { get set }
+//    var synchronisationProvider: PolisRemoteSynchronisationProviding? { get set }
+//
+//    /// Defines if a `*Rep` instance can be edited
+//    ///
+//    /// Wen instances could be edited:
+//    ///  - If the the shared ``PolisProviderManager`` is created in a editing mode, and
+//    ///  - If the locally stored instance is synced with the remote instance (if it exists), and
+//    ///  - If the locally stored instance (if exists) is equal to the in-memory copy
+//    func canEdit() -> Bool
+//
+//    /// Saves all changes to the local file system
+//    ///
+//    /// The method should compare the POLIS data stored in the file system (or cached) and perform file system changes only in case both datasets differ from
+//    /// each other.
+//    ///
+//    /// **Notes:**
+//    ///  - Child instances (e.g. location, device, etc) receive `saveChanges()` after the parent instance (e.g. the facility) saves its changes
+//    ///  - Subclasses call superclass' `saveChanges()` prior saving its own changes
+//    func saveChanges() throws
+//
+//    /// Replaces the in-memory representation of a Polis item with data from the local file system
+//    func revertToSaved() throws
+//
+//    /// Deletes the item from both - the memory cache and from the local file system
+//    func delete() throws
+//
+//    /// This method forces the corresponding `*Rep`instance  to load  locally stored data
+//    ///
+//    /// **Notes:**
+//    ///  - Child instances receive `loadData()` after the parent instance
+//    ///  - If the instance has reference to more local data, this should be scheduled to be loaded and notifications should be observed 
+//    func loadData() throws
+//
+//    /// Returns the result of the comparison between the locally stored POLIS item and the corresponding in-memory representation
+//    func didChange() -> Bool
+//
+//    func setHasChanges(_ hasChanges: Bool)
+//}
 
 open class IdentifiablePersistentItem: PolisPersisting {
     // PolisPersisting
@@ -101,31 +101,31 @@ open class SimplePersistentItem: IdentifiablePersistentItem {
 //        try super.init(id: id, lastUpdateDate: lastUpdateDate)
 //    }
 
-    var identity: PolisIdentity {
-        get {
-            PolisIdentity(id: id,
-                          externalReferences: externalReferences,
-                          lastUpdateDate: lastUpdateDate,
-                          name: name,
-                          localName: localName,
-                          abbreviation: abbreviation,
-                          shortDescription: shortDescription,
-                          startDate: startDate,
-                          endDate: endDate,
-                          polisRegistrationDate: polisRegistrationDate)
-        }
-        set {
-            id                 = newValue.id
-            externalReferences = newValue.externalReferences
-            lastUpdateDate     = newValue.lastUpdateDate
-            name               = newValue.name ?? "<unnamed>"
-            localName          = newValue.localName
-            abbreviation       = newValue.abbreviation
-            shortDescription   = newValue.shortDescription
-            startDate          = newValue.startDate
-            endDate            = newValue.endDate
-        }
-    }
+//    var identity: PolisIdentity {
+//        get {
+//            PolisIdentity(id: id,
+//                          externalReferences: externalReferences,
+//                          lastUpdateDate: lastUpdateDate,
+//                          name: name,
+//                          localName: localName,
+//                          abbreviation: abbreviation,
+//                          shortDescription: shortDescription,
+//                          startDate: startDate,
+//                          endDate: endDate,
+//                          polisRegistrationDate: polisRegistrationDate)
+//        }
+//        set {
+//            id                 = newValue.id
+//            externalReferences = newValue.externalReferences
+//            lastUpdateDate     = newValue.lastUpdateDate
+//            name               = newValue.name ?? "<unnamed>"
+//            localName          = newValue.localName
+//            abbreviation       = newValue.abbreviation
+//            shortDescription   = newValue.shortDescription
+//            startDate          = newValue.startDate
+//            endDate            = newValue.endDate
+//        }
+//    }
 }
 
 
@@ -133,11 +133,11 @@ open class SimplePersistentItem: IdentifiablePersistentItem {
 open class PersistentItem: SimplePersistentItem {
 
     // Polis Item defined
-    public var owner: PolisOwner?
-    public var parentID: UUID?
-    public var automationLabel: String?
-    public var lifecycleStatus: PolisLifecycleStatus = PolisLifecycleStatus.unknown
-    public var mediaSourceID: UUID?
+//    public var owner: PolisOwner?
+//    public var parentID: UUID?
+//    public var automationLabel: String?
+//    public var lifecycleStatus: PolisLifecycleStatus = PolisLifecycleStatus.unknown
+//    public var mediaSourceID: UUID?
 
     public func setHasChanges(_ hasChanges: Bool = true) { self.hasChanges = hasChanges }
 
@@ -175,7 +175,7 @@ open class PersistentItem: SimplePersistentItem {
 //}
 
 
-extension PolisRemoteSynchronisationProviding {
-    func pullChanges() throws { }
-    func pushChanges() throws { }
-}
+//extension PolisRemoteSynchronisationProviding {
+//    func pullChanges() throws { }
+//    func pushChanges() throws { }
+//}

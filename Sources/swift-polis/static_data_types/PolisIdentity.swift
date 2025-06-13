@@ -71,7 +71,7 @@ public struct PolisIdentity: Codable, Identifiable, Equatable {
     /// Only the `name` parameter is required. All other parameters have reasonable default values.
     public init(id: UUID                      = UUID(),
                 externalReferences: [String]? = nil,
-                lastUpdateTime: Date          = Date(),
+                lastUpdateTime: Date          = Date.now,
                 name: String?                 = nil,
                 localName: String?            = nil,
                 abbreviation: String?         = nil,

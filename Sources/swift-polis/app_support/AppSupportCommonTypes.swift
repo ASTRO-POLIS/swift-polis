@@ -21,6 +21,11 @@ public struct AppSupportStatusChangeNotification {
     public static let ObjectStoreDidCreateNotification  = Notification.Name("ObjectStoreDidCreate")     // ✅ Object is the ObjectStore
     public static let ObjectStoreWillRemoveNotification = Notification.Name("ObjectStoreWillRemove")    // ✅ Object is the ObjectStore
     public static let ObjectStoreDidRemoveNotification  = Notification.Name("ObjectStoreWillRemove")    // ✅ Object is the ObjectStore
+
+    // Facility Info
+    public static let facilityInfoWillLoadNotification      = Notification.Name("facilityInfoWillLoad")      // ✅ Object nil
+    public static let facilityInfoDidLoadNotification       = Notification.Name("facilityInfoDidLoad")       // ✅ Object is the ObservingFacilityRep
+
 }
 
 //public struct StatusChangeNotification {
@@ -40,8 +45,8 @@ public struct AppSupportStatusChangeNotification {
 //    public static let facilityInfoDidCreateNotification     = Notification.Name("facilityInfoDidCreate")     // ✅ Object is the ObservingFacilityRep
 //    public static let facilityInfoWillSaveNotification      = Notification.Name("facilityInfoWillSave")      // ✅ Object is nil
 //    public static let facilityInfoDidSaveNotification       = Notification.Name("facilityInfoDidSave")       // ✅ Object is the ObservingFacilityRep
-//    public static let facilityInfoWillLoadNotification      = Notification.Name("facilityInfoWillLoad")      // ✅ Object nil
-//    public static let facilityInfoDidLoadNotification       = Notification.Name("facilityInfoDidLoad")       // ✅ Object is the ObservingFacilityRep
+//  public static let facilityInfoWillLoadNotification      = Notification.Name("facilityInfoWillLoad")      // ✅ Object nil
+//  public static let facilityInfoDidLoadNotification       = Notification.Name("facilityInfoDidLoad")       // ✅ Object is the ObservingFacilityRep
 //
 //    //TODO: These are Erth Based notifications
 //    public static let facilityDetailWillLoadNotification    = Notification.Name("facilityDetailWillLoad")    // Object ObservingFacilityRep

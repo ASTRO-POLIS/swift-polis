@@ -113,6 +113,8 @@ public actor ObjectStore {
         nc.post(name: AppSupportStatusChangeNotification.ObjectStoreDidRemoveNotification, object: self)
     }
 
+    public func isEditable() -> Bool { _localConfiguration.isTesting || _localConfiguration.isEditable }
+
     //MARK: - Non-public APIs -
 
     //MARK: Polis Provider Manager internal configuration

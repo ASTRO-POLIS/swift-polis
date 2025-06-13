@@ -297,7 +297,7 @@ public extension PolisProviderManager {
 //        }
 //    }
 
-    internal func isEditable() -> Bool { localConfiguration.isTesting || localConfiguration.isEditable }
+//    internal func isEditable() -> Bool { localConfiguration.isTesting || localConfiguration.isEditable }
 
     //MARK: Private stuff
     private static func canConfigure() throws -> Bool {

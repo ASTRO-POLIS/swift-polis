@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct PolisObservingFacility: Identifiable, Codable, StorableItem, Equatable {
+public struct PolisObservingFacility: Identifiable, Codable, Equatable {
 
     // Identification and type
     public var item: PolisItem
@@ -102,31 +102,31 @@ public extension PolisObservingFacility {
 }
 
 //MARK: - StorableItem Implementation -
-extension PolisObservingFacility {
-    static func loadFromLocalFileSystemUsing(manager: PolisProviderManager) throws -> AnyObject {
-        //TODO: Implement me!
-        throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFile
-    }
-
-    func parentItem() -> (any StorableItem)? { PolisProviderManager.currentProviderManager.facilityDirectory }
-
-    func flashUsing(manager: PolisProviderManager) throws {
-        try ensureFacilityFolderDoesExist()
-
-        //TODO: Implement me!
-    }
-
-    func ensureFacilityFolderDoesExist() throws {
-        let manager = PolisProviderManager.currentProviderManager!
-
-        if !manager.tryToEnsureFoldersExistence(paths: [facilityPath()]) {
-            PolisLogger.shared.error("Cannot create or access facility folder: \(facilityPath())")
-            throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFolder
-        }
-    }
-
-    func facilityPath() -> String {
-        let manager = PolisProviderManager.currentProviderManager!
-        return manager.polisFileResourceFinder.observingFacilityFolder(observingFacilityID: item.identity.id)
-    }
-}
+//extension PolisObservingFacility {
+//    static func loadFromLocalFileSystemUsing(manager: PolisProviderManager) throws -> AnyObject {
+//        //TODO: Implement me!
+//        throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFile
+//    }
+//
+//    func parentItem() -> (any StorableItem)? { PolisProviderManager.currentProviderManager.facilityDirectory }
+//
+//    func flashUsing(manager: PolisProviderManager) throws {
+//        try ensureFacilityFolderDoesExist()
+//
+//        //TODO: Implement me!
+//    }
+//
+//    func ensureFacilityFolderDoesExist() throws {
+//        let manager = PolisProviderManager.currentProviderManager!
+//
+//        if !manager.tryToEnsureFoldersExistence(paths: [facilityPath()]) {
+//            PolisLogger.shared.error("Cannot create or access facility folder: \(facilityPath())")
+//            throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFolder
+//        }
+//    }
+//
+//    func facilityPath() -> String {
+//        let manager = PolisProviderManager.currentProviderManager!
+//        return manager.polisFileResourceFinder.observingFacilityFolder(observingFacilityID: item.identity.id)
+//    }
+//}

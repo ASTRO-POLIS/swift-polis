@@ -23,7 +23,7 @@ public protocol Persisting: Identifiable {
     ///  - If the the shared ``ObjectStore`` is created in a editing mode, and
     ///  - If the locally stored instance is synced with the remote instance (if it exists), and
     ///  - If the locally stored instance (if exists) is equal to the in-memory copy
-    func canEdit() -> Bool
+    func canEdit() async -> Bool
 
     /// Saves all changes to the local file system
     ///
@@ -49,7 +49,7 @@ public protocol Persisting: Identifiable {
     func loadData() async throws
 
     /// Returns the result of the comparison between the locally stored POLIS item and the corresponding in-memory representation
-    func didChange() -> Bool
+    func didChange() async -> Bool
 
     /// The place to write local changes before the client app closes the `ObjectStore`
     func prepareToCloseTheObjectStore() async throws
@@ -57,19 +57,19 @@ public protocol Persisting: Identifiable {
 
 // Some useful default implementations
 extension Persisting {
-    public func canEdit()                      -> Bool { false } // Better be on the safe side
+    public func canEdit()                      async -> Bool { false } // Better be on the safe side
     public func saveChanges()                  async throws { }
     public func revertToSaved()                async throws { }
     public func delete()                       async throws { }
     public func loadData()                     async throws { }
 
-    public func didChange()                    -> Bool { false }
+    public func didChange()                    async -> Bool { false }
 
     public func prepareToCloseTheObjectStore() async throws { }
 }
 
 
-//MARK: - Persistent Object -
+//MARK: - PersistenObject -
 open class PersistentObject: Persisting {
     static var store: ObjectStore?
     static var synchronisationProvider: RemoteSynchronisationProviding?
@@ -83,7 +83,8 @@ open class PersistentObject: Persisting {
     public var id: UUID
     public var lastUpdateTime: Date
 
-    
+
+
     public static func createPersistentObject() -> PersistentObject {
         //TODO: Implement me!
         return PersistentObject()
@@ -105,6 +106,8 @@ open class PersistentObject: Persisting {
         case remoteRepresentationAndSynced
     }
 
+    let store: ObjectStore
+
     var localPath: String!
     var remoteReadPath: String!
     var remoteWriteAPI: String? // The push (PUT) remote API with body of the corresponding JSON representation
@@ -122,9 +125,11 @@ open class PersistentObject: Persisting {
     init(id: UUID = UUID(), lastUpdateTime: Date = Date.now) {
         self.id             = id
         self.lastUpdateTime = lastUpdateTime
+        self.store          = PersistentObject.store!
     }
 }
 
+//MARK: - IdentifiableObject -
 open class IdentifiableObject: PersistentObject {
     // Polis Identity defined
     public var externalReferences: [String]?
@@ -132,14 +137,75 @@ open class IdentifiableObject: PersistentObject {
     public var localName: String?
     public var abbreviation: String?
     public var shortDescription: String?
-    public var startDate: Date?
-    public var endDate: Date?
+    public var startTime: Date?
+    public var endTime: Date?
     public var polisRegistrationDate: Date?
 
     /// Designated initialiser
-    init(id: UUID, lastUpdateDate: Date = Date(), name: String) throws {
+    init(id: UUID, lastUpdateTime: Date = Date(), name: String) throws {
         self.name = name
-        super.init(id: id, lastUpdateTime: lastUpdateDate)
+        super.init(id: id, lastUpdateTime: lastUpdateTime)
     }
 
+    var identity: PolisIdentity {
+        get {
+            PolisIdentity(id: id,
+                          externalReferences: externalReferences,
+                          lastUpdateTime: lastUpdateTime,
+                          name: name,
+                          localName: localName,
+                          abbreviation: abbreviation,
+                          shortDescription: shortDescription,
+                          startTime: startTime,
+                          endTime: endTime,
+                          polisRegistrationTime: polisRegistrationDate)
+        }
+        set {
+            id                 = newValue.id
+            externalReferences = newValue.externalReferences
+            lastUpdateTime     = newValue.lastUpdateTime
+            name               = newValue.name ?? "<unnamed>"
+            localName          = newValue.localName
+            abbreviation       = newValue.abbreviation
+            shortDescription   = newValue.shortDescription
+            startTime          = newValue.startTime
+            endTime            = newValue.endTime
+        }
+    }
+}
+
+//MARK: - ObjectItem -
+open class ObjectItem: IdentifiableObject {
+    public var owner: PolisOwner?
+    public var parentID: UUID?
+    public var automationLabel: String?
+    public var lifecycleStatus: PolisLifecycleStatus = PolisLifecycleStatus.unknown
+    public var mediaSourceID: UUID?
+
+    var item: PolisItem {
+        get {
+            PolisItem(identity: identity,
+                      owner: owner,
+                      parentID: parentID,
+                      automationLabel: automationLabel,
+                      lifecycleStatus: lifecycleStatus,
+                      mediaSourceID: mediaSourceID)
+        }
+        set {
+            identity        = newValue.identity
+            owner           = newValue.owner
+            parentID        = newValue.parentID
+            automationLabel = newValue.automationLabel
+            lifecycleStatus = newValue.lifecycleStatus
+            mediaSourceID   = newValue.mediaSourceID
+        }
+    }
+
+
+}
+
+
+extension RemoteSynchronisationProviding {
+    func pullChanges() async throws { }
+    func pushChanges() async throws { }
 }
