@@ -227,22 +227,20 @@ public struct PolisObservingFacilityDirectory: Codable {
 //
 //        if let index = observingFacilityReferences.firstIndex(where: {$0.id == reference.id} ) {
 //            observingFacilityReferences[index].identity.externalReferences    = reference.identity.externalReferences
-//            observingFacilityReferences[index].identity.lastUpdateDate        = reference.identity.lastUpdateDate
+//            observingFacilityReferences[index].identity.lastUpdateTime        = reference.identity.lastUpdateTime
 //            observingFacilityReferences[index].identity.name                  = reference.identity.name
 //            observingFacilityReferences[index].identity.localName             = reference.identity.localName
 //            observingFacilityReferences[index].identity.abbreviation          = reference.identity.abbreviation
 //            observingFacilityReferences[index].identity.shortDescription      = reference.identity.shortDescription
-//            observingFacilityReferences[index].identity.startDate             = reference.identity.startDate
-//            observingFacilityReferences[index].identity.endDate               = reference.identity.endDate
-//            observingFacilityReferences[index].identity.polisRegistrationDate = reference.identity.polisRegistrationDate
+//            observingFacilityReferences[index].identity.startTime             = reference.identity.startTime
+//            observingFacilityReferences[index].identity.endTime               = reference.identity.endTime
+//            observingFacilityReferences[index].identity.polisRegistrationTime = reference.identity.polisRegistrationTime
 //        }
 //        
 //        lastUpdate = Date.now
 //        observingFacilityReferences.append(reference)
-//
-//        try? self.flashUsing(manager: PolisProviderManager.currentProviderManager)
 //    }
-
+//
     //MARK: Non-public APIs
 //    static var isSynced = false
 //    static var syncDate = Date.distantPast

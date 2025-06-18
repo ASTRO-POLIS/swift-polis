@@ -34,8 +34,10 @@ public actor ObjectStore {
     public func fileResourceFinder() -> PolisFileResourceFinder     { _fileResourceFinder }
     public func remoteResourceFinder() -> PolisRemoteResourceFinder { _remoteResourceFinder }
 
+    // Local configuration
     public func polisProviderConfigurationEntry() -> PolisDirectory.ProviderDirectoryEntry { _polisProviderConfigurationEntry }
     public func setPolisProviderConfigurationEntry(_ entry: PolisDirectory.ProviderDirectoryEntry) { _polisProviderConfigurationEntry = entry }
+
 
     // Service Provider Configuration
     public func isConfigured() -> Bool {
@@ -116,7 +118,30 @@ public actor ObjectStore {
     public func isEditable() -> Bool { _localConfiguration.isTesting || _localConfiguration.isEditable }
 
     //MARK: - Non-public APIs -
+    // POLIS related
+    func facilityDirectory() -> PolisObservingFacilityDirectory { _facilityDirectory! }
 
+    func addOrUpdateObservingFacility(reference: PolisObservingFacilityDirectory.ObservingFacilityReference) async throws{
+        var dir = _facilityDirectory!
+        var refs = dir.observingFacilityReferences
+
+        if let index = dir.observingFacilityReferences.firstIndex(where: {$0.id == reference.id} ) {
+            refs[index].identity.externalReferences    = reference.identity.externalReferences
+            refs[index].identity.lastUpdateTime        = reference.identity.lastUpdateTime
+            refs[index].identity.name                  = reference.identity.name
+            refs[index].identity.localName             = reference.identity.localName
+            refs[index].identity.abbreviation          = reference.identity.abbreviation
+            refs[index].identity.shortDescription      = reference.identity.shortDescription
+            refs[index].identity.startTime             = reference.identity.startTime
+            refs[index].identity.endTime               = reference.identity.endTime
+            refs[index].identity.polisRegistrationTime = reference.identity.polisRegistrationTime
+        }
+        
+        dir.lastUpdate = Date.now
+        dir.observingFacilityReferences.append(reference)
+        try await dir.flashUsing(store: self)
+    }
+        
     //MARK: Polis Provider Manager internal configuration
     let jsonEncoder = PrettyJSONEncoder()
     let jsonDecoder = PrettyJSONDecoder()
@@ -174,8 +199,22 @@ public actor ObjectStore {
 //MARK: - Facility related -
 extension ObjectStore {
     /// Creates the Facility Reference and the Facility
-    public func createFixedEarthBasedFacility() throws  { //TODO: Should return the faclity
-        //TODO: Implement me!
+    public func createFixedEarthBasedFacility() async throws  -> ObservingFacility {
+        try await createFacility(gravitationalBodyRelationship: .surfaceFixed, placeInTheSolarSystem: .earth)
+    }
+
+    public func createFacility(
+        gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
+        placeInTheSolarSystem : PolisPlaceInTheSolarSystem                = .earth
+    ) async throws -> ObservingFacility {
+        let facility = try await ObservingFacility(id: UUID(), name: "<unnamed>")
+
+        facility.gravitationalBodyRelationship = gravitationalBodyRelationship
+        facility.placeInTheSolarSystem = placeInTheSolarSystem
+
+        try await facility.saveChanges()
+
+        return facility
     }
 
     public func facilityWithId(_ id: String, shouldAutoload: Bool = true) async throws  { //TODO: Should return a facility

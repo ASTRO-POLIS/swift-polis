@@ -67,10 +67,10 @@ open class EarthFixBasedObservingFacility: IdentifiableObject {
 
 //    var fixedSurfaceEarthBaseDetailsPersistenceReference: PolisReference!
 
-    init(id: UUID, lastUpdateTime: Date = Date(), facilityID: UUID) throws{
+    init(id: UUID, lastUpdateTime: Date = Date(), facilityID: UUID) async throws{
         self.facilityID = facilityID
 
-        try super.init(id: id, lastUpdateTime: lastUpdateTime, name: "")  //FIXME: Put proper name!
+        try await super.init(id: id, lastUpdateTime: lastUpdateTime, name: "")  //FIXME: Put proper name!
 
 //        fixedSurfaceEarthBaseDetailsPersistenceReference = try PolisReference(facilityID: id, polisObjectID: id)
     }

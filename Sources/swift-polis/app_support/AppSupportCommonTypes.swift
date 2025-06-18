@@ -12,7 +12,7 @@ protocol StorableItem {
     static func removeFromLocalFileSystemUsing(store: ObjectStore) async throws
 
     func parentItem(store: ObjectStore) async -> (any StorableItem)?
-    mutating func flashUsing(store: ObjectStore) async throws
+    func flashUsing(store: ObjectStore) async throws
 }
 
 public struct AppSupportStatusChangeNotification {
@@ -23,6 +23,8 @@ public struct AppSupportStatusChangeNotification {
     public static let ObjectStoreDidRemoveNotification  = Notification.Name("ObjectStoreWillRemove")    // ✅ Object is the ObjectStore
 
     // Facility Info
+    public static let facilityInfoWillSaveNotification      = Notification.Name("facilityInfoWillSave")      // ✅ Object is nil
+    public static let facilityInfoDidSaveNotification       = Notification.Name("facilityInfoDidSave")       // ✅ Object is the ObservingFacilityRep
     public static let facilityInfoWillLoadNotification      = Notification.Name("facilityInfoWillLoad")      // ✅ Object nil
     public static let facilityInfoDidLoadNotification       = Notification.Name("facilityInfoDidLoad")       // ✅ Object is the ObservingFacilityRep
 
@@ -43,10 +45,6 @@ public struct AppSupportStatusChangeNotification {
 //    // Facility detail (info) reference related
 //    public static let facilityInfoWillCreateNotification    = Notification.Name("facilityInfoWillCreate")    // ✅ Object is nil
 //    public static let facilityInfoDidCreateNotification     = Notification.Name("facilityInfoDidCreate")     // ✅ Object is the ObservingFacilityRep
-//    public static let facilityInfoWillSaveNotification      = Notification.Name("facilityInfoWillSave")      // ✅ Object is nil
-//    public static let facilityInfoDidSaveNotification       = Notification.Name("facilityInfoDidSave")       // ✅ Object is the ObservingFacilityRep
-//  public static let facilityInfoWillLoadNotification      = Notification.Name("facilityInfoWillLoad")      // ✅ Object nil
-//  public static let facilityInfoDidLoadNotification       = Notification.Name("facilityInfoDidLoad")       // ✅ Object is the ObservingFacilityRep
 //
 //    //TODO: These are Erth Based notifications
 //    public static let facilityDetailWillLoadNotification    = Notification.Name("facilityDetailWillLoad")    // Object ObservingFacilityRep
@@ -63,3 +61,21 @@ public struct AppSupportStatusChangeNotification {
 //    public static let artifactDidChangeNotification        = Notification.Name("artifactDidChange")          // Object is the ArtifactRep
 //
 //}
+
+
+/// Defines the type to be used where to store local data the stored data
+public enum RepresentingStoredObjectType: Int, CaseIterable {
+    case unknown
+    case observingFacility // Cannot be shared, this is the facility Info (Details)
+    case place             // Cannot be shared
+    case observatory       // Can be shared
+    case device            // Can be shared
+    case artifact          // Cannot be shared
+}
+
+//public enum PolisSorting {
+//    case none
+//    case dateAndTime
+//    case lastUpdated
+//}
+//
