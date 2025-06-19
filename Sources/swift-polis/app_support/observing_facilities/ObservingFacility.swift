@@ -36,10 +36,11 @@ open class ObservingFacility: ObjectItem {
     public static func findOrRegisterObservingFacilityWith(
         identity: PolisIdentity,
         gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
-        placeInTheSolarSystem : PolisPlaceInTheSolarSystem                = .earth
+        placeInTheSolarSystem : PolisPlaceInTheSolarSystem                = .earth,
+        autoload: Bool                                                    = true
     ) throws -> ObservingFacility {
 
-        if let store = PersistentObject.store {
+//        if let store = PersistentObject.store {
 
 //            if let existingFacilityDirectoryEntry = store.directoryEntryForFacilityWith(id: identity.id) {
 //                // So, this facility is already registered into the Facility Directory
@@ -60,8 +61,8 @@ open class ObservingFacility: ObjectItem {
 //                                                                            gravitationalBodyRelationship: gravitationalBodyRelationship,
 //                                                                            placeInTheSolarSystem: placeInTheSolarSystem)
 //            }
-        }
-        else { throw ObservingFacilityError.providerManagerNotInitialized }
+//        }
+//        else { throw ObservingFacilityError.providerManagerNotInitialized }
         //TODO: Implement other facility types when framework provides support for them.
 
         throw ObservingFacilityError.providerManagerNotInitialized   //FIXME: !!! Remove this, normal return is needed!
