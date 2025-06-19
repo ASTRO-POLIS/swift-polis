@@ -32,13 +32,14 @@ extension PolisDirectory.ProviderDirectoryEntry: StorableItem {
     
     func parentItem(store: ObjectStore) async -> (any StorableItem)? { nil }
 
-    mutating func flashUsing(store: ObjectStore) async throws {
-        let finder = await store.fileResourceFinder()
-        let path   = finder.configurationFile()
+    func flashUsing(store: ObjectStore) async throws {
+        let finder      = await store.fileResourceFinder()
+        let path        = finder.configurationFile()
+        var newDirEntry = self
 
-        self.lastUpdateTime = Date.now
+        newDirEntry.lastUpdateTime = Date.now
 
-        do    { data = try jsonEncoder.encode(self) }
+        do    { data = try jsonEncoder.encode(newDirEntry) }
         catch {
             PolisLogger.shared.error("Cannot encode POLIS Provider Main Configuration Entry")
             throw ObjectStore.ObjectStoreError.cannotEncodePolisType
@@ -59,6 +60,7 @@ extension PolisDirectory: StorableItem {
         let fm     = FileManager.default
         let data   = fm.contents(atPath: path)
 
+
         guard let data = data else { throw ObjectStore.ObjectStoreError.cannotAccessOrCreateStandardPolisFile }
 
         do {
@@ -77,13 +79,14 @@ extension PolisDirectory: StorableItem {
     
     func parentItem(store: ObjectStore) async -> (any StorableItem)? { await store.polisProviderConfigurationEntry() }
 
-    mutating func flashUsing(store: ObjectStore) async throws {
+    func flashUsing(store: ObjectStore) async throws {
         let finder = await store.fileResourceFinder()
         let path   = finder.polisProviderDirectoryFile()
+        var dir    = self
 
-        self.lastUpdateTime = Date.now
+        dir.lastUpdateTime = Date.now
 
-        do    { data = try jsonEncoder.encode(self) }
+        do    { data = try jsonEncoder.encode(dir) }
         catch {
             PolisLogger.shared.error("Cannot encode POLIS Directory")
             throw ObjectStore.ObjectStoreError.cannotEncodePolisType
@@ -125,13 +128,14 @@ extension PolisObservingFacilityDirectory: StorableItem {
 
     func parentItem(store: ObjectStore) async -> (any StorableItem)? { await store.polisProviderConfigurationEntry() }
 
-    mutating func flashUsing(store: ObjectStore) async throws {
+    func flashUsing(store: ObjectStore) async throws {
         let finder = await store.fileResourceFinder()
         let path   = finder.observingFacilitiesDirectoryFile()
+        var dir    = self
 
-        self.lastUpdate = Date.now
+        dir.lastUpdate = Date.now
 
-        do    { data = try jsonEncoder.encode(self) }
+        do    { data = try jsonEncoder.encode(dir) }
         catch {
             PolisLogger.shared.error("Cannot encode POLIS Observing Facility Directory")
             throw ObjectStore.ObjectStoreError.cannotEncodePolisType

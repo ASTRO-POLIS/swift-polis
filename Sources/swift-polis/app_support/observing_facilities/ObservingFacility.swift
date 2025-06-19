@@ -105,12 +105,20 @@ open class ObservingFacility: ObjectItem {
         await store.isEditable()
     }
 
-    public func saveChanges() throws {
+    public func saveChanges() async throws {
+        nc.post(name: AppSupportStatusChangeNotification.facilityInfoWillSaveNotification, object: nil)
+
+        // 1. Update Facility Directory
+        var directoryEntry = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: identity,
+                                                                                        gravitationalBodyRelationship: gravitationalBodyRelationship,
+                                                                                        placeInTheSolarSystem: placeInTheSolarSystem)
+        try await store.addOrUpdateObservingFacility(reference: directoryEntry)
+
+        // 2. Now try to save the Facility Info
+
+
         //FIXME: We need a new hasChanges and canEdit!
         // 0. Are we allowed to save and is there anything to change?
-//        if !hasChanges { return }
-//        if !canEdit()  { throw ObservingFacilityRepError.instanceCannotBeEdited }
-
 //        nc.post(name: StatusChangeNotification.facilityInfoWillSaveNotification, object: nil)
 //
 //        // 1. Check if I am part of the facility directory, and if not - add myself
@@ -144,7 +152,8 @@ open class ObservingFacility: ObjectItem {
 //            detailsPersistenceReference.dataStatus.existenceStatusRemote = .unknown
 //            detailsPersistenceReference.dataStatus.loadingStatus         = .loadedNotSynced
 ////        }
-//        nc.post(name: StatusChangeNotification.facilityInfoDidSaveNotification, object: self)
+        nc.post(name: AppSupportStatusChangeNotification.facilityInfoDidSaveNotification, object: nil)
+
     }
 
     public func revertToSaved() async throws {
@@ -241,8 +250,8 @@ open class ObservingFacility: ObjectItem {
       }
     }
 
-    override init(id: UUID, lastUpdateTime: Date = Date(), name: String) throws {
-        try super.init(id: id, lastUpdateTime: lastUpdateTime, name: name)
+    init(id: UUID, lastUpdateTime: Date = Date(), name: String) async throws {
+        try await super.init(id: id, lastUpdateTime: lastUpdateTime, name: name)
 
 //        detailsPersistenceReference = try PolisReference(facilityID: identity.id, polisObjectID: identity.id)
 //        setHasChanges()
@@ -260,32 +269,32 @@ open class ObservingFacility: ObjectItem {
 
     //MARK: Private APIs
 
-    private static func createObservingFacilityWith(
-        identity: PolisIdentity,
-        gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
-        placeInTheSolarSystem : PolisPlaceInTheSolarSystem                = .earth
-    ) throws -> ObservingFacility {
-        if (gravitationalBodyRelationship == .surfaceFixed) && (placeInTheSolarSystem == .earth) {
-            let result = try ObservingFacility(id: identity.id, lastUpdateTime: identity.lastUpdateTime, name: identity.name ?? "<unnamed>")
-
-//            result.nc.post(name: StatusChangeNotification.facilityReferenceWillCreateNotification, object: nil)
+//    private static func createObservingFacilityWith(
+//        identity: PolisIdentity,
+//        gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
+//        placeInTheSolarSystem : PolisPlaceInTheSolarSystem                = .earth
+//    ) async throws -> ObservingFacility {
+//        if (gravitationalBodyRelationship == .surfaceFixed) && (placeInTheSolarSystem == .earth) {
+//            let result = try await ObservingFacility(id: identity.id, lastUpdateTime: identity.lastUpdateTime, name: identity.name ?? "<unnamed>")
 //
-//            result.localName            = identity.localName
-//            result.abbreviation         = identity.abbreviation
-//            result.shortDescription     = identity.shortDescription
-//            result.startDate            = identity.startDate
-//            result.nc.post(name: StatusChangeNotification.facilityReferenceDidCreateNotification, object: result)
+////            result.nc.post(name: StatusChangeNotification.facilityReferenceWillCreateNotification, object: nil)
+////
+////            result.localName            = identity.localName
+////            result.abbreviation         = identity.abbreviation
+////            result.shortDescription     = identity.shortDescription
+////            result.startDate            = identity.startDate
+////            result.nc.post(name: StatusChangeNotification.facilityReferenceDidCreateNotification, object: result)
+////
+////            result.nc.post(name: StatusChangeNotification.facilityInfoWillCreateNotification, object: nil)
+////            try result.saveChanges()
+////            try manager?.facilityDirectory.flashUsing(manager: manager!)
+////            result.nc.post(name: StatusChangeNotification.facilityInfoDidCreateNotification, object: result)
 //
-//            result.nc.post(name: StatusChangeNotification.facilityInfoWillCreateNotification, object: nil)
-//            try result.saveChanges()
-//            try manager?.facilityDirectory.flashUsing(manager: manager!)
-//            result.nc.post(name: StatusChangeNotification.facilityInfoDidCreateNotification, object: result)
-
-            return result
-        }
-      //TODO: Implement me!
-      throw ObservingFacilityError.foundFacilityWithTypeMismatch
-    }
+//            return result
+//        }
+//      //TODO: Implement me!
+//      throw ObservingFacilityError.foundFacilityWithTypeMismatch
+//    }
 
     private func loadReferencedItems() {
         //TODO: Implement me!
@@ -294,8 +303,8 @@ open class ObservingFacility: ObjectItem {
 
 //MARK: Working with Fixed Surface Earth Base Details
 public extension ObservingFacility {
-    func addFixedSurfaceEarthBaseDetails() throws -> EarthFixBasedObservingFacility {
-        let result    = try EarthFixBasedObservingFacility(id: UUID(), facilityID: self.id)
+    func addFixedSurfaceEarthBaseDetails() async throws -> EarthFixBasedObservingFacility {
+        let result    = try await EarthFixBasedObservingFacility(id: UUID(), facilityID: self.id)
 //        let reference = try PolisReference(facilityID: self.id, polisObjectID: result.id, hasLocalCopy: false, representingStoredObjectType: PolisRepresentingStoredObjectType.observingFacility)
 //
 //        result.fixedSurfaceEarthBaseDetailsPersistenceReference = reference
@@ -324,10 +333,10 @@ public extension ObservingFacility {
         return artifacts!
     }
 
-    func addArtifact(artifactType: PolisArtifact.ArtifactType, visitingOpportunities: String? = nil, mediaID: UUID? = nil) throws -> Artifact {
+    func addArtifact(artifactType: PolisArtifact.ArtifactType, visitingOpportunities: String? = nil, mediaID: UUID? = nil) async throws -> Artifact {
         let artifactIdentity = PolisIdentity(id: UUID())
 //        let reference        = try PolisReference(facilityID: self.id, polisObjectID: artifactIdentity.id, representingStoredObjectType: .artifact)
-        let artifact         = try Artifact(identity: artifactIdentity,
+        let artifact         = try await Artifact(identity: artifactIdentity,
                                                artifactType: artifactType,
                                                visitingOpportunities: visitingOpportunities,
                                                mediaID: mediaID,

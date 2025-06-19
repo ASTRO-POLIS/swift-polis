@@ -22,14 +22,14 @@ open class Artifact: IdentifiableObject {
          visitingOpportunities: String?           = nil,
          mediaID: UUID?                           = nil,
          website: URL?                            = nil,
-         facility: ObservingFacility) throws {
+         facility: ObservingFacility) async throws {
         self.artifactType          = artifactType
         self.visitingOpportunities = visitingOpportunities
         self.mediaID               = mediaID
         self.website               = website
         self.facility              = facility
 
-        try super.init(id: identity.id, lastUpdateTime: identity.lastUpdateTime, name: identity.name ?? "<unnamed>")
+        try await super.init(id: identity.id, lastUpdateTime: identity.lastUpdateTime, name: identity.name ?? "<unnamed>")
     }
 
     //MARK: - PolisPersisting implementation -

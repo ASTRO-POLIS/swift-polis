@@ -83,15 +83,7 @@ open class PersistentObject: Persisting {
     public var id: UUID
     public var lastUpdateTime: Date
 
-
-
-    public static func createPersistentObject() -> PersistentObject {
-        //TODO: Implement me!
-        return PersistentObject()
-    }
-
     //MARK: Non-public APIs
-
     enum LocalPersistencyStatus {
         case unowned
         case inMemoryOnly
@@ -106,11 +98,19 @@ open class PersistentObject: Persisting {
         case remoteRepresentationAndSynced
     }
 
+    enum PersistentObjectError: Error {
+        case referenceTypeNotImplemented
+        case missingFacilityID
+    }
+
     let store: ObjectStore
 
     var localPath: String!
     var remoteReadPath: String!
     var remoteWriteAPI: String? // The push (PUT) remote API with body of the corresponding JSON representation
+
+    var representingStoredObjectType = RepresentingStoredObjectType.unknown
+    var fileType                     = PolisImplementation.DataFormat.json
 
     var localPersistencyStatus  = LocalPersistencyStatus.unowned
     var remotePersistencyStatus = RemotePersistencyStatus.unowned
@@ -122,10 +122,42 @@ open class PersistentObject: Persisting {
     var jsonDecoder     = PrettyJSONDecoder()
     var jsonData: Data!
 
-    init(id: UUID = UUID(), lastUpdateTime: Date = Date.now) {
+    init(id: UUID = UUID(),
+         lastUpdateTime: Date = Date.now,
+         facilityID: UUID? = nil,
+         representingStoredObjectType: RepresentingStoredObjectType = .observingFacility,
+         fileType: PolisImplementation.DataFormat = .json) async throws {
+        self.store               = PersistentObject.store!
+        let fileResourceFinder   = await store.fileResourceFinder()
+        let remoteResourceFinder = await store.remoteResourceFinder()
+        let facilityIDString     = facilityID?.uuidString
+        let polisIdString        = id.uuidString
+
         self.id             = id
         self.lastUpdateTime = lastUpdateTime
-        self.store          = PersistentObject.store!
+
+        switch representingStoredObjectType {
+            case .observingFacility:
+                if let facilityIDString = facilityIDString {
+                    let fileName   = "\(facilityIDString)/\(polisIdString).\(fileType)"
+
+                    localPath      = "\(fileResourceFinder.observingFacilitiesFolder())\(fileName)"
+                    remoteReadPath = "\(remoteResourceFinder.polisProviderDirectoryURL())\(fileName)"
+                }
+                else { throw PersistentObjectError.missingFacilityID }
+            case .artifact:
+                if let facilityID = facilityID {
+                    let fileName   = "\(polisIdString).\(fileType)"
+
+                    localPath      = "\(fileResourceFinder.observingFacilityFolder(observingFacilityID: facilityID))\(fileName)"
+                    remoteReadPath = "\(remoteResourceFinder.observingFacilityURL(observingFacilityID: facilityID))\(fileName)"
+                }
+                else { throw PersistentObjectError.missingFacilityID }
+            default: throw PersistentObjectError.referenceTypeNotImplemented
+        }
+
+        self.representingStoredObjectType = representingStoredObjectType
+        self.fileType                     = fileType
     }
 }
 
@@ -142,9 +174,14 @@ open class IdentifiableObject: PersistentObject {
     public var polisRegistrationDate: Date?
 
     /// Designated initialiser
-    init(id: UUID, lastUpdateTime: Date = Date(), name: String) throws {
+    init(id: UUID                                                   = UUID(),
+         lastUpdateTime: Date                                       = Date(),
+         name: String,
+         facilityID: UUID?                                          = nil,
+         representingStoredObjectType: RepresentingStoredObjectType = .observingFacility,
+         fileType: PolisImplementation.DataFormat                   = .json) async throws {
         self.name = name
-        super.init(id: id, lastUpdateTime: lastUpdateTime)
+        try await super.init(id: id, lastUpdateTime: lastUpdateTime, facilityID: facilityID, representingStoredObjectType: representingStoredObjectType, fileType: fileType)
     }
 
     var identity: PolisIdentity {
@@ -200,11 +237,9 @@ open class ObjectItem: IdentifiableObject {
             mediaSourceID   = newValue.mediaSourceID
         }
     }
-
-
 }
 
-
+//MARK: - Default implementation of RemoteSynchronisationProviding -
 extension RemoteSynchronisationProviding {
     func pullChanges() async throws { }
     func pushChanges() async throws { }
