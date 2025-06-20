@@ -21,12 +21,14 @@ public struct AppSupportStatusChangeNotification {
     public static let ObjectStoreDidCreateNotification  = Notification.Name("ObjectStoreDidCreate")     // ✅ Object is the ObjectStore
     public static let ObjectStoreWillRemoveNotification = Notification.Name("ObjectStoreWillRemove")    // ✅ Object is the ObjectStore
     public static let ObjectStoreDidRemoveNotification  = Notification.Name("ObjectStoreWillRemove")    // ✅ Object is the ObjectStore
+    public static let ObjectStoreWillCloseNotification  = Notification.Name("ObjectStoreWillClose")     // ✅ Object is the ObjectStore
+    public static let ObjectStoreDidCloseNotification   = Notification.Name("ObjectStoreDidClose")      // ✅ Object is nil
 
     // Facility Info
-    public static let facilityInfoWillSaveNotification      = Notification.Name("facilityInfoWillSave")      // ✅ Object is nil
-    public static let facilityInfoDidSaveNotification       = Notification.Name("facilityInfoDidSave")       // ✅ Object is the ObservingFacilityRep
-    public static let facilityInfoWillLoadNotification      = Notification.Name("facilityInfoWillLoad")      // ✅ Object nil
-    public static let facilityInfoDidLoadNotification       = Notification.Name("facilityInfoDidLoad")       // ✅ Object is the ObservingFacilityRep
+    public static let facilityInfoWillSaveNotification      = Notification.Name("facilityInfoWillSave")  // ✅ Object is nil
+    public static let facilityInfoDidSaveNotification       = Notification.Name("facilityInfoDidSave")   // ✅ Object is the ObservingFacilityRep
+    public static let facilityInfoWillLoadNotification      = Notification.Name("facilityInfoWillLoad")  // ✅ Object nil
+    public static let facilityInfoDidLoadNotification       = Notification.Name("facilityInfoDidLoad")   // ✅ Object is the ObservingFacilityRep
 
 }
 

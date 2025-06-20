@@ -117,6 +117,13 @@ public actor ObjectStore {
 
     public func isEditable() -> Bool { _localConfiguration.isTesting || _localConfiguration.isEditable }
 
+    /// Makes sure that all edited (in memory) objects are stored persistently in the local Store
+    public func close() async throws {
+        nc.post(name: AppSupportStatusChangeNotification.ObjectStoreWillCloseNotification, object: self)
+        //TODO: Implement me!
+        nc.post(name: AppSupportStatusChangeNotification.ObjectStoreDidCloseNotification, object: nil)
+    }
+
     //MARK: - Non-public APIs -
     // POLIS related
     func facilityDirectory() -> PolisObservingFacilityDirectory { _facilityDirectory! }
@@ -152,10 +159,6 @@ public actor ObjectStore {
         ObjectStore._currentObjectStore = self
 
         await assignStoreToStaticProperties()
-    }
-
-    func close() async throws {
-        //TODO: Implement me!
     }
 
     func flush(item: any StorableItem) async throws {

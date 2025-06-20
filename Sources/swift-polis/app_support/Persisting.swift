@@ -25,6 +25,12 @@ public protocol Persisting: Identifiable {
     ///  - If the locally stored instance (if exists) is equal to the in-memory copy
     func canEdit() async -> Bool
 
+    /// Marks the beginning of an editing session of the object
+    func startEditing() async throws
+
+    /// Marks the end of an editing session of the object
+    func finishEditing() async throws
+
     /// Saves all changes to the local file system
     ///
     /// The method should compare the POLIS data stored in the file system (or cached) and perform file system changes only in case both datasets differ from
@@ -55,19 +61,6 @@ public protocol Persisting: Identifiable {
     func prepareToCloseTheObjectStore() async throws
 }
 
-// Some useful default implementations
-extension Persisting {
-    public func canEdit()                      async -> Bool { false } // Better be on the safe side
-    public func saveChanges()                  async throws { }
-    public func revertToSaved()                async throws { }
-    public func delete()                       async throws { }
-    public func loadData()                     async throws { }
-
-    public func didChange()                    async -> Bool { false }
-
-    public func prepareToCloseTheObjectStore() async throws { }
-}
-
 
 //MARK: - PersistenObject -
 open class PersistentObject: Persisting {
@@ -82,6 +75,9 @@ open class PersistentObject: Persisting {
 
     public var id: UUID
     public var lastUpdateTime: Date
+
+    public func startEditing() async throws  { isEditing = true }
+    public func finishEditing() async throws { isEditing = false}
 
     //MARK: Non-public APIs
     enum LocalPersistencyStatus {
@@ -159,6 +155,9 @@ open class PersistentObject: Persisting {
         self.representingStoredObjectType = representingStoredObjectType
         self.fileType                     = fileType
     }
+
+    //MARK: Private API
+    private var isEditing = false
 }
 
 //MARK: - IdentifiableObject -
@@ -238,6 +237,23 @@ open class ObjectItem: IdentifiableObject {
         }
     }
 }
+
+//MARK:  - Some useful default implementations for Persisting protocol -
+extension Persisting {
+    public func canEdit()                      async -> Bool { false } // Better be on the safe side
+    public func startEditing()                 async throws { }
+    public func finishEditing()                async throws { }
+
+    public func saveChanges()                  async throws { }
+    public func revertToSaved()                async throws { }
+    public func delete()                       async throws { }
+    public func loadData()                     async throws { }
+
+    public func didChange()                    async -> Bool { false }
+
+    public func prepareToCloseTheObjectStore() async throws { }
+}
+
 
 //MARK: - Default implementation of RemoteSynchronisationProviding -
 extension RemoteSynchronisationProviding {

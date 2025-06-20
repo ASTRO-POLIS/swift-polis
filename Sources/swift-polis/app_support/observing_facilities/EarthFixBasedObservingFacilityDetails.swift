@@ -1,5 +1,5 @@
 //
-//  EarthFixBasedObservingFacility.swift
+//  EarthFixBasedObservingFacilityDetails.swift
 //  swift-polis
 //
 //  Created by Georg Tuparev on 23/10/2024.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-open class EarthFixBasedObservingFacility: IdentifiableObject {
+open class EarthFixBasedObservingFacilityDetails: IdentifiableObject {
 
     //MARK: Public APIs
 
