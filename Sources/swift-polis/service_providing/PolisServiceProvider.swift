@@ -221,29 +221,6 @@ public struct PolisObservingFacilityDirectory: Codable {
         self.lastUpdate                  = lastUpdate
         self.observingFacilityReferences = observingFacilityReferences
     }
-
-    //TODO: Move to AppSupport!
-//    public mutating func addOrUpdateObservingFacility(reference: ObservingFacilityReference) {
-//
-//        if let index = observingFacilityReferences.firstIndex(where: {$0.id == reference.id} ) {
-//            observingFacilityReferences[index].identity.externalReferences    = reference.identity.externalReferences
-//            observingFacilityReferences[index].identity.lastUpdateTime        = reference.identity.lastUpdateTime
-//            observingFacilityReferences[index].identity.name                  = reference.identity.name
-//            observingFacilityReferences[index].identity.localName             = reference.identity.localName
-//            observingFacilityReferences[index].identity.abbreviation          = reference.identity.abbreviation
-//            observingFacilityReferences[index].identity.shortDescription      = reference.identity.shortDescription
-//            observingFacilityReferences[index].identity.startTime             = reference.identity.startTime
-//            observingFacilityReferences[index].identity.endTime               = reference.identity.endTime
-//            observingFacilityReferences[index].identity.polisRegistrationTime = reference.identity.polisRegistrationTime
-//        }
-//        
-//        lastUpdate = Date.now
-//        observingFacilityReferences.append(reference)
-//    }
-//
-    //MARK: Non-public APIs
-//    static var isSynced = false
-//    static var syncDate = Date.distantPast
 }
 
 //MARK: - Making types Codable -

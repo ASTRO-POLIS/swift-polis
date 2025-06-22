@@ -19,6 +19,8 @@ public struct AppSupportStatusChangeNotification {
     // Object Store Notifications
     public static let ObjectStoreWillCreateNotification = Notification.Name("ObjectStoreWillCreate")    // ✅ Object is the ObjectStore
     public static let ObjectStoreDidCreateNotification  = Notification.Name("ObjectStoreDidCreate")     // ✅ Object is the ObjectStore
+    public static let ObjectStoreWillLoadNotification   = Notification.Name("ObjectStoreWillLoad")      // ✅ Object is the ObjectStore
+    public static let ObjectStoreDidLoadNotification    = Notification.Name("ObjectStoreDidLoad")       // ✅ Object is the ObjectStore
     public static let ObjectStoreWillRemoveNotification = Notification.Name("ObjectStoreWillRemove")    // ✅ Object is the ObjectStore
     public static let ObjectStoreDidRemoveNotification  = Notification.Name("ObjectStoreWillRemove")    // ✅ Object is the ObjectStore
     public static let ObjectStoreWillCloseNotification  = Notification.Name("ObjectStoreWillClose")     // ✅ Object is the ObjectStore

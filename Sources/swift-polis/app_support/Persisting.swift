@@ -47,11 +47,12 @@ public protocol Persisting: Identifiable {
     /// Deletes the item from both - the memory cache and from the local file system
     func delete() async throws
 
-    /// This method forces the corresponding `*Rep`instance  to load  locally stored data
+    /// This method forces the corresponding instance  to load  locally stored data
     ///
     /// **Notes:**
-    ///  - Child instances receive `loadData()` after the parent instance
+    ///  - Child instances receive `loadData()` after the parent instance (if applicable)
     ///  - If the instance has reference to more local data, this should be scheduled to be loaded and notifications should be observed
+    ///  - No exception is thrown if local data does not exist 
     func loadData() async throws
 
     /// Returns the result of the comparison between the locally stored POLIS item and the corresponding in-memory representation
@@ -126,7 +127,7 @@ open class PersistentObject: Persisting {
         self.store               = PersistentObject.store!
         let fileResourceFinder   = await store.fileResourceFinder()
         let remoteResourceFinder = await store.remoteResourceFinder()
-        let facilityIDString     = facilityID?.uuidString
+        var facilityIDString     = facilityID?.uuidString
         let polisIdString        = id.uuidString
 
         self.id             = id
@@ -134,13 +135,11 @@ open class PersistentObject: Persisting {
 
         switch representingStoredObjectType {
             case .observingFacility:
-                if let facilityIDString = facilityIDString {
-                    let fileName   = "\(facilityIDString)/\(polisIdString).\(fileType)"
+                facilityIDString = id.uuidString
+                let fileName   = "\(facilityIDString!)/\(polisIdString).\(fileType)"
 
                     localPath      = "\(fileResourceFinder.observingFacilitiesFolder())\(fileName)"
                     remoteReadPath = "\(remoteResourceFinder.polisProviderDirectoryURL())\(fileName)"
-                }
-                else { throw PersistentObjectError.missingFacilityID }
             case .artifact:
                 if let facilityID = facilityID {
                     let fileName   = "\(polisIdString).\(fileType)"

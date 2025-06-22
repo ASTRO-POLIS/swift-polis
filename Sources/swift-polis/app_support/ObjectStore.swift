@@ -94,7 +94,32 @@ public actor ObjectStore {
     ///
     /// Loading always will be step-by-step and will start with the most important data and later will continue with detail data.
     public func loadLocalStore() async throws {
-        //TODO: Implement me!
+        nc.post(name: AppSupportStatusChangeNotification.ObjectStoreWillLoadNotification, object: self)
+
+        // N. Load Service Provider
+        if let provider = try await PolisDirectory.ProviderDirectoryEntry.loadFromLocalFileSystemUsing(store: self) as? PolisDirectory.ProviderDirectoryEntry {
+            _polisProviderConfigurationEntry = provider
+        }
+
+        // N. Load Service Provider Directory
+        if let providerDirectory = try await PolisDirectory.loadFromLocalFileSystemUsing(store: self) as? PolisDirectory {
+            _polisProviderDirectory = providerDirectory
+        }
+
+        // N. Load Facility Directory
+        if let facilityDirectory = try await PolisObservingFacilityDirectory.loadFromLocalFileSystemUsing(store: self) as? PolisObservingFacilityDirectory {
+            _facilityDirectory = facilityDirectory
+        }
+
+        // N. For each Facility Ref from the Facility Directory create a minimal Facility object and initiate its Loading
+        for anEntry in _facilityDirectory.observingFacilityReferences {
+            let aFacility = try await ObservingFacility(identity: anEntry.identity)
+
+            _facilities.append(aFacility)
+            try await aFacility.loadData()
+        }
+
+        nc.post(name: AppSupportStatusChangeNotification.ObjectStoreDidLoadNotification, object: self)
     }
 
     /// Removes unconditionally local data.
@@ -128,27 +153,6 @@ public actor ObjectStore {
     // POLIS related
     func facilityDirectory() -> PolisObservingFacilityDirectory { _facilityDirectory! }
 
-    func addOrUpdateObservingFacility(reference: PolisObservingFacilityDirectory.ObservingFacilityReference) async throws{
-        var dir = _facilityDirectory!
-        var refs = dir.observingFacilityReferences
-
-        if let index = dir.observingFacilityReferences.firstIndex(where: {$0.id == reference.id} ) {
-            refs[index].identity.externalReferences    = reference.identity.externalReferences
-            refs[index].identity.lastUpdateTime        = reference.identity.lastUpdateTime
-            refs[index].identity.name                  = reference.identity.name
-            refs[index].identity.localName             = reference.identity.localName
-            refs[index].identity.abbreviation          = reference.identity.abbreviation
-            refs[index].identity.shortDescription      = reference.identity.shortDescription
-            refs[index].identity.startTime             = reference.identity.startTime
-            refs[index].identity.endTime               = reference.identity.endTime
-            refs[index].identity.polisRegistrationTime = reference.identity.polisRegistrationTime
-        }
-        
-        dir.lastUpdate = Date.now
-        dir.observingFacilityReferences.append(reference)
-        try await dir.flashUsing(store: self)
-    }
-        
     //MARK: Polis Provider Manager internal configuration
     let jsonEncoder = PrettyJSONEncoder()
     let jsonDecoder = PrettyJSONDecoder()
@@ -190,6 +194,8 @@ public actor ObjectStore {
     private var _polisProviderDirectory: PolisDirectory!
     private var _facilityDirectory: PolisObservingFacilityDirectory!
 
+    // Cached objects
+    private var _facilities = [ObservingFacility]()
 
     private func configureRelatedTypesAfterStoreInitialisation() {
         // PersistentObject
@@ -201,7 +207,13 @@ public actor ObjectStore {
 
 //MARK: - Facility related -
 extension ObjectStore {
-    /// Creates the Facility Reference and the Facility
+    /// List of all currently in-memory Facilities
+    ///
+    /// The list might not contain remote Facilities that are not yet fetched from the remote Provider.
+    /// - Returns: Possibly empty array of Facilities
+    public func facilities() -> [ObservingFacility] { _facilities }
+
+    /// Creates the Facility Reference and the Facility object
     public func createFixedEarthBasedFacility() async throws  -> ObservingFacility {
         try await createFacility(gravitationalBodyRelationship: .surfaceFixed, placeInTheSolarSystem: .earth)
     }
@@ -213,15 +225,49 @@ extension ObjectStore {
         let facility = try await ObservingFacility(id: UUID(), name: "<unnamed>")
 
         facility.gravitationalBodyRelationship = gravitationalBodyRelationship
-        facility.placeInTheSolarSystem = placeInTheSolarSystem
+        facility.placeInTheSolarSystem         = placeInTheSolarSystem
 
+        try await addOrUpdateObservingFacilityDirectoryEntry(facility)
         try await facility.saveChanges()
+        _facilities.append(facility)
 
         return facility
     }
+    
+    /// Tries to find a Facility with specified ID
+    ///
+    /// - Parameter id: the ID  of the Facility
+    /// - Returns: if the Facility is found, it is returned, otherwise nil
+    public func facilityWithId(_ id: UUID) async throws  -> ObservingFacility? {
+        for aFacility in _facilities {
+            if aFacility.id == id { return aFacility }
+        }
+        return nil
+    }
 
-    public func facilityWithId(_ id: String, shouldAutoload: Bool = true) async throws  { //TODO: Should return a facility
-        //TODO: Implement me!
+    func addOrUpdateObservingFacilityDirectoryEntry(_ facility: ObservingFacility) async throws {
+        if let index = _facilityDirectory.observingFacilityReferences.firstIndex(where: {$0.id == facility.id} ) {
+            var ref = _facilityDirectory.observingFacilityReferences[index]
+
+            ref.identity.externalReferences    = facility.identity.externalReferences
+            ref.identity.lastUpdateTime        = facility.identity.lastUpdateTime
+            ref.identity.name                  = facility.identity.name
+            ref.identity.localName             = facility.identity.localName
+            ref.identity.abbreviation          = facility.identity.abbreviation
+            ref.identity.shortDescription      = facility.identity.shortDescription
+            ref.identity.startTime             = facility.identity.startTime
+            ref.identity.endTime               = facility.identity.endTime
+            ref.identity.polisRegistrationTime = facility.identity.polisRegistrationTime
+        }
+        else {
+            let newRef = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: facility.identity,
+                                                                                    gravitationalBodyRelationship: facility.gravitationalBodyRelationship,
+                                                                                    placeInTheSolarSystem: facility.placeInTheSolarSystem)
+            _facilityDirectory.observingFacilityReferences.append(newRef)
+        }
+
+        _facilityDirectory.lastUpdate = Date.now
+        try await _facilityDirectory.flashUsing(store: self)
     }
 
 }

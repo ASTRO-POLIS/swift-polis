@@ -14,6 +14,7 @@ public struct PolisObservingFacility: Identifiable, Codable, Equatable {
     public var observingFacilityCode: String?
 
     // Where in the Solar system
+    public var placeInTheSolarSystem = PolisPlaceInTheSolarSystem.earth
     public var solarSystemBodyName: String?
     public var orbitingAroundPlaceInTheSolarSystemNamed: String?
     public var facilityLocationID: UUID?                                   // Points to dictionary with some predefined (standard) keys
@@ -47,6 +48,7 @@ public struct PolisObservingFacility: Identifiable, Codable, Equatable {
 
     public init(item: PolisItem,
                 observingFacilityCode: String?                    = nil,
+                placeInTheSolarSystem: PolisPlaceInTheSolarSystem = .earth,
                 solarSystemBodyName: String?                      = nil,
                 orbitingAroundPlaceInTheSolarSystemNamed: String? = nil,
                 facilityLocationID: UUID?                         = nil,
@@ -63,6 +65,7 @@ public struct PolisObservingFacility: Identifiable, Codable, Equatable {
                 artifactIDs: Set<UUID>?                           = nil) {
         self.item                                     = item
         self.observingFacilityCode                    = observingFacilityCode
+        self.placeInTheSolarSystem                    = placeInTheSolarSystem
         self.solarSystemBodyName                      = solarSystemBodyName
         self.orbitingAroundPlaceInTheSolarSystemNamed = orbitingAroundPlaceInTheSolarSystemNamed
         self.facilityLocationID                       = facilityLocationID
@@ -84,6 +87,7 @@ public extension PolisObservingFacility {
     enum CodingKeys: String, CodingKey {
         case item
         case observingFacilityCode                    = "observing_facility_code"
+        case placeInTheSolarSystem                    = "place_in_the_solar_system"
         case solarSystemBodyName                      = "solar_system_body_name"
         case orbitingAroundPlaceInTheSolarSystemNamed = "orbiting_around_place_in_the_solar_system_named"
         case facilityLocationID                       = "facility_location_id"

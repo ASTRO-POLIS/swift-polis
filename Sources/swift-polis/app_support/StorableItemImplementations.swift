@@ -145,8 +145,6 @@ extension PolisObservingFacilityDirectory: StorableItem {
             PolisLogger.shared.error("Cannot save POLIS Observing Facility Directory to: \(path)")
             throw ObjectStore.ObjectStoreError.cannotWriteFile
         }
-
-        await store.setPolisProviderConfigurationEntry(store.polisProviderConfigurationEntry())
     }
 }
 
