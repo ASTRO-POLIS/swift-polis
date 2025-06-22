@@ -22,6 +22,7 @@ open class ObservingFacility: ObjectItem {
         case cannotWritePolisFile
         case instanceCannotBeEdited
         case providerManagerNotInitialized
+        case encodingError
     }
 
     /// Defines the facility type based on the values of `gravitationalBodyRelationship` and `placeInTheSolarSystem`
@@ -65,51 +66,40 @@ open class ObservingFacility: ObjectItem {
         nc.post(name: AppSupportStatusChangeNotification.facilityInfoWillSaveNotification, object: nil)
 
         // 1. Update Facility Directory
-        var directoryEntry = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: identity,
-                                                                                        gravitationalBodyRelationship: gravitationalBodyRelationship,
-                                                                                        placeInTheSolarSystem: placeInTheSolarSystem)
         try await store.addOrUpdateObservingFacilityDirectoryEntry(self)
 
         // 2. Now try to save the Facility Info
+        let facilityFolder = await store.fileResourceFinder().observingFacilityFolder(observingFacilityID: id)
 
+        if !(fm.fileExists(atPath: facilityFolder, isDirectory: &isDir) && (isDir.boolValue)) {
+            do    { try fm.createDirectory(atPath: facilityFolder, withIntermediateDirectories: true) }
+            catch {
+                PolisLogger.shared.error("ObservingFacility:saveChanges - Cannot cannot create a facility directory at: \(facilityFolder)")
+                throw ObservingFacilityError.cannotWritePolisFile
+            }
+        }
 
-        //FIXME: We need a new hasChanges and canEdit!
-        // 0. Are we allowed to save and is there anything to change?
-//        nc.post(name: StatusChangeNotification.facilityInfoWillSaveNotification, object: nil)
-//
-//        // 1. Check if I am part of the facility directory, and if not - add myself
-//        let directoryEntry = manager.directoryEntryForFacilityWith(id: self.id)
-//
-//        if directoryEntry == nil {
-//            let newEntry       = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: identity)
-//            let facilityFolder = manager.polisFileResourceFinder.observingFacilityFolder(observingFacilityID: self.identity.id)
-//
-//            manager.facilityDirectory.addOrUpdateObservingFacility(reference:newEntry)
-//            manager?.facilities.append(self)
-//
-//            if !(fm.fileExists(atPath: facilityFolder, isDirectory: &isDir) && (isDir.boolValue)) {
-//                try fm.createDirectory(atPath: facilityFolder, withIntermediateDirectories: true)
-//            }
-//        }
-//
-////        Task {
-//            jsonData = try jsonEncoder.encode(facilityDetails)
-//
-//            if fm.fileExists(atPath: detailsPersistenceReference.localPath) {
-//                try? fm.removeItem(atPath: detailsPersistenceReference.localPath)
-//            }
-//
-//            if !fm.createFile(atPath: detailsPersistenceReference.localPath, contents: jsonData) {
-//                throw ObservingFacilityRepError.cannotWritePolisFile
-//            }
-//
-//            detailsPersistenceReference.hasLocalCopy                     = true
-//            detailsPersistenceReference.dataStatus.existenceStatusLocal  = .created
-//            detailsPersistenceReference.dataStatus.existenceStatusRemote = .unknown
-//            detailsPersistenceReference.dataStatus.loadingStatus         = .loadedNotSynced
-////        }
+        do { jsonData = try jsonEncoder.encode(facilityDetails) }
+        catch {
+            PolisLogger.shared.error("ObservingFacility:saveChanges - Cannot encode facility")
+            throw ObservingFacilityError.encodingError
+        }
+
+        do {
+            if fm.fileExists(atPath: localPath) { try fm.removeItem(atPath: localPath) }
+            if !fm.createFile(atPath: localPath, contents: jsonData) {
+                PolisLogger.shared.error("ObservingFacility:saveChanges - Cannot create a facility info file: \(localPath!)")
+                throw ObservingFacilityError.cannotWritePolisFile
+            }
+
+        }
+        catch {
+            PolisLogger.shared.error("ObservingFacility:saveChanges - Cannot cannot create a facility info file: \(localPath!)")
+            throw ObservingFacilityError.cannotWritePolisFile
+        }
+
+        localPersistencyStatus = .savedNotSynced
         nc.post(name: AppSupportStatusChangeNotification.facilityInfoDidSaveNotification, object: nil)
-
     }
 
     public func revertToSaved() async throws {
