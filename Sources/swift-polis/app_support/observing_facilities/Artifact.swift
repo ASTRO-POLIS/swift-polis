@@ -15,14 +15,14 @@ open class Artifact: IdentifiableObject {
     public var mediaID: UUID?
     public var website: URL?
 
-    var facility: ObservingFacility
+    var facility: ObservingFacilityDetails
 
     init(identity: PolisIdentity,
          artifactType: PolisArtifact.ArtifactType = .unknown,
          visitingOpportunities: String?           = nil,
          mediaID: UUID?                           = nil,
          website: URL?                            = nil,
-         facility: ObservingFacility) async throws {
+         facility: ObservingFacilityDetails) async throws {
         self.artifactType          = artifactType
         self.visitingOpportunities = visitingOpportunities
         self.mediaID               = mediaID

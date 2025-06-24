@@ -32,7 +32,7 @@ public class PolisObservatory: Identifiable, Codable {
 
     public init(identity: PolisIdentity,
                 electromagneticSpectrumCoverage: [PolisElectromagneticSpectrumCoverage]? = nil,
-                observatoryType: ObservatoryType,
+                observatoryType: ObservatoryType                                         = .unknown,
                 location: PolisPlace?                                                    = nil,
                 configurationIDs: Set<UUID>?                                             = nil,
                 deviceIDs: Set<UUID>?                                                    = nil) {

@@ -79,16 +79,39 @@ final class ObjectStoreTests: XCTestCase {
 
         let countAfterCreatingAFacility = await sut.facilities().count
 
+        try await sut.removeExistingLocalStore()
+
         // Then
         XCTAssertEqual(countBeforeCreatingAFacility, 0)
         XCTAssertNotNil(newFacility)
         XCTAssertEqual(countAfterCreatingAFacility, 1)
     }
 
+    func test_ObjectStore_loadStoreWithFacilities_shouldSucceed() async throws {
+        // Given
+
+        // Create an object store and close it
+        var sut         = try await AppSupportTestingSupport.objectStore()
+        let config      = ProviderConfiguration(name: "BAO", adminName: "Mr. Astronomer", adminEmail: "astro@example.com")
+        try await sut.createLocalStore(providerConfiguration: config)
+        let newFacility = try await sut.createFixedEarthBasedFacility()
+        try await sut.close()
+
+        // When
+
+        // Now try to reload the object store
+        sut = try await AppSupportTestingSupport.objectStore()
+        try await sut.loadLocalStore()
+
+        // Then
+
+    }
+
     static var allTests = [
         ("test_ObjectStore_creatingEmptyStore_shouldSucceed",            test_ObjectStore_creatingEmptyStore_shouldSucceed),
         ("test_ObjectStore_creatingAndRemovingLocalStore_shouldSucceed", test_ObjectStore_creatingAndRemovingLocalStore_shouldSucceed),
         ("test_ObjectStore_createNewFacility_shouldSucceed",             test_ObjectStore_createNewFacility_shouldSucceed),
+        ("test_ObjectStore_loadStoreWithFacilities_shouldSucceed",       test_ObjectStore_loadStoreWithFacilities_shouldSucceed),
     ]
 
     //MARK: - Templates

@@ -1,5 +1,5 @@
 //
-//  PolisObservingFacility.swift
+//  PolisObservingFacilityDetails.swift
 //  swift-polis
 //
 //  Created by Georg Tuparev on 25/09/2024.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct PolisObservingFacility: Identifiable, Codable, Equatable {
+public struct PolisObservingFacilityDetails: Identifiable, Codable, Equatable {
 
     // Identification and type
     public var item: PolisItem
@@ -83,7 +83,7 @@ public struct PolisObservingFacility: Identifiable, Codable, Equatable {
     }
 }
 
-public extension PolisObservingFacility {
+public extension PolisObservingFacilityDetails {
     enum CodingKeys: String, CodingKey {
         case item
         case observingFacilityCode                    = "observing_facility_code"

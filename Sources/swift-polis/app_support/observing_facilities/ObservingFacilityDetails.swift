@@ -1,5 +1,5 @@
 //
-//  ObservingFacility.swift
+//  ObservingFacilityDetails.swift
 //  swift-polis
 //
 //  Created by Georg Tuparev on 17.10.24.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-open class ObservingFacility: ObjectItem {
+open class ObservingFacilityDetails: ObjectItem {
 
     //MARK: - Public APIs
 
@@ -100,6 +100,8 @@ open class ObservingFacility: ObjectItem {
 
         localPersistencyStatus = .savedNotSynced
         nc.post(name: AppSupportStatusChangeNotification.facilityInfoDidSaveNotification, object: nil)
+
+        //TODO: Start saving children data!
     }
 
     public func revertToSaved() async throws {
@@ -111,32 +113,38 @@ open class ObservingFacility: ObjectItem {
     }
 
     public func loadData() async throws {
-        let myDataPath = await store.fileResourceFinder().observingFacilityFile(observingFacilityID: identity.id)
+        nc.post(name: AppSupportStatusChangeNotification.facilityInfoWillLoadNotification, object: self)
+        defer { nc.post(name: AppSupportStatusChangeNotification.facilityInfoDidLoadNotification, object: self) }
 
-        if !fm.fileExists(atPath: myDataPath) { throw ObservingFacilityError.unavailableOrUnreadableLocalData }
+        // If the Facility's folder does not exist. the Facility is newly created and in memory only. So skip the loading
+        // without throwing an exception.
+        let facilityFolder = await store.fileResourceFinder().observingFacilityFolder(observingFacilityID: id)
+        if !(fm.fileExists(atPath: facilityFolder, isDirectory: &isDir) && (isDir.boolValue)) { return }
 
-        Task {
-            nc.post(name: AppSupportStatusChangeNotification.facilityInfoWillLoadNotification, object: self)
-
-            jsonData = fm.contents(atPath: myDataPath)
-            if let jsonData = jsonData {
-                do {
-                    let observingFacility = try JSONDecoder().decode(PolisObservingFacility.self, from: jsonData)
-
-                    self.facilityDetails = observingFacility
-                } catch {
-                    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> !!!!!!!!!!!")
-                }
-            }
-//            detailsPersistenceReference.hasLocalCopy                     = true
-//            detailsPersistenceReference.dataStatus.existenceStatusLocal  = .created
-//            detailsPersistenceReference.dataStatus.existenceStatusRemote = .unknown
-//            detailsPersistenceReference.dataStatus.loadingStatus         = .loadedNotSynced
-
-            nc.post(name: AppSupportStatusChangeNotification.facilityInfoDidLoadNotification, object: self)
-
-            loadReferencedItems()
+        // Now we assume the Facility folder exist, and it is a bad error if the Details file does not exist
+        if !fm.fileExists(atPath: localPath) {
+            PolisLogger.shared.error("ObservingFacility:loadData - No local Facility Details found at: \(localPath!)")
+            throw ObservingFacilityError.unavailableOrUnreadableLocalData
         }
+
+        // Now read end decode the data
+        jsonData = fm.contents(atPath: localPath)
+        if let jsonData = jsonData {
+            let observingFacilityDetails = try JSONDecoder().decode(PolisObservingFacilityDetails.self, from: jsonData)
+
+            self.facilityDetails = observingFacilityDetails
+
+            // Now load more details like Location, Artifacts, Media, etc.
+            Task {
+                loadReferencedItems()
+                //TODO: More things to load
+            }
+        }
+        else {
+            PolisLogger.shared.error("ObservingFacility:loadData - Cannot read the data from the Details file: \(localPath!)")
+            throw ObservingFacilityError.unavailableOrUnreadableLocalData
+        }
+        localPersistencyStatus = .savedAndSynced
     }
 
     public func didChange() async-> Bool {
@@ -157,9 +165,9 @@ open class ObservingFacility: ObjectItem {
 
     // Utility properties
 
-    var facilityDetails: PolisObservingFacility {
+    var facilityDetails: PolisObservingFacilityDetails {
         get {
-            PolisObservingFacility(item: self.item,
+            PolisObservingFacilityDetails(item: self.item,
                                    observingFacilityCode:observingFacilityCode,
                                    solarSystemBodyName: solarSystemBodyName,
                                    orbitingAroundPlaceInTheSolarSystemNamed: orbitingAroundPlaceInTheSolarSystemNamed,
@@ -238,7 +246,7 @@ open class ObservingFacility: ObjectItem {
 }
 
 //MARK: Working with Fixed Surface Earth Base Details
-public extension ObservingFacility {
+public extension ObservingFacilityDetails {
     func addFixedSurfaceEarthBaseDetails() async throws -> EarthFixBasedObservingFacilityDetails {
         let result    = try await EarthFixBasedObservingFacilityDetails(id: UUID(), facilityID: self.id)
 //        let reference = try PolisReference(facilityID: self.id, polisObjectID: result.id, hasLocalCopy: false, representingStoredObjectType: PolisRepresentingStoredObjectType.observingFacility)
@@ -253,7 +261,7 @@ public extension ObservingFacility {
 }
 
 //MARK: Working with artifacts
-public extension ObservingFacility {
+public extension ObservingFacilityDetails {
     // Arifacts of interest could be also on other solar system bodies (e.g. Apollo landing site)
 
     func allArtifacts() throws -> [Artifact] {
