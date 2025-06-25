@@ -102,10 +102,13 @@ final class ObjectStoreTests: XCTestCase {
         // Now try to reload the object store
         sut = try await AppSupportTestingSupport.objectStore()
         try await sut.loadLocalStore()
+        let countAfterCreatingAFacility = await sut.facilities().count
 
         // Then
-
-    }
+        XCTAssertNotNil(sut)
+        XCTAssertNotNil(newFacility)
+        XCTAssertEqual(countAfterCreatingAFacility, 1)
+  }
 
     static var allTests = [
         ("test_ObjectStore_creatingEmptyStore_shouldSucceed",            test_ObjectStore_creatingEmptyStore_shouldSucceed),
