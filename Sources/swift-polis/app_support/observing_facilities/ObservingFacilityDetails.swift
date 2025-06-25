@@ -78,25 +78,7 @@ open class ObservingFacilityDetails: ObjectItem {
                 throw ObservingFacilityError.cannotWritePolisFile
             }
         }
-
-        do { jsonData = try jsonEncoder.encode(facilityDetails) }
-        catch {
-            PolisLogger.shared.error("ObservingFacility:saveChanges - Cannot encode facility")
-            throw ObservingFacilityError.encodingError
-        }
-
-        do {
-            if fm.fileExists(atPath: localPath) { try fm.removeItem(atPath: localPath) }
-            if !fm.createFile(atPath: localPath, contents: jsonData) {
-                PolisLogger.shared.error("ObservingFacility:saveChanges - Cannot create a facility info file: \(localPath!)")
-                throw ObservingFacilityError.cannotWritePolisFile
-            }
-
-        }
-        catch {
-            PolisLogger.shared.error("ObservingFacility:saveChanges - Cannot cannot create a facility info file: \(localPath!)")
-            throw ObservingFacilityError.cannotWritePolisFile
-        }
+        try await facilityDetails.flashUsing(store: store)
 
         localPersistencyStatus = .savedNotSynced
         nc.post(name: AppSupportStatusChangeNotification.facilityInfoDidSaveNotification, object: nil)
@@ -127,22 +109,14 @@ open class ObservingFacilityDetails: ObjectItem {
             throw ObservingFacilityError.unavailableOrUnreadableLocalData
         }
 
-        // Now read end decode the data
-        jsonData = fm.contents(atPath: localPath)
-        if let jsonData = jsonData {
-            let observingFacilityDetails = try JSONDecoder().decode(PolisObservingFacilityDetails.self, from: jsonData)
+        self.facilityDetails = try await PolisObservingFacilityDetails.loadFromLocalFileSystemUsing(store: store,
+                                                                                                    facilityID: item.identity.id,
+                                                                                                    objectType: .observingFacilityDetails) as! PolisObservingFacilityDetails
 
-            self.facilityDetails = observingFacilityDetails
-
-            // Now load more details like Location, Artifacts, Media, etc.
-            Task {
-                loadReferencedItems()
-                //TODO: More things to load
-            }
-        }
-        else {
-            PolisLogger.shared.error("ObservingFacility:loadData - Cannot read the data from the Details file: \(localPath!)")
-            throw ObservingFacilityError.unavailableOrUnreadableLocalData
+        // Now load more details like Location, Artifacts, Media, etc.
+        Task {
+            loadReferencedItems()
+            //TODO: More things to load
         }
         localPersistencyStatus = .savedAndSynced
     }
@@ -228,7 +202,7 @@ open class ObservingFacilityDetails: ObjectItem {
 
     //MARK: Private APIs
     private func finaliseInitialisation() async {
-        self.representingStoredObjectType = .observingFacility
+        self.representingStoredObjectType = .observingFacilityDetails
         self.localPersistencyStatus       = .inMemoryOnly
         self.remotePersistencyStatus      = .noRemoteRepresentation
 

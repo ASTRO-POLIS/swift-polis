@@ -13,8 +13,8 @@ extension PolisDirectory.ProviderDirectoryEntry: StorableItem {
     static func loadFromLocalFileSystemUsing(store: ObjectStore) async throws -> AnyObject {
         let finder = await store.fileResourceFinder()
         let path   = finder.configurationFile()
-        let fm     = FileManager.default
-        let data   = fm.contents(atPath: path)
+
+        data = fm.contents(atPath: path)
 
         guard let data = data else { throw ObjectStore.ObjectStoreError.cannotAccessOrCreateStandardPolisFile }
 
@@ -57,8 +57,8 @@ extension PolisDirectory: StorableItem {
     static func loadFromLocalFileSystemUsing(store: ObjectStore) async throws -> AnyObject {
         let finder = await store.fileResourceFinder()
         let path   = finder.polisProviderDirectoryFile()
-        let fm     = FileManager.default
-        let data   = fm.contents(atPath: path)
+
+        data = fm.contents(atPath: path)
 
 
         guard let data = data else { throw ObjectStore.ObjectStoreError.cannotAccessOrCreateStandardPolisFile }
@@ -106,8 +106,8 @@ extension PolisObservingFacilityDirectory: StorableItem {
     static func loadFromLocalFileSystemUsing(store: ObjectStore) async throws -> AnyObject {
         let finder = await store.fileResourceFinder()
         let path   = finder.observingFacilitiesDirectoryFile()
-        let fm     = FileManager.default
-        let data   = fm.contents(atPath: path)
+
+        data = fm.contents(atPath: path)
 
         guard let data = data else { throw ObjectStore.ObjectStoreError.cannotAccessOrCreateStandardPolisFile }
 
@@ -143,6 +143,54 @@ extension PolisObservingFacilityDirectory: StorableItem {
 
         if !fm.createFile(atPath: path, contents: data) {
             PolisLogger.shared.error("Cannot save POLIS Observing Facility Directory to: \(path)")
+            throw ObjectStore.ObjectStoreError.cannotWriteFile
+        }
+    }
+}
+
+//MARK: - PolisObservingFacilityDetails -
+extension PolisObservingFacilityDetails: StorableItem {
+    static func loadFromLocalFileSystemUsing(store: ObjectStore, facilityID: UUID? = nil, objectID: UUID? = nil, objectType: RepresentingStoredObjectType? = nil) async throws -> AnyObject {
+        guard let facilityID = facilityID else { throw ObjectStore.ObjectStoreError.missingRequiredID }
+
+        let finder = await store.fileResourceFinder()
+        let path   = finder.observingFacilityFile(observingFacilityID: facilityID)
+
+        data = fm.contents(atPath: path)
+
+        guard let data = data else { throw ObjectStore.ObjectStoreError.cannotAccessOrCreateStandardPolisFile }
+
+        do {
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+            let entry = try decoder.decode(PolisObservingFacilityDetails.self, from: data)
+
+            return entry as AnyObject
+        }
+        catch { throw ObjectStore.ObjectStoreError.cannotDecodePolisType }
+    }
+    
+    static func removeFromLocalFileSystemUsing(store: ObjectStore) async throws {
+        //TODO: Implement me!
+    }
+
+    func parentItem(store: ObjectStore) async -> (any StorableItem)? { await store.facilityDirectory() }
+
+    func flashUsing(store: ObjectStore) async throws {
+        let finder  = await store.fileResourceFinder()
+        let path    = finder.observingFacilityFile(observingFacilityID: item.identity.id)
+        var details = self
+
+        details.item.identity.lastUpdateTime = Date.now
+
+        do    { data = try jsonEncoder.encode(details) }
+        catch {
+            PolisLogger.shared.error("PolisObservingFacilityDetails:flashUsing - Cannot encode POLIS Observing Facility Details")
+            throw ObjectStore.ObjectStoreError.cannotEncodePolisType
+        }
+
+        if !fm.createFile(atPath: path, contents: data) {
+            PolisLogger.shared.error("PolisObservingFacilityDetails:flashUsing- Cannot save POLIS Observing Facility Details to: \(path)")
             throw ObjectStore.ObjectStoreError.cannotWriteFile
         }
     }

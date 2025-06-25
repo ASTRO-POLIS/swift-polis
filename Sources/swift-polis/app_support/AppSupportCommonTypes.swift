@@ -8,7 +8,7 @@
 import Foundation
 
 protocol StorableItem {
-    static func loadFromLocalFileSystemUsing(store: ObjectStore) async throws -> AnyObject
+    static func loadFromLocalFileSystemUsing(store: ObjectStore, facilityID: UUID?, objectID: UUID?, objectType: RepresentingStoredObjectType?) async throws -> AnyObject
     static func removeFromLocalFileSystemUsing(store: ObjectStore) async throws
 
     func parentItem(store: ObjectStore) async -> (any StorableItem)?
@@ -70,16 +70,21 @@ public struct AppSupportStatusChangeNotification {
 /// Defines the type to be used where to store local data the stored data
 public enum RepresentingStoredObjectType: Int, CaseIterable {
     case unknown
-    case observingFacility // Cannot be shared, this is the facility Info (Details)
-    case place             // Cannot be shared
-    case observatory       // Can be shared
-    case device            // Can be shared
-    case artifact          // Cannot be shared
+    case observingFacilityDetails // Cannot be shared, this is the facility Info (Details)
+    case place                    // Cannot be shared
+    case observatory              // Can be shared
+    case device                   // Can be shared
+    case artifact                // Cannot be shared
 }
 
-//public enum PolisSorting {
-//    case none
-//    case dateAndTime
-//    case lastUpdated
-//}
-//
+//MARK: - StorableItem useful default implementation -
+extension StorableItem {
+    static func loadFromLocalFileSystemUsing(store: ObjectStore, facilityID: UUID? = nil, objectID: UUID? = nil, objectType: RepresentingStoredObjectType? = nil) async throws -> AnyObject {
+        throw ObjectStore.ObjectStoreError.fileIO
+    }
+
+    static func removeFromLocalFileSystemUsing(store: ObjectStore) async throws { }
+
+    func parentItem(store: ObjectStore) async -> (any StorableItem)? { nil }
+    func flashUsing(store: ObjectStore) async throws { }
+}

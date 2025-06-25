@@ -52,7 +52,7 @@ public protocol Persisting: Identifiable {
     /// **Notes:**
     ///  - Child instances receive `loadData()` after the parent instance (if applicable)
     ///  - If the instance has reference to more local data, this should be scheduled to be loaded and notifications should be observed
-    ///  - No exception is thrown if local data does not exist 
+    ///  - No exception is thrown if local data does not exist
     func loadData() async throws
 
     /// Returns the result of the comparison between the locally stored POLIS item and the corresponding in-memory representation
@@ -122,7 +122,7 @@ open class PersistentObject: Persisting {
     init(id: UUID = UUID(),
          lastUpdateTime: Date = Date.now,
          facilityID: UUID? = nil,
-         representingStoredObjectType: RepresentingStoredObjectType = .observingFacility,
+         representingStoredObjectType: RepresentingStoredObjectType = .observingFacilityDetails,
          fileType: PolisImplementation.DataFormat = .json) async throws {
         self.store               = PersistentObject.store!
         let fileResourceFinder   = await store.fileResourceFinder()
@@ -134,7 +134,7 @@ open class PersistentObject: Persisting {
         self.lastUpdateTime = lastUpdateTime
 
         switch representingStoredObjectType {
-            case .observingFacility:
+            case .observingFacilityDetails:
                 facilityIDString = id.uuidString
                 let fileName   = "\(facilityIDString!)/\(polisIdString).\(fileType)"
 
@@ -176,7 +176,7 @@ open class IdentifiableObject: PersistentObject {
          lastUpdateTime: Date                                       = Date(),
          name: String,
          facilityID: UUID?                                          = nil,
-         representingStoredObjectType: RepresentingStoredObjectType = .observingFacility,
+         representingStoredObjectType: RepresentingStoredObjectType = .observingFacilityDetails,
          fileType: PolisImplementation.DataFormat                   = .json) async throws {
         self.name = name
         try await super.init(id: id, lastUpdateTime: lastUpdateTime, facilityID: facilityID, representingStoredObjectType: representingStoredObjectType, fileType: fileType)
