@@ -15,6 +15,7 @@ public actor ObjectStore {
 
     public enum ObjectStoreError: Error {
         case localStoreAlreadyExists
+        case localStoreNotFound
         case cannotRegisterMultipleManagerInstances
         case rootPolisPathUnaccessible
         case requiredPolisDataMissing
@@ -33,7 +34,16 @@ public actor ObjectStore {
 
     // Resource finders
     public func fileResourceFinder() -> PolisFileResourceFinder     { _fileResourceFinder }
-    public func remoteResourceFinder() -> PolisRemoteResourceFinder { _remoteResourceFinder }
+    public func remoteResourceFinder() throws -> PolisRemoteResourceFinder {
+        if _remoteResourceFinder == nil {
+            if _localConfiguration != nil {
+                let domain = _localConfiguration.isTesting ? PolisConstants.testBigBangPolisDomain : PolisConstants.bigBangPolisDomain
+                _remoteResourceFinder = try PolisRemoteResourceFinder(at: URL(string: domain)!,
+                                                                  supportedImplementation: PolisConstants.frameworkSupportedImplementation.last!)
+            }
+        }
+       return _remoteResourceFinder
+    }
 
     // Local configuration
     public func polisProviderConfigurationEntry() -> PolisDirectory.ProviderDirectoryEntry { _polisProviderConfigurationEntry }
@@ -94,10 +104,17 @@ public actor ObjectStore {
     /// and once copied, they will be loaded. This process could be slow.
     ///
     /// Loading always will be step-by-step and will start with the most important data and later will continue with detail data.
-    public func loadLocalStore() async throws {
+    public func loadLocalStoreAt(path: String) async throws {
+        _fileResourceFinder = try PolisFileResourceFinder(at: URL(string: path)!, supportedImplementation: PolisConstants.frameworkSupportedImplementation.last!)
+
         nc.post(name: AppSupportStatusChangeNotification.ObjectStoreWillLoadNotification, object: self)
 
-        // N. Load Service Provider
+        // 1. Load store configuration
+        try loadLocalConfiguration()
+        if !localStoreExists() {
+            PolisLogger.shared.error("ObjectStore:loadLocalStore - Local store does not exist or misconfigured")
+            throw ObjectStoreError.localStoreNotFound
+        }
         if let provider = try await PolisDirectory.ProviderDirectoryEntry.loadFromLocalFileSystemUsing(store: self) as? PolisDirectory.ProviderDirectoryEntry {
             _polisProviderConfigurationEntry = provider
         }
@@ -146,7 +163,16 @@ public actor ObjectStore {
     /// Makes sure that all edited (in memory) objects are stored persistently in the local Store
     public func close() async throws {
         nc.post(name: AppSupportStatusChangeNotification.ObjectStoreWillCloseNotification, object: self)
-        //TODO: Implement me!
+
+        _isConfigured                    = false
+        _fileResourceFinder              = nil
+        _remoteResourceFinder            = nil
+        _localConfiguration              = nil
+        _polisProviderConfigurationEntry = nil
+        _polisProviderDirectory          = nil
+        _facilityDirectory               = nil
+        _facilities.removeAll()
+
         nc.post(name: AppSupportStatusChangeNotification.ObjectStoreDidCloseNotification, object: nil)
     }
 
@@ -185,8 +211,8 @@ public actor ObjectStore {
 
     static private var _currentObjectStore: ObjectStore!
     private var _isConfigured: Bool?
-    private var _fileResourceFinder: PolisFileResourceFinder
-    private var _remoteResourceFinder: PolisRemoteResourceFinder
+    private var _fileResourceFinder: PolisFileResourceFinder!
+    private var _remoteResourceFinder: PolisRemoteResourceFinder!
 
     private var _localConfiguration: LocalConfiguration!
 
@@ -334,7 +360,7 @@ extension ObjectStore {
 
     /// If `true` we can start loading data or doing other changes to the local POLIS provider
     private func localStoreExists() -> Bool {
-        let configFileExists = !fm.isReadableFile(atPath: configurationFilePath())
+        let configFileExists = fm.isReadableFile(atPath: configurationFilePath())
 
         let result = (configFileExists &&
                       checkPolisDirectoryPathsExistence(paths: polisDirectoryPaths()) &&

@@ -74,7 +74,7 @@ public enum RepresentingStoredObjectType: Int, CaseIterable {
     case place                    // Cannot be shared
     case observatory              // Can be shared
     case device                   // Can be shared
-    case artifact                // Cannot be shared
+    case artifact                 // Cannot be shared
 }
 
 //MARK: - StorableItem useful default implementation -

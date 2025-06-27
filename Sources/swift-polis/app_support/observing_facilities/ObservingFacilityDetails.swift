@@ -181,13 +181,13 @@ open class ObservingFacilityDetails: ObjectItem {
     init(id: UUID = UUID(), lastUpdateTime: Date = Date(), name: String) async throws {
         try await super.init(id: id, lastUpdateTime: lastUpdateTime, name: name)
 
-        await finaliseInitialisation()
+        try await finaliseInitialisation()
     }
 
     init(identity: PolisIdentity, lastUpdateTime: Date = Date()) async throws {
         try await super.init(id: identity.id, lastUpdateTime: lastUpdateTime, name: identity.name ?? "<unknown>")
 
-        await finaliseInitialisation()
+        try await finaliseInitialisation()
     }
 
     func ensureFacilityFolderDoesExist() async throws {
@@ -201,13 +201,13 @@ open class ObservingFacilityDetails: ObjectItem {
 
 
     //MARK: Private APIs
-    private func finaliseInitialisation() async {
+    private func finaliseInitialisation() async throws {
         self.representingStoredObjectType = .observingFacilityDetails
         self.localPersistencyStatus       = .inMemoryOnly
         self.remotePersistencyStatus      = .noRemoteRepresentation
 
         self.localPath                    = await ObjectStore.currentObjectStore().fileResourceFinder().observingFacilityFile(observingFacilityID: id)
-        self.remoteReadPath               = await ObjectStore.currentObjectStore().remoteResourceFinder().observingFacilityURL(observingFacilityID: id)
+        self.remoteReadPath               = try await ObjectStore.currentObjectStore().remoteResourceFinder().observingFacilityURL(observingFacilityID: id)
 
         self.polisRegistrationDate       = Date()
         self.lifecycleStatus             = .active

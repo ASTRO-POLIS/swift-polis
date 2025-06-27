@@ -40,7 +40,7 @@ final class ObjectStoreTests: XCTestCase {
         // When
         let isConfigured = await sut.isConfigured()
         let fileFinder   = await sut.fileResourceFinder()
-        let domainFinder = await sut.remoteResourceFinder()
+        let domainFinder = try await sut.remoteResourceFinder()
 
         // Then
         XCTAssertFalse(isConfigured)
@@ -91,7 +91,7 @@ final class ObjectStoreTests: XCTestCase {
         // Given
 
         // Create an object store and close it
-        var sut         = try await AppSupportTestingSupport.objectStore()
+        let sut         = try await AppSupportTestingSupport.objectStore()
         let config      = ProviderConfiguration(name: "BAO", adminName: "Mr. Astronomer", adminEmail: "astro@example.com")
         try await sut.createLocalStore(providerConfiguration: config)
         let newFacility = try await sut.createFixedEarthBasedFacility()
@@ -100,14 +100,15 @@ final class ObjectStoreTests: XCTestCase {
         // When
 
         // Now try to reload the object store
-        sut = try await AppSupportTestingSupport.objectStore()
-        try await sut.loadLocalStore()
+        try await sut.loadLocalStoreAt(path: AppSupportTestingSupport.testingPath)
         let countAfterCreatingAFacility = await sut.facilities().count
 
         // Then
         XCTAssertNotNil(sut)
         XCTAssertNotNil(newFacility)
         XCTAssertEqual(countAfterCreatingAFacility, 1)
+
+        try await sut.removeExistingLocalStore()
   }
 
     static var allTests = [

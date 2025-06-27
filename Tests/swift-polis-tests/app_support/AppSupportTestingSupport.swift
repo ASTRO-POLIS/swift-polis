@@ -22,11 +22,12 @@ import Foundation
 @testable import swift_polis
 
 struct AppSupportTestingSupport {
+    static let testingPath = "/Users/Shared/Work/polis_tests"
 
     static  func objectStore(removeOldData: Bool = false) async throws -> ObjectStore {
         let storeConfig = ObjectStoreConfiguration()
 
-        try storeConfig.setLocalPolisRootFolder("/Users/Shared/Work/polis_tests")
+        try storeConfig.setLocalPolisRootFolder(AppSupportTestingSupport.testingPath)
 
         return  try await storeConfig.objectStore()
     }

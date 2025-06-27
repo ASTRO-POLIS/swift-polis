@@ -33,46 +33,22 @@ open class Artifact: IdentifiableObject {
     }
 
     //MARK: - PolisPersisting implementation -
-    public func canEdit() async -> Bool { true }
-
-    public func saveChanges() throws {
-//        if !persistenceReference.hasLocalCopy {
-//            nc.post(name: AppSupportStatusChangeNotification.artifactWillCreateNotification, object: nil)
-//
-//            jsonData = try jsonEncoder.encode(artifact)
-//            if !fm.createFile(atPath: persistenceReference.localPath, contents: jsonData) {
-//                throw ObservingFacilityRep.ObservingFacilityRepError.cannotWritePolisFile
-//            }
-//            persistenceReference.hasLocalCopy = true
-//
-//            if facility.artifactIDs == nil { facility.artifactIDs = Set<UUID>() }
-//            facility.artifactIDs!.insert(identity.id)
-//            facility.setHasChanges()
-//            try facility.saveChanges()
-//
-//            nc.post(name: AppSupportStatusChangeNotification.artifactDidCreateNotification, object: self)
-//        }
-//        else {  // Overwrite data
-//            //TODO: Implement me!
-//        }
-    }
-
-    public func revertToSaved() throws {
+    public func canEdit()                      async -> Bool {
         //TODO: Implement me!
+        await store.isEditable()
     }
 
-    public func delete() throws {
-        //TODO: Implement me!
-    }
+    public override func startEditing()        async throws { } //TODO: Implement me!
+    public override func finishEditing()       async throws { } //TODO: Implement me!
 
-    public func loadData() throws { }
+    public func saveChanges()                  async throws { } //TODO: Implement me!
+    public func revertToSaved()                async throws { } //TODO: Implement me!
+    public func delete()                       async throws { } //TODO: Implement me!
+    public func loadData()                     async throws { } //TODO: Implement me!
 
-    public func didChange() -> Bool {
-        //TODO: Implement me!
-        true
-    }
+    public func didChange()                    async -> Bool { false } //TODO: Implement me!
 
-    public func setHasChanges(_ hasChanges: Bool = true) { }
+    public func prepareToCloseTheObjectStore() async throws { } //TODO: Implement me!
 
     //MARK: - Private APIs -
     var artifact: PolisArtifact {

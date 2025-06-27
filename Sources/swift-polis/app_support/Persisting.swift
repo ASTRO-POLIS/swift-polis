@@ -126,7 +126,7 @@ open class PersistentObject: Persisting {
          fileType: PolisImplementation.DataFormat = .json) async throws {
         self.store               = PersistentObject.store!
         let fileResourceFinder   = await store.fileResourceFinder()
-        let remoteResourceFinder = await store.remoteResourceFinder()
+        let remoteResourceFinder = try await store.remoteResourceFinder()
         var facilityIDString     = facilityID?.uuidString
         let polisIdString        = id.uuidString
 
