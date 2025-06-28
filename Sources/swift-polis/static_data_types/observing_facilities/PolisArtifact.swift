@@ -18,7 +18,7 @@ import Foundation
 public struct PolisArtifact: Codable, Identifiable {
 
     /// The type of the artifact
-    public enum ArtifactType: String, Codable {
+    public enum ArtifactType: String, Codable, CaseIterable {
         case museum
         case planetarium
         case monument
