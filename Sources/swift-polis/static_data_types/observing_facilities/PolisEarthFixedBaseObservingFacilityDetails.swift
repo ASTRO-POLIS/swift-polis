@@ -1,5 +1,5 @@
 //
-//  PolisFixedSurfaceEarthBaseDetails.swift
+//  PolisEarthFixedBaseObservingFacilityDetails.swift
 //  swift-polis
 //
 //  Created by Georg Tuparev on 22/10/2024.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct PolisFixedSurfaceEarthBaseDetails: Identifiable, Codable, Equatable {
+public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable, Equatable {
 
     // General info
     public var id: UUID
@@ -52,7 +52,7 @@ public struct PolisFixedSurfaceEarthBaseDetails: Identifiable, Codable, Equatabl
     }
 }
 
-public extension PolisFixedSurfaceEarthBaseDetails {
+public extension PolisEarthFixedBaseObservingFacilityDetails {
     enum CodingKeys: String, CodingKey {
         case id
         case lastUpdateDate            = "last_update_date"

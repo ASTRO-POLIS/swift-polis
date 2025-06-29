@@ -54,7 +54,7 @@ open class ObservingFacilityDetails: ObjectItem {
     public var history: String?
 
     // Facility concrete type details
-    public var earthFixBasedObservingFacility: EarthFixBasedObservingFacilityDetails?
+    public var earthFixBasedObservingFacility: EarthFixedBaseObservingFacilityDetails?
 
     //MARK: - PolisPersisting implementation -
     public func canEdit() async -> Bool {
@@ -221,8 +221,8 @@ open class ObservingFacilityDetails: ObjectItem {
 
 //MARK: Working with Fixed Surface Earth Base Details
 public extension ObservingFacilityDetails {
-    func addFixedSurfaceEarthBaseDetails() async throws -> EarthFixBasedObservingFacilityDetails {
-        let result    = try await EarthFixBasedObservingFacilityDetails(id: UUID(), facilityID: self.id)
+    func addFixedSurfaceEarthBaseDetails() async throws -> EarthFixedBaseObservingFacilityDetails {
+        let result    = try await EarthFixedBaseObservingFacilityDetails(facilityID: self.id)
 //        let reference = try PolisReference(facilityID: self.id, polisObjectID: result.id, hasLocalCopy: false, representingStoredObjectType: PolisRepresentingStoredObjectType.observingFacility)
 //
 //        result.fixedSurfaceEarthBaseDetailsPersistenceReference = reference

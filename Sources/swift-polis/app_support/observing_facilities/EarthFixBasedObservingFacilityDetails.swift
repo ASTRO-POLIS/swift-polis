@@ -1,5 +1,5 @@
 //
-//  EarthFixBasedObservingFacilityDetails.swift
+//  EarthFixedBaseObservingFacilityDetails.swift
 //  swift-polis
 //
 //  Created by Georg Tuparev on 23/10/2024.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-open class EarthFixBasedObservingFacilityDetails: IdentifiableObject {
+open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
 
     //MARK: Public APIs
 
@@ -24,54 +24,53 @@ open class EarthFixBasedObservingFacilityDetails: IdentifiableObject {
     public var dominantWindDirection: PolisDirection.RoughDirection?
     public var surfaceSize: PolisPropertyValue?             // [m^2]
 
+    public var place: Place?
+
     //MARK: - PolisPersisting implementation -
-    public  func saveChanges() async throws {
-//        if didChange() {
-//
-//            //TODO: Implement me!
-//
-//            // 1. Check if I exist as POLIS file, and if not, create myself
-//
-//            // 2. Check if I did changed
-//
-//            // 3. If I changed,
-//            // 3.1. Update `super` properties and called the super's `saveChanges()`
-//            // 3.1. Update PolisObservingFacilityLocation file
-//            // 3.2. Update the POLIS cache in Provider Manager
-//            // 3.3. Update the provider directory cache in Provider Manager
-//        }
-    }
+    public func canEdit()                      async -> Bool { false } // Better be on the safe side
+    public override func startEditing()        async throws { }
+    public override func finishEditing()       async throws { }
 
-    public func revertToSaved() async throws {
-        //TODO: Implement me!
-    }
+    public func saveChanges()                  async throws { }
+    public func revertToSaved()                async throws { }
+    public func delete()                       async throws { }
+    public func loadData()                     async throws { }
 
-    public func delete() async throws {
-        //TODO: Implement me!
-    }
+    public func didChange()                    async -> Bool { false }
 
-    public func loadData() async throws {
-
-        //TODO: Implement me!
-    }
-
-    public func didChange() async -> Bool {
-        //TODO: Implement me!
-        true
-    }
+    public func prepareToCloseTheObjectStore() async throws { }
 
 
     //MARK: Non-private APIs
     var facilityID: UUID
-    var visitingHoursID: UUID??
+    var visitingHoursID: UUID?
+    var placeID: UUID?
 
-//    var fixedSurfaceEarthBaseDetailsPersistenceReference: PolisReference!
+    init(visitingHours: VisitingHours?                         = nil,
+         accessRestrictions: String?                           = nil,
+         averageClearNightsPerYear: UInt?                      = nil,
+         averageSeeingConditions: PolisPropertyValue?          = nil,
+         averageSkyQuality: PolisPropertyValue?                = nil,
+         traditionalLandOwners: String?                        = nil,
+         dominantWindDirection: PolisDirection.RoughDirection? = nil,
+         surfaceSize: PolisPropertyValue?                      = nil,
+         facilityID: UUID,
+         visitingHoursID: UUID?                                = nil,
+         placeID: UUID?                                        = nil) async throws {
+        self.visitingHours             = visitingHours
+        self.accessRestrictions        = accessRestrictions
+        self.averageClearNightsPerYear = averageClearNightsPerYear
+        self.averageSeeingConditions   = averageSeeingConditions
+        self.averageSkyQuality         = averageSkyQuality
+        self.traditionalLandOwners     = traditionalLandOwners
+        self.dominantWindDirection     = dominantWindDirection
+        self.surfaceSize               = surfaceSize
+        self.facilityID                = facilityID
+        self.visitingHoursID           = visitingHoursID
+        self.placeID                   = placeID
 
-    init(id: UUID, lastUpdateTime: Date = Date(), facilityID: UUID) async throws{
-        self.facilityID = facilityID
-
-        try await super.init(id: id, lastUpdateTime: lastUpdateTime, name: "")  //FIXME: Put proper name!
-
-//        fixedSurfaceEarthBaseDetailsPersistenceReference = try PolisReference(facilityID: id, polisObjectID: id)
+        try await super.init()
     }
+
+    
 }
