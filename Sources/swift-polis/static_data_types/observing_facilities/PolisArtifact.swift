@@ -31,6 +31,7 @@ public struct PolisArtifact: Codable, Identifiable {
 
     /// The identity of the artifact
     public var identity: PolisIdentity
+    public var facilityID: UUID
 
     /// The type of the artifact
     public var artifactType: ArtifactType
@@ -43,16 +44,19 @@ public struct PolisArtifact: Codable, Identifiable {
     /// Mostly images (photos)
     public var mediaID: UUID?
 
+    /// The URL if different from facility's website
     public var website: URL?
 
     public var id: UUID { identity.id }
 
     public init(identity: PolisIdentity,
+                facilityID: UUID,
                 artifactType: ArtifactType     = .unknown,
                 visitingOpportunities: String? = nil,
                 mediaID: UUID?                 = nil,
                 website: URL?                  = nil) {
         self.identity              = identity
+        self.facilityID            = facilityID
         self.artifactType          = artifactType
         self.visitingOpportunities = visitingOpportunities
         self.mediaID               = mediaID
@@ -63,6 +67,7 @@ public struct PolisArtifact: Codable, Identifiable {
 public extension PolisArtifact {
     enum CodingKeys: String, CodingKey {
         case identity
+        case facilityID            = "facility_id"
         case artifactType          = "artifact_type"
         case visitingOpportunities = "visiting_opportunities"
         case mediaID               = "media_id"

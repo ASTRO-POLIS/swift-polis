@@ -12,25 +12,10 @@ open class Artifact: IdentifiableObject {
 
     public var artifactType: PolisArtifact.ArtifactType
     public var visitingOpportunities: String?
-    public var mediaID: UUID?
+    public var media: MediaSource?
     public var website: URL?
 
-    var facility: ObservingFacilityDetails
-
-    init(identity: PolisIdentity,
-         artifactType: PolisArtifact.ArtifactType = .unknown,
-         visitingOpportunities: String?           = nil,
-         mediaID: UUID?                           = nil,
-         website: URL?                            = nil,
-         facility: ObservingFacilityDetails) async throws {
-        self.artifactType          = artifactType
-        self.visitingOpportunities = visitingOpportunities
-        self.mediaID               = mediaID
-        self.website               = website
-        self.facility              = facility
-
-        try await super.init(id: identity.id, lastUpdateTime: identity.lastUpdateTime, name: identity.name ?? "<unnamed>")
-    }
+    public var facility: ObservingFacilityDetails!
 
     //MARK: - PolisPersisting implementation -
     public func canEdit()                      async -> Bool {
@@ -50,11 +35,15 @@ open class Artifact: IdentifiableObject {
 
     public func prepareToCloseTheObjectStore() async throws { } //TODO: Implement me!
 
-    //MARK: - Private APIs -
+    //MARK: Non-private APIs
+    var facilityID: UUID
+    var mediaID: UUID?
+
     var artifact: PolisArtifact {
         get {
             PolisArtifact(
                 identity: identity,
+                facilityID: facilityID,
                 artifactType: artifactType,
                 visitingOpportunities: visitingOpportunities,
                 mediaID: mediaID,
@@ -62,11 +51,32 @@ open class Artifact: IdentifiableObject {
             )
         }
         set {
-            identity        = newValue.identity
-            artifactType   = newValue.artifactType
+            identity              = newValue.identity
+            facilityID            = newValue.facilityID
+            artifactType          = newValue.artifactType
             visitingOpportunities = newValue.visitingOpportunities
-            mediaID = newValue.mediaID
-
+            mediaID               = newValue.mediaID
+            website               = newValue.website
         }
     }
+    
+    init(identity: PolisIdentity,
+         facilityID: UUID,
+         artifactType: PolisArtifact.ArtifactType = .unknown,
+         visitingOpportunities: String?           = nil,
+         mediaID: UUID?                           = nil,
+         website: URL?                            = nil) async throws {
+        self.facilityID            = facilityID
+        self.artifactType          = artifactType
+        self.visitingOpportunities = visitingOpportunities
+        self.mediaID               = mediaID
+        self.website               = website
+        
+        try await super.init(id: identity.id,
+                             lastUpdateTime: identity.lastUpdateTime,
+                             name: identity.name ?? "<unnamed>",
+                             facilityID : facilityID,
+                             representingStoredObjectType: .artifact)
+    }
 }
+

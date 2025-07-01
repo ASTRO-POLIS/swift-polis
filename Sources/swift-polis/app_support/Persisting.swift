@@ -119,11 +119,11 @@ open class PersistentObject: Persisting {
     var jsonDecoder     = PrettyJSONDecoder()
     var jsonData: Data!
 
-    init(id: UUID = UUID(),
-         lastUpdateTime: Date = Date.now,
-         facilityID: UUID? = nil,
+    init(id: UUID                                                   = UUID(),
+         lastUpdateTime: Date                                       = Date.now,
+         facilityID: UUID?                                          = nil,
          representingStoredObjectType: RepresentingStoredObjectType = .observingFacilityDetails,
-         fileType: PolisImplementation.DataFormat = .json) async throws {
+         fileType: PolisImplementation.DataFormat                   = .json) async throws {
         self.store               = PersistentObject.store!
         let fileResourceFinder   = await store.fileResourceFinder()
         let remoteResourceFinder = try await store.remoteResourceFinder()
@@ -179,7 +179,11 @@ open class IdentifiableObject: PersistentObject {
          representingStoredObjectType: RepresentingStoredObjectType = .observingFacilityDetails,
          fileType: PolisImplementation.DataFormat                   = .json) async throws {
         self.name = name
-        try await super.init(id: id, lastUpdateTime: lastUpdateTime, facilityID: facilityID, representingStoredObjectType: representingStoredObjectType, fileType: fileType)
+        try await super.init(id: id,
+                             lastUpdateTime: lastUpdateTime,
+                             facilityID: facilityID,
+                             representingStoredObjectType: representingStoredObjectType,
+                             fileType: fileType)
     }
 
     var identity: PolisIdentity {

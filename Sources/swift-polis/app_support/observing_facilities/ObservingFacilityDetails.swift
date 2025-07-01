@@ -96,7 +96,6 @@ open class ObservingFacilityDetails: ObjectItem {
 
     public func loadData() async throws {
         nc.post(name: AppSupportStatusChangeNotification.facilityInfoWillLoadNotification, object: self)
-        defer { nc.post(name: AppSupportStatusChangeNotification.facilityInfoDidLoadNotification, object: self) }
 
         // If the Facility's folder does not exist. the Facility is newly created and in memory only. So skip the loading
         // without throwing an exception.
@@ -114,12 +113,11 @@ open class ObservingFacilityDetails: ObjectItem {
                                                                                                     objectType: .observingFacilityDetails) as! PolisObservingFacilityDetails
 
         // Now load more details like Location, Artifacts, Media, etc.
-        Task {
-            loadReferencedItems()
-            //TODO: More things to load
-        }
+        try await loadReferencedItems()
         localPersistencyStatus = .savedAndSynced
-    }
+        
+        nc.post(name: AppSupportStatusChangeNotification.facilityInfoDidLoadNotification, object: self)
+ }
 
     public func didChange() async-> Bool {
         false
@@ -133,7 +131,6 @@ open class ObservingFacilityDetails: ObjectItem {
     var airborneEarthBaseDetailsID: UUID?        //TODO: Load data
 
     var artifactIDs: Set<UUID>?                  //TODO: Load data
-    private(set) var artifacts: [Artifact]?      //TODO: Load data
 
 //    var detailsPersistenceReference: PolisReference!
 
@@ -201,6 +198,8 @@ open class ObservingFacilityDetails: ObjectItem {
 
 
     //MARK: Private APIs
+    private var _allArtifacts: [Artifact]?
+
     private func finaliseInitialisation() async throws {
         self.representingStoredObjectType = .observingFacilityDetails
         self.localPersistencyStatus       = .inMemoryOnly
@@ -214,7 +213,11 @@ open class ObservingFacilityDetails: ObjectItem {
         self.solarSystemBodyName         = placeInTheSolarSystem.rawValue
     }
 
-    private func loadReferencedItems() {
+    private func loadReferencedItems() async throws {
+        //TODO: Implement me!
+    }
+
+    private func saveReferencedItems() async throws {
         //TODO: Implement me!
     }
 }
@@ -239,26 +242,27 @@ public extension ObservingFacilityDetails {
     // Arifacts of interest could be also on other solar system bodies (e.g. Apollo landing site)
 
     func allArtifacts() throws -> [Artifact] {
-        if artifacts == nil { artifacts = [] }
-        if let artifactIDs = artifactIDs {
-            if artifacts!.count != artifactIDs.count {
-                for artifactID in artifactIDs {
-                    //TODO: Implement me! ... load them...
-                }
-            }
-        }
-
-        return artifacts!
+//        if _allArtifacts == nil { artifacts = [] }
+//        if let artifactIDs = artifactIDs {
+//            if artifacts!.count != artifactIDs.count {
+//                for artifactID in artifactIDs {
+//                    //TODO: Implement me! ... load them...
+//                }
+//            }
+//        }
+//
+//        return artifacts!
+        return []
     }
 
     func addArtifact(artifactType: PolisArtifact.ArtifactType, visitingOpportunities: String? = nil, mediaID: UUID? = nil) async throws -> Artifact {
         let artifactIdentity = PolisIdentity(id: UUID())
 //        let reference        = try PolisReference(facilityID: self.id, polisObjectID: artifactIdentity.id, representingStoredObjectType: .artifact)
         let artifact         = try await Artifact(identity: artifactIdentity,
-                                               artifactType: artifactType,
-                                               visitingOpportunities: visitingOpportunities,
-                                               mediaID: mediaID,
-                                               facility: self)
+                                                  facilityID: self.id,
+                                                  artifactType: artifactType,
+                                                  visitingOpportunities: visitingOpportunities,
+                                                  mediaID: mediaID)
 
 //        artifact.persistenceReference = reference
 //        if artifacts == nil { artifacts = [] }
@@ -267,8 +271,6 @@ public extension ObservingFacilityDetails {
 //
 //        if artifactIDs == nil { artifactIDs = [] }
 //        artifactIDs!.insert(artifactIdentity.id)
-//
-//        nc.post(name: StatusChangeNotification.facilityDidChangeNotification, object: nil)
 
         return artifact
     }
