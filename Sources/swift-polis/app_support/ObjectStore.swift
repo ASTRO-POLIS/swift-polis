@@ -197,7 +197,7 @@ public actor ObjectStore {
 
         while currentItem != nil {
             try await currentItem?.flashUsing(store: self)
-            currentItem = await currentItem?.parentItem(store: self)
+            currentItem = try await currentItem?.parentItem(store: self)
         }
     }
 

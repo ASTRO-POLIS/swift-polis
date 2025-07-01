@@ -115,7 +115,7 @@ open class ObservingFacilityDetails: ObjectItem {
         // Now load more details like Location, Artifacts, Media, etc.
         try await loadReferencedItems()
         localPersistencyStatus = .savedAndSynced
-        
+
         nc.post(name: AppSupportStatusChangeNotification.facilityInfoDidLoadNotification, object: self)
  }
 
@@ -186,16 +186,6 @@ open class ObservingFacilityDetails: ObjectItem {
 
         try await finaliseInitialisation()
     }
-
-    func ensureFacilityFolderDoesExist() async throws {
-//        let path = manager.polisFileResourceFinder.observingFacilityFolder(observingFacilityID: identity.id)
-//
-//        if !manager.tryToEnsureFoldersExistence(paths: [path]) {
-//            PolisLogger.shared.error("Cannot create or access facility folder: \(path)")
-//            throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFolder
-//        }
-    }
-
 
     //MARK: Private APIs
     private var _allArtifacts: [Artifact]?

@@ -59,7 +59,7 @@ open class Artifact: IdentifiableObject {
             website               = newValue.website
         }
     }
-    
+
     init(identity: PolisIdentity,
          facilityID: UUID,
          artifactType: PolisArtifact.ArtifactType = .unknown,
@@ -71,12 +71,21 @@ open class Artifact: IdentifiableObject {
         self.visitingOpportunities = visitingOpportunities
         self.mediaID               = mediaID
         self.website               = website
-        
+
         try await super.init(id: identity.id,
                              lastUpdateTime: identity.lastUpdateTime,
                              name: identity.name ?? "<unnamed>",
                              facilityID : facilityID,
                              representingStoredObjectType: .artifact)
-    }
+
+        self.representingStoredObjectType = .artifact
+        self.localPersistencyStatus       = .inMemoryOnly
+        self.remotePersistencyStatus      = .noRemoteRepresentation
+
+        self.localPath      = await ObjectStore.currentObjectStore().fileResourceFinder().observingDataFile(withID: identity.id,
+                                                                                                            observingFacilityID: facilityID)
+        self.remoteReadPath = try await ObjectStore.currentObjectStore().remoteResourceFinder().observingDataURL(withID: identity.id,
+                                                                                                                 observingFacilityID: facilityID)
+   }
 }
 

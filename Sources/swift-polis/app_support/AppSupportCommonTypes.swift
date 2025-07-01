@@ -11,7 +11,7 @@ protocol StorableItem {
     static func loadFromLocalFileSystemUsing(store: ObjectStore, facilityID: UUID?, objectID: UUID?, objectType: RepresentingStoredObjectType?) async throws -> AnyObject
     static func removeFromLocalFileSystemUsing(store: ObjectStore) async throws
 
-    func parentItem(store: ObjectStore) async -> (any StorableItem)?
+    func parentItem(store: ObjectStore) async throws -> (any StorableItem)?
     func flashUsing(store: ObjectStore) async throws
 }
 
@@ -85,6 +85,6 @@ extension StorableItem {
 
     static func removeFromLocalFileSystemUsing(store: ObjectStore) async throws { }
 
-    func parentItem(store: ObjectStore) async -> (any StorableItem)? { nil }
+    func parentItem(store: ObjectStore) async throws -> (any StorableItem)? { nil }
     func flashUsing(store: ObjectStore) async throws { }
 }
