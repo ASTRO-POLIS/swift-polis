@@ -76,15 +76,18 @@ final class ObjectStoreTests: XCTestCase {
 
         try await sut.createLocalStore(providerConfiguration: config)
         let newFacility = try await sut.createFixedEarthBasedFacility()
-
+        let newArtifact = try await newFacility.addArtifact(artifactType: .monument)
         let countAfterCreatingAFacility = await sut.facilities().count
+        let countArtifacts = try newFacility.allArtifacts().count
 
         try await sut.removeExistingLocalStore()
 
         // Then
         XCTAssertEqual(countBeforeCreatingAFacility, 0)
         XCTAssertNotNil(newFacility)
+        XCTAssertNotNil(newArtifact)
         XCTAssertEqual(countAfterCreatingAFacility, 1)
+        XCTAssertEqual(countArtifacts, 1)
     }
 
     func test_ObjectStore_loadStoreWithFacilities_shouldSucceed() async throws {

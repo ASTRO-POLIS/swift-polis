@@ -188,7 +188,7 @@ open class ObservingFacilityDetails: ObjectItem {
     }
 
     //MARK: Private APIs
-    private var _allArtifacts: [Artifact]?
+    private var _allArtifacts = [Artifact]()
 
     private func finaliseInitialisation() async throws {
         self.representingStoredObjectType = .observingFacilityDetails
@@ -232,35 +232,30 @@ public extension ObservingFacilityDetails {
     // Arifacts of interest could be also on other solar system bodies (e.g. Apollo landing site)
 
     func allArtifacts() throws -> [Artifact] {
-//        if _allArtifacts == nil { artifacts = [] }
-//        if let artifactIDs = artifactIDs {
-//            if artifacts!.count != artifactIDs.count {
-//                for artifactID in artifactIDs {
-//                    //TODO: Implement me! ... load them...
-//                }
-//            }
-//        }
-//
-//        return artifacts!
-        return []
+        if let artifactIDs = artifactIDs {
+            if _allArtifacts.count != artifactIDs.count {
+                for artifactID in artifactIDs {
+                    //TODO: Implement me! ... load them...
+                }
+            }
+        }
+
+        return _allArtifacts
     }
 
     func addArtifact(artifactType: PolisArtifact.ArtifactType, visitingOpportunities: String? = nil, mediaID: UUID? = nil) async throws -> Artifact {
         let artifactIdentity = PolisIdentity(id: UUID())
-//        let reference        = try PolisReference(facilityID: self.id, polisObjectID: artifactIdentity.id, representingStoredObjectType: .artifact)
         let artifact         = try await Artifact(identity: artifactIdentity,
                                                   facilityID: self.id,
                                                   artifactType: artifactType,
                                                   visitingOpportunities: visitingOpportunities,
                                                   mediaID: mediaID)
+        try await artifact.saveChanges()
 
-//        artifact.persistenceReference = reference
-//        if artifacts == nil { artifacts = [] }
-//        artifacts!.append(artifact)
-//        try artifact.saveChanges()
-//
-//        if artifactIDs == nil { artifactIDs = [] }
-//        artifactIDs!.insert(artifactIdentity.id)
+        _allArtifacts.append(artifact)
+
+        if artifactIDs == nil { artifactIDs = [] }
+        artifactIDs!.insert(artifactIdentity.id)
 
         return artifact
     }

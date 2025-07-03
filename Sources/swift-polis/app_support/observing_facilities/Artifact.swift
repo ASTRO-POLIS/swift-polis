@@ -26,7 +26,8 @@ open class Artifact: IdentifiableObject {
     public override func startEditing()        async throws { } //TODO: Implement me!
     public override func finishEditing()       async throws { } //TODO: Implement me!
 
-    public func saveChanges()                  async throws { } //TODO: Implement me!
+    public func saveChanges() async throws { try await artifact.flashUsing(store: store) }
+
     public func revertToSaved()                async throws { } //TODO: Implement me!
     public func delete()                       async throws { } //TODO: Implement me!
     public func loadData()                     async throws { } //TODO: Implement me!
