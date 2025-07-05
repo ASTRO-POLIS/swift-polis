@@ -96,24 +96,30 @@ final class ObjectStoreTests: XCTestCase {
         // Given
 
         // Create an object store and close it
-        let sut         = try await AppSupportTestingSupport.objectStore()
-        let config      = ProviderConfiguration(name: "BAO", adminName: "Mr. Astronomer", adminEmail: "astro@example.com")
+        let sut              = try await AppSupportTestingSupport.objectStore()
+        let config           = ProviderConfiguration(name: "BAO", adminName: "Mr. Astronomer", adminEmail: "astro@example.com")
         try await sut.createLocalStore(providerConfiguration: config)
-        let newFacility = try await sut.createFixedEarthBasedFacility()
-        let newArtifact = try await newFacility.addArtifact(artifactType: .monument)
+        let newFacility      = try await sut.createFixedEarthBasedFacility()
+        let newArtifact      = try await newFacility.addArtifact(artifactType: .monument)
+        let newEarthFacility = try await newFacility.addEarthFixedBaseObservingFacilityDetails()
         try await newArtifact.saveChanges()
+        try await newEarthFacility.saveChanges()
+        try await newFacility.saveChanges()
         try await sut.close()
 
         // When
 
         // Now try to reload the object store
         try await sut.loadLocalStoreAt(path: AppSupportTestingSupport.testingPath)
+        try await sut.facilities().first!.loadData()
         let countAfterCreatingAFacility = await sut.facilities().count
-        let countArtifacts = try await sut.facilities().first!.allArtifacts().count
+        let countArtifacts              = try await sut.facilities().first!.allArtifacts().count
+        let earthData                   = await sut.facilities().first!.earthFixBasedObservingFacility
 
         // Then
         XCTAssertNotNil(sut)
         XCTAssertNotNil(newFacility)
+        XCTAssertNotNil(earthData)
         XCTAssertEqual(countAfterCreatingAFacility, 1)
         XCTAssertEqual(countArtifacts, 1)
 

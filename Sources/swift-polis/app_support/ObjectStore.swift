@@ -178,8 +178,6 @@ public actor ObjectStore {
     }
 
     //MARK: - Non-public APIs -
-    // POLIS related
-    func facilityDirectory() -> PolisObservingFacilityDirectory { _facilityDirectory! }
 
     //MARK: Polis Provider Manager internal configuration
     let jsonEncoder = PrettyJSONEncoder()
@@ -192,6 +190,10 @@ public actor ObjectStore {
 
         await assignStoreToStaticProperties()
     }
+
+    // POLIS related
+    func facilityDirectory() -> PolisObservingFacilityDirectory { _facilityDirectory! }
+
 
     func flush(item: any StorableItem) async throws {
         var currentItem: (any StorableItem)? = item
