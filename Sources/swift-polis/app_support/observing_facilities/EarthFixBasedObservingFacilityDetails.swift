@@ -46,7 +46,39 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
     var visitingHoursID: UUID?
     var placeID: UUID?
 
-    init(visitingHours: VisitingHours?                         = nil,
+    var earthFixedBaseObservingFacilityDetails: PolisEarthFixedBaseObservingFacilityDetails {
+        get {
+            PolisEarthFixedBaseObservingFacilityDetails(id: id,
+                                                        lastUpdateTime: lastUpdateTime,
+                                                        facilityID: facilityID,
+                                                        visitingHoursID: visitingHoursID,
+                                                        averageClearNightsPerYear: averageClearNightsPerYear,
+                                                        averageSeeingConditions: averageSeeingConditions,
+                                                        averageSkyQuality: averageSkyQuality,
+                                                        traditionalLandOwners:traditionalLandOwners,
+                                                        dominantWindDirection: dominantWindDirection,
+                                                        surfaceSize: surfaceSize,
+                                                        placeID: placeID)
+        }
+        set {
+            id                        = newValue.id
+            lastUpdateTime            = newValue.lastUpdateTime
+            facilityID                = newValue.facilityID
+            visitingHoursID           = newValue.visitingHoursID
+            accessRestrictions        = newValue.accessRestrictions
+            averageClearNightsPerYear = newValue.averageClearNightsPerYear
+            averageSeeingConditions   = newValue.averageSeeingConditions
+            averageSkyQuality         = newValue.averageSkyQuality
+            traditionalLandOwners     = newValue.traditionalLandOwners
+            dominantWindDirection     = newValue.dominantWindDirection
+            surfaceSize               = newValue.surfaceSize
+            placeID                   = newValue.placeID
+        }
+    }
+
+    init(id: UUID                                              = UUID(),
+         last
+         visitingHours: VisitingHours?                         = nil,
          accessRestrictions: String?                           = nil,
          averageClearNightsPerYear: UInt?                      = nil,
          averageSeeingConditions: PolisPropertyValue?          = nil,
@@ -72,5 +104,5 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
         try await super.init()
     }
 
-    
+
 }

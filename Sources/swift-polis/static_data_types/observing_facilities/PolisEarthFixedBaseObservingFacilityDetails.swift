@@ -11,7 +11,7 @@ public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable
 
     // General info
     public var id: UUID
-    public var lastUpdateDate: Date
+    public var lastUpdateTime: Date
     public var facilityID: UUID
 
     // For visitors
@@ -30,21 +30,23 @@ public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable
     public var placeID: UUID?
 
     public init(id: UUID                                              = UUID(),
-                lastUpdateDate: Date                                  = Date.now,
+                lastUpdateTime: Date                                  = Date.now,
                 facilityID: UUID,
                 visitingHoursID: UUID?                                = nil,
                 averageClearNightsPerYear: UInt?                      = nil,
                 averageSeeingConditions: PolisPropertyValue?          = nil,
+                averageSkyQuality: PolisPropertyValue?                = nil,
                 traditionalLandOwners: String?                        = nil,
                 dominantWindDirection: PolisDirection.RoughDirection? = nil,
                 surfaceSize: PolisPropertyValue?                      = nil,
                 placeID: UUID?                                        = nil) {
         self.id                        = id
-        self.lastUpdateDate            = lastUpdateDate
+        self.lastUpdateTime            = lastUpdateTime
         self.facilityID                = facilityID
         self.visitingHoursID           = visitingHoursID
         self.averageClearNightsPerYear = averageClearNightsPerYear
         self.averageSeeingConditions   = averageSeeingConditions
+        self.averageSkyQuality         = averageSkyQuality
         self.traditionalLandOwners     = traditionalLandOwners
         self.dominantWindDirection     = dominantWindDirection
         self.surfaceSize               = surfaceSize
@@ -55,7 +57,7 @@ public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable
 public extension PolisEarthFixedBaseObservingFacilityDetails {
     enum CodingKeys: String, CodingKey {
         case id
-        case lastUpdateDate            = "last_update_date"
+        case lastUpdateTime            = "last_update_time"
         case facilityID                = "facility_id"
         case visitingHoursID           = "visiting_hours_id"
         case accessRestrictions        = "access_restrictions"
@@ -68,33 +70,3 @@ public extension PolisEarthFixedBaseObservingFacilityDetails {
         case placeID                   = "place_id"
     }
 }
-
-//MARK: - StorableItem Implementation -
-//extension PolisFixedSurfaceEarthBaseDetails {
-//    static func loadFromLocalFileSystemUsing(manager: PolisProviderManager) throws -> AnyObject {
-//        //TODO: Implement me!
-//        throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFile
-//    }
-//
-//    func parentItem() -> (any StorableItem)? { PolisProviderManager.currentProviderManager.facilityDirectory }
-//
-//    func flashUsing(manager: PolisProviderManager) throws {
-//        try ensureFacilityFolderDoesExist()
-//
-//        //TODO: Implement me!
-//    }
-//
-//    func ensureFacilityFolderDoesExist() throws {
-//        let manager = PolisProviderManager.currentProviderManager!
-//
-//        if !manager.tryToEnsureFoldersExistence(paths: [facilityPath()]) {
-//            PolisLogger.shared.error("Cannot create or access facility folder: \(facilityPath())")
-//            throw PolisProviderManager.PolisProviderManagerError.cannotAccessOrCreateStandardPolisFolder
-//        }
-//    }
-//
-//    func facilityPath() -> String {
-//        let manager = PolisProviderManager.currentProviderManager!
-//        return manager.polisFileResourceFinder.observingFacilityFolder(observingFacilityID: facilityID)
-//    }
-//}
