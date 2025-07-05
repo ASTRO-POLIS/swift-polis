@@ -31,7 +31,7 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
     public override func startEditing()        async throws { }
     public override func finishEditing()       async throws { }
 
-    public func saveChanges()                  async throws { }
+    public func saveChanges() async throws { try await earthFixedBaseObservingFacilityDetails.flashUsing(store: store) }
     public func revertToSaved()                async throws { }
     public func delete()                       async throws { }
     public func loadData()                     async throws { }
@@ -77,8 +77,7 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
     }
 
     init(id: UUID                                              = UUID(),
-         last
-         visitingHours: VisitingHours?                         = nil,
+         lastUpdateTime: Date                                  = Date(),
          accessRestrictions: String?                           = nil,
          averageClearNightsPerYear: UInt?                      = nil,
          averageSeeingConditions: PolisPropertyValue?          = nil,
@@ -89,7 +88,6 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
          facilityID: UUID,
          visitingHoursID: UUID?                                = nil,
          placeID: UUID?                                        = nil) async throws {
-        self.visitingHours             = visitingHours
         self.accessRestrictions        = accessRestrictions
         self.averageClearNightsPerYear = averageClearNightsPerYear
         self.averageSeeingConditions   = averageSeeingConditions
@@ -101,8 +99,30 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
         self.visitingHoursID           = visitingHoursID
         self.placeID                   = placeID
 
-        try await super.init()
+        try await super.init(id: id,
+                             lastUpdateTime: lastUpdateTime,
+                             facilityID: facilityID,
+                             representingStoredObjectType: .observingFacilityDetails)
     }
 
+    init(earthFixedBaseObservingFacilityDetails: PolisEarthFixedBaseObservingFacilityDetails) async throws {
+        self.accessRestrictions        = earthFixedBaseObservingFacilityDetails.accessRestrictions
+        self.averageClearNightsPerYear = earthFixedBaseObservingFacilityDetails.averageClearNightsPerYear
+        self.averageSeeingConditions   = earthFixedBaseObservingFacilityDetails.averageSeeingConditions
+        self.averageSkyQuality         = earthFixedBaseObservingFacilityDetails.averageSkyQuality
+        self.traditionalLandOwners     = earthFixedBaseObservingFacilityDetails.traditionalLandOwners
+        self.dominantWindDirection     = earthFixedBaseObservingFacilityDetails.dominantWindDirection
+        self.surfaceSize               = earthFixedBaseObservingFacilityDetails.surfaceSize
+        self.facilityID                = earthFixedBaseObservingFacilityDetails.facilityID
+        self.visitingHoursID           = earthFixedBaseObservingFacilityDetails.visitingHoursID
+        self.placeID                   = earthFixedBaseObservingFacilityDetails.placeID
+
+        try await super.init(id: earthFixedBaseObservingFacilityDetails.id,
+                             lastUpdateTime: earthFixedBaseObservingFacilityDetails.lastUpdateTime,
+                             facilityID: earthFixedBaseObservingFacilityDetails.facilityID,
+                             representingStoredObjectType: .observingFacilityDetails)
+
+        self.earthFixedBaseObservingFacilityDetails = earthFixedBaseObservingFacilityDetails
+    }
 
 }

@@ -237,10 +237,61 @@ extension PolisArtifact: StorableItem {
         }
 
         if !fm.createFile(atPath: path, contents: data) {
-            PolisLogger.shared.error("PolisArtifact:flashUsing- Cannot save POLIS Artifact file to: \(path)")
+            PolisLogger.shared.error("PolisArtifact:flashUsing - Cannot save POLIS Artifact file to: \(path)")
             throw ObjectStore.ObjectStoreError.cannotWriteFile
         }
     }
+}
+
+//MARK: - PolisEarthFixedBaseObservingFacilityDetails -
+extension PolisEarthFixedBaseObservingFacilityDetails: StorableItem {
+    static func loadFromLocalFileSystemUsing(store: ObjectStore,
+                                             facilityID: UUID? = nil,
+                                             objectID: UUID? = nil,
+                                             objectType: RepresentingStoredObjectType? = nil) async throws -> AnyObject {
+        guard let facilityID = facilityID else { throw ObjectStore.ObjectStoreError.missingRequiredID }
+        guard let objectID   = objectID   else { throw ObjectStore.ObjectStoreError.missingRequiredID }
+
+        let finder = await store.fileResourceFinder()
+        let path   = finder.observingDataFile(withID: objectID, observingFacilityID: facilityID)
+
+        data = fm.contents(atPath: path)
+
+        guard let data = data else { throw ObjectStore.ObjectStoreError.cannotAccessOrCreateStandardPolisFile }
+
+        do {
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+            let entry = try decoder.decode(PolisEarthFixedBaseObservingFacilityDetails.self, from: data)
+
+            return entry as AnyObject
+        }
+        catch { throw ObjectStore.ObjectStoreError.cannotDecodePolisType }
+    }
+
+    static func removeFromLocalFileSystemUsing(store: ObjectStore) async throws { } //TODO: Implement me!
+
+    func parentItem(store: ObjectStore) async throws -> (any StorableItem)? { try await store.facilityWithId(facilityID)?.facilityDetails }
+
+    func flashUsing(store: ObjectStore) async throws {
+        let finder  = await store.fileResourceFinder()
+        let path    = finder.observingDataFile(withID: id, observingFacilityID: facilityID)
+        var details = self
+
+        details.lastUpdateTime = Date.now
+
+        do    { data = try jsonEncoder.encode(details) }
+        catch {
+            PolisLogger.shared.error("PolisEarthFixedBaseObservingFacilityDetails:flashUsing - Cannot encode POLIS PolisEarthFixedBaseObservingFacilityDetails")
+            throw ObjectStore.ObjectStoreError.cannotEncodePolisType
+        }
+
+        if !fm.createFile(atPath: path, contents: data) {
+            PolisLogger.shared.error("PolisEarthFixedBaseObservingFacilityDetails:flashUsing - Cannot save POLIS Artifact file to: \(path)")
+            throw ObjectStore.ObjectStoreError.cannotWriteFile
+        }
+    }
+
 }
 
 //MARK: File Private stuff

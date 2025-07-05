@@ -204,11 +204,41 @@ open class ObservingFacilityDetails: ObjectItem {
     }
 
     private func loadReferencedItems() async throws {
+        // Load artifacts. The call below has the side-effect to load them.
+        _ = try await allArtifacts()
+
+        // Load EarthFixedBaseObservingFacilityDetails
+        if fixedSurfaceEarthBaseDetailsID != nil {
+            let polisObject = try await PolisEarthFixedBaseObservingFacilityDetails.loadFromLocalFileSystemUsing(store: store,
+                                                                                                                 facilityID: item.identity.id,
+                                                                                                                 objectID: fixedSurfaceEarthBaseDetailsID) as! PolisEarthFixedBaseObservingFacilityDetails
+            earthFixBasedObservingFacility = try await EarthFixedBaseObservingFacilityDetails(earthFixedBaseObservingFacilityDetails: polisObject)
+        }
         //TODO: Implement me!
     }
 
     private func saveReferencedItems() async throws {
         //TODO: Implement me!
+    }
+}
+
+//MARK: Working with EarthFixedBaseObservingFacilityDetails
+public extension ObservingFacilityDetails {
+
+    func addEarthFixedBaseObservingFacilityDetails() async throws -> EarthFixedBaseObservingFacilityDetails {
+        guard (earthFixBasedObservingFacility == nil) || (fixedSurfaceEarthBaseDetailsID == nil)  else {
+            PolisLogger.shared.error("ObservingFacility:addEarthFixedBaseObservingFacilityDetails - EarthFixedBaseObservingFacilityDetails already exists")
+            throw ObjectStore.ObjectStoreError.polisObjectOfTheTypeAlreadyExists
+        }
+
+        let result = try await EarthFixedBaseObservingFacilityDetails(facilityID: item.identity.id)
+
+        fixedSurfaceEarthBaseDetailsID = result.id
+        earthFixBasedObservingFacility = result
+
+        try await result.saveChanges()
+
+        return result
     }
 }
 

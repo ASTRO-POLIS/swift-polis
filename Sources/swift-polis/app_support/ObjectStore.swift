@@ -29,6 +29,7 @@ public actor ObjectStore {
         case polisDataMismatch                          // e.g. expects Earth based observatory but gets a Mars rover
         case fileIO                                     // e.g. create/remove folders and files
         case missingRequiredID
+        case polisObjectOfTheTypeAlreadyExists
    }
 
 
