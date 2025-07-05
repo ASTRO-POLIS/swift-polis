@@ -212,31 +212,23 @@ open class ObservingFacilityDetails: ObjectItem {
     }
 }
 
-//MARK: Working with Fixed Surface Earth Base Details
-public extension ObservingFacilityDetails {
-    func addFixedSurfaceEarthBaseDetails() async throws -> EarthFixedBaseObservingFacilityDetails {
-        let result    = try await EarthFixedBaseObservingFacilityDetails(facilityID: self.id)
-//        let reference = try PolisReference(facilityID: self.id, polisObjectID: result.id, hasLocalCopy: false, representingStoredObjectType: PolisRepresentingStoredObjectType.observingFacility)
-//
-//        result.fixedSurfaceEarthBaseDetailsPersistenceReference = reference
-
-        //TODO: Implement me!
-
-
-        return result
-    }
-}
-
 //MARK: Working with artifacts
 public extension ObservingFacilityDetails {
     // Arifacts of interest could be also on other solar system bodies (e.g. Apollo landing site)
 
-    func allArtifacts() throws -> [Artifact] {
+    func allArtifacts() async throws -> [Artifact] {
         if let artifactIDs = artifactIDs {
             if _allArtifacts.count != artifactIDs.count {
+                var newArtifacts: [Artifact] = []
+
                 for artifactID in artifactIDs {
-                    //TODO: Implement me! ... load them...
+                    if artifactWithID(artifactID) == nil {
+                        let pA   = try await PolisArtifact.loadFromLocalFileSystemUsing(store: store, facilityID: item.identity.id, objectID: artifactID)
+                        let newA = try await Artifact(storedArtifact: pA as! PolisArtifact)
+                        newArtifacts.append(newA)
+                    }
                 }
+                for anA in newArtifacts { _allArtifacts.append(anA) }
             }
         }
 
@@ -256,6 +248,7 @@ public extension ObservingFacilityDetails {
 
         if artifactIDs == nil { artifactIDs = [] }
         artifactIDs!.insert(artifactIdentity.id)
+        try await saveChanges()
 
         return artifact
     }
@@ -264,8 +257,8 @@ public extension ObservingFacilityDetails {
         //TODO: Implement me!
     }
 
-    private func artifactWithID(_ artifactID: UUID) throws -> Artifact? {
-        for artifact in try self.allArtifacts() {
+    private func artifactWithID(_ artifactID: UUID) -> Artifact? {
+        for artifact in _allArtifacts {
             if artifact.identity.id == artifactID { return artifact }
         }
         return nil

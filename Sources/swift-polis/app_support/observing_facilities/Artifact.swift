@@ -87,6 +87,18 @@ open class Artifact: IdentifiableObject {
                                                                                                             observingFacilityID: facilityID)
         self.remoteReadPath = try await ObjectStore.currentObjectStore().remoteResourceFinder().observingDataURL(withID: identity.id,
                                                                                                                  observingFacilityID: facilityID)
-   }
+    }
+
+    init(storedArtifact: PolisArtifact) async throws {
+        self.artifactType          = storedArtifact.artifactType
+        self.facilityID            = storedArtifact.facilityID
+
+        try await super.init(id: storedArtifact.identity.id,
+                             lastUpdateTime: storedArtifact.identity.lastUpdateTime,
+                             name: storedArtifact.identity.name ?? "<unnamed>",
+                             facilityID : storedArtifact.facilityID,
+                             representingStoredObjectType: .artifact)
+        self.artifact = artifact
+    }
 }
 

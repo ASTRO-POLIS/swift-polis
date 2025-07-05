@@ -78,7 +78,7 @@ final class ObjectStoreTests: XCTestCase {
         let newFacility = try await sut.createFixedEarthBasedFacility()
         let newArtifact = try await newFacility.addArtifact(artifactType: .monument)
         let countAfterCreatingAFacility = await sut.facilities().count
-        let countArtifacts = try newFacility.allArtifacts().count
+        let countArtifacts = try await newFacility.allArtifacts().count
 
         try await sut.removeExistingLocalStore()
 
@@ -98,6 +98,8 @@ final class ObjectStoreTests: XCTestCase {
         let config      = ProviderConfiguration(name: "BAO", adminName: "Mr. Astronomer", adminEmail: "astro@example.com")
         try await sut.createLocalStore(providerConfiguration: config)
         let newFacility = try await sut.createFixedEarthBasedFacility()
+        let newArtifact = try await newFacility.addArtifact(artifactType: .monument)
+        try await newArtifact.saveChanges()
         try await sut.close()
 
         // When
@@ -105,11 +107,13 @@ final class ObjectStoreTests: XCTestCase {
         // Now try to reload the object store
         try await sut.loadLocalStoreAt(path: AppSupportTestingSupport.testingPath)
         let countAfterCreatingAFacility = await sut.facilities().count
+        let countArtifacts = try await sut.facilities().first!.allArtifacts().count
 
         // Then
         XCTAssertNotNil(sut)
         XCTAssertNotNil(newFacility)
         XCTAssertEqual(countAfterCreatingAFacility, 1)
+        XCTAssertEqual(countArtifacts, 1)
 
         try await sut.removeExistingLocalStore()
   }
