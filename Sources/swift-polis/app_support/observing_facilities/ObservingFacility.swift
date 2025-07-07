@@ -73,7 +73,7 @@ public class ObservingFacility: Persisting {
 
     init(id: UUID,
          externalReferences: [String]?                                     = nil,
-         lastUpdateTime: Date,
+    lastUpdateTime: Date                                                  = Date.now,
          name: String?                                                     = nil,
          localName: String?                                                = PolisConstants.unknownObject,
          abbreviation: String?                                             = nil,

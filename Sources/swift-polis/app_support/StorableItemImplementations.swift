@@ -221,7 +221,9 @@ extension PolisArtifact: StorableItem {
 
     static func removeFromLocalFileSystemUsing(store: ObjectStore) async throws { } //TODO: Implement me!
 
-    func parentItem(store: ObjectStore) async throws -> (any StorableItem)? { try await store.facilityWithId(facilityID)?.facilityDetails }
+    //FIXME: This needs rethinking!
+//    func parentItem(store: ObjectStore) async throws -> (any StorableItem)? { try await store.facilityWithId(facilityID)?.facilityDetails }
+    func parentItem(store: ObjectStore) async throws -> (any StorableItem)? { nil }
 
     func flashUsing(store: ObjectStore) async throws {
         let finder  = await store.fileResourceFinder()
@@ -271,7 +273,9 @@ extension PolisEarthFixedBaseObservingFacilityDetails: StorableItem {
 
     static func removeFromLocalFileSystemUsing(store: ObjectStore) async throws { } //TODO: Implement me!
 
-    func parentItem(store: ObjectStore) async throws -> (any StorableItem)? { try await store.facilityWithId(facilityID)?.facilityDetails }
+    //FIXME: This needs rethinking!
+//    func parentItem(store: ObjectStore) async throws -> (any StorableItem)? { try await store.facilityWithId(facilityID)?.facilityDetails }
+    func parentItem(store: ObjectStore) async throws -> (any StorableItem)? { nil }
 
     func flashUsing(store: ObjectStore) async throws {
         let finder  = await store.fileResourceFinder()

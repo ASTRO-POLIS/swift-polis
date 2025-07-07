@@ -65,8 +65,9 @@ open class ObservingFacilityDetails: ObjectItem {
     public func saveChanges() async throws {
         nc.post(name: AppSupportStatusChangeNotification.facilityInfoWillSaveNotification, object: nil)
 
+        //FIXME: This needs another interpretation!
         // 1. Update Facility Directory
-        try await store.addOrUpdateObservingFacilityDirectoryEntry(self)
+//        try await store.addOrUpdateObservingFacilityDirectoryEntry(self)
 
         // 2. Now try to save the Facility Info
         let facilityFolder = await store.fileResourceFinder().observingFacilityFolder(observingFacilityID: id)

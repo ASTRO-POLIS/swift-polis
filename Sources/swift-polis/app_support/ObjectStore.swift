@@ -132,8 +132,7 @@ public actor ObjectStore {
 
         // N. For each Facility Ref from the Facility Directory create a minimal Facility object and initiate its Loading
         for anEntry in _facilityDirectory.observingFacilityReferences {
-            let aFacility = try await ObservingFacilityDetails(identity: anEntry.identity)
-
+            let aFacility = try await ObservingFacility(facilityReference: anEntry, store: self)
             _facilities.append(aFacility)
             try await aFacility.loadData()
         }
@@ -225,7 +224,7 @@ public actor ObjectStore {
     private var _facilityDirectory: PolisObservingFacilityDirectory!
 
     // Cached objects
-    private var _facilities = [ObservingFacilityDetails]()
+    private var _facilities = [ObservingFacility]()
 
     private func configureRelatedTypesAfterStoreInitialisation() {
         // PersistentObject
@@ -241,18 +240,18 @@ extension ObjectStore {
     ///
     /// The list might not contain remote Facilities that are not yet fetched from the remote Provider.
     /// - Returns: Possibly empty array of Facilities
-    public func facilities() -> [ObservingFacilityDetails] { _facilities }
+    public func facilities() -> [ObservingFacility] { _facilities }
 
     /// Creates the Facility Reference and the Facility object
-    public func createFixedEarthBasedFacility() async throws  -> ObservingFacilityDetails {
+    public func createFixedEarthBasedFacility() async throws  -> ObservingFacility {
         try await createFacility(gravitationalBodyRelationship: .surfaceFixed, placeInTheSolarSystem: .earth)
     }
 
     public func createFacility(
         gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
         placeInTheSolarSystem : PolisPlaceInTheSolarSystem                = .earth
-    ) async throws -> ObservingFacilityDetails {
-        let facility = try await ObservingFacilityDetails(id: UUID(), name: "<unnamed>")
+    ) async throws -> ObservingFacility {
+        let facility = try await ObservingFacility(id: UUID(), name: "<unnamed>", store: self)
 
         facility.gravitationalBodyRelationship = gravitationalBodyRelationship
         facility.placeInTheSolarSystem         = placeInTheSolarSystem
@@ -268,14 +267,14 @@ extension ObjectStore {
     ///
     /// - Parameter id: the ID  of the Facility
     /// - Returns: if the Facility is found, it is returned, otherwise nil
-    public func facilityWithId(_ id: UUID) async throws  -> ObservingFacilityDetails? {
+    public func facilityWithId(_ id: UUID) async throws  -> ObservingFacility? {
         for aFacility in _facilities {
             if aFacility.id == id { return aFacility }
         }
         return nil
     }
 
-    func addOrUpdateObservingFacilityDirectoryEntry(_ facility: ObservingFacilityDetails) async throws {
+    func addOrUpdateObservingFacilityDirectoryEntry(_ facility: ObservingFacility) async throws {
         if let index = _facilityDirectory.observingFacilityReferences.firstIndex(where: {$0.id == facility.id} ) {
             var ref = _facilityDirectory.observingFacilityReferences[index]
 
