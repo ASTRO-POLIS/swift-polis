@@ -1,0 +1,151 @@
+//
+//  ObservingFacility.swift Persisting
+//  swift-polis
+//
+//  Created by Georg Tuparev on 6.07.25.
+//
+
+import Foundation
+import SoftwareEtudesUtilities
+
+public class ObservingFacility: Persisting {
+
+    //MARK: - Public APIs -
+
+    // Identity related
+    public var id: UUID
+    public var externalReferences: [String]?
+    public var lastUpdateTime: Date
+    public var name: String?
+    public var localName: String?
+    public var abbreviation: String?
+    public var shortDescription: String?
+    public var startTime: Date?
+    public var endTime: Date?
+    public var polisRegistrationTime: Date?
+
+    // ObservingFacilityReference related
+    public var gravitationalBodyRelationship: PolisObservingFacilityLocationType
+    public var placeInTheSolarSystem : PolisPlaceInTheSolarSystem
+
+    public func observingFacilityDetails() async throws -> ObservingFacilityDetails {_observingFacilityDetails }
+
+    //MARK: - Non-public APIs -
+    let store: ObjectStore
+    var identity: PolisIdentity {
+        get {
+            PolisIdentity(id: id,
+                          externalReferences: externalReferences,
+                          lastUpdateTime: lastUpdateTime,
+                          name: name,
+                          localName: localName,
+                          abbreviation: abbreviation,
+                          shortDescription: shortDescription,
+                          startTime: startTime,
+                          endTime: endTime,
+                          polisRegistrationTime: polisRegistrationTime)
+        }
+        set {
+            id                    = newValue.id
+            externalReferences    = newValue.externalReferences
+            lastUpdateTime        = newValue.lastUpdateTime
+            name                  = newValue.name ?? "<unnamed>"
+            localName             = newValue.localName
+            abbreviation          = newValue.abbreviation
+            shortDescription      = newValue.shortDescription
+            startTime             = newValue.startTime
+            endTime               = newValue.endTime
+            polisRegistrationTime = newValue.polisRegistrationTime
+        }
+    }
+    var facilityReference: PolisObservingFacilityDirectory.ObservingFacilityReference {
+        get {
+            PolisObservingFacilityDirectory.ObservingFacilityReference(identity: identity,
+                                                                       gravitationalBodyRelationship: gravitationalBodyRelationship,
+                                                                       placeInTheSolarSystem: placeInTheSolarSystem)
+        }
+        set {
+            identity                      = newValue.identity
+            gravitationalBodyRelationship = newValue.gravitationalBodyRelationship
+            placeInTheSolarSystem         = newValue.placeInTheSolarSystem
+        }
+    }
+
+    init(id: UUID,
+         externalReferences: [String]?                                     = nil,
+         lastUpdateTime: Date,
+         name: String?                                                     = nil,
+         localName: String?                                                = PolisConstants.unknownObject,
+         abbreviation: String?                                             = nil,
+         shortDescription: String?                                         = nil,
+         startTime: Date?                                                  = nil,
+         endTime: Date?                                                    = nil,
+         polisRegistrationTime: Date?                                      = nil,
+         gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
+         placeInTheSolarSystem: PolisPlaceInTheSolarSystem                 = .earth,
+         store: ObjectStore) async throws {
+        self.id                            = id
+        self.externalReferences            = externalReferences
+        self.lastUpdateTime                = lastUpdateTime
+        self.name                          = name
+        self.localName                     = localName
+        self.abbreviation                  = abbreviation
+        self.shortDescription              = shortDescription
+        self.startTime                     = startTime
+        self.endTime                       = endTime
+        self.polisRegistrationTime         = polisRegistrationTime
+        self.gravitationalBodyRelationship = gravitationalBodyRelationship
+        self.placeInTheSolarSystem         = placeInTheSolarSystem
+        self.store                         = store
+
+        try await ensureFacilityDetailsExistence()
+    }
+
+    init(facilityReference: PolisObservingFacilityDirectory.ObservingFacilityReference, store: ObjectStore) async throws {
+        self.id                            = facilityReference.identity.id
+        self.externalReferences            = facilityReference.identity.externalReferences
+        self.lastUpdateTime                = facilityReference.identity.lastUpdateTime
+        self.name                          = facilityReference.identity.name
+        self.localName                     = facilityReference.identity.localName
+        self.abbreviation                  = facilityReference.identity.abbreviation
+        self.shortDescription              = facilityReference.identity.shortDescription
+        self.startTime                     = facilityReference.identity.startTime
+        self.endTime                       = facilityReference.identity.endTime
+        self.polisRegistrationTime         = facilityReference.identity.polisRegistrationTime
+        self.gravitationalBodyRelationship = facilityReference.gravitationalBodyRelationship
+        self.placeInTheSolarSystem         = facilityReference.placeInTheSolarSystem
+        self.store                         = store
+
+        try await ensureFacilityDetailsExistence()
+    }
+
+    //MARK: Private APIs -
+    private var _observingFacilityDetails: ObservingFacilityDetails!
+
+    private let nc              = NotificationCenter.default
+    private let fm              = FileManager.default
+    private var isDir: ObjCBool = false
+    private var jsonEncoder     = PrettyJSONEncoder()
+    private var jsonDecoder     = PrettyJSONDecoder()
+    private var jsonData: Data!
+
+    private func ensureFacilityDetailsExistence() async throws {
+        //TODO: Implement me!
+    }
+}
+
+//MARK: - Persisting -
+extension ObservingFacility {
+    public func canEdit()                      async -> Bool { false } // Better be on the safe side
+    public func startEditing()                 async throws { }
+    public func finishEditing()                async throws { }
+
+    public func saveChanges()                  async throws { }
+    public func revertToSaved()                async throws { }
+    public func delete()                       async throws { }
+    public func loadData()                     async throws { }
+
+    public func didChange()                    async -> Bool { false }
+
+    public func prepareToCloseTheObjectStore() async throws { }
+}

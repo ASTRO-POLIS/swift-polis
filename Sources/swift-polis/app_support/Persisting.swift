@@ -169,7 +169,7 @@ open class IdentifiableObject: PersistentObject {
     public var shortDescription: String?
     public var startTime: Date?
     public var endTime: Date?
-    public var polisRegistrationDate: Date?
+    public var polisRegistrationTime: Date?
 
     /// Designated initialiser
     init(id: UUID                                                   = UUID(),
@@ -197,18 +197,19 @@ open class IdentifiableObject: PersistentObject {
                           shortDescription: shortDescription,
                           startTime: startTime,
                           endTime: endTime,
-                          polisRegistrationTime: polisRegistrationDate)
+                          polisRegistrationTime: polisRegistrationTime)
         }
         set {
-            id                 = newValue.id
-            externalReferences = newValue.externalReferences
-            lastUpdateTime     = newValue.lastUpdateTime
-            name               = newValue.name ?? "<unnamed>"
-            localName          = newValue.localName
-            abbreviation       = newValue.abbreviation
-            shortDescription   = newValue.shortDescription
-            startTime          = newValue.startTime
-            endTime            = newValue.endTime
+            id                    = newValue.id
+            externalReferences    = newValue.externalReferences
+            lastUpdateTime        = newValue.lastUpdateTime
+            name                  = newValue.name ?? "<unnamed>"
+            localName             = newValue.localName
+            abbreviation          = newValue.abbreviation
+            shortDescription      = newValue.shortDescription
+            startTime             = newValue.startTime
+            endTime               = newValue.endTime
+            polisRegistrationTime = newValue.polisRegistrationTime
         }
     }
 }

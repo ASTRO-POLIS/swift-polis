@@ -132,10 +132,6 @@ open class ObservingFacilityDetails: ObjectItem {
 
     var artifactIDs: Set<UUID>?                  //TODO: Load data
 
-//    var detailsPersistenceReference: PolisReference!
-
-    // Utility properties
-
     var facilityDetails: PolisObservingFacilityDetails {
         get {
             PolisObservingFacilityDetails(item: self.item,
@@ -182,7 +178,7 @@ open class ObservingFacilityDetails: ObjectItem {
     }
 
     init(identity: PolisIdentity, lastUpdateTime: Date = Date()) async throws {
-        try await super.init(id: identity.id, lastUpdateTime: lastUpdateTime, name: identity.name ?? "<unknown>")
+        try await super.init(id: identity.id, lastUpdateTime: lastUpdateTime, name: identity.name ?? PolisConstants.unknownObject)
 
         try await finaliseInitialisation()
     }
@@ -198,7 +194,7 @@ open class ObservingFacilityDetails: ObjectItem {
         self.localPath                    = await ObjectStore.currentObjectStore().fileResourceFinder().observingFacilityFile(observingFacilityID: id)
         self.remoteReadPath               = try await ObjectStore.currentObjectStore().remoteResourceFinder().observingFacilityURL(observingFacilityID: id)
 
-        self.polisRegistrationDate       = Date()
+        self.polisRegistrationTime       = Date()
         self.lifecycleStatus             = .active
         self.solarSystemBodyName         = placeInTheSolarSystem.rawValue
     }
