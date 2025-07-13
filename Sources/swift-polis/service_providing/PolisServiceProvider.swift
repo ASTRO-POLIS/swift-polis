@@ -30,13 +30,13 @@ public struct PolisDirectory {
     ///
     /// `PolisDirectoryEntry` is used to define the Polis provider itself, as well as as an entry in the list of known Polis
     /// providers.
-    public struct ProviderDirectoryEntry: Identifiable {
+    public struct ProviderDirectoryEntry: Identifiable,Equatable {
 
         /// `ProviderType` defines different types of POLIS Providers.
         /// 
         /// In general, only `publicPrimary` and `mirror` types should be used by clients. Astro clubs and other communities might
         /// access `private` providers, but they will probably only allow restricted access to members only.
-        public enum ProviderType: String, Codable {
+        public enum ProviderType: String, Codable,Equatable {
 
             /// Only `publicPrimary` provider should be used in production or by publicly available client apps or websites. Public
             /// providers should run on servers with enough bandwidth and computational power capable of accommodating multiple
@@ -73,7 +73,7 @@ public struct PolisDirectory {
         /// 24h should be sufficient. Also note, that an external server might be unreachable or slow from one location, but reachable and responsive from another.
         /// If your Service Provider cannot reach another Service Provider reliably, first check if this is also observed elsewhere, and if this is the case, only then
         /// change the local reachability status.
-        public enum ServiceReachability: String, Codable  {
+        public enum ServiceReachability: String, Codable, Equatable  {
 
             /// `reachableAndResponsive` identifies stable and fast Service Provider.
             case reachableAndResponsive = "reachable_and_responsive"
@@ -198,7 +198,7 @@ public struct PolisObservingFacilityDirectory: Codable {
     /// invalidated (e.g. lastUpdate is changed).
     ///
     ///  **Note:** Only root facility (e.g. without a parent facility) should be listed!
-    public struct ObservingFacilityReference: Codable, Identifiable {
+    public struct ObservingFacilityReference: Codable, Identifiable, Equatable {
         public var identity: PolisIdentity
         public var gravitationalBodyRelationship: PolisObservingFacilityLocationType
         public var placeInTheSolarSystem : PolisPlaceInTheSolarSystem
@@ -212,14 +212,22 @@ public struct PolisObservingFacilityDirectory: Codable {
             self.gravitationalBodyRelationship = gravitationalBodyRelationship
             self.placeInTheSolarSystem         = placeInTheSolarSystem
         }
+
     }
 
-    public var lastUpdate: Date                                   // UTC
+    public var lastUpdate: Date // UTC
     public var observingFacilityReferences: [ObservingFacilityReference]
 
     public init(lastUpdate: Date, observingFacilityReferences: [ObservingFacilityReference]) {
         self.lastUpdate                  = lastUpdate
         self.observingFacilityReferences = observingFacilityReferences
+    }
+
+    public func facilityReferenceWith(id: UUID) -> ObservingFacilityReference? {
+        for reference in observingFacilityReferences {
+            if id == reference.id { return reference }
+        }
+        return nil
     }
 }
 

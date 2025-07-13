@@ -41,6 +41,11 @@ public struct PolisIdentity: Codable, Identifiable, Equatable {
     /// Latest update timestamp. Used primarily for syncing.
     public var lastUpdateTime: Date
 
+    /// The current status of the POLIS item (object) and its readiness to be used in different environments
+    ///
+    /// **Note:** Client apps should not show `.deleted` objects
+    public var lifecycleStatus: PolisLifecycleStatus
+
     /// Human readable name of the object. It is recommended to assign a unique English name describing the
     /// object as close as possible (e.g. "Alta-123_CCD").
     public var name: String?
@@ -69,19 +74,21 @@ public struct PolisIdentity: Codable, Identifiable, Equatable {
     /// Designated initialiser.
     ///
     /// Only the `name` parameter is required. All other parameters have reasonable default values.
-    public init(id: UUID                      = UUID(),
-                externalReferences: [String]? = nil,
-                lastUpdateTime: Date          = Date.now,
-                name: String?                 = nil,
-                localName: String?            = nil,
-                abbreviation: String?         = nil,
-                shortDescription: String?     = nil,
-                startTime: Date?              = nil,
-                endTime: Date?                = nil,
-                polisRegistrationTime: Date?  = nil) {
+    public init(id: UUID                              = UUID(),
+                externalReferences: [String]?         = nil,
+                lastUpdateTime: Date                  = Date.now,
+                lifecycleStatus: PolisLifecycleStatus = .unknown,
+                name: String?                         = nil,
+                localName: String?                    = nil,
+                abbreviation: String?                 = nil,
+                shortDescription: String?             = nil,
+                startTime: Date?                      = nil,
+                endTime: Date?                        = nil,
+                polisRegistrationTime: Date?          = nil) {
         self.id                    = id
         self.externalReferences    = externalReferences
         self.lastUpdateTime        = lastUpdateTime
+        self.lifecycleStatus       = lifecycleStatus
         self.name                  = name
         self.localName             = localName
         self.abbreviation          = abbreviation
@@ -97,6 +104,7 @@ extension PolisIdentity {
         case id
         case externalReferences    = "external_references"
         case lastUpdateTime        = "last_update_time"
+        case lifecycleStatus       = "lifecycle_status"
         case name
         case localName             = "local_name"
         case abbreviation

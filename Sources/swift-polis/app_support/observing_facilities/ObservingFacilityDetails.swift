@@ -53,77 +53,10 @@ open class ObservingFacilityDetails: ObjectItem {
     public var scientificObjectives: String?
     public var history: String?
 
-    // Facility concrete type details
+    // Parent Facility & Facility concrete type details
+    public var facility: ObservingFacility!
     public var earthFixBasedObservingFacility: EarthFixedBaseObservingFacilityDetails?
 
-    //MARK: - PolisPersisting implementation -
-    public func canEdit() async -> Bool {
-        //TODO: Implement me!
-        await store.isEditable()
-    }
-
-    public func saveChanges() async throws {
-        nc.post(name: AppSupportStatusChangeNotification.facilityInfoWillSaveNotification, object: nil)
-
-        //FIXME: This needs another interpretation!
-        // 1. Update Facility Directory
-//        try await store.addOrUpdateObservingFacilityDirectoryEntry(self)
-
-        // 2. Now try to save the Facility Info
-        let facilityFolder = await store.fileResourceFinder().observingFacilityFolder(observingFacilityID: id)
-
-        if !(fm.fileExists(atPath: facilityFolder, isDirectory: &isDir) && (isDir.boolValue)) {
-            do    { try fm.createDirectory(atPath: facilityFolder, withIntermediateDirectories: true) }
-            catch {
-                PolisLogger.shared.error("ObservingFacility:saveChanges - Cannot cannot create a facility directory at: \(facilityFolder)")
-                throw ObservingFacilityError.cannotWritePolisFile
-            }
-        }
-        try await facilityDetails.flashUsing(store: store)
-
-        localPersistencyStatus = .savedNotSynced
-        nc.post(name: AppSupportStatusChangeNotification.facilityInfoDidSaveNotification, object: nil)
-
-        //TODO: Start saving children data!
-    }
-
-    public func revertToSaved() async throws {
-        //TODO: Implement me!
-    }
-
-    public func delete() async throws {
-        //TODO: Implement me!
-    }
-
-    public func loadData() async throws {
-        nc.post(name: AppSupportStatusChangeNotification.facilityInfoWillLoadNotification, object: self)
-
-        // If the Facility's folder does not exist. the Facility is newly created and in memory only. So skip the loading
-        // without throwing an exception.
-        let facilityFolder = await store.fileResourceFinder().observingFacilityFolder(observingFacilityID: id)
-        if !(fm.fileExists(atPath: facilityFolder, isDirectory: &isDir) && (isDir.boolValue)) { return }
-
-        // Now we assume the Facility folder exist, and it is a bad error if the Details file does not exist
-        if !fm.fileExists(atPath: localPath) {
-            PolisLogger.shared.error("ObservingFacility:loadData - No local Facility Details found at: \(localPath!)")
-            throw ObservingFacilityError.unavailableOrUnreadableLocalData
-        }
-
-        self.facilityDetails = try await PolisObservingFacilityDetails.loadFromLocalFileSystemUsing(store: store,
-                                                                                                    facilityID: item.identity.id,
-                                                                                                    objectType: .observingFacilityDetails) as! PolisObservingFacilityDetails
-
-        // Now load more details like Location, Artifacts, Media, etc.
-        try await loadReferencedItems()
-        localPersistencyStatus = .savedAndSynced
-
-        nc.post(name: AppSupportStatusChangeNotification.facilityInfoDidLoadNotification, object: self)
- }
-
-    public func didChange() async-> Bool {
-        false
-        //TODO: Implement me!
-    }
 
     //MARK: - Non-private APIs -
 
@@ -172,32 +105,35 @@ open class ObservingFacilityDetails: ObjectItem {
       }
     }
 
-    init(id: UUID = UUID(), lastUpdateTime: Date = Date(), name: String) async throws {
-        try await super.init(id: id, lastUpdateTime: lastUpdateTime, name: name)
+    init(id: UUID = UUID(), lastUpdateTime: Date = Date(), name: String = PolisConstants.unknownObject) throws {
+        try super.init(id: id, lastUpdateTime: lastUpdateTime, name: name, facilityID: id)
 
-        try await finaliseInitialisation()
+        finaliseInitialisation()
     }
 
-    init(identity: PolisIdentity, lastUpdateTime: Date = Date()) async throws {
-        try await super.init(id: identity.id, lastUpdateTime: lastUpdateTime, name: identity.name ?? PolisConstants.unknownObject)
+    init(identity: PolisIdentity, lastUpdateTime: Date = Date()) throws {
+        try super.init(id: identity.id, lastUpdateTime: lastUpdateTime, name: identity.name ?? PolisConstants.unknownObject)
 
-        try await finaliseInitialisation()
+        finaliseInitialisation()
     }
 
     //MARK: Private APIs
+    private var _originalFacilityDetails: PolisObservingFacilityDetails!
     private var _allArtifacts = [Artifact]()
 
-    private func finaliseInitialisation() async throws {
+    private func finaliseInitialisation() {
         self.representingStoredObjectType = .observingFacilityDetails
         self.localPersistencyStatus       = .inMemoryOnly
         self.remotePersistencyStatus      = .noRemoteRepresentation
 
-        self.localPath                    = await ObjectStore.currentObjectStore().fileResourceFinder().observingFacilityFile(observingFacilityID: id)
-        self.remoteReadPath               = try await ObjectStore.currentObjectStore().remoteResourceFinder().observingFacilityURL(observingFacilityID: id)
+        self.localPath                    = PersistentObject.polisFileResourceFinder.observingFacilityFile(observingFacilityID: id)
+        self.remoteReadPath               = PersistentObject.polisRemoteResourceFinder.observingFacilityURL(observingFacilityID: id)
 
         self.polisRegistrationTime       = Date()
         self.lifecycleStatus             = .active
         self.solarSystemBodyName         = placeInTheSolarSystem.rawValue
+
+        _originalFacilityDetails         = self.facilityDetails
     }
 
     private func loadReferencedItems() async throws {
@@ -291,4 +227,111 @@ public extension ObservingFacilityDetails {
         return nil
     }
 
+}
+
+
+//MARK: - Persisting -
+//TODO: Implement me!
+extension ObservingFacilityDetails {
+
+    public func canEdit() async -> Bool {
+        do    { try await ensureIKnowMyFacility() }
+        catch {
+            PolisLogger.shared.error("ObservingFacilityDetails:canEdit Could not ensure I know my facility!")
+            return false
+        }
+
+        return await facility.canEdit()
+    }
+
+    /*
+     public func saveChanges()                  async throws { }
+     public func revertToSaved()                async throws { }
+     public func delete()                       async throws { }
+     public func loadData()                     async throws { }
+
+     public func didChange()                    async -> Bool { false }
+
+     public func prepareToCloseTheObjectStore() async throws { }
+
+     */
+    public func saveChanges() async throws {
+        try await ensureIKnowMyFacility()
+        
+        // Make sure all non-nil leaf objects are saved. If they are changed, we will know this
+        for artifact in try await allArtifacts() {
+            try await artifact.saveChanges()
+        }
+        if earthFixBasedObservingFacility != nil { try await earthFixBasedObservingFacility!.saveChanges() }
+        //TODO: Load other types of facilities when they are implemented
+
+        // Now if I am changed, save my data
+        if await didChange() || (localPersistencyStatus == .inMemoryOnly) {
+            nc.post(name: AppSupportStatusChangeNotification.facilityDetailsWillSaveNotification, object: nil)
+
+            // Let the parent facility that we did change
+            facility.lastUpdateTime = Date.now
+
+            // Make sure my directory exist, and if not - create it
+            let facilityFolder = await store.fileResourceFinder().observingFacilityFolder(observingFacilityID: id)
+
+            if !(fm.fileExists(atPath: facilityFolder, isDirectory: &isDir) && (isDir.boolValue)) {
+                do    { try fm.createDirectory(atPath: facilityFolder, withIntermediateDirectories: true) }
+                catch {
+                    PolisLogger.shared.error("ObservingFacility:saveChanges - Cannot cannot create a facility directory at: \(facilityFolder)")
+                    throw ObservingFacilityError.cannotWritePolisFile
+                }
+            }
+
+            // Write data to disc
+            try await facilityDetails.flashUsing(store: store)
+
+            // Change my object status
+            localPersistencyStatus = .savedNotSynced
+
+            nc.post(name: AppSupportStatusChangeNotification.facilityDetailsDidSaveNotification, object: nil)
+        }
+    }
+
+    public func revertToSaved() async throws {
+        //TODO: Implement me!
+    }
+
+    public func delete() async throws {
+        //TODO: Implement me!
+    }
+
+    public func loadData() async throws {
+        nc.post(name: AppSupportStatusChangeNotification.facilityDetailsWillLoadNotification, object: self)
+
+        // If the Facility's folder does not exist. the Facility is newly created and in memory only. So skip the loading
+        // without throwing an exception.
+        let facilityFolder = await store.fileResourceFinder().observingFacilityFolder(observingFacilityID: id)
+        if !(fm.fileExists(atPath: facilityFolder, isDirectory: &isDir) && (isDir.boolValue)) { return }
+
+        // Now we assume the Facility folder exist, and it is a bad error if the Details file does not exist
+        if !fm.fileExists(atPath: localPath) {
+            PolisLogger.shared.error("ObservingFacility:loadData - No local Facility Details found at: \(localPath!)")
+            throw ObservingFacilityError.unavailableOrUnreadableLocalData
+        }
+
+        self.facilityDetails = try await PolisObservingFacilityDetails.loadFromLocalFileSystemUsing(store: store,
+                                                                                                    facilityID: item.identity.id,
+                                                                                                    objectType: .observingFacilityDetails) as! PolisObservingFacilityDetails
+
+        // Now load more details like Location, Artifacts, Media, etc.
+        try await loadReferencedItems()
+        localPersistencyStatus = .savedAndSynced
+
+        nc.post(name: AppSupportStatusChangeNotification.facilityDetailsDidLoadNotification, object: self)
+    }
+
+    public func didChange() async-> Bool { _originalFacilityDetails != self.facilityDetails }
+
+    private func ensureIKnowMyFacility() async throws {
+        if self.facility != nil                                                    { return }
+        guard let possibleFacility = await store.facilityWithId(id) else { throw ObjectStore.ObjectStoreError.objectWithIDNotFound }
+
+        self.facility = possibleFacility
+    }
 }

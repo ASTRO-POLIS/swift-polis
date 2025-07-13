@@ -26,12 +26,19 @@ public struct AppSupportStatusChangeNotification {
     public static let ObjectStoreWillCloseNotification  = Notification.Name("ObjectStoreWillClose")     // ✅ Object is the ObjectStore
     public static let ObjectStoreDidCloseNotification   = Notification.Name("ObjectStoreDidClose")      // ✅ Object is nil
 
-    // Facility Info
-    public static let facilityInfoWillSaveNotification      = Notification.Name("facilityInfoWillSave")  // ✅ Object is nil
-    public static let facilityInfoDidSaveNotification       = Notification.Name("facilityInfoDidSave")   // ✅ Object is the ObservingFacilityRep
-    public static let facilityInfoWillLoadNotification      = Notification.Name("facilityInfoWillLoad")  // ✅ Object nil
-    public static let facilityInfoDidLoadNotification       = Notification.Name("facilityInfoDidLoad")   // ✅ Object is the ObservingFacilityRep
+    // Facility
+    public static let facilityWillSaveNotification   = Notification.Name("facilityWillSave")    // ✅ Object is the Facility
+    public static let facilityDidSaveNotification    = Notification.Name("facilityDidSave")     // ✅ Object is the Facility
+    public static let facilityWillLoadNotification   = Notification.Name("facilityWillLoad")    // Object is the Facility
+    public static let facilityDidLoadNotification    = Notification.Name("facilityDidLoad")     // Object is the Facility
+    public static let facilityWillChangeNotification = Notification.Name("facilityWillChange")  // Object is the Facility
+    public static let facilityDidChangeNotification  = Notification.Name("facilityDidChange")   // Object is the Facility
 
+    // Facility Details
+    public static let facilityDetailsWillSaveNotification = Notification.Name("facilityDetailsWillSave")  // ✅ Object is the Facility Details
+    public static let facilityDetailsDidSaveNotification  = Notification.Name("facilityDetailsDidSave")   // ✅ Object is the Facility Details
+    public static let facilityDetailsWillLoadNotification = Notification.Name("facilityDetailsWillLoad")  // Object is the Facility Details
+    public static let facilityDetailsDidLoadNotification  = Notification.Name("facilityDetailsDidLoad")   // Object is the Facility Details
 }
 
 //public struct StatusChangeNotification {

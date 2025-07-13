@@ -8,6 +8,8 @@
 import Foundation
 import SoftwareEtudesUtilities
 
+//TODO: Extract method to delete and write a new file!!!
+
 //MARK: - PolisDirectory.ProviderDirectoryEntry -
 extension PolisDirectory.ProviderDirectoryEntry: StorableItem {
     static func loadFromLocalFileSystemUsing(store: ObjectStore) async throws -> AnyObject {
@@ -141,6 +143,14 @@ extension PolisObservingFacilityDirectory: StorableItem {
             throw ObjectStore.ObjectStoreError.cannotEncodePolisType
         }
 
+        do {
+            if fm.fileExists(atPath: path) { try fm.removeItem(atPath: path) }
+        }
+        catch {
+            PolisLogger.shared.error("PolisEarthFixedBaseObservingFacilityDetails:flashUsing - Cannot remove POLIS Artifact file to: \(path)")
+            throw ObjectStore.ObjectStoreError.fileIO
+        }
+
         if !fm.createFile(atPath: path, contents: data) {
             PolisLogger.shared.error("Cannot save POLIS Observing Facility Directory to: \(path)")
             throw ObjectStore.ObjectStoreError.cannotWriteFile
@@ -187,6 +197,15 @@ extension PolisObservingFacilityDetails: StorableItem {
         catch {
             PolisLogger.shared.error("PolisObservingFacilityDetails:flashUsing - Cannot encode POLIS Observing Facility Details")
             throw ObjectStore.ObjectStoreError.cannotEncodePolisType
+        }
+
+
+        do {
+            if fm.fileExists(atPath: path) { try fm.removeItem(atPath: path) }
+        }
+        catch {
+            PolisLogger.shared.error("PolisObservingFacilityDetails:flashUsing - Cannot remove POLIS Artifact file to: \(path)")
+            throw ObjectStore.ObjectStoreError.fileIO
         }
 
         if !fm.createFile(atPath: path, contents: data) {
@@ -290,12 +309,19 @@ extension PolisEarthFixedBaseObservingFacilityDetails: StorableItem {
             throw ObjectStore.ObjectStoreError.cannotEncodePolisType
         }
 
+        do {
+            if fm.fileExists(atPath: path) { try fm.removeItem(atPath: path) }
+        }
+        catch {
+            PolisLogger.shared.error("PolisEarthFixedBaseObservingFacilityDetails:flashUsing - Cannot remove POLIS Artifact file to: \(path)")
+            throw ObjectStore.ObjectStoreError.fileIO
+        }
+
         if !fm.createFile(atPath: path, contents: data) {
             PolisLogger.shared.error("PolisEarthFixedBaseObservingFacilityDetails:flashUsing - Cannot save POLIS Artifact file to: \(path)")
             throw ObjectStore.ObjectStoreError.cannotWriteFile
         }
     }
-
 }
 
 //MARK: File Private stuff

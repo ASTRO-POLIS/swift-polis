@@ -30,6 +30,8 @@ public actor ObjectStore {
         case fileIO                                     // e.g. create/remove folders and files
         case missingRequiredID
         case polisObjectOfTheTypeAlreadyExists
+        case objectCannotBeEdited
+        case objectWithIDNotFound
    }
 
 
@@ -132,12 +134,16 @@ public actor ObjectStore {
 
         // N. For each Facility Ref from the Facility Directory create a minimal Facility object and initiate its Loading
         for anEntry in _facilityDirectory.observingFacilityReferences {
-            let aFacility = try await ObservingFacility(facilityReference: anEntry, store: self)
+            let aFacility = try ObservingFacility(facilityReference: anEntry, store: self)
             _facilities.append(aFacility)
             try await aFacility.loadData()
         }
 
         nc.post(name: AppSupportStatusChangeNotification.ObjectStoreDidLoadNotification, object: self)
+    }
+
+    public func loadLocalStoreFromRemoteProvider(localPath: String) async throws {
+        //TODO: Implement me!
     }
 
     /// Removes unconditionally local data.
@@ -251,14 +257,15 @@ extension ObjectStore {
         gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
         placeInTheSolarSystem : PolisPlaceInTheSolarSystem                = .earth
     ) async throws -> ObservingFacility {
-        let facility = try await ObservingFacility(id: UUID(), name: "<unnamed>", store: self)
+        let facility = try ObservingFacility(id: UUID(), name: "<unnamed>", store: self)
 
         facility.gravitationalBodyRelationship = gravitationalBodyRelationship
         facility.placeInTheSolarSystem         = placeInTheSolarSystem
+        try await facility.startEditing()
 
         try await addOrUpdateObservingFacilityDirectoryEntry(facility)
-        try await facility.saveChanges()
         _facilities.append(facility)
+        try await facility.saveChanges()
 
         return facility
     }
@@ -267,7 +274,7 @@ extension ObjectStore {
     ///
     /// - Parameter id: the ID  of the Facility
     /// - Returns: if the Facility is found, it is returned, otherwise nil
-    public func facilityWithId(_ id: UUID) async throws  -> ObservingFacility? {
+    public func facilityWithId(_ id: UUID)  -> ObservingFacility? {
         for aFacility in _facilities {
             if aFacility.id == id { return aFacility }
         }
@@ -287,6 +294,9 @@ extension ObjectStore {
             ref.identity.startTime             = facility.identity.startTime
             ref.identity.endTime               = facility.identity.endTime
             ref.identity.polisRegistrationTime = facility.identity.polisRegistrationTime
+
+            _facilityDirectory.observingFacilityReferences.remove(at: index)
+            _facilityDirectory.observingFacilityReferences.append(ref)
         }
         else {
             let newRef = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: facility.identity,

@@ -17,7 +17,7 @@ public protocol PolisParty: Codable {
 }
 
 //MARK: - PolisCommunicationChannel -
-public struct PolisCommunicationChannel: Codable {
+public struct PolisCommunicationChannel: Codable, Equatable {
 
     /// Twitter user id, e.g. @AstroPolis. "@" is expected to be part of the id.
     public var twitterIDs: [String]?
@@ -50,7 +50,7 @@ public struct PolisCommunicationChannel: Codable {
 /// `PolisOwnershipType` is used to identify the ownership type of POLIS items (or devices) such as observing facilities, telescopes,
 /// CCD cameras, weather stations, etc. Different cases should be self-explanatory. The `private` type should be utilised by
 /// amateurs and hobbyists.
-public enum PolisOwnershipType: String, Codable {
+public enum PolisOwnershipType: String, Codable, Equatable {
     case university
     case research
     case commercial
@@ -211,7 +211,7 @@ public struct PolisPlace: Codable, Equatable, Identifiable {
 }
 
 //MARK: - PolisPerson -
-public struct PolisPerson: PolisParty {
+public struct PolisPerson: PolisParty, Equatable {
     public var name: String
     public var email: String
     public var communication: PolisCommunicationChannel?
@@ -228,7 +228,7 @@ public struct PolisPerson: PolisParty {
 }
 
 //MARK: - PolisOrganisation -
-public struct PolisOrganisation: PolisParty {
+public struct PolisOrganisation: PolisParty, Equatable {
     public var organisationType: PolisOwnershipType
     public var email: String
     public var name: String
