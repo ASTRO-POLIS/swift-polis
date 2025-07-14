@@ -78,10 +78,12 @@ final class ObjectStoreTests: XCTestCase {
         let newFacility                 = try await sut.createFixedEarthBasedFacility()
         newFacility.abbreviation = "TEST"
         
-        //        let newArtifact                 = try await newFacility.addArtifact(artifactType: .monument)
+        let newArtifact                 = try await newFacility.observingFacilityDetails.addArtifact(artifactType: .monument)
+        newArtifact.name                = "Test Monument"
+        try await newArtifact.saveChanges()
 //        let newEarthFacility            = try await newFacility.addEarthFixedBaseObservingFacilityDetails()
-//        let countAfterCreatingAFacility = await sut.facilities().count
-//        let countArtifacts              = try await newFacility.allArtifacts().count
+        let countAfterCreatingAFacility = await sut.facilities().count
+        let countArtifacts              = try await newFacility.observingFacilityDetails.allArtifacts().count
         try await newFacility.saveChanges()
 
         try await sut.removeExistingLocalStore()
@@ -90,9 +92,9 @@ final class ObjectStoreTests: XCTestCase {
         XCTAssertEqual(countBeforeCreatingAFacility, 0)
         XCTAssertNotNil(newFacility)
 //        XCTAssertNotNil(newEarthFacility)
-//        XCTAssertNotNil(newArtifact)
-//        XCTAssertEqual(countAfterCreatingAFacility, 1)
-//        XCTAssertEqual(countArtifacts, 1)
+        XCTAssertNotNil(newArtifact)
+        XCTAssertEqual(countAfterCreatingAFacility, 1)
+        XCTAssertEqual(countArtifacts, 1)
     }
 
     func test_ObjectStore_loadStoreWithFacilities_shouldSucceed() async throws {

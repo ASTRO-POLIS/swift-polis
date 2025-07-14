@@ -8,8 +8,6 @@
 import Foundation
 import SoftwareEtudesUtilities
 
-//TODO: Extract method to delete and write a new file!!!
-
 //MARK: - PolisDirectory.ProviderDirectoryEntry -
 extension PolisDirectory.ProviderDirectoryEntry: StorableItem {
     static func loadFromLocalFileSystemUsing(store: ObjectStore) async throws -> AnyObject {
@@ -43,14 +41,11 @@ extension PolisDirectory.ProviderDirectoryEntry: StorableItem {
 
         do    { data = try jsonEncoder.encode(newDirEntry) }
         catch {
-            PolisLogger.shared.error("Cannot encode POLIS Provider Main Configuration Entry")
+            PolisLogger.shared.error("PolisDirectory.ProviderDirectoryEntry:flashUsing - Cannot encode POLIS Provider Main Configuration Entry")
             throw ObjectStore.ObjectStoreError.cannotEncodePolisType
         }
 
-        if !fm.createFile(atPath: path, contents: data) {
-            PolisLogger.shared.error("Cannot save POLIS Provider Main Configuration Entry to: \(path)")
-            throw ObjectStore.ObjectStoreError.cannotWriteFile
-        }
+        try await saveFileAt(path:path, caller: "PolisDirectory.ProviderDirectoryEntry:flashUsing")
     }
 }
 
@@ -90,14 +85,11 @@ extension PolisDirectory: StorableItem {
 
         do    { data = try jsonEncoder.encode(dir) }
         catch {
-            PolisLogger.shared.error("Cannot encode POLIS Directory")
+            PolisLogger.shared.error("PolisDirectory:flashUsing - Cannot encode POLIS Directory")
             throw ObjectStore.ObjectStoreError.cannotEncodePolisType
         }
 
-        if !fm.createFile(atPath: path, contents: data) {
-            PolisLogger.shared.error("Cannot save POLIS Directory to: \(path)")
-            throw ObjectStore.ObjectStoreError.cannotWriteFile
-        }
+        try await saveFileAt(path:path, caller: "PolisDirectory:flashUsing")
 
         await store.setPolisProviderConfigurationEntry(store.polisProviderConfigurationEntry())
     }
@@ -139,22 +131,11 @@ extension PolisObservingFacilityDirectory: StorableItem {
 
         do    { data = try jsonEncoder.encode(dir) }
         catch {
-            PolisLogger.shared.error("Cannot encode POLIS Observing Facility Directory")
+            PolisLogger.shared.error("PolisObservingFacilityDirectory:flashUsing - Cannot encode POLIS Observing Facility Directory")
             throw ObjectStore.ObjectStoreError.cannotEncodePolisType
         }
 
-        do {
-            if fm.fileExists(atPath: path) { try fm.removeItem(atPath: path) }
-        }
-        catch {
-            PolisLogger.shared.error("PolisEarthFixedBaseObservingFacilityDetails:flashUsing - Cannot remove POLIS Artifact file to: \(path)")
-            throw ObjectStore.ObjectStoreError.fileIO
-        }
-
-        if !fm.createFile(atPath: path, contents: data) {
-            PolisLogger.shared.error("Cannot save POLIS Observing Facility Directory to: \(path)")
-            throw ObjectStore.ObjectStoreError.cannotWriteFile
-        }
+        try await saveFileAt(path:path, caller: "PolisObservingFacilityDirectory:flashUsing")
     }
 }
 
@@ -199,19 +180,7 @@ extension PolisObservingFacilityDetails: StorableItem {
             throw ObjectStore.ObjectStoreError.cannotEncodePolisType
         }
 
-
-        do {
-            if fm.fileExists(atPath: path) { try fm.removeItem(atPath: path) }
-        }
-        catch {
-            PolisLogger.shared.error("PolisObservingFacilityDetails:flashUsing - Cannot remove POLIS Artifact file to: \(path)")
-            throw ObjectStore.ObjectStoreError.fileIO
-        }
-
-        if !fm.createFile(atPath: path, contents: data) {
-            PolisLogger.shared.error("PolisObservingFacilityDetails:flashUsing- Cannot save POLIS Observing Facility Details to: \(path)")
-            throw ObjectStore.ObjectStoreError.cannotWriteFile
-        }
+        try await saveFileAt(path:path, caller: "PolisObservingFacilityDetails:flashUsing")
     }
 }
 
@@ -257,10 +226,7 @@ extension PolisArtifact: StorableItem {
             throw ObjectStore.ObjectStoreError.cannotEncodePolisType
         }
 
-        if !fm.createFile(atPath: path, contents: data) {
-            PolisLogger.shared.error("PolisArtifact:flashUsing - Cannot save POLIS Artifact file to: \(path)")
-            throw ObjectStore.ObjectStoreError.cannotWriteFile
-        }
+        try await saveFileAt(path:path, caller: "PolisArtifact:flashUsing")
     }
 }
 
@@ -309,18 +275,7 @@ extension PolisEarthFixedBaseObservingFacilityDetails: StorableItem {
             throw ObjectStore.ObjectStoreError.cannotEncodePolisType
         }
 
-        do {
-            if fm.fileExists(atPath: path) { try fm.removeItem(atPath: path) }
-        }
-        catch {
-            PolisLogger.shared.error("PolisEarthFixedBaseObservingFacilityDetails:flashUsing - Cannot remove POLIS Artifact file to: \(path)")
-            throw ObjectStore.ObjectStoreError.fileIO
-        }
-
-        if !fm.createFile(atPath: path, contents: data) {
-            PolisLogger.shared.error("PolisEarthFixedBaseObservingFacilityDetails:flashUsing - Cannot save POLIS Artifact file to: \(path)")
-            throw ObjectStore.ObjectStoreError.cannotWriteFile
-        }
+        try await saveFileAt(path:path, caller: "PolisEarthFixedBaseObservingFacilityDetails:flashUsing")
     }
 }
 
@@ -329,3 +284,19 @@ fileprivate let jsonEncoder = PrettyJSONEncoder()
 fileprivate let jsonDecoder = PrettyJSONDecoder()
 fileprivate let fm = FileManager.default
 fileprivate var data: Data?
+
+fileprivate func saveFileAt(path: String, caller: String) async throws {
+    do {
+        if fm.fileExists(atPath: path) { try fm.removeItem(atPath: path) }
+    }
+    catch {
+        PolisLogger.shared.error("\(caller) - Cannot remove POLIS object file to: \(path)")
+        throw ObjectStore.ObjectStoreError.fileIO
+    }
+
+    if !fm.createFile(atPath: path, contents: data) {
+        PolisLogger.shared.error("\(caller) - Cannot save POLIS opject file to: \(path)")
+        throw ObjectStore.ObjectStoreError.cannotWriteFile
+    }
+
+}
