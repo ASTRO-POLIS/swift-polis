@@ -249,15 +249,16 @@ extension ObjectStore {
     public func facilities() -> [ObservingFacility] { _facilities }
 
     /// Creates the Facility Reference and the Facility object
-    public func createFixedEarthBasedFacility() async throws  -> ObservingFacility {
-        try await createFacility(gravitationalBodyRelationship: .surfaceFixed, placeInTheSolarSystem: .earth)
+    public func createFixedEarthBasedFacility(name: String? = nil) async throws  -> ObservingFacility {
+        try await createFacility(name: name,gravitationalBodyRelationship: .surfaceFixed, placeInTheSolarSystem: .earth)
     }
 
     public func createFacility(
+        name: String?                                                     = PolisConstants.unknownObject,
         gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
         placeInTheSolarSystem : PolisPlaceInTheSolarSystem                = .earth
     ) async throws -> ObservingFacility {
-        let facility = try ObservingFacility(id: UUID(), name: "<unnamed>", store: self)
+        let facility = try ObservingFacility(id: UUID(), name: name, store: self)
 
         facility.gravitationalBodyRelationship = gravitationalBodyRelationship
         facility.placeInTheSolarSystem         = placeInTheSolarSystem

@@ -107,7 +107,7 @@ public class ObservingFacility: Persisting {
         self.id                            = facilityReference.identity.id
         self.externalReferences            = facilityReference.identity.externalReferences
         self.lastUpdateTime                = facilityReference.identity.lastUpdateTime
-        self.name                          = facilityReference.identity.name ?? ""
+        self.name                          = facilityReference.identity.name ?? PolisConstants.unknownObject
         self.localName                     = facilityReference.identity.localName
         self.abbreviation                  = facilityReference.identity.abbreviation
         self.shortDescription              = facilityReference.identity.shortDescription

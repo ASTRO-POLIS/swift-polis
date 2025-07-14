@@ -75,7 +75,7 @@ final class ObjectStoreTests: XCTestCase {
         let countBeforeCreatingAFacility = await sut.facilities().count
 
         try await sut.createLocalStore(providerConfiguration: config)
-        let newFacility                 = try await sut.createFixedEarthBasedFacility()
+        let newFacility                 = try await sut.createFixedEarthBasedFacility(name: "Test Facility")
         newFacility.abbreviation = "TEST"
         
         let newArtifact                 = try await newFacility.observingFacilityDetails.addArtifact(artifactType: .monument)
