@@ -81,17 +81,19 @@ final class ObjectStoreTests: XCTestCase {
         let newArtifact                 = try await newFacility.observingFacilityDetails.addArtifact(artifactType: .monument)
         newArtifact.name                = "Test Monument"
         try await newArtifact.saveChanges()
-//        let newEarthFacility            = try await newFacility.addEarthFixedBaseObservingFacilityDetails()
+        let newEarthFacility            = try await newFacility.observingFacilityDetails.addEarthFixedBaseObservingFacilityDetails()
         let countAfterCreatingAFacility = await sut.facilities().count
         let countArtifacts              = try await newFacility.observingFacilityDetails.allArtifacts().count
+        newEarthFacility.accessRestrictions  = "Test Access Restrictions"
         try await newFacility.saveChanges()
+        try await newEarthFacility.saveChanges()
 
         try await sut.removeExistingLocalStore()
-//
+
         // Then
         XCTAssertEqual(countBeforeCreatingAFacility, 0)
         XCTAssertNotNil(newFacility)
-//        XCTAssertNotNil(newEarthFacility)
+        XCTAssertNotNil(newEarthFacility)
         XCTAssertNotNil(newArtifact)
         XCTAssertEqual(countAfterCreatingAFacility, 1)
         XCTAssertEqual(countArtifacts, 1)

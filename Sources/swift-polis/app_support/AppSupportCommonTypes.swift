@@ -39,6 +39,16 @@ public struct AppSupportStatusChangeNotification {
     public static let facilityDetailsDidSaveNotification  = Notification.Name("facilityDetailsDidSave")   // ✅ Object is the Facility Details
     public static let facilityDetailsWillLoadNotification = Notification.Name("facilityDetailsWillLoad")  // Object is the Facility Details
     public static let facilityDetailsDidLoadNotification  = Notification.Name("facilityDetailsDidLoad")   // Object is the Facility Details
+
+    // Earth Based Facility Details
+    public static let earthBasedFacilityWillSaveNotification = Notification.Name("earthBasedFacilityWillSave") // ✅ Object is the Facility
+    public static let earthBasedFacilityDidSaveNotification  = Notification.Name("earthBasedFacilityDidSave")  // ✅ Object is the Facility
+
+    // Artifacts
+    public static let artifactWillSaveNotification       = Notification.Name("artifactWillSave")         // ✅ Object is the ArtifactRep
+    public static let artifactDidSaveNotification        = Notification.Name("artifactDidSave")          // ✅ Object is the ArtifactRep
+    public static let artifactWillChangeNotification     = Notification.Name("artifactWillChange")       // Object is the ArtifactRep
+    public static let artifactDidChangeNotification      = Notification.Name("artifactDidChange")        // Object is the ArtifactRep
 }
 
 //public struct StatusChangeNotification {
@@ -65,11 +75,6 @@ public struct AppSupportStatusChangeNotification {
 //
 //    public static let facilityDidChangeNotification         = Notification.Name("facilityInfoDidChange")     // Object is the ObservingFacilityRep
 //
-//    // Artifacts
-//    public static let artifactWillCreateNotification       = Notification.Name("artifactWillCreate")         // ✅ Object is nil
-//    public static let artifactDidCreateNotification        = Notification.Name("artifactDidCreate")          // ✅ Object is the ArtifactRep
-//    public static let artifactWillChangeNotification       = Notification.Name("artifactWillChange")         // Object is the ArtifactRep
-//    public static let artifactDidChangeNotification        = Notification.Name("artifactDidChange")          // Object is the ArtifactRep
 //
 //}
 

@@ -26,7 +26,11 @@ open class Artifact: IdentifiableObject {
     public override func startEditing()        async throws { } //TODO: Implement me!
     public override func finishEditing()       async throws { } //TODO: Implement me!
 
-    public func saveChanges() async throws { try await artifact.flashUsing(store: store) }
+    public func saveChanges() async throws {
+        nc.post(name: AppSupportStatusChangeNotification.artifactWillSaveNotification, object: self)
+        try await artifact.flashUsing(store: store)
+        nc.post(name: AppSupportStatusChangeNotification.artifactDidSaveNotification, object: self)
+    }
 
     public func revertToSaved()                async throws { } //TODO: Implement me!
     public func delete()                       async throws { } //TODO: Implement me!

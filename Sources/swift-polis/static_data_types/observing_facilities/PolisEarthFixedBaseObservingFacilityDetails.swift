@@ -33,6 +33,7 @@ public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable
                 lastUpdateTime: Date                                  = Date.now,
                 facilityID: UUID,
                 visitingHoursID: UUID?                                = nil,
+                accessRestrictions: String?                           = nil,
                 averageClearNightsPerYear: UInt?                      = nil,
                 averageSeeingConditions: PolisPropertyValue?          = nil,
                 averageSkyQuality: PolisPropertyValue?                = nil,
@@ -44,6 +45,7 @@ public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable
         self.lastUpdateTime            = lastUpdateTime
         self.facilityID                = facilityID
         self.visitingHoursID           = visitingHoursID
+        self.accessRestrictions        = accessRestrictions
         self.averageClearNightsPerYear = averageClearNightsPerYear
         self.averageSeeingConditions   = averageSeeingConditions
         self.averageSkyQuality         = averageSkyQuality

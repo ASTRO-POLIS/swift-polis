@@ -31,7 +31,12 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
     public override func startEditing()        async throws { }
     public override func finishEditing()       async throws { }
 
-    public func saveChanges() async throws { try await earthFixedBaseObservingFacilityDetails.flashUsing(store: store) }
+    public func saveChanges() async throws {
+        nc.post(name: AppSupportStatusChangeNotification.earthBasedFacilityWillSaveNotification, object: self)
+        try await earthFixedBaseObservingFacilityDetails.flashUsing(store: store)
+        nc.post(name: AppSupportStatusChangeNotification.earthBasedFacilityDidSaveNotification, object: self)
+    }
+
     public func revertToSaved()                async throws { }
     public func delete()                       async throws { }
     public func loadData()                     async throws { }
@@ -52,6 +57,7 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
                                                         lastUpdateTime: lastUpdateTime,
                                                         facilityID: facilityID,
                                                         visitingHoursID: visitingHoursID,
+                                                        accessRestrictions: accessRestrictions,
                                                         averageClearNightsPerYear: averageClearNightsPerYear,
                                                         averageSeeingConditions: averageSeeingConditions,
                                                         averageSkyQuality: averageSkyQuality,
@@ -99,7 +105,7 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
         self.visitingHoursID           = visitingHoursID
         self.placeID                   = placeID
 
-        try await super.init(id: id,
+        try super.init(id: id,
                              lastUpdateTime: lastUpdateTime,
                              facilityID: facilityID,
                              representingStoredObjectType: .observingFacilityDetails)
