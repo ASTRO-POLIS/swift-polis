@@ -86,39 +86,41 @@ public class ObservingFacility: Persisting {
          gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
          placeInTheSolarSystem: PolisPlaceInTheSolarSystem                 = .earth,
          store: ObjectStore) throws {
-        self.id                            = id
-        self.externalReferences            = externalReferences
-        self.lastUpdateTime                = lastUpdateTime
-        self.name                          = name
-        self.localName                     = localName
-        self.abbreviation                  = abbreviation
-        self.shortDescription              = shortDescription
-        self.startTime                     = startTime
-        self.endTime                       = endTime
-        self.polisRegistrationTime         = polisRegistrationTime
-        self.gravitationalBodyRelationship = gravitationalBodyRelationship
-        self.placeInTheSolarSystem         = placeInTheSolarSystem
-        self.store                         = store
+        self.id                                = id
+        self.externalReferences                = externalReferences
+        self.lastUpdateTime                    = lastUpdateTime
+        self.name                              = name
+        self.localName                         = localName
+        self.abbreviation                      = abbreviation
+        self.shortDescription                  = shortDescription
+        self.startTime                         = startTime
+        self.endTime                           = endTime
+        self.polisRegistrationTime             = polisRegistrationTime
+        self.gravitationalBodyRelationship     = gravitationalBodyRelationship
+        self.placeInTheSolarSystem             = placeInTheSolarSystem
+        self.store                             = store
 
-        try self.observingFacilityDetails = ObservingFacilityDetails(id: id, lastUpdateTime: lastUpdateTime, name: self.name!)
+        try self.observingFacilityDetails      = ObservingFacilityDetails(id: id, lastUpdateTime: lastUpdateTime, name: self.name!)
+        self.observingFacilityDetails.facility = self
     }
 
     init(facilityReference: PolisObservingFacilityDirectory.ObservingFacilityReference, store: ObjectStore) throws {
-        self.id                            = facilityReference.identity.id
-        self.externalReferences            = facilityReference.identity.externalReferences
-        self.lastUpdateTime                = facilityReference.identity.lastUpdateTime
-        self.name                          = facilityReference.identity.name ?? PolisConstants.unknownObject
-        self.localName                     = facilityReference.identity.localName
-        self.abbreviation                  = facilityReference.identity.abbreviation
-        self.shortDescription              = facilityReference.identity.shortDescription
-        self.startTime                     = facilityReference.identity.startTime
-        self.endTime                       = facilityReference.identity.endTime
-        self.polisRegistrationTime         = facilityReference.identity.polisRegistrationTime
-        self.gravitationalBodyRelationship = facilityReference.gravitationalBodyRelationship
-        self.placeInTheSolarSystem         = facilityReference.placeInTheSolarSystem
-        self.store                         = store
+        self.id                                = facilityReference.identity.id
+        self.externalReferences                = facilityReference.identity.externalReferences
+        self.lastUpdateTime                    = facilityReference.identity.lastUpdateTime
+        self.name                              = facilityReference.identity.name ?? PolisConstants.unknownObject
+        self.localName                         = facilityReference.identity.localName
+        self.abbreviation                      = facilityReference.identity.abbreviation
+        self.shortDescription                  = facilityReference.identity.shortDescription
+        self.startTime                         = facilityReference.identity.startTime
+        self.endTime                           = facilityReference.identity.endTime
+        self.polisRegistrationTime             = facilityReference.identity.polisRegistrationTime
+        self.gravitationalBodyRelationship     = facilityReference.gravitationalBodyRelationship
+        self.placeInTheSolarSystem             = facilityReference.placeInTheSolarSystem
+        self.store                             = store
 
-        try self.observingFacilityDetails = ObservingFacilityDetails(id: id, lastUpdateTime: lastUpdateTime, name: self.name!)
+        try self.observingFacilityDetails      = ObservingFacilityDetails(id: id, lastUpdateTime: lastUpdateTime, name: self.name!)
+        self.observingFacilityDetails.facility = self
     }
 
     //MARK: Private APIs -
