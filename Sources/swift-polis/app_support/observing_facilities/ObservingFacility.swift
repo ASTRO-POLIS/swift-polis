@@ -161,7 +161,15 @@ extension ObservingFacility {
 
     public func revertToSaved()                async throws { } //TODO: Implement me!
     public func delete()                       async throws { } //TODO: Implement me!
-    public func loadData()                     async throws { } //TODO: Implement me!
+
+    public func loadData() async throws {
+        nc.post(name: AppSupportStatusChangeNotification.facilityWillLoadNotification, object: self)
+
+        Task {
+            try await observingFacilityDetails.loadData()
+        }
+        // Note: if details are loaded successfully, they will send the FacilityDidChange notification!
+    }
 
     public func didChange() async -> Bool {
         guard let referenceFacility = await store.facilityDirectory().facilityReferenceWith(id: self.id )

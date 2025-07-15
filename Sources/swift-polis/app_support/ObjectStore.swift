@@ -170,9 +170,6 @@ public actor ObjectStore {
     public func close() async throws {
         nc.post(name: AppSupportStatusChangeNotification.ObjectStoreWillCloseNotification, object: self)
 
-        _isConfigured                    = false
-        _fileResourceFinder              = nil
-        _remoteResourceFinder            = nil
         _localConfiguration              = nil
         _polisProviderConfigurationEntry = nil
         _polisProviderDirectory          = nil

@@ -324,6 +324,7 @@ extension ObservingFacilityDetails {
         localPersistencyStatus = .savedAndSynced
 
         nc.post(name: AppSupportStatusChangeNotification.facilityDetailsDidLoadNotification, object: self)
+        nc.post(name: AppSupportStatusChangeNotification.facilityDidChangeNotification, object: facility)
     }
 
     public func didChange() async-> Bool { _originalFacilityDetails != self.facilityDetails }
