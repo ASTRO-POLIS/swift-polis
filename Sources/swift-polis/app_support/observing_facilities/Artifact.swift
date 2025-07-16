@@ -77,7 +77,7 @@ open class Artifact: IdentifiableObject {
         self.mediaID               = mediaID
         self.website               = website
 
-        try await super.init(id: identity.id,
+        try super.init(id: identity.id,
                              lastUpdateTime: identity.lastUpdateTime,
                              name: identity.name ?? "<unnamed>",
                              facilityID : facilityID,
@@ -97,7 +97,7 @@ open class Artifact: IdentifiableObject {
         self.artifactType          = storedArtifact.artifactType
         self.facilityID            = storedArtifact.facilityID
 
-        try await super.init(id: storedArtifact.identity.id,
+        try super.init(id: storedArtifact.identity.id,
                              lastUpdateTime: storedArtifact.identity.lastUpdateTime,
                              name: storedArtifact.identity.name ?? "<unnamed>",
                              facilityID : storedArtifact.facilityID,

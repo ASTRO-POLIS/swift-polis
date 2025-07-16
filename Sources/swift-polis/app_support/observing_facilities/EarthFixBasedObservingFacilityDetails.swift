@@ -26,25 +26,7 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
 
     public var place: Place?
 
-    //MARK: - PolisPersisting implementation -
-    public func canEdit()                      async -> Bool { false } // Better be on the safe side
-    public override func startEditing()        async throws { }
-    public override func finishEditing()       async throws { }
-
-    public func saveChanges() async throws {
-        nc.post(name: AppSupportStatusChangeNotification.earthBasedFacilityWillSaveNotification, object: self)
-        try await earthFixedBaseObservingFacilityDetails.flashUsing(store: store)
-        nc.post(name: AppSupportStatusChangeNotification.earthBasedFacilityDidSaveNotification, object: self)
-    }
-
-    public func revertToSaved()                async throws { }
-    public func delete()                       async throws { }
-    public func loadData()                     async throws { }
-
-    public func didChange()                    async -> Bool { false }
-
-    public func prepareToCloseTheObjectStore() async throws { }
-
+    public var facility: ObservingFacility!
 
     //MARK: Non-private APIs
     var facilityID: UUID
@@ -91,7 +73,7 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
          traditionalLandOwners: String?                        = nil,
          dominantWindDirection: PolisDirection.RoughDirection? = nil,
          surfaceSize: PolisPropertyValue?                      = nil,
-         facilityID: UUID,
+         facility: ObservingFacility,
          visitingHoursID: UUID?                                = nil,
          placeID: UUID?                                        = nil) async throws {
         self.accessRestrictions        = accessRestrictions
@@ -101,14 +83,17 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
         self.traditionalLandOwners     = traditionalLandOwners
         self.dominantWindDirection     = dominantWindDirection
         self.surfaceSize               = surfaceSize
-        self.facilityID                = facilityID
+        self.facility                  = facility
         self.visitingHoursID           = visitingHoursID
         self.placeID                   = placeID
+
+        facilityID                    = facility.id
 
         try super.init(id: id,
                              lastUpdateTime: lastUpdateTime,
                              facilityID: facilityID,
                              representingStoredObjectType: .observingFacilityDetails)
+        finaliseInitialisation()
     }
 
     init(earthFixedBaseObservingFacilityDetails: PolisEarthFixedBaseObservingFacilityDetails) async throws {
@@ -123,12 +108,65 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
         self.visitingHoursID           = earthFixedBaseObservingFacilityDetails.visitingHoursID
         self.placeID                   = earthFixedBaseObservingFacilityDetails.placeID
 
-        try await super.init(id: earthFixedBaseObservingFacilityDetails.id,
+        try super.init(id: earthFixedBaseObservingFacilityDetails.id,
                              lastUpdateTime: earthFixedBaseObservingFacilityDetails.lastUpdateTime,
                              facilityID: earthFixedBaseObservingFacilityDetails.facilityID,
                              representingStoredObjectType: .observingFacilityDetails)
 
         self.earthFixedBaseObservingFacilityDetails = earthFixedBaseObservingFacilityDetails
+        finaliseInitialisation()
+    }
+
+    //MARK: - Private APIs -
+    private var _originalEarthFixedBaseObservingFacilityDetails: PolisEarthFixedBaseObservingFacilityDetails!
+
+    private func finaliseInitialisation() {
+        localPersistencyStatus = .inMemoryOnly
+        _originalEarthFixedBaseObservingFacilityDetails = earthFixedBaseObservingFacilityDetails
+    }
+}
+
+//MARK: - PolisPersisting implementation -
+extension EarthFixedBaseObservingFacilityDetails {
+    public func canEdit() async -> Bool {
+        (localPersistencyStatus == .inMemoryOnly) || (_originalEarthFixedBaseObservingFacilityDetails != earthFixedBaseObservingFacilityDetails)
+    }
+
+//    public override func startEditing()        async throws { }
+//    public override func finishEditing()       async throws { }
+
+    public func saveChanges() async throws {
+        guard await canEdit() else { return }
+
+        nc.post(name: AppSupportStatusChangeNotification.earthBasedFacilityWillSaveNotification, object: self)
+        try await earthFixedBaseObservingFacilityDetails.flashUsing(store: store)
+        nc.post(name: AppSupportStatusChangeNotification.earthBasedFacilityDidSaveNotification, object: self)
+    }
+
+    public func revertToSaved()                async throws { }
+    public func delete()                       async throws { }
+
+    public func loadData() async throws {
+        nc.post(name: AppSupportStatusChangeNotification.earthBasedFacilityWillLoadNotification, object: self)
+
+        self.earthFixedBaseObservingFacilityDetails = try await PolisEarthFixedBaseObservingFacilityDetails.loadFromLocalFileSystemUsing(store: store,
+                                                                                                    facilityID: facilityID,
+                                                                                                    objectType: .observingFacilityDetails) as! PolisEarthFixedBaseObservingFacilityDetails
+
+        //TODO: Load referenced objects!
+        nc.post(name: AppSupportStatusChangeNotification.earthBasedFacilityDidLoadNotification, object: self)
+        nc.post(name: AppSupportStatusChangeNotification.facilityDidChangeNotification, object: facility)
+    }
+
+    public func didChange()                    async -> Bool { false }
+
+    public func prepareToCloseTheObjectStore() async throws { }
+
+    private func ensureIKnowMyFacility() async throws {
+        if self.facility != nil                                          { return }
+        guard let possibleFacility = await store.facilityWithId(id) else { throw ObjectStore.ObjectStoreError.objectWithIDNotFound }
+
+        self.facility = possibleFacility
     }
 
 }

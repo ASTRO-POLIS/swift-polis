@@ -139,11 +139,17 @@ public actor ObjectStore {
             try await aFacility.loadData()
         }
 
+        // N. Finally, configure related classes
+        configureRelatedTypesAfterStoreInitialisation()
+
         nc.post(name: AppSupportStatusChangeNotification.ObjectStoreDidLoadNotification, object: self)
     }
 
     public func loadLocalStoreFromRemoteProvider(localPath: String) async throws {
         //TODO: Implement me!
+
+        // N. Finally, configure related classes
+        configureRelatedTypesAfterStoreInitialisation()
     }
 
     /// Removes unconditionally local data.

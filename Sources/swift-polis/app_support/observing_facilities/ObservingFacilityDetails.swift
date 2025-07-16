@@ -136,23 +136,7 @@ open class ObservingFacilityDetails: ObjectItem {
         _originalFacilityDetails         = self.facilityDetails
     }
 
-    private func loadReferencedItems() async throws {
-        // Load artifacts. The call below has the side-effect to load them.
-        _ = try await allArtifacts()
 
-        // Load EarthFixedBaseObservingFacilityDetails
-        if fixedSurfaceEarthBaseDetailsID != nil {
-            let polisObject = try await PolisEarthFixedBaseObservingFacilityDetails.loadFromLocalFileSystemUsing(store: store,
-                                                                                                                 facilityID: item.identity.id,
-                                                                                                                 objectID: fixedSurfaceEarthBaseDetailsID) as! PolisEarthFixedBaseObservingFacilityDetails
-            earthFixBasedObservingFacility = try await EarthFixedBaseObservingFacilityDetails(earthFixedBaseObservingFacilityDetails: polisObject)
-        }
-        //TODO: Implement me!
-    }
-
-    private func saveReferencedItems() async throws {
-        //TODO: Implement me!
-    }
 }
 
 //MARK: Working with EarthFixedBaseObservingFacilityDetails
@@ -164,7 +148,7 @@ public extension ObservingFacilityDetails {
             throw ObjectStore.ObjectStoreError.polisObjectOfTheTypeAlreadyExists
         }
 
-        let result = try await EarthFixedBaseObservingFacilityDetails(facilityID: item.identity.id)
+        let result = try await EarthFixedBaseObservingFacilityDetails(facility: facility)
 
         fixedSurfaceEarthBaseDetailsID = result.id
         earthFixBasedObservingFacility = result
@@ -244,17 +228,6 @@ extension ObservingFacilityDetails {
         return await facility.canEdit()
     }
 
-    /*
-     public func saveChanges()                  async throws { }
-     public func revertToSaved()                async throws { }
-     public func delete()                       async throws { }
-     public func loadData()                     async throws { }
-
-     public func didChange()                    async -> Bool { false }
-
-     public func prepareToCloseTheObjectStore() async throws { }
-
-     */
     public func saveChanges() async throws {
         try await ensureIKnowMyFacility()
         
@@ -289,6 +262,8 @@ extension ObservingFacilityDetails {
             // Change my object status
             localPersistencyStatus = .savedNotSynced
 
+            //TODO: Save Referenced Items!
+            
             nc.post(name: AppSupportStatusChangeNotification.facilityDetailsDidSaveNotification, object: nil)
         }
     }
@@ -330,9 +305,28 @@ extension ObservingFacilityDetails {
     public func didChange() async-> Bool { _originalFacilityDetails != self.facilityDetails }
 
     private func ensureIKnowMyFacility() async throws {
-        if self.facility != nil                                                    { return }
+        if self.facility != nil                                          { return }
         guard let possibleFacility = await store.facilityWithId(id) else { throw ObjectStore.ObjectStoreError.objectWithIDNotFound }
 
         self.facility = possibleFacility
     }
+
+    private func loadReferencedItems() async throws {
+        // Load artifacts. The call below has the side-effect to load them.
+        _ = try await allArtifacts()
+
+        // Load EarthFixedBaseObservingFacilityDetails
+        if fixedSurfaceEarthBaseDetailsID != nil {
+            let polisObject = try await PolisEarthFixedBaseObservingFacilityDetails.loadFromLocalFileSystemUsing(store: store,
+                                                                                                                 facilityID: item.identity.id,
+                                                                                                                 objectID: fixedSurfaceEarthBaseDetailsID) as! PolisEarthFixedBaseObservingFacilityDetails
+            earthFixBasedObservingFacility = try await EarthFixedBaseObservingFacilityDetails(earthFixedBaseObservingFacilityDetails: polisObject)
+        }
+        //TODO: Implement me!
+    }
+
+    private func saveReferencedItems() async throws {
+        //TODO: Implement me!
+    }
+
 }

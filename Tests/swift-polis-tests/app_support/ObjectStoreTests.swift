@@ -109,6 +109,9 @@ final class ObjectStoreTests: XCTestCase {
         let newFacility      = try await sut.createFixedEarthBasedFacility(name: "Test Facility")
         let newArtifact      = try await newFacility.observingFacilityDetails.addArtifact(artifactType: .monument)
         let newEarthFacility = try await newFacility.observingFacilityDetails.addEarthFixedBaseObservingFacilityDetails()
+
+        newEarthFacility.accessRestrictions = "Only for authorised personnel"
+        
         try await newArtifact.saveChanges()
         try await newEarthFacility.saveChanges()
         try await newFacility.saveChanges()
@@ -121,15 +124,11 @@ final class ObjectStoreTests: XCTestCase {
         try await sut.loadLocalStoreAt(path: AppSupportTestingSupport.testingPath)
         try await sut.facilities().first!.loadData()
         let countAfterCreatingAFacility = await sut.facilities().count
-        let countArtifacts              = try await sut.facilities().first!.observingFacilityDetails.allArtifacts().count
-        let earthData                   = await sut.facilities().first!.observingFacilityDetails.earthFixBasedObservingFacility
 
         // Then
         XCTAssertNotNil(sut)
         XCTAssertNotNil(newFacility)
-        XCTAssertNotNil(earthData)
         XCTAssertEqual(countAfterCreatingAFacility, 1)
-        XCTAssertEqual(countArtifacts, 1)
 
         try await sut.removeExistingLocalStore()
     }

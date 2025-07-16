@@ -43,6 +43,8 @@ public struct AppSupportStatusChangeNotification {
     // Earth Based Facility Details
     public static let earthBasedFacilityWillSaveNotification = Notification.Name("earthBasedFacilityWillSave") // ✅ Object is the Facility
     public static let earthBasedFacilityDidSaveNotification  = Notification.Name("earthBasedFacilityDidSave")  // ✅ Object is the Facility
+    public static let earthBasedFacilityWillLoadNotification = Notification.Name("earthBasedFacilityWillLoad") // ✅ Object is the Facility
+    public static let earthBasedFacilityDidLoadNotification  = Notification.Name("earthBasedFacilityDidLoad")  // ✅ Object is the Facility
 
     // Artifacts
     public static let artifactWillSaveNotification       = Notification.Name("artifactWillSave")         // ✅ Object is the ArtifactRep
