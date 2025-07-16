@@ -112,7 +112,11 @@ public actor ObjectStore {
 
         nc.post(name: AppSupportStatusChangeNotification.ObjectStoreWillLoadNotification, object: self)
 
-        // 1. Load store configuration
+
+        // N. Finally, configure related classes
+        configureRelatedTypesAfterStoreInitialisation()
+
+        // N. Load store configuration
         try loadLocalConfiguration()
         if !localStoreExists() {
             PolisLogger.shared.error("ObjectStore:loadLocalStore - Local store does not exist or misconfigured")
@@ -138,9 +142,6 @@ public actor ObjectStore {
             _facilities.append(aFacility)
             try await aFacility.loadData()
         }
-
-        // N. Finally, configure related classes
-        configureRelatedTypesAfterStoreInitialisation()
 
         nc.post(name: AppSupportStatusChangeNotification.ObjectStoreDidLoadNotification, object: self)
     }

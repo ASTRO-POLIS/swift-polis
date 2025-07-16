@@ -171,7 +171,7 @@ public extension ObservingFacilityDetails {
                 for artifactID in artifactIDs {
                     if artifactWithID(artifactID) == nil {
                         let pA   = try await PolisArtifact.loadFromLocalFileSystemUsing(store: store, facilityID: item.identity.id, objectID: artifactID)
-                        let newA = try await Artifact(storedArtifact: pA as! PolisArtifact)
+                        let newA = try Artifact(storedArtifact: pA as! PolisArtifact, facility: facility)
                         newArtifacts.append(newA)
                     }
                 }
@@ -184,11 +184,11 @@ public extension ObservingFacilityDetails {
 
     func addArtifact(artifactType: PolisArtifact.ArtifactType, visitingOpportunities: String? = nil, mediaID: UUID? = nil) async throws -> Artifact {
         let artifactIdentity = PolisIdentity(id: UUID())
-        let artifact         = try await Artifact(identity: artifactIdentity,
-                                                  facilityID: self.id,
-                                                  artifactType: artifactType,
-                                                  visitingOpportunities: visitingOpportunities,
-                                                  mediaID: mediaID)
+        let artifact         = try Artifact(identity: artifactIdentity,
+                                            facility: facility,
+                                            artifactType: artifactType,
+                                            visitingOpportunities: visitingOpportunities,
+                                            mediaID: mediaID)
         try await artifact.saveChanges()
 
         _allArtifacts.append(artifact)
@@ -263,7 +263,7 @@ extension ObservingFacilityDetails {
             localPersistencyStatus = .savedNotSynced
 
             //TODO: Save Referenced Items!
-            
+
             nc.post(name: AppSupportStatusChangeNotification.facilityDetailsDidSaveNotification, object: nil)
         }
     }
@@ -315,14 +315,15 @@ extension ObservingFacilityDetails {
         // Load artifacts. The call below has the side-effect to load them.
         _ = try await allArtifacts()
 
-        // Load EarthFixedBaseObservingFacilityDetails
-        if fixedSurfaceEarthBaseDetailsID != nil {
-            let polisObject = try await PolisEarthFixedBaseObservingFacilityDetails.loadFromLocalFileSystemUsing(store: store,
-                                                                                                                 facilityID: item.identity.id,
-                                                                                                                 objectID: fixedSurfaceEarthBaseDetailsID) as! PolisEarthFixedBaseObservingFacilityDetails
-            earthFixBasedObservingFacility = try await EarthFixedBaseObservingFacilityDetails(earthFixedBaseObservingFacilityDetails: polisObject)
+        Task {
+            // Load EarthFixedBaseObservingFacilityDetails
+            if fixedSurfaceEarthBaseDetailsID != nil {
+                let polisObject = try await PolisEarthFixedBaseObservingFacilityDetails.loadFromLocalFileSystemUsing(store: store,
+                                                                                                                     facilityID: item.identity.id,
+                                                                                                                     objectID: fixedSurfaceEarthBaseDetailsID) as! PolisEarthFixedBaseObservingFacilityDetails
+                earthFixBasedObservingFacility = try await EarthFixedBaseObservingFacilityDetails(earthFixedBaseObservingFacilityDetails: polisObject)
+            }
         }
-        //TODO: Implement me!
     }
 
     private func saveReferencedItems() async throws {

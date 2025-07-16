@@ -29,8 +29,8 @@ public struct AppSupportStatusChangeNotification {
     // Facility
     public static let facilityWillSaveNotification   = Notification.Name("facilityWillSave")    // ✅ Object is the Facility
     public static let facilityDidSaveNotification    = Notification.Name("facilityDidSave")     // ✅ Object is the Facility
-    public static let facilityWillLoadNotification   = Notification.Name("facilityWillLoad")    // Object is the Facility
-    public static let facilityDidLoadNotification    = Notification.Name("facilityDidLoad")     // Object is the Facility
+    public static let facilityWillLoadNotification   = Notification.Name("facilityWillLoad")    // ✅ Object is the Facility
+    public static let facilityDidLoadNotification    = Notification.Name("facilityDidLoad")     // ✅ Object is the Facility
     public static let facilityWillChangeNotification = Notification.Name("facilityWillChange")  // Object is the Facility
     public static let facilityDidChangeNotification  = Notification.Name("facilityDidChange")   // Object is the Facility
 
@@ -47,10 +47,10 @@ public struct AppSupportStatusChangeNotification {
     public static let earthBasedFacilityDidLoadNotification  = Notification.Name("earthBasedFacilityDidLoad")  // ✅ Object is the Facility
 
     // Artifacts
-    public static let artifactWillSaveNotification       = Notification.Name("artifactWillSave")         // ✅ Object is the ArtifactRep
-    public static let artifactDidSaveNotification        = Notification.Name("artifactDidSave")          // ✅ Object is the ArtifactRep
-    public static let artifactWillChangeNotification     = Notification.Name("artifactWillChange")       // Object is the ArtifactRep
-    public static let artifactDidChangeNotification      = Notification.Name("artifactDidChange")        // Object is the ArtifactRep
+    public static let artifactWillSaveNotification = Notification.Name("artifactWillSave")   // ✅ Object is the ArtifactRep
+    public static let artifactDidSaveNotification  = Notification.Name("artifactDidSave")    // ✅ Object is the ArtifactRep
+    public static let artifactWillLoadNotification = Notification.Name("artifactWillLoad")   // ✅ Object is the ArtifactRep
+    public static let artifactDidLoadNotification  = Notification.Name("artifactDidLoad")    // ✅ Object is the ArtifactRep
 }
 
 //public struct StatusChangeNotification {
