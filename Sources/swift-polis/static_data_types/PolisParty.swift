@@ -103,6 +103,8 @@ public struct PolisPlace: Codable, Equatable, Identifiable {
     }
 
     public var id: UUID
+    public var lastUpdateTime: Date
+
     public var attentionOff: String?
     public var houseName: String?
     public var street: String?
@@ -111,7 +113,7 @@ public struct PolisPlace: Codable, Equatable, Identifiable {
     public var floor: Int?
     public var apartment: String?
     public var district: String?
-    public var place: String?                     // e.g. Mount Wilson
+    public var site: String?                      // e.g. Mount Wilson
     public var block: String?
     public var zipCode: String?
     public var province: String?
@@ -144,6 +146,7 @@ public struct PolisPlace: Codable, Equatable, Identifiable {
     public var timeZoneIdentifier: String?        // .. as defined with `TimeZone.knownTimeZoneIdentifiers`
 
     public init(id: UUID                           = UUID(),
+                lastUpdateTime: Date               = Date(),
                 attentionOff: String?              = nil,
                 houseName: String?                 = nil,
                 street: String?                    = nil,
@@ -152,12 +155,12 @@ public struct PolisPlace: Codable, Equatable, Identifiable {
                 floor: Int?                        = nil,
                 apartment: String?                 = nil,
                 district: String?                  = nil,
-                place: String?                     = nil,
+                site: String?                      = nil,
                 block: String?                     = nil,
                 zipCode: String?                   = nil,
                 province: String?                  = nil,
                 regionOrState: String?             = nil,
-                regionOrSatteCode: String?         = nil,
+                regionOrStateCode: String?         = nil,
                 country: String?                   = nil,
                 countryID: String?                 = nil,
                 continent: EarthContinent?         = nil,
@@ -176,6 +179,7 @@ public struct PolisPlace: Codable, Equatable, Identifiable {
                 note: String?                      = nil,
                 timeZoneIdentifier: String?        = nil) {
         self.id                 = id
+        self.lastUpdateTime     = lastUpdateTime
         self.attentionOff       = attentionOff
         self.houseName          = houseName
         self.street             = street
@@ -184,12 +188,12 @@ public struct PolisPlace: Codable, Equatable, Identifiable {
         self.floor              = floor
         self.apartment          = apartment
         self.district           = district
-        self.place              = place
+        self.site               = site
         self.block              = block
         self.zipCode            = zipCode
         self.province           = province
         self.regionOrState      = regionOrState
-        self.regionOrStateCode  = regionOrSatteCode
+        self.regionOrStateCode  = regionOrStateCode
         self.country            = country
         self.countryID          = countryID
         self.continent          = continent
@@ -273,6 +277,8 @@ extension PolisCommunicationChannel {
 extension PolisPlace {
     public enum CodingKeys: String, CodingKey {
         case id
+        case lastUpdateTime     = "last_update_time"
+        
         case attentionOff       = "attention_off"
         case houseName          = "house_name"
         case street
@@ -281,7 +287,7 @@ extension PolisPlace {
         case floor
         case apartment
         case district
-        case place
+        case site
         case block
         case zipCode            = "zip_code"
         case province
