@@ -104,6 +104,7 @@ public struct PolisPlace: Codable, Equatable, Identifiable {
 
     public var id: UUID
     public var lastUpdateTime: Date
+    public var facilityID: UUID // We need this because we need to know where to store the JSON file
 
     public var attentionOff: String?
     public var houseName: String?
@@ -147,6 +148,7 @@ public struct PolisPlace: Codable, Equatable, Identifiable {
 
     public init(id: UUID                           = UUID(),
                 lastUpdateTime: Date               = Date(),
+                facilityID: UUID,
                 attentionOff: String?              = nil,
                 houseName: String?                 = nil,
                 street: String?                    = nil,
@@ -180,6 +182,7 @@ public struct PolisPlace: Codable, Equatable, Identifiable {
                 timeZoneIdentifier: String?        = nil) {
         self.id                 = id
         self.lastUpdateTime     = lastUpdateTime
+        self.facilityID         = facilityID
         self.attentionOff       = attentionOff
         self.houseName          = houseName
         self.street             = street
@@ -278,7 +281,8 @@ extension PolisPlace {
     public enum CodingKeys: String, CodingKey {
         case id
         case lastUpdateTime     = "last_update_time"
-        
+        case facilityID         = "facility_id"
+
         case attentionOff       = "attention_off"
         case houseName          = "house_name"
         case street

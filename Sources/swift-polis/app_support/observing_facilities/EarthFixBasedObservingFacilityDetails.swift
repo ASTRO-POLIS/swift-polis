@@ -24,7 +24,7 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
     public var dominantWindDirection: PolisDirection.RoughDirection?
     public var surfaceSize: PolisPropertyValue?             // [m^2]
 
-    public var place: Place?
+    public var place: Place!
 
     public var facility: ObservingFacility!
 
@@ -45,8 +45,7 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
                                                         averageSkyQuality: averageSkyQuality,
                                                         traditionalLandOwners:traditionalLandOwners,
                                                         dominantWindDirection: dominantWindDirection,
-                                                        surfaceSize: surfaceSize,
-                                                        placeID: placeID)
+                                                        surfaceSize: surfaceSize)
         }
         set {
             id                        = newValue.id
@@ -60,7 +59,6 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
             traditionalLandOwners     = newValue.traditionalLandOwners
             dominantWindDirection     = newValue.dominantWindDirection
             surfaceSize               = newValue.surfaceSize
-            placeID                   = newValue.placeID
         }
     }
 
@@ -93,7 +91,7 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
                              lastUpdateTime: lastUpdateTime,
                              facilityID: facilityID,
                              representingStoredObjectType: .observingFacilityDetails)
-        finaliseInitialisation()
+        try finaliseInitialisation()
     }
 
     init(earthFixedBaseObservingFacilityDetails: PolisEarthFixedBaseObservingFacilityDetails) async throws {
@@ -106,7 +104,6 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
         self.surfaceSize               = earthFixedBaseObservingFacilityDetails.surfaceSize
         self.facilityID                = earthFixedBaseObservingFacilityDetails.facilityID
         self.visitingHoursID           = earthFixedBaseObservingFacilityDetails.visitingHoursID
-        self.placeID                   = earthFixedBaseObservingFacilityDetails.placeID
 
         try super.init(id: earthFixedBaseObservingFacilityDetails.id,
                              lastUpdateTime: earthFixedBaseObservingFacilityDetails.lastUpdateTime,
@@ -114,15 +111,25 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
                              representingStoredObjectType: .observingFacilityDetails)
 
         self.earthFixedBaseObservingFacilityDetails = earthFixedBaseObservingFacilityDetails
-        finaliseInitialisation()
+        try finaliseInitialisation()
     }
 
     //MARK: - Private APIs -
     private var _originalEarthFixedBaseObservingFacilityDetails: PolisEarthFixedBaseObservingFacilityDetails!
 
-    private func finaliseInitialisation() {
+    private func finaliseInitialisation() throws {
         localPersistencyStatus = .inMemoryOnly
         _originalEarthFixedBaseObservingFacilityDetails = earthFixedBaseObservingFacilityDetails
+
+        if placeID == nil {
+            try place = Place(id: UUID(), facility: facility)
+//            placeID   = place.id
+        }
+//        else {
+//            Task {
+//                //TODO: Load the place!
+//            }
+//        }
     }
 }
 

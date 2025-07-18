@@ -52,10 +52,12 @@ open class Place: PersistentObject {
     public var facility: ObservingFacility!
 
     //MARK: - Non-public APIs -
+    var facilityID: UUID
     var place: PolisPlace {
         get {
             PolisPlace(id: id,
                        lastUpdateTime: lastUpdateTime,
+                       facilityID: facility.id,
                        attentionOff: attentionOff,
                        houseName: houseName,
                        street: street,
@@ -91,6 +93,7 @@ open class Place: PersistentObject {
         set {
             id                 = newValue.id
             lastUpdateTime     = newValue.lastUpdateTime
+            facilityID         = newValue.facilityID
             attentionOff       = newValue.attentionOff
             houseName          = newValue.houseName
             street             = newValue.street
@@ -159,6 +162,7 @@ open class Place: PersistentObject {
          note: String?                         = nil,
          timeZoneIdentifier: String?           = nil,
          facility: ObservingFacility) throws {
+        self.facilityID         = facility.id
         self.attentionOff       = attentionOff
         self.houseName          = houseName
         self.street             = street
@@ -195,7 +199,7 @@ open class Place: PersistentObject {
         try super.init(id: id,
                     lastUpdateTime: lastUpdateTime,
                     lifecycleStatus: .active,
-                   facilityID: facility.id,
+                    facilityID: facilityID,
                     representingStoredObjectType: .place)
     }
 }

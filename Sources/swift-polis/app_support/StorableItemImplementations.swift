@@ -61,9 +61,7 @@ extension PolisDirectory: StorableItem {
         guard let data = data else { throw ObjectStore.ObjectStoreError.cannotAccessOrCreateStandardPolisFile }
 
         do {
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
-            let entry = try decoder.decode(PolisDirectory.self, from: data)
+            let entry = try jsonDecoder.decode(PolisDirectory.self, from: data)
 
             return entry as AnyObject
         }
@@ -106,9 +104,7 @@ extension PolisObservingFacilityDirectory: StorableItem {
         guard let data = data else { throw ObjectStore.ObjectStoreError.cannotAccessOrCreateStandardPolisFile }
 
         do {
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
-            let entry = try decoder.decode(PolisObservingFacilityDirectory.self, from: data)
+            let entry = try jsonDecoder.decode(PolisObservingFacilityDirectory.self, from: data)
 
             return entry as AnyObject
         }
@@ -141,7 +137,10 @@ extension PolisObservingFacilityDirectory: StorableItem {
 
 //MARK: - PolisObservingFacilityDetails -
 extension PolisObservingFacilityDetails: StorableItem {
-    static func loadFromLocalFileSystemUsing(store: ObjectStore, facilityID: UUID? = nil, objectID: UUID? = nil, objectType: RepresentingStoredObjectType? = nil) async throws -> AnyObject {
+    static func loadFromLocalFileSystemUsing(store: ObjectStore,
+                                             facilityID: UUID?                         = nil,
+                                             objectID: UUID?                           = nil,
+                                             objectType: RepresentingStoredObjectType? = nil) async throws -> AnyObject {
         guard let facilityID = facilityID else { throw ObjectStore.ObjectStoreError.missingRequiredID }
 
         let finder = await store.fileResourceFinder()
@@ -152,9 +151,7 @@ extension PolisObservingFacilityDetails: StorableItem {
         guard let data = data else { throw ObjectStore.ObjectStoreError.cannotAccessOrCreateStandardPolisFile }
 
         do {
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
-            let entry = try decoder.decode(PolisObservingFacilityDetails.self, from: data)
+            let entry = try jsonDecoder.decode(PolisObservingFacilityDetails.self, from: data)
 
             return entry as AnyObject
         }
@@ -186,7 +183,10 @@ extension PolisObservingFacilityDetails: StorableItem {
 
 //MARK: - PolisArtifact -
 extension PolisArtifact: StorableItem {
-    static func loadFromLocalFileSystemUsing(store: ObjectStore, facilityID: UUID? = nil, objectID: UUID? = nil, objectType: RepresentingStoredObjectType? = nil) async throws -> AnyObject {
+    static func loadFromLocalFileSystemUsing(store: ObjectStore,
+                                             facilityID: UUID?                         = nil,
+                                             objectID: UUID?                           = nil,
+                                             objectType: RepresentingStoredObjectType? = nil) async throws -> AnyObject {
         guard let facilityID = facilityID else { throw ObjectStore.ObjectStoreError.missingRequiredID }
         guard let objectID   = objectID   else { throw ObjectStore.ObjectStoreError.missingRequiredID }
 
@@ -198,9 +198,7 @@ extension PolisArtifact: StorableItem {
         guard let data = data else { throw ObjectStore.ObjectStoreError.cannotAccessOrCreateStandardPolisFile }
 
         do {
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
-            let entry = try decoder.decode(PolisArtifact.self, from: data)
+            let entry = try jsonDecoder.decode(PolisArtifact.self, from: data)
 
             return entry as AnyObject
         }
@@ -233,8 +231,8 @@ extension PolisArtifact: StorableItem {
 //MARK: - PolisEarthFixedBaseObservingFacilityDetails -
 extension PolisEarthFixedBaseObservingFacilityDetails: StorableItem {
     static func loadFromLocalFileSystemUsing(store: ObjectStore,
-                                             facilityID: UUID? = nil,
-                                             objectID: UUID? = nil,
+                                             facilityID: UUID?                         = nil,
+                                             objectID: UUID?                           = nil,
                                              objectType: RepresentingStoredObjectType? = nil) async throws -> AnyObject {
         guard let facilityID = facilityID else { throw ObjectStore.ObjectStoreError.missingRequiredID }
         guard let objectID   = objectID   else { throw ObjectStore.ObjectStoreError.missingRequiredID }
@@ -247,9 +245,7 @@ extension PolisEarthFixedBaseObservingFacilityDetails: StorableItem {
         guard let data = data else { throw ObjectStore.ObjectStoreError.cannotAccessOrCreateStandardPolisFile }
 
         do {
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
-            let entry = try decoder.decode(PolisEarthFixedBaseObservingFacilityDetails.self, from: data)
+            let entry = try jsonDecoder.decode(PolisEarthFixedBaseObservingFacilityDetails.self, from: data)
 
             return entry as AnyObject
         }
@@ -279,10 +275,58 @@ extension PolisEarthFixedBaseObservingFacilityDetails: StorableItem {
     }
 }
 
+//MARK: - PolisPlace -
+extension PolisPlace: StorableItem {
+    static func loadFromLocalFileSystemUsing(store: ObjectStore,
+                                             facilityID: UUID?                         = nil,
+                                             objectID: UUID?                           = nil,
+                                             objectType: RepresentingStoredObjectType? = nil) async throws -> AnyObject {
+        guard let facilityID = facilityID else { throw ObjectStore.ObjectStoreError.missingRequiredID }
+        guard let objectID   = objectID   else { throw ObjectStore.ObjectStoreError.missingRequiredID }
+
+        let finder = await store.fileResourceFinder()
+        let path   = finder.observingDataFile(withID: objectID, observingFacilityID: facilityID)
+
+        data = fm.contents(atPath: path)
+
+        guard let data = data else { throw ObjectStore.ObjectStoreError.cannotAccessOrCreateStandardPolisFile }
+
+        do {
+            let entry = try jsonDecoder.decode(PolisPlace.self, from: data)
+
+            return entry as AnyObject
+        }
+        catch { throw ObjectStore.ObjectStoreError.cannotDecodePolisType }
+    }
+
+    static func removeFromLocalFileSystemUsing(store: ObjectStore) async throws { } //TODO: Implement me!
+
+    //FIXME: This needs rethinking!
+    //    func parentItem(store: ObjectStore) async throws -> (any StorableItem)? { try await store.facilityWithId(facilityID)?.facilityDetails }
+    func parentItem(store: ObjectStore) async throws -> (any StorableItem)? { nil }
+
+    func flashUsing(store: ObjectStore) async throws {
+        let finder  = await store.fileResourceFinder()
+        let path    = finder.observingDataFile(withID: id, observingFacilityID: facilityID)
+        var details = self
+
+        details.lastUpdateTime = Date.now
+
+        do    { data = try jsonEncoder.encode(details) }
+        catch {
+            PolisLogger.shared.error("PolisPlace:flashUsing - Cannot encode POLIS PolisPlace")
+            throw ObjectStore.ObjectStoreError.cannotEncodePolisType
+        }
+
+        try await saveFileAt(path:path, caller: "PolisPlace:flashUsing")
+    }
+}
+
+
 //MARK: File Private stuff
 fileprivate let jsonEncoder = PrettyJSONEncoder()
 fileprivate let jsonDecoder = PrettyJSONDecoder()
-fileprivate let fm = FileManager.default
+fileprivate let fm          = FileManager.default
 fileprivate var data: Data?
 
 fileprivate func saveFileAt(path: String, caller: String) async throws {
