@@ -149,7 +149,7 @@ open class PersistentObject: Persisting {
                 facilityIDString = id.uuidString
                 localPath        = "\(PersistentObject.polisFileResourceFinder.observingFacilitiesFolder())\(fileName)"
                 remoteReadPath   = "\(PersistentObject.polisRemoteResourceFinder.polisProviderDirectoryURL())\(fileName)"
-            case .artifact:
+            case .artifact, .place:
                 if let facilityID = facilityID {
                     let fileName = "\(polisIdString).\(fileType)"
 
