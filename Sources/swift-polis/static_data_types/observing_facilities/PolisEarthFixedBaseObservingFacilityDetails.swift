@@ -27,6 +27,8 @@ public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable
     public var dominantWindDirection: PolisDirection.RoughDirection?
     public var surfaceSize: PolisPropertyValue?             // [m^2]
 
+    public var placeID: UUID?
+
     public init(id: UUID                                              = UUID(),
                 lastUpdateTime: Date                                  = Date.now,
                 facilityID: UUID,
@@ -37,7 +39,8 @@ public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable
                 averageSkyQuality: PolisPropertyValue?                = nil,
                 traditionalLandOwners: String?                        = nil,
                 dominantWindDirection: PolisDirection.RoughDirection? = nil,
-                surfaceSize: PolisPropertyValue?                      = nil) {
+                surfaceSize: PolisPropertyValue?                      = nil,
+                placeID: UUID?                                        = nil) {
         self.id                        = id
         self.lastUpdateTime            = lastUpdateTime
         self.facilityID                = facilityID
@@ -49,6 +52,7 @@ public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable
         self.traditionalLandOwners     = traditionalLandOwners
         self.dominantWindDirection     = dominantWindDirection
         self.surfaceSize               = surfaceSize
+        self.placeID                   = placeID
     }
 }
 
@@ -63,7 +67,8 @@ public extension PolisEarthFixedBaseObservingFacilityDetails {
         case averageSeeingConditions   = "average_seeing_conditions"
         case averageSkyQuality         = "average_sky_quality"
         case traditionalLandOwners     = "traditionalLand_owners"
-        case dominantWindDirection     = "'dominant_wind_direction'"
+        case dominantWindDirection     = "dominant_wind_direction"
         case surfaceSize               = "surface_size"
+        case placeID                   = "place_id"
     }
 }
