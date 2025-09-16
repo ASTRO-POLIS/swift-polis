@@ -75,16 +75,16 @@ final class ObjectStoreTests: XCTestCase {
         let countBeforeCreatingAFacility = await sut.facilities().count
 
         try await sut.createLocalStore(providerConfiguration: config)
-        let newFacility                 = try await sut.createFixedEarthBasedFacility(name: "Test Facility")
-        newFacility.abbreviation = "TEST"
+        let newFacility                     = try await sut.createFixedEarthBasedFacility(name: "Test Facility")
+        newFacility.abbreviation            = "TEST"
         
-        let newArtifact                 = try await newFacility.observingFacilityDetails.addArtifact(artifactType: .monument)
-        newArtifact.name                = "Test Monument"
+        let newArtifact                     = try await newFacility.observingFacilityDetails.addArtifact(artifactType: .monument)
+        newArtifact.name                    = "Test Monument"
         try await newArtifact.saveChanges()
-        let newEarthFacility            = try await newFacility.observingFacilityDetails.addEarthFixedBaseObservingFacilityDetails()
-        let countAfterCreatingAFacility = await sut.facilities().count
-        let countArtifacts              = try await newFacility.observingFacilityDetails.allArtifacts().count
-        newEarthFacility.accessRestrictions  = "Test Access Restrictions"
+        let newEarthFacility                = try await newFacility.observingFacilityDetails.addEarthFixedBaseObservingFacilityDetails()
+        let countAfterCreatingAFacility     = await sut.facilities().count
+        let countArtifacts                  = try await newFacility.observingFacilityDetails.allArtifacts().count
+        newEarthFacility.accessRestrictions = "Test Access Restrictions"
 
         try await newFacility.saveChanges()
         try await newEarthFacility.saveChanges()
