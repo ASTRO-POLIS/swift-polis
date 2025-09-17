@@ -58,7 +58,7 @@ public struct PolisConstants {
     [
         PolisImplementation(dataFormat: PolisImplementation.DataFormat.json,
                             apiSupport: PolisImplementation.APILevel.staticData,
-                            version: SemanticVersion(with: "0.5.0-alpha.1")!
+                            version: SemanticVersion(with: "0.1.0-alpha.1")!
                            ),
     ]
 }
