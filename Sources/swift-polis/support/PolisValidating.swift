@@ -15,10 +15,14 @@ import Foundation
 /// Each POLIS static type should conform to the `PolisValidating` protocol. The validation should be performed each time when data are read either from
 /// a local cache or from a remote POLIS provider. Editors of POLIS static data should also validate data before saving the data to a persistent store (local or remote).
 public protocol PolisValidating {
-    func allProperties() -> [String]
-    func requiredProperties() -> [String]
+    /// Keys or Aliases fr the type in the `TypeSchema`
+    func polisTypesKnownAs() -> Set<String>
+    
+    func allProperties() -> Set<String>
+    func requiredProperties() throws -> Set<String>
 
     func validateFor(property: String, value: String) -> (result: Bool, validationErrors: [PolisValidatorHelper.PolisValidationErrors]?)
+    func validate()                                   -> (result: Bool, validationErrors: [PolisValidatorHelper.PolisValidationErrors]?)
 }
 
 public class PolisValidatorHelper {
@@ -26,6 +30,7 @@ public class PolisValidatorHelper {
     public enum PolisValidationErrors: Error {
         case requiredProperty
         case nonEmptyProperty
+        case requiredPropertyNotMemberOfAllProperties
     }
 
     static var shared = PolisValidatorHelper()
@@ -33,9 +38,13 @@ public class PolisValidatorHelper {
 }
 
 extension PolisValidating {
-    public func allProperties() -> [String] { [] }
+    public func polisTypeKnownAs() -> Set<String> { [PolisConstants.unknownObject] }
 
-    public func requiredProperties() -> [String] { [] }
+    public func allProperties() -> Set<String> { [] }
 
-    func validateFor(property: String, value: String) -> (result: Bool, validationErrors: [PolisValidatorHelper.PolisValidationErrors]?) { (true, nil) }
+    public func requiredProperties() throws -> Set<String> { [] }
+
+    public func validateFor(property: String, value: String) -> (result: Bool, validationErrors: [PolisValidatorHelper.PolisValidationErrors]?) { (true, nil) }
+
+    public func validate() -> (result: Bool, validationErrors: [PolisValidatorHelper.PolisValidationErrors]?) { (true, nil) }
 }

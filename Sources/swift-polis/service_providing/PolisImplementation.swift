@@ -18,6 +18,8 @@
 import Foundation
 import SoftwareEtudesUtilities
 
+//TODO: Document where needed
+//TODO: Validate documentation & language
 /// `PolisImplementation` combines supported data formats, API level, and version in a single struct
 ///
 /// This information is an integral part of the POLIS Service Provider. It is assumed that different clients on
@@ -64,6 +66,7 @@ public struct PolisImplementation: Codable, Equatable  {
         case dynamicScheduling = "dynamic_scheduling"
     }
 
+    //MARK: Static methods
     /// This is used to select the latest supported implementation info in order to provide default data whenever needed
     ///
     ///  **Note:** The method assumes that the POLIS Service Provider implements at least one Implementation. Otherwise bad things will happen
@@ -82,12 +85,12 @@ public struct PolisImplementation: Codable, Equatable  {
         return currentImplementation!
     }
 
-
-    //MARK: - Private APIs -
-    public var dataFormat: DataFormat
-    public var apiSupport: APILevel
-    public var version: SemanticVersion
-
+    public static func polisServiceProviderSupports(_ implementation: PolisImplementation) -> Bool {
+        //TODO: Implement me!
+        false
+    }
+    
+    //TODO: Document!
     public init(dataFormat: DataFormat, apiSupport: APILevel, version: SemanticVersion) {
         self.dataFormat = dataFormat
         self.apiSupport = apiSupport
@@ -95,11 +98,16 @@ public struct PolisImplementation: Codable, Equatable  {
     }
 
 
+    //MARK: - Private APIs -
+    public var dataFormat: DataFormat
+    public var apiSupport: APILevel
+    public var version: SemanticVersion
 }
 
 //MARK: - Type extensions -
 extension PolisImplementation.APILevel: Comparable {
     public static func < (left: PolisImplementation.APILevel, right: PolisImplementation.APILevel) -> Bool {
+        //TODO: This does not look correct! Write a test!
         if      (left == .staticData)    && (left != right)               { return true }
         else if (left == .dynamicStatus) && (right == .dynamicScheduling) { return true }
 
