@@ -89,19 +89,18 @@ public struct PolisImplementation: Codable, Equatable  {
         //TODO: Implement me!
         false
     }
-    
+
+    //MARK: - Public APIs -
+    public var dataFormat: DataFormat
+    public var apiSupport: APILevel
+    public var version: SemanticVersion
+
     //TODO: Document!
-    public init(dataFormat: DataFormat, apiSupport: APILevel, version: SemanticVersion) {
+    public init(dataFormat: DataFormat = .json, apiSupport: APILevel = .staticData, version: SemanticVersion) {
         self.dataFormat = dataFormat
         self.apiSupport = apiSupport
         self.version    = version
     }
-
-
-    //MARK: - Private APIs -
-    public var dataFormat: DataFormat
-    public var apiSupport: APILevel
-    public var version: SemanticVersion
 }
 
 //MARK: - Type extensions -

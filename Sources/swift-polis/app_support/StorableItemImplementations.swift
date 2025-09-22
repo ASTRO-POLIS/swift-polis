@@ -339,7 +339,7 @@ fileprivate func saveFileAt(path: String, caller: String) async throws {
     }
 
     if !fm.createFile(atPath: path, contents: data) {
-        PolisLogger.shared.error("\(caller) - Cannot save POLIS opject file to: \(path)")
+        PolisLogger.shared.error("\(caller) - Cannot save POLIS object file to: \(path)")
         throw ObjectStore.ObjectStoreError.cannotWriteFile
     }
 

@@ -1,3 +1,6 @@
 {
-    
+    "implementation": {
+        "aliases": [ "supported_implementation" ],
+        "mandatory_properties": [ "api_support", "data_format", "version" ]
+    }
 }
