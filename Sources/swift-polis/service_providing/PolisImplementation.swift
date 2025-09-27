@@ -67,6 +67,7 @@ public struct PolisImplementation: Codable, Equatable  {
     }
 
     //MARK: Static methods
+
     /// This is used to select the latest supported implementation info in order to provide default data whenever needed
     ///
     ///  **Note:** The method assumes that the POLIS Service Provider implements at least one Implementation. Otherwise bad things will happen
@@ -75,7 +76,7 @@ public struct PolisImplementation: Codable, Equatable  {
 
         for info in PolisConstants.frameworkSupportedImplementation {
             if currentImplementation != nil {
-                if (currentImplementation!.version > info.version) && (currentImplementation!.apiSupport > info.apiSupport) {
+                if (currentImplementation!.version > info.version) {
                     currentImplementation = info
                 }
             }
@@ -86,8 +87,10 @@ public struct PolisImplementation: Codable, Equatable  {
     }
 
     public static func polisServiceProviderSupports(_ implementation: PolisImplementation) -> Bool {
-        //TODO: Implement me!
-        false
+        for anImplementation in PolisConstants.frameworkSupportedImplementation {
+            if implementation == anImplementation { return true }
+        }
+        return false
     }
 
     //MARK: - Public APIs -
@@ -106,9 +109,9 @@ public struct PolisImplementation: Codable, Equatable  {
 //MARK: - Type extensions -
 extension PolisImplementation.APILevel: Comparable {
     public static func < (left: PolisImplementation.APILevel, right: PolisImplementation.APILevel) -> Bool {
-        //TODO: This does not look correct! Write a test!
-        if      (left == .staticData)    && (left != right)               { return true }
-        else if (left == .dynamicStatus) && (right == .dynamicScheduling) { return true }
+        if      (left == .staticData)        && (left == right)               { return true }
+        else if (left == .dynamicStatus)     && (right == .dynamicScheduling) { return true } //TODO: Add dynamic options!
+        else if (left == .dynamicScheduling) && (right == .dynamicScheduling) { return true } //TODO: Add dynamic options!
 
         return false
     }
@@ -131,4 +134,3 @@ extension PolisImplementation: Hashable {
         hasher.combine(version.description)
     }
 }
-

@@ -55,11 +55,7 @@ final class PolisImplementationTests: XCTestCase {
                                ),
             PolisImplementation(dataFormat: PolisImplementation.DataFormat.json,
                                 apiSupport: PolisImplementation.APILevel.staticData,
-                                version: SemanticVersion(with: "0.2-alpha.1")!
-                               ),
-            PolisImplementation(dataFormat: PolisImplementation.DataFormat.json,
-                                apiSupport: PolisImplementation.APILevel.staticData,
-                                version: SemanticVersion(with: "0.2-alpha.2")!
+                                version: SemanticVersion(with: "0.1.0-alpha.1")!
                                ),
         ]
     }
@@ -114,10 +110,10 @@ final class PolisImplementationTests: XCTestCase {
         // Given
         let sutAlpha = PolisImplementation(dataFormat: PolisImplementation.DataFormat.json,
                                            apiSupport: PolisImplementation.APILevel.staticData,
-                                           version: SemanticVersion(with: "0.2-alpha.1")!)
+                                           version: SemanticVersion(with: "0.1.0-alpha.1")!)
         let sutBeta  = PolisImplementation(dataFormat: PolisImplementation.DataFormat.json,
                                            apiSupport: PolisImplementation.APILevel.staticData,
-                                           version: SemanticVersion(with: "0.2-beta.1")!)
+                                           version: SemanticVersion(with: "0.1.0-beta.1")!)
 
         // When
         data   = try? jsonEncoder.encode(sutAlpha)
@@ -128,7 +124,7 @@ final class PolisImplementationTests: XCTestCase {
         XCTAssertEqual(sutAlpha,
                        PolisImplementation(dataFormat: PolisImplementation.DataFormat.json,
                                            apiSupport: PolisImplementation.APILevel.staticData,
-                                           version: SemanticVersion(with: "0.2-alpha.1")!))
+                                           version: SemanticVersion(with: "0.1.0-alpha.1")!))
 
         XCTAssertNoThrow(try jsonDecoder.decode(PolisImplementation.self, from: string!.data(using: .utf8)!))
     }
@@ -138,10 +134,10 @@ final class PolisImplementationTests: XCTestCase {
         let sut = PolisImplementation.latestSupportedImplementation()
 
         // When
-        let first   = PolisConstants.frameworkSupportedImplementation.first!
-        let version = first.version
-        let api     = first.apiSupport
-        let format  = first.dataFormat
+        let last    = PolisConstants.frameworkSupportedImplementation.last!
+        let version = last.version
+        let api     = last.apiSupport
+        let format  = last.dataFormat
 
         // Then
         XCTAssertEqual(sut.version,    version)
