@@ -51,6 +51,12 @@ public struct AppSupportStatusChangeNotification {
     public static let artifactDidSaveNotification  = Notification.Name("artifactDidSave")    // ✅ Object is the ArtifactRep
     public static let artifactWillLoadNotification = Notification.Name("artifactWillLoad")   // ✅ Object is the ArtifactRep
     public static let artifactDidLoadNotification  = Notification.Name("artifactDidLoad")    // ✅ Object is the ArtifactRep
+
+    // MediaSource
+    public static let mediaSourceWillSaveNotification  = Notification.Name("mediaSourceWillSave")
+    public static let mediaSourceDidSaveNotification  = Notification.Name("mediaSourceDidSave")
+    public static let mediaSourceWillLoadNotification  = Notification.Name("mediaSourceWillLoad")
+    public static let mediaSourceDidLoadNotification  = Notification.Name("mediaSourceDidLoad")
 }
 
 //public struct StatusChangeNotification {
