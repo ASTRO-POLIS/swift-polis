@@ -14,10 +14,6 @@
         "mandatory_properties": [ "id", "last_update", "original_source", "copyright_holder_type" ],
         "standard_properties": [ "copyright_holder_reference", "copyright_holder_note", "short_description", "accessibility_description" ]
     },
-    "implementation": {
-        "aliases": [ "supported_implementation" ],
-        "mandatory_properties": [ "api_support", "data_format", "version" ]
-    },
     "item": {
         "mandatory_properties": [ "identity" ],
         "standard_properties": [ "mode_of_operation", "manufacturer_id", "owners", "image_sources" ]

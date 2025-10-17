@@ -1,6 +1,6 @@
 {
     "api_support": {
-        "description": "Defines the three levels of POLOS API support. Currently only static_data is fully supported.",
+        "description": "Defines the three levels of POLOS API support. Currently, only static_data is fully supported..",
         "value_type": "string",
         "default_value": "static_data",
         "value_set": [
@@ -10,7 +10,7 @@
         ]
     },
     "data_format": {
-        "description": "Defines various POLIS data formats. Currently only JSON is fully supported.",
+        "description": "Defines various POLIS data formats. Currently, only JSON is fully supported..",
         "value_type": "string",
         "default_value": "json",
         "value_set": [
@@ -19,7 +19,7 @@
         ]
     },
     "version": {
-        "description": "Semantic Version of the POLIS implementation (see: SemanticVersioning: https: //semver.org)",
+        "description": "Semantic Versioning of the POLIS implementation (see: SemanticVersioning: https://semver.org)",
         "value_type": "string"
     }
 }
