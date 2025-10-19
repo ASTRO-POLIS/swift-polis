@@ -322,6 +322,30 @@ extension PolisPlace: StorableItem {
     }
 }
 
+//MARK: - PolisMediaSource -
+extension PolisMediaSource: StorableItem {
+    static func loadFromLocalFileSystemUsing(store: ObjectStore,
+                                             facilityID: UUID?                         = nil,
+                                             objectID: UUID?                           = nil,
+                                             objectType: RepresentingStoredObjectType? = nil) async throws -> AnyObject {
+        guard let facilityID = facilityID else { throw ObjectStore.ObjectStoreError.missingRequiredID }
+        guard let objectID   = objectID   else { throw ObjectStore.ObjectStoreError.missingRequiredID }
+
+        let finder = await store.fileResourceFinder()
+        let path   = finder.observingDataFile(withID: objectID, observingFacilityID: facilityID)
+
+        data = fm.contents(atPath: path)
+
+        guard let data = data else { throw ObjectStore.ObjectStoreError.cannotAccessOrCreateStandardPolisFile }
+
+        do {
+            let entry = try jsonDecoder.decode(PolisMediaSource.self, from: data)
+
+            return entry as AnyObject
+        }
+        catch { throw ObjectStore.ObjectStoreError.cannotDecodePolisType }
+    }
+}
 
 //MARK: File Private stuff
 fileprivate let jsonEncoder = PrettyJSONEncoder()

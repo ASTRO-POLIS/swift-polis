@@ -28,7 +28,7 @@ open class MediaSource: IdentifiableObject {
                 facility: ObservingFacility? = nil,
                 name:     String) throws {
 
-        self.facility = facility
+        self.facility   = facility
         self.facilityID = facility?.id
 
         try super.init(id: identity.id,
@@ -78,18 +78,21 @@ extension MediaSource {
     public func saveChanges() async throws {
         guard await didChange() else { return }
         nc.post(name: AppSupportStatusChangeNotification.mediaSourceWillSaveNotification, object: self)
-        // try await mediaSource.flashUsing(store: store) //$$$GT Should this be here?
+        // try await mediaSource.flashUsing(store: store) // TODO: Implement me!
         nc.post(name: AppSupportStatusChangeNotification.mediaSourceDidSaveNotification, object: self)
     }
 
-    public func revertToSaved() async throws { } //$$$GT Should this be here?
+    public func revertToSaved() async throws { } // TODO: Implement me!
 
-    public func delete() async throws { } //$$$GT Should this be here?
+    public func delete() async throws { } // TODO: Implement me!
 
     public func loadData() async throws {
         nc.post(name: AppSupportStatusChangeNotification.mediaSourceWillLoadNotification, object: self)
 
-        // TODO: Load data
+        self.mediaSource = try await PolisMediaSource.loadFromLocalFileSystemUsing(store: store,
+                                                                              facilityID: facilityID,
+                                                                              objectType: .observingFacilityDetails) as! PolisMediaSource
+
         nc.post(name: AppSupportStatusChangeNotification.mediaSourceDidLoadNotification, object: self)
     }
 
