@@ -91,7 +91,7 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
                              lastUpdateTime: lastUpdateTime,
                              facilityID: facilityID,
                              representingStoredObjectType: .observingFacilityDetails)
-        try finaliseInitialisation()
+        try await finaliseInitialisation()
     }
 
     init(earthFixedBaseObservingFacilityDetails: PolisEarthFixedBaseObservingFacilityDetails) async throws {
@@ -111,13 +111,13 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
                              representingStoredObjectType: .observingFacilityDetails)
 
         self.earthFixedBaseObservingFacilityDetails = earthFixedBaseObservingFacilityDetails
-        try finaliseInitialisation()
+        try await finaliseInitialisation()
     }
 
     //MARK: - Private APIs -
     private var _originalEarthFixedBaseObservingFacilityDetails: PolisEarthFixedBaseObservingFacilityDetails!
 
-    private func finaliseInitialisation() throws {
+    private func finaliseInitialisation() async throws {
         localPersistencyStatus = .inMemoryOnly
         _originalEarthFixedBaseObservingFacilityDetails = earthFixedBaseObservingFacilityDetails
 
@@ -125,11 +125,10 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
             try place = Place(id: UUID(), facility: facility)
 //            placeID   = place.id
         }
-//        else {
-//            Task {
-//                //TODO: Load the place!
-//            }
-//        }
+        else {
+            do    { try await place.loadData() }
+            catch { /* TODO: Handle error */ }
+        }
     }
 }
 
