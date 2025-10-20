@@ -18,18 +18,38 @@
 import Foundation
 import SoftwareEtudesUtilities
 
-//TODO: Document where needed
-//TODO: Validate documentation & language
-/// `PolisImplementation` combines supported data formats, API level, and version in a single struct
+/// `PolisImplementation` encapsulates a specific POLIS API implementation variant by
+/// combining three orthogonal properties:
+/// - Data format used for encoding/decoding API payloads (`DataFormat`)
+/// - Functional scope of the API exposed (`APILevel`)
+/// - Concrete semantic version of the implementation (`SemanticVersion`)
 ///
-/// This information is an integral part of the POLIS Service Provider. It is assumed that different clients on
-/// different platforms depend on different combinations of data formats, API levels, and versions. Nevertheless, each
-/// client should be able to search for a service provider that supports its concrete requirements. In addition, every
-/// POLIS Service Provider should be able to maintain the correct list of implementation variants for every other
-/// `public` or `mirror` provider. Only `experimental` Service Providers should be allowed to implement unsupported
-/// implementations.
+/// This type is a key piece of discovery and compatibility negotiation between POLIS
+/// Service Providers and clients (or other providers). Different clients across iOS,
+/// iPadOS, macOS, other platforms, or server-side environments may require different
+/// combinations of data format and API capabilities. By publishing a list of
+/// supported `PolisImplementation` values, a provider enables:
+/// - Client-side selection of a compatible implementation variant
+/// - Server-side validation that a requested variant is supported
+/// - Clear evolution across breaking and non‑breaking changes via semantic versioning
 ///
-/// For a complete description Semantic Version see [Semantic Versioning](https://semver.org)
+/// Usage notes:
+/// - Prefer XML (.xml) for production-grade integrations; JSON ) is often
+///   more convenient for rapid prototyping or lightweight clients.
+/// - `apiSupport` conveys the functional scope, from static resources only to
+///   dynamic status updates and full dynamic scheduling.
+/// - `version`  follows Semantic Versioning (see https://semver.org) and is used to
+///   compare and select compatible implementations.
+/// - Conformance to Codable, Equatable, and Hashable allows easy persistence,
+///   transport, and set/dictionary usage, as well as deterministic comparison.
+/// - See PolisImplementation.latestSupportedImplementation() to obtain the
+///   framework’s default/latest supported variant and
+///   PolisImplementation.polisServiceProviderSupports(_:) to check support.
+///
+///   Provider implementation note:
+/// - Every POLIS Service Provider should be able to maintain the correct list of implementation variants for every other
+///   `public` or `mirror` provider. Only `experimental` Service Providers should be allowed to implement
+///   unsupported implementations.
 public struct PolisImplementation: Codable, Equatable  {
 
     /// Defines various POLIS data formats
@@ -68,9 +88,27 @@ public struct PolisImplementation: Codable, Equatable  {
 
     //MARK: Static methods
 
-    /// This is used to select the latest supported implementation info in order to provide default data whenever needed
+    /// Returns the most recent POLIS implementation variant supported by the framework.
     ///
-    ///  **Note:** The method assumes that the POLIS Service Provider implements at least one Implementation. Otherwise bad things will happen
+    /// This helper scans the framework’s declared list of supported implementations
+    /// (`PolisConstants.frameworkSupportedImplementation`) and selects the one with
+    /// the highest semantic version. The returned value can be used as a sensible
+    /// default when a caller has no specific preference, or when negotiating
+    /// capabilities with a POLIS Service Provider.
+    ///
+    /// Returns:
+    /// - The `PolisImplementation` with the highest `SemanticVersion` among the
+    ///   framework-supported implementations.
+    ///
+    /// Important:
+    /// - The framework must declare at least one supported implementation in
+    ///   `PolisConstants.frameworkSupportedImplementation`. If the list is empty,
+    ///   this method will trigger a runtime failure.
+    ///
+    /// See also:
+    /// - `PolisImplementation.polisServiceProviderSupports(_:)` for testing whether
+    ///   a specific variant is supported.
+    /// - `SemanticVersion` for details on how version ordering is determined.
     public static func latestSupportedImplementation() -> PolisImplementation {
         var currentImplementation: PolisImplementation?
 
@@ -86,6 +124,18 @@ public struct PolisImplementation: Codable, Equatable  {
         return currentImplementation!
     }
 
+    /// Returns whether the current framework supports a specific POLIS implementation variant.
+    ///
+    /// This method checks the provided `implementation` against the framework’s declared list of
+    /// supported variants (`PolisConstants.frameworkSupportedImplementation`). It is useful when
+    /// negotiating compatibility between a client and a POLIS Service Provider, or when validating
+    /// that a requested combination of data format, API level, and semantic version is available.
+    ///
+    /// - Parameter implementation: The concrete `PolisImplementation` (data format, API level,
+    ///   and semantic version) to test for support.
+    /// - Returns: `true` if the exact implementation is supported; otherwise, `false`.
+    /// - Important: The match is exact. If you need semantic compatibility (e.g., any patch
+    ///   version within a compatible range), perform additional version checks using `SemanticVersion`.
     public static func polisServiceProviderSupports(_ implementation: PolisImplementation) -> Bool {
         for anImplementation in PolisConstants.frameworkSupportedImplementation {
             if implementation == anImplementation { return true }
@@ -98,7 +148,20 @@ public struct PolisImplementation: Codable, Equatable  {
     public var apiSupport: APILevel
     public var version: SemanticVersion
 
-    //TODO: Document!
+    /// Creates a new POLIS implementation descriptor by combining data format, API level, and semantic version.
+    ///
+    /// Use this initialiser to describe a concrete variant of the POLIS API that a client or
+    /// service provider supports or prefers. The combination of parameters is used during
+    /// discovery and compatibility negotiation.
+    ///
+    /// - Parameters:
+    ///   - dataFormat: The payload encoding format used by the implementation. Defaults to `.json`.
+    ///                 Prefer `.xml` for production-grade integrations; `.json` can be convenient
+    ///                 for prototyping or lightweight clients.
+    ///   - apiSupport: The functional scope of the exposed API (e.g., static resources only,
+    ///                 dynamic status updates, or full dynamic scheduling). Defaults to `.staticData`.
+    ///   - version: The semantic version of the implementation, used to compare and select compatible
+    ///              variants following Semantic Versioning rules.
     public init(dataFormat: DataFormat = .json, apiSupport: APILevel = .staticData, version: SemanticVersion) {
         self.dataFormat = dataFormat
         self.apiSupport = apiSupport
@@ -106,7 +169,7 @@ public struct PolisImplementation: Codable, Equatable  {
     }
 }
 
-//MARK: - Type extensions -
+//MARK: - Comparable
 extension PolisImplementation.APILevel: Comparable {
     public static func < (left: PolisImplementation.APILevel, right: PolisImplementation.APILevel) -> Bool {
         if      (left == .staticData)        && (left == right)               { return true }
@@ -118,7 +181,7 @@ extension PolisImplementation.APILevel: Comparable {
 }
 
 
-// This extension is needed for supporting a well formatted JSON API
+//MARK: - This extension is needed for supporting a well formatted JSON API
 public extension PolisImplementation {
     enum CodingKeys: String, CodingKey {
         case dataFormat = "data_format"
@@ -127,7 +190,7 @@ public extension PolisImplementation {
     }
 }
 
-// This makes `PolisImplementation` Equatable
+//MARK: This makes `PolisImplementation` Equatable
 extension PolisImplementation: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(apiSupport)
