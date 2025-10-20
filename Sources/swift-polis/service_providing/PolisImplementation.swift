@@ -171,6 +171,7 @@ public struct PolisImplementation: Codable, Equatable  {
 
 //MARK: - Comparable
 extension PolisImplementation.APILevel: Comparable {
+    //TODO: $$$ZH This method is obviously wrong!
     public static func < (left: PolisImplementation.APILevel, right: PolisImplementation.APILevel) -> Bool {
         if      (left == .staticData)        && (left == right)               { return true }
         else if (left == .dynamicStatus)     && (right == .dynamicScheduling) { return true } //TODO: Add dynamic options!
