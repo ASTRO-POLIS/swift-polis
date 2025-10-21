@@ -51,10 +51,9 @@ public struct PolisCommunicationChannel: Codable, Equatable {
 /// CCD cameras, weather stations, etc. Different cases should be self-explanatory. The `private` type should be utilised by
 /// amateurs and hobbyists.
 public enum PolisOwnershipType: String, Codable, Equatable {
-    case university
+    case education   // University, school, ...
     case research
     case commercial
-    case school
     case network
     case government
     case ngo
@@ -64,6 +63,7 @@ public enum PolisOwnershipType: String, Codable, Equatable {
     case collaboration
     case `private`
     case other
+    case unknown
 }
 
 /// A type that describes the different kinds of owners of a POLIS item.
