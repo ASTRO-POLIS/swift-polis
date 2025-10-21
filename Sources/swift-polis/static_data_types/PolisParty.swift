@@ -24,6 +24,11 @@ public struct PolisCommunicationChannel: Codable, Equatable {
 
     public var mastodonIDs: [String]?
 
+    public var blueskyIDs: [String]?
+
+    /// Instagram user id, e.g. @AstroPolis. "@" is expected to be part of the id.
+    public var instagramIDs: [String]?
+
     /// Phone number used by WhatsApp. The phone number should include the country code, starting with "+", and contain no
     /// spaces, brackets, or other formatting characters. Currently no validation is provided.
     public var whatsappPhoneNumbers: [String]?
@@ -32,18 +37,19 @@ public struct PolisCommunicationChannel: Codable, Equatable {
     public var facebookIDs: [String]?
 
     /// Instagram user id, e.g. @AstroPolis. "@" is expected to be part of the id.
-    public var instagramIDs: [String]?
 
     public init(twitterIDs: [String]?           = nil,
                 mastodonIDs: [String]?          = nil,
+                blueskyIDs: [String]?           = nil,
+                instagramIDs: [String]?         = nil,
                 whatsappPhoneNumbers: [String]? = nil,
-                facebookIDs: [String]?          = nil,
-                instagramIDs: [String]?         = nil) {
+                facebookIDs: [String]?          = nil) {
         self.twitterIDs           = twitterIDs
         self.mastodonIDs          = mastodonIDs
+        self.blueskyIDs           = blueskyIDs
+        self.instagramIDs         = instagramIDs
         self.whatsappPhoneNumbers = whatsappPhoneNumbers
         self.facebookIDs          = facebookIDs
-        self.instagramIDs         = instagramIDs
     }
 }
 
@@ -270,9 +276,10 @@ extension PolisCommunicationChannel {
     public enum CodingKeys: String, CodingKey {
         case twitterIDs           = "twitter_ids"
         case mastodonIDs          = "mastodon_ids"
+        case blueskyIDs           = "bluesky_ids"
+        case instagramIDs         = "instagram_ids"
         case whatsappPhoneNumbers = "whatsapp_phone_numbers"
         case facebookIDs          = "facebook_ids"
-        case instagramIDs         = "instagram_ids"
     }
 }
 

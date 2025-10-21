@@ -54,9 +54,9 @@ struct StaticDataTypeTestingSupport {
     static func exampleCommunicationChannel() -> PolisCommunicationChannel {
         PolisCommunicationChannel(twitterIDs: ["@CoolAstro", "@GalaxyFarAway"],
                                   mastodonIDs: ["@GalaxyFarAway@mastodon.social"],
+                                  instagramIDs: ["GalaxyFarAway"],
                                   whatsappPhoneNumbers: ["+1 900 1234567"],
-                                  facebookIDs: ["916735592641"],
-                                  instagramIDs: ["GalaxyFarAway"])
+                                  facebookIDs: ["916735592641"])
     }
 
 
