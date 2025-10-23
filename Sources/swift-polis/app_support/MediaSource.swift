@@ -53,7 +53,7 @@ open class MediaSource: IdentifiableObject {
 public extension MediaSource {
     func addMediaItem(_ item: PolisMediaSource.MediaItem) {
         if let idx = mediaItems.firstIndex(where: { $0.id == item.id }) {
-            if mediaItems[idx].lastUpdateDate < item.lastUpdateDate {
+            if mediaItems[idx].lastUpdateTime < item.lastUpdateTime {
                 mediaItems.remove(at: idx)
                 mediaItems.append(item)
             }

@@ -26,6 +26,8 @@ import Foundation
 /// Each image from the set defines its index within the set (used for sorting), and image attributes (source URL, description and accessibility description, as well as
 /// information about the copyright holder and copyright type).
 ///
+/// **Note:** Image, Document, and other media exact type should be determined by the filename extension, e.g. PDF, tiff, jpg,
+///
 /// **Important note:** POLIS providers should only use images that are either open source or have explicitly requested and received rights of use from the copyright holder!
 public struct PolisMediaSource: Identifiable, Equatable {
 
@@ -33,6 +35,7 @@ public struct PolisMediaSource: Identifiable, Equatable {
         case image
         case movie
         case audio
+        case document
         case unknown
     }
 
@@ -86,7 +89,7 @@ public struct PolisMediaSource: Identifiable, Equatable {
         public let id: UUID
         public let mediaType: MediaType
         public var mediaFormat: String? // e.g. 2x2, header, full_image, 10k, ...
-        public var lastUpdateDate: Date
+        public var lastUpdateTime: Date
         public let originalSource: URL
 
         public let shortDescription: String?
@@ -102,7 +105,7 @@ public struct PolisMediaSource: Identifiable, Equatable {
         public init(id: UUID                                 = UUID(),
                     mediaType: MediaType                     = .image,
                     mediaFormat: String?                     = nil,
-                    lastUpdateDate: Date                     = Date.now,
+                    lastUpdateTime: Date                     = Date.now,
                     originalSource: URL,
                     shortDescription: String?                = nil,
                     accessibilityDescription: String?        = nil,
@@ -113,7 +116,7 @@ public struct PolisMediaSource: Identifiable, Equatable {
                     hash: String?                            = nil) throws {
             self.id                       = id
             self.mediaType                = mediaType
-            self.lastUpdateDate           = lastUpdateDate
+            self.lastUpdateTime           = lastUpdateTime
             self.originalSource           = originalSource
             self.shortDescription         = shortDescription
             self.accessibilityDescription = accessibilityDescription
@@ -148,7 +151,7 @@ public struct PolisMediaSource: Identifiable, Equatable {
     public mutating func addImage(_ item: MediaItem) {
         for (index, imageItem) in mediaItems.enumerated() {
             if imageItem.id == item.id {
-                if imageItem.lastUpdateDate < item.lastUpdateDate {
+                if imageItem.lastUpdateTime < item.lastUpdateTime {
                     mediaItems.remove(at: index)
                     mediaItems.append(item)
                     return
@@ -176,7 +179,7 @@ extension PolisMediaSource.MediaItem: Codable {
         case id
         case mediaType                = "media_type"
         case mediaFormat              = "media_format"
-        case lastUpdateDate           = "last_update_date"
+        case lastUpdateTime           = "last_update_time"
         case originalSource           = "original_source"
         case shortDescription         = "short_description"
         case accessibilityDescription = "accessibility_description"
