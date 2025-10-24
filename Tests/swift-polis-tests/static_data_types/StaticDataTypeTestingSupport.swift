@@ -30,9 +30,6 @@ struct StaticDataTypeTestingSupport {
         PolisImplementation(dataFormat: .json, apiSupport: .staticData,  version: SemanticVersion(majorNumber: 0, minorNumber: 1, patchNumber: 0, preReleaseVersion: "alpha-1") )
     }
 
-
-/* === Old untested methods ===*/
-
     //MARK: PolisIdentity
     static func examplePolisIdentityBAO() -> PolisIdentity {
         PolisIdentity(externalReferences:    ["https://bao.am/device?id=1234", "https://bao.am/rtml?dump-1234"],
@@ -57,6 +54,10 @@ struct StaticDataTypeTestingSupport {
                       endTime:               Date.now,
                       polisRegistrationTime: Date.now)
     }
+
+
+    /* === Old untested methods ===*/
+
 
     //MARK: PolisCommunicationChannel
     static func exampleCommunicationChannel() -> PolisCommunicationChannel {

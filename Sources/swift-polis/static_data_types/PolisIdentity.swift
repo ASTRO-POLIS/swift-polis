@@ -17,17 +17,51 @@
 
 import Foundation
 
-/// `PolisIdentity` uniquely identifies and defines the status of almost every POLIS object and defines
-/// external relationships to other objects of any type
+/// A value type that uniquely identifies and describes the state of nearly every POLIS object,
+/// while also capturing metadata used for synchronisation and cross‑system linking.
 ///
-/// The idea of `PolisIdentity` comes from the analogous type that could be found in the `RTML` standard.
-/// The `RTML` references turned out to be extremely useful for relating objects within one `RTML` document
-/// and linking `RTML` documents to each other.
+/// The concept of `PolisIdentity` originates from a similar type found in the `RTML` standard. The `RTML`
+/// references proved incredibly useful for relating objects within a single `RTML` document and linking
+/// `RTML` documents together.
 ///
-/// `PolisIdentity` is an essential a part of nearly every POLIS type. Identities are needed to uniquely
-/// identify and describe each item (object) and to establish parent-child relationships between objects, as well
-/// as provide enough information for the syncing of POLIS Providers by defining last modification timestamps
-/// and versions, supported by the Provider.
+/// Overview
+/// - PolisIdentity is intended to be embedded in most POLIS model types to:
+///   - Provide a stable, globally unique identifier (UUID v4) for the object.
+///   - Record lifecycle and readiness information via PolisLifecycleStatus.
+///   - Track modification timestamps to enable efficient sync across POLIS Providers.
+///   - Carry human‑readable naming and descriptive metadata for display and search.
+///   - Maintain external references (e.g., URLs, DOIs, or foreign IDs) to related objects in other systems.
+///
+/// Conformance
+/// - Codable: Encodes/decodes to external representations (e.g., JSON).
+/// - Identifiable: Exposes `id` for SwiftUI lists and identity semantics.
+/// - Equatable: Supports equality checks, useful in diffing and state management.
+///
+/// Key Properties
+/// - id: UUID v4 that uniquely identifies the object globally.
+/// - externalReferences: Optional collection of external IDs or URLs linking to related systems.
+/// - lastUpdateTime: Timestamp of the most recent modification, used primarily for sync.
+/// - lifecycleStatus: Current readiness/status of the object. Client apps should treat `.deleted` as hidden.
+/// - name/localName: Human‑readable names (English preferred for `name`; localised script in `localName`).
+/// - abbreviation: Short token used commonly for search and display (e.g., device/project short codes).
+/// - shortDescription: Optional description summarising the object.
+/// - startTime/endTime: Temporal bounds of the object’s operational lifetime (e.g., first light / decommissioned).
+/// - polisRegistrationTime: Timestamp when the object was initially registered in POLIS.
+///
+/// Usage Notes
+/// - Prefer setting `name` to a unique, descriptive English label (e.g., "Alta-123_CCD").
+/// - Use `externalReferences` for durable cross‑system links (e.g., "https://monet.org/instruments/12345").
+/// - Update `lastUpdateTime` whenever any meaningful property changes to support incremental sync.
+/// - Respect `lifecycleStatus` when presenting or filtering objects; hide `.deleted` from user interfaces.
+///
+/// Coding and Interoperability
+/// - The encoded keys use snake_case to match POLIS data exchange conventions:
+///   - external_references, last_update_time, lifecycle_status, local_name, short_description,
+///     start_time, end_time, polis_registration_time.
+/// - Date encoding/decoding should use a consistent strategy (e.g., ISO‑8601) at the encoder/decoder level.
+///
+/// Related Types
+/// - PolisLifecycleStatus: Enumerates object readiness and lifecycle states used by POLIS.
 public struct PolisIdentity: Codable, Identifiable, Equatable {
 
     /// Globally unique identifier (UUID version 4) (ID in XML). The `id` is also needed for `Identifiable`
@@ -35,7 +69,8 @@ public struct PolisIdentity: Codable, Identifiable, Equatable {
     public let id: UUID
 
     /// Pointers to externally defined items (IDREF in XML). It is recommended that the references are URLs (e.g.
-    /// https://monet.org/instruments/12345 or https://telescope.observer/instriment123456 )
+    /// https://monet.org/instruments/12345 or https://telescope.observer/instriment123456 ),
+    /// or unique IDs (e.g. to publications, XML IDs. etc).
     public var externalReferences: [String]?
 
     /// Latest update timestamp. Used primarily for syncing.
@@ -46,22 +81,27 @@ public struct PolisIdentity: Codable, Identifiable, Equatable {
     /// **Note:** Client apps should not show `.deleted` objects
     public var lifecycleStatus: PolisLifecycleStatus
 
-    /// Human readable name of the object. It is recommended to assign a unique English name describing the
+    /// Human readable name of the object.
+    ///
+    /// It is recommended to assign a unique English name describing the
     /// object as close as possible (e.g. "Alta-123_CCD").
     public var name: String?
 
-    /// Human readable name of the object in a local script and language.
+    /// Provides a human-readable name for the object in the local script and language.
     public var localName: String?
 
     /// Abbreviations are widely used for searching items, as well as device, instrument, and  project names.
+    ///
     /// If present it is recommended to assign a unique abbreviation  (within the observatory or the observing site)
     /// in order to avoid potential confusions.
     public var abbreviation: String?
 
     /// Short optional object (object) description.
+    ///
+    /// It is recommended that English is used.
     public var shortDescription: String?
 
-    /// The time when the  POLIS objects began its existence, e.g. first light of a telescope
+    /// The time when the POLIS objects began their existence, such as the first light of a telescope.
     public var startTime: Date?
 
     /// The time when the  POLIS object ended its existence, e.g. a device was decommissioned
@@ -72,8 +112,6 @@ public struct PolisIdentity: Codable, Identifiable, Equatable {
 
 
     /// Designated initialiser.
-    ///
-    /// Only the `name` parameter is required. All other parameters have reasonable default values.
     public init(id: UUID                              = UUID(),
                 externalReferences: [String]?         = nil,
                 lastUpdateTime: Date                  = Date.now,

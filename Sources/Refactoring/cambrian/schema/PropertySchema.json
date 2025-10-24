@@ -1,8 +1,4 @@
 {
-    "abbreviation": {
-        "description": "The abbreviation used by astronomers for the item",
-        "value_type": "string"
-    },
     "accessibility_description": {
         "description": "Description of an item in a way, that accessible software like VoiceOver can describe the item for visually impaired users.",
         "value_type": "string"
@@ -77,41 +73,15 @@
         "min_value": 0.0,
         "max_value": 360.0
     },
-    "external_references": {
-        "description": "External references connecting the item with external source of data, e.g. RTML or VO IDs, or URLs to describing documentation",
-        "value_type": "string",
-        "is_array": true
-  },
     "facebook_ids": {
         "description": "Array of valid facebook IDs as strings. The IDs represent only the part after the www.facebook.com base URL.",
         "value_type": "string",
         "is_array": true
     },
-    "id": {
-        "description": "Unique ID in the formal of a standard UUID",
-        "value_type": "string"
-    },
     "instagram_ids": {
         "description": "Array of valid instagram IDs as strings",
         "value_type": "string",
         "is_array": true
-    },
-    "last_update": {
-        "description": "Date and time of the last change of the item in an ISO format, e.g. 2023-07-11T01:17:32Z represented as a string",
-        "value_type": "string"
-    },
-    "lifecycle_status": {
-        "description": "Defines the readiness of an item to be actively used.",
-        "value_type": "string",
-        "value_set": [
-            "inactive",
-            "active",
-            "historic",
-            "deleted",
-            "delete",
-            "suspended",
-            "unknown"
-        ]
     },
     "mirror_id": {
         "description": "Unique ID in the formal of a standard UUID, similar to id",
@@ -130,10 +100,6 @@
             "other",
             "unknown"
         ]
-    },
-    "name": {
-        "description": "The name of the item. Recommended to be (semi) unique, but this is not required",
-        "value_type": "string"
     },
     "note": {
         "description": "Free text string, that could be formatted with new lines, tabs. etc. and has no size limit. Nevertheless. Too long notes should be avoided.",
@@ -200,10 +166,6 @@
             "currently_unreachable",
             "permanently_unreachable"
         ]
-    },
-    "short_description": {
-        "description": "Short description of the item.",
-        "value_type": "string"
     },
     "skype_ids": {
         "description": "Array of valid skype IDs as strings",
@@ -315,31 +277,6 @@
         "description": "The UUIDs of any devices.",
         "value_type": "string",
         "is_array": true
-    },
-    "start_date": {
-        "description": "The starting date of the observing facility in.",
-        "value_type": "string",
-        "validation": "[0-9]{2}\\-[0-9]{2}\\-[0-9]{2} [0-9]{2}\\:[0-9]{2}\\:[0-9]{2}\\.[0-9]{1,5}"
-    },
-    "end_date": {
-        "description": "The ending/closing date of the observing facility.",
-        "value_type": "string",
-        "validation": "[0-9]{2}\\-[0-9]{2}\\-[0-9]{2} [0-9]{2}\\:[0-9]{2}\\:[0-9]{2}\\.[0-9]{1,5}"
-    },
-    "end_date": {
-        "description": "The ending/closing date of the observing facility.",
-        "value_type": "string",
-        "validation": "[0-9]{2}\\-[0-9]{2}\\-[0-9]{2} [0-9]{2}\\:[0-9]{2}\\:[0-9]{2}\\.[0-9]{1,5}"
-    },
-    "polis_registration_date": {
-        "description": "The ending/closing date of the observing facility.",
-        "value_type": "string",
-        "validation": "[0-9]{2}\\-[0-9]{2}\\-[0-9]{2} [0-9]{2}\\:[0-9]{2}\\:[0-9]{2}\\.[0-9]{1,5}"
-    },
-    "polis_disconnection_date": {
-        "description": "The ending/closing date of the observing facility.",
-        "value_type": "string",
-        "validation": "[0-9]{2}\\-[0-9]{2}\\-[0-9]{2} [0-9]{2}\\:[0-9]{2}\\:[0-9]{2}\\.[0-9]{1,5}"
     },
     "website": {
         "description": "Well formated URL including the protocol of the observing facility.",

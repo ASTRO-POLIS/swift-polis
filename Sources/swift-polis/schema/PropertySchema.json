@@ -1,4 +1,8 @@
 {
+    "identity": {
+        "mandatory_properties": [ "id", "lifecycle_status", "last_update_time", "name" ],
+        "standard_properties": [ "abbreviation", "end_time", "external_references", "local_name", "polis_registration_time", "short_description", "start_time" ]
+    },
     "implementation": {
         "aliases": [ "supported_implementation" ],
         "mandatory_properties": [ "api_support", "data_format", "version" ]

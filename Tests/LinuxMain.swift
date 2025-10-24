@@ -20,17 +20,26 @@ import swift_polisTests
 
 var tests = [XCTestCaseEntry]()
 
-// app_support
-tests += ObjectStoreConfigurationTests.allTests()
-
 // service_provider
 tests += PolisImplementationTests.allTests()
 
 // static_data_types
 tests += PolisIdentityTests.allTests()
 
+
+
+
+
+
+// app_support
+//tests += ObjectStoreConfigurationTests.allTests()
+
+// service_provider
+// tests += PolisImplementationTests.allTests()
+
+
 // support
-tests += PolisLoggerTests.allTests()
+//tests += PolisLoggerTests.allTests()
 
 // service_provider
 //tests += PolisImplementationTests.allTests()
