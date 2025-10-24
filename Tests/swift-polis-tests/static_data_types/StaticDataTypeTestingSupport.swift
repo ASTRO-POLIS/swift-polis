@@ -21,9 +21,17 @@
 
 import Foundation
 import swift_polis
-
+import SoftwareEtudesUtilities
 
 struct StaticDataTypeTestingSupport {
+
+    //MARK: PolisImplementation
+    static func examplePolisImplementation() -> PolisImplementation {
+        PolisImplementation(dataFormat: .json, apiSupport: .staticData,  version: SemanticVersion(majorNumber: 0, minorNumber: 1, patchNumber: 0, preReleaseVersion: "alpha-1") )
+    }
+
+
+/* === Old untested methods ===*/
 
     //MARK: PolisIdentity
     static func examplePolisIdentityBAO() -> PolisIdentity {
@@ -100,6 +108,5 @@ struct StaticDataTypeTestingSupport {
                    note: "Send only stars and love")
     }
 
-
-    //MARK: Private APIs
+    
 }
