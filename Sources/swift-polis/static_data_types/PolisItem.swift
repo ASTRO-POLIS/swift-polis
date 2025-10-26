@@ -17,30 +17,34 @@
 
 import Foundation
 
-
-/// A core data model representing a POLIS Item.
+/// A model representing a single POLIS domain item.
 ///
-/// `PolisItem` encapsulates the `identity`, ownership, hierarchical relationship,
-/// automation metadata, and associated media linkage for a single entity in the
-/// POLIS domain. It is designed to be serialisable (Codable) for persistence and
-/// transport, and comparable (Equatable) for value-based equality checks.
+/// PolisItem is a value type that encapsulates identity, ownership, operational state,
+/// hierarchical placement, automation metadata, and media linkage for an entity within
+/// the POLIS ecosystem. It is Codable for persistence/transport and Equatable for
+/// value-based comparison.
 ///
-/// Key characteristics:
-/// - Uniquely identified by a `PolisIdentity`.
-/// - Optionally associated with an owner (`PolisOwner`).
-/// - Supports manual, tree-like hierarchies via an optional `parentID` and
-///   a private set of child identifiers accessible through helper methods.
-/// - Provides an optional `automationLabel` to integrate with automation systems
-///   (e.g., ASCOM, INDI) and scheduling/discovery tools where labels are commonly
-///   used as identifiers.
-/// - Links to optional media resources through `mediaSourceID`.
+/// Responsibilities and usage:
+/// - Identification:
+///   - `identity`: A unique `PolisIdentity` that defines the item within the system.
+/// - Operational state:
+///   - `modeOfOperation`: Describes how the item is intended to operate. For static artifacts
+///     (e.g., monuments), prefer `.notApplicable` over `.unknown`.
+/// - Ownership:
+///   - `owner`: Optional owner information describing who owns or manages the item.
+/// - Hierarchy:
+///   - `parentID`: Optional UUID linking this item to a parent item, enabling manual tree structures.
+///   - `childrenIDs()`: Returns the set of child item identifiers managed internally.
+///   - `addChildWith(id:)`, `removeChildWith(id:)`: Helpers to maintain the manual hierarchy.
+///     Note: Hierarchical relationships are not automatically enforced—clients must
+///     maintain both parent and child references consistently.
+/// - Automation metadata:
+///   - `automationLabel`: Optional label commonly used in open automation systems (e.g., ASCOM, INDI)
+///     and scheduling/discovery tools; recommended to be unique within its domain.
+/// - Media association:
+///   - `mediaSourceID`: Optional UUID linking the item to external media (e.g., images, audio).
 ///
-/// Notes on hierarchy:
-/// - Hierarchical relationships are not automatically managed. Clients are responsible
-///   for constructing and maintaining parent/child links using the provided helper methods:
-///   `childrenIDs()`, `addChildWith(id:)`, and `removeChildWith(id:)`.
-///
-/// Codable behavior:
+/// Codable and external representation:
 /// - Custom coding keys map select properties to snake_case to ensure stable external
 ///   representations:
 ///   - `parentID`        -> `parent_id`
@@ -48,12 +52,21 @@ import Foundation
 ///   - `mediaSourceID`   -> `media_source_id`
 ///
 /// Equality:
-/// - Conformance to `Equatable` enables straightforward comparisons, which is useful
-///   when diffing collections or detecting changes.
+/// - `Equatable` conformance enables straightforward diffing and change detection.
+///
+/// Thread-safety:
+/// - As a struct with internal mutable state (children set), treat instances as
+///   non-thread-safe if mutated concurrently.
 public struct PolisItem: Codable, Equatable {
 
     /// Uniquely identifies the POLIS Item
     public var identity: PolisIdentity
+
+    /// Defines the Mode of Operation of the POLIS Item
+    ///
+    /// For artifacts like monuments it is recommended to us `.notApplicable` instead of the
+    /// default value `.unknown`.
+    public var modeOfOperation: PolisModeOfOperation
 
     /// Who are the owners of the POLIS Item?
     public var owner: PolisOwner?
@@ -71,14 +84,16 @@ public struct PolisItem: Codable, Equatable {
 
     /// Designated initialiser
     public init(identity: PolisIdentity,
-                owner: PolisOwner?       = nil,
-                parentID: UUID?          = nil,
-                automationLabel: String? = nil,
-                mediaSourceID: UUID?     = nil) {
-        self.identity      = identity
-        self.owner         = owner
-        self.parentID      = parentID
-        self.mediaSourceID = mediaSourceID
+                modeOfOperation: PolisModeOfOperation = .unknown,
+                owner: PolisOwner?                    = nil,
+                parentID: UUID?                       = nil,
+                automationLabel: String?              = nil,
+                mediaSourceID: UUID?                  = nil) {
+        self.identity        = identity
+        self.modeOfOperation = modeOfOperation
+        self.owner           = owner
+        self.parentID        = parentID
+        self.mediaSourceID   = mediaSourceID
     }
 
     // The following three methods help the creation of a tree-based hierarchy of POLIS Items.
@@ -95,6 +110,7 @@ public struct PolisItem: Codable, Equatable {
 public extension PolisItem {
     enum CodingKeys: String, CodingKey {
         case identity
+        case modeOfOperation = "mode_of_operation"
         case owner
         case parentID        = "parent_id"
         case automationLabel = "automation_label"

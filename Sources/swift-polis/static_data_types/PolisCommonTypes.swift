@@ -92,6 +92,7 @@ public enum PolisModeOfOperation: String, Codable {
     case robotic
     case mixed       // e.g. in case of Network
     case other
+    case notApplicable = "not_applicable"
     case unknown
 }
 
