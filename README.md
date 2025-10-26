@@ -44,8 +44,6 @@ The simplest configuration is the Polis client. The client monitors and syncs wi
 - ⛔️ Fix Address Tests!
 - ⛔️ Fix PolisDirectory.ProviderDirectoryEntry Tests!
 
-- General ToDo - make sure all examples have JSON data examples.
-- General ToDo - make sure all swift files have the proper copyright message.
 - General ToDo - document `local` vs. `reference` UUIDs
 
 - Implement PolisProviderManager
@@ -81,10 +79,6 @@ The simplest configuration is the Polis client. The client monitors and syncs wi
 - PolisAddress
     - Test
     - Document
-- PolisItem
-    - Test
-    - Document
-    - JSON examples
 - PolisOrganisation
     - Test
     - Document
@@ -97,16 +91,3 @@ The simplest configuration is the Polis client. The client monitors and syncs wi
 - General ToDo - After everything else is finished, produce valid JSON schemas
 - General ToDo - Implement Validation for all type
 
-### Done
-- ✅ Create support for References:
-    - ✅ Create global functions
-    - ✅ Test
-    - ✅ Document
-- ✅ Implement, test and document global Logger
-- ✅ Owner (part of Item) needs tests, JSON, and documentation
-- ✅ PolisArtifact
-    - ✅ Implement init()
-    - ✅ Tests
-    - ✅ Documentation
-    - ✅ JSON examples
-- ✅ Replace Admin with Person

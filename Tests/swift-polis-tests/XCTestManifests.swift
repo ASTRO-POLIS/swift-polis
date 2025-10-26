@@ -24,6 +24,7 @@ public func allTests() -> [XCTestCaseEntry] {
 
         // static_data_types
         XCTestCase(PolisIdentityTests),
+        XCTestCase(PolisItemTests),
 
 
 

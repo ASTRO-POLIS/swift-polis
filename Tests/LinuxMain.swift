@@ -25,7 +25,7 @@ tests += PolisImplementationTests.allTests()
 
 // static_data_types
 tests += PolisIdentityTests.allTests()
-
+tests += PolisItemTests.allTests()
 
 
 
