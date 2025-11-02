@@ -72,7 +72,7 @@ open class PersistentObject: Persisting {
 
     static var polisFileResourceFinder: PolisFileResourceFinder!
     static var polisRemoteResourceFinder: PolisRemoteResourceFinder!
-    static var auxiliaryServiceHosts = [String : String]()
+    static let auxiliaryServiceHosts = [String : String]()
     static var remoteWriteAPI: String?
 
 

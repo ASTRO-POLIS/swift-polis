@@ -13,13 +13,15 @@ extension PolisDirectory.ProviderDirectoryEntry: StorableItem {
     static func loadFromLocalFileSystemUsing(store: ObjectStore) async throws -> AnyObject {
         let finder = await store.fileResourceFinder()
         let path   = finder.configurationFile()
+        let fm     = FileManager.default
+        var data: Data?
 
         data = fm.contents(atPath: path)
 
         guard let data = data else { throw ObjectStore.ObjectStoreError.cannotAccessOrCreateStandardPolisFile }
 
         do {
-            let entry = try jsonDecoder.decode(PolisDirectory.ProviderDirectoryEntry.self, from: data)
+            let entry = try __localResources.jsonDecoder.decode(PolisDirectory.ProviderDirectoryEntry.self, from: data)
 
             return entry as AnyObject
         }
@@ -36,16 +38,17 @@ extension PolisDirectory.ProviderDirectoryEntry: StorableItem {
         let finder      = await store.fileResourceFinder()
         let path        = finder.configurationFile()
         var newDirEntry = self
+        var data: Data
 
         newDirEntry.lastUpdateTime = Date.now
 
-        do    { data = try jsonEncoder.encode(newDirEntry) }
+        do    { data = try __localResources.jsonEncoder.encode(newDirEntry) }
         catch {
             PolisLogger.shared.error("PolisDirectory.ProviderDirectoryEntry:flashUsing - Cannot encode POLIS Provider Main Configuration Entry")
             throw ObjectStore.ObjectStoreError.cannotEncodePolisType
         }
 
-        try await saveFileAt(path:path, caller: "PolisDirectory.ProviderDirectoryEntry:flashUsing")
+        try await saveFileAt(path:path, data: data, caller: "PolisDirectory.ProviderDirectoryEntry:flashUsing")
     }
 }
 
@@ -54,6 +57,8 @@ extension PolisDirectory: StorableItem {
     static func loadFromLocalFileSystemUsing(store: ObjectStore) async throws -> AnyObject {
         let finder = await store.fileResourceFinder()
         let path   = finder.polisProviderDirectoryFile()
+        let fm     = FileManager.default
+        var data: Data?
 
         data = fm.contents(atPath: path)
 
@@ -61,7 +66,7 @@ extension PolisDirectory: StorableItem {
         guard let data = data else { throw ObjectStore.ObjectStoreError.cannotAccessOrCreateStandardPolisFile }
 
         do {
-            let entry = try jsonDecoder.decode(PolisDirectory.self, from: data)
+            let entry = try __localResources.jsonDecoder.decode(PolisDirectory.self, from: data)
 
             return entry as AnyObject
         }
@@ -78,16 +83,17 @@ extension PolisDirectory: StorableItem {
         let finder = await store.fileResourceFinder()
         let path   = finder.polisProviderDirectoryFile()
         var dir    = self
+        var data: Data
 
         dir.lastUpdateTime = Date.now
 
-        do    { data = try jsonEncoder.encode(dir) }
+        do    { data = try __localResources.jsonEncoder.encode(dir) }
         catch {
             PolisLogger.shared.error("PolisDirectory:flashUsing - Cannot encode POLIS Directory")
             throw ObjectStore.ObjectStoreError.cannotEncodePolisType
         }
 
-        try await saveFileAt(path:path, caller: "PolisDirectory:flashUsing")
+        try await saveFileAt(path:path, data: data, caller: "PolisDirectory:flashUsing")
 
         await store.setPolisProviderConfigurationEntry(store.polisProviderConfigurationEntry())
     }
@@ -98,13 +104,15 @@ extension PolisObservingFacilityDirectory: StorableItem {
     static func loadFromLocalFileSystemUsing(store: ObjectStore) async throws -> AnyObject {
         let finder = await store.fileResourceFinder()
         let path   = finder.observingFacilitiesDirectoryFile()
+        let fm     = FileManager.default
+        var data: Data?
 
         data = fm.contents(atPath: path)
 
         guard let data = data else { throw ObjectStore.ObjectStoreError.cannotAccessOrCreateStandardPolisFile }
 
         do {
-            let entry = try jsonDecoder.decode(PolisObservingFacilityDirectory.self, from: data)
+            let entry = try __localResources.jsonDecoder.decode(PolisObservingFacilityDirectory.self, from: data)
 
             return entry as AnyObject
         }
@@ -122,16 +130,17 @@ extension PolisObservingFacilityDirectory: StorableItem {
         let finder = await store.fileResourceFinder()
         let path   = finder.observingFacilitiesDirectoryFile()
         var dir    = self
+        var data: Data
 
         dir.lastUpdate = Date.now
 
-        do    { data = try jsonEncoder.encode(dir) }
+        do    { data = try __localResources.jsonEncoder.encode(dir) }
         catch {
             PolisLogger.shared.error("PolisObservingFacilityDirectory:flashUsing - Cannot encode POLIS Observing Facility Directory")
             throw ObjectStore.ObjectStoreError.cannotEncodePolisType
         }
 
-        try await saveFileAt(path:path, caller: "PolisObservingFacilityDirectory:flashUsing")
+        try await saveFileAt(path:path, data: data, caller: "PolisObservingFacilityDirectory:flashUsing")
     }
 }
 
@@ -145,13 +154,15 @@ extension PolisObservingFacilityDetails: StorableItem {
 
         let finder = await store.fileResourceFinder()
         let path   = finder.observingFacilityFile(observingFacilityID: facilityID)
+        let fm     = FileManager.default
+        var data: Data?
 
         data = fm.contents(atPath: path)
 
         guard let data = data else { throw ObjectStore.ObjectStoreError.cannotAccessOrCreateStandardPolisFile }
 
         do {
-            let entry = try jsonDecoder.decode(PolisObservingFacilityDetails.self, from: data)
+            let entry = try __localResources.jsonDecoder.decode(PolisObservingFacilityDetails.self, from: data)
 
             return entry as AnyObject
         }
@@ -168,16 +179,17 @@ extension PolisObservingFacilityDetails: StorableItem {
         let finder  = await store.fileResourceFinder()
         let path    = finder.observingFacilityFile(observingFacilityID: item.identity.id)
         var details = self
+        var data: Data
 
         details.item.identity.lastUpdateTime = Date.now
 
-        do    { data = try jsonEncoder.encode(details) }
+        do    { data = try __localResources.jsonEncoder.encode(details) }
         catch {
             PolisLogger.shared.error("PolisObservingFacilityDetails:flashUsing - Cannot encode POLIS Observing Facility Details")
             throw ObjectStore.ObjectStoreError.cannotEncodePolisType
         }
 
-        try await saveFileAt(path:path, caller: "PolisObservingFacilityDetails:flashUsing")
+        try await saveFileAt(path:path, data: data, caller: "PolisObservingFacilityDetails:flashUsing")
     }
 }
 
@@ -192,13 +204,15 @@ extension PolisArtifact: StorableItem {
 
         let finder = await store.fileResourceFinder()
         let path   = finder.observingDataFile(withID: objectID, observingFacilityID: facilityID)
+        let fm     = FileManager.default
+        var data: Data?
 
         data = fm.contents(atPath: path)
 
         guard let data = data else { throw ObjectStore.ObjectStoreError.cannotAccessOrCreateStandardPolisFile }
 
         do {
-            let entry = try jsonDecoder.decode(PolisArtifact.self, from: data)
+            let entry = try __localResources.jsonDecoder.decode(PolisArtifact.self, from: data)
 
             return entry as AnyObject
         }
@@ -215,16 +229,17 @@ extension PolisArtifact: StorableItem {
         let finder  = await store.fileResourceFinder()
         let path    = finder.observingDataFile(withID: id, observingFacilityID: facilityID)
         var details = self
+        var data: Data
 
         details.identity.lastUpdateTime = Date.now
 
-        do    { data = try jsonEncoder.encode(details) }
+        do    { data = try __localResources.jsonEncoder.encode(details) }
         catch {
             PolisLogger.shared.error("PolisArtifact:flashUsing - Cannot encode POLIS Artifact")
             throw ObjectStore.ObjectStoreError.cannotEncodePolisType
         }
 
-        try await saveFileAt(path:path, caller: "PolisArtifact:flashUsing")
+        try await saveFileAt(path:path, data: data, caller: "PolisArtifact:flashUsing")
     }
 }
 
@@ -239,13 +254,15 @@ extension PolisEarthFixedBaseObservingFacilityDetails: StorableItem {
 
         let finder = await store.fileResourceFinder()
         let path   = finder.observingDataFile(withID: objectID, observingFacilityID: facilityID)
+        let fm     = FileManager.default
+        var data: Data?
 
         data = fm.contents(atPath: path)
 
         guard let data = data else { throw ObjectStore.ObjectStoreError.cannotAccessOrCreateStandardPolisFile }
 
         do {
-            let entry = try jsonDecoder.decode(PolisEarthFixedBaseObservingFacilityDetails.self, from: data)
+            let entry = try __localResources.jsonDecoder.decode(PolisEarthFixedBaseObservingFacilityDetails.self, from: data)
 
             return entry as AnyObject
         }
@@ -262,16 +279,17 @@ extension PolisEarthFixedBaseObservingFacilityDetails: StorableItem {
         let finder  = await store.fileResourceFinder()
         let path    = finder.observingDataFile(withID: id, observingFacilityID: facilityID)
         var details = self
+        var data: Data
 
         details.lastUpdateTime = Date.now
 
-        do    { data = try jsonEncoder.encode(details) }
+        do    { data = try __localResources.jsonEncoder.encode(details) }
         catch {
             PolisLogger.shared.error("PolisEarthFixedBaseObservingFacilityDetails:flashUsing - Cannot encode POLIS PolisEarthFixedBaseObservingFacilityDetails")
             throw ObjectStore.ObjectStoreError.cannotEncodePolisType
         }
 
-        try await saveFileAt(path:path, caller: "PolisEarthFixedBaseObservingFacilityDetails:flashUsing")
+        try await saveFileAt(path:path, data: data, caller: "PolisEarthFixedBaseObservingFacilityDetails:flashUsing")
     }
 }
 
@@ -286,13 +304,15 @@ extension PolisPlace: StorableItem {
 
         let finder = await store.fileResourceFinder()
         let path   = finder.observingDataFile(withID: objectID, observingFacilityID: facilityID)
+        let fm     = FileManager.default
+        var data: Data?
 
         data = fm.contents(atPath: path)
 
         guard let data = data else { throw ObjectStore.ObjectStoreError.cannotAccessOrCreateStandardPolisFile }
 
         do {
-            let entry = try jsonDecoder.decode(PolisPlace.self, from: data)
+            let entry = try __localResources.jsonDecoder.decode(PolisPlace.self, from: data)
 
             return entry as AnyObject
         }
@@ -309,16 +329,17 @@ extension PolisPlace: StorableItem {
         let finder  = await store.fileResourceFinder()
         let path    = finder.observingDataFile(withID: id, observingFacilityID: facilityID)
         var details = self
+        var data: Data
 
         details.lastUpdateTime = Date.now
 
-        do    { data = try jsonEncoder.encode(details) }
+        do    { data = try __localResources.jsonEncoder.encode(details) }
         catch {
             PolisLogger.shared.error("PolisPlace:flashUsing - Cannot encode POLIS PolisPlace")
             throw ObjectStore.ObjectStoreError.cannotEncodePolisType
         }
 
-        try await saveFileAt(path:path, caller: "PolisPlace:flashUsing")
+        try await saveFileAt(path:path, data: data, caller: "PolisPlace:flashUsing")
     }
 }
 
@@ -333,13 +354,15 @@ extension PolisMediaSource: StorableItem {
 
         let finder = await store.fileResourceFinder()
         let path   = finder.observingDataFile(withID: objectID, observingFacilityID: facilityID)
+        let fm     = FileManager.default
+        var data: Data?
 
         data = fm.contents(atPath: path)
 
         guard let data = data else { throw ObjectStore.ObjectStoreError.cannotAccessOrCreateStandardPolisFile }
 
         do {
-            let entry = try jsonDecoder.decode(PolisMediaSource.self, from: data)
+            let entry = try __localResources.jsonDecoder.decode(PolisMediaSource.self, from: data)
 
             return entry as AnyObject
         }
@@ -348,12 +371,14 @@ extension PolisMediaSource: StorableItem {
 }
 
 //MARK: File Private stuff
-fileprivate let jsonEncoder = PrettyJSONEncoder()
-fileprivate let jsonDecoder = PrettyJSONDecoder()
-fileprivate let fm          = FileManager.default
-fileprivate var data: Data?
+//fileprivate let jsonEncoder = PrettyJSONEncoder()
+//fileprivate let jsonDecoder = PrettyJSONDecoder()
+//fileprivate let fm          = FileManager.default
+//fileprivate var data: Data?
 
-fileprivate func saveFileAt(path: String, caller: String) async throws {
+fileprivate func saveFileAt(path: String, data: Data, caller: String) async throws {
+    let fm = FileManager.default
+
     do {
         if fm.fileExists(atPath: path) { try fm.removeItem(atPath: path) }
     }
