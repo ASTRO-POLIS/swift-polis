@@ -21,6 +21,7 @@ public struct PolisObservingFacilityDetails: Identifiable, Codable, Equatable {
     public var astronomicalCode: String?                                   // Minor planet codes, etc.
 
     // Relationship to other facilities
+    //TODO: We do not need a parent facility! Item has a parent!
     public var parentObservingFacilityID: UUID?
 
     // Contains
