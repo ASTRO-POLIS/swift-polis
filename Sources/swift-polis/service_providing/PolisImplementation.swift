@@ -112,7 +112,7 @@ public struct PolisImplementation: Codable, Equatable  {
     public static func latestSupportedImplementation() -> PolisImplementation {
         var currentImplementation: PolisImplementation?
 
-        for info in PolisConstants.frameworkSupportedImplementation {
+        for info in polisFrameworkSupportedImplementation {
             if currentImplementation != nil {
                 if (currentImplementation!.version > info.version) {
                     currentImplementation = info
@@ -137,7 +137,7 @@ public struct PolisImplementation: Codable, Equatable  {
     /// - Important: The match is exact. If you need semantic compatibility (e.g., any patch
     ///   version within a compatible range), perform additional version checks using `SemanticVersion`.
     public static func polisServiceProviderSupports(_ implementation: PolisImplementation) -> Bool {
-        for anImplementation in PolisConstants.frameworkSupportedImplementation {
+        for anImplementation in polisFrameworkSupportedImplementation {
             if implementation == anImplementation { return true }
         }
         return false

@@ -93,7 +93,7 @@ final class PolisLoggerTests: XCTestCase {
     }
 
 
-    static var allTests = [
+    static let allTests = [
         ("test_PolisLogger_sharedInstance_shouldExist", test_PolisLogger_sharedInstance_shouldExist),
         ("test_PolisLogger_creatingLogs_shouldSucceed", test_PolisLogger_creatingLogs_shouldSucceed),
         ("test_PolisLogger_flushingLogs_shouldSucceed", test_PolisLogger_flushingLogs_shouldSucceed),

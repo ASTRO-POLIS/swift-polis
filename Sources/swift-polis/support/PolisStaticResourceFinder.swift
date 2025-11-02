@@ -49,7 +49,7 @@ public class PolisStaticResourceFinder {
     }
 
     public init(supportedImplementation: PolisImplementation) throws {
-        guard PolisConstants.frameworkSupportedImplementation.contains(supportedImplementation) else { throw ResourceFinderError.noSupportedImplementation }
+        guard polisFrameworkSupportedImplementation.contains(supportedImplementation) else { throw ResourceFinderError.noSupportedImplementation }
 
         self.dataFormatString = supportedImplementation.dataFormat.rawValue
         self.versionString    = supportedImplementation.version.description

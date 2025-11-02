@@ -85,7 +85,7 @@ final class PolisIdentityTests: XCTestCase {
         XCTAssertNotEqual(sut1, sut2)
     }
 
-    static var allTests = [
+    static let allTests = [
         ("test_PolisIdentity_codingSupport_shouldSucceed",      test_PolisIdentity_codingSupport_shouldSucceed),
         ("test_PolisIdentity_EquatableCompliance_shouldComply", test_PolisIdentity_EquatableCompliance_shouldComply),
     ]

@@ -93,7 +93,7 @@ open class Artifact: IdentifiableObject {
 extension Artifact {
     public func canEdit()                      async -> Bool {
         //TODO: Implement me!
-        await store.isEditable()
+        await sharedObjectStore.isEditable()
     }
 
 //    public override func startEditing()        async throws { } //TODO: Implement me!
@@ -103,7 +103,7 @@ extension Artifact {
         guard await didChange() else { return }
 
         nc.post(name: AppSupportStatusChangeNotification.artifactWillSaveNotification, object: self)
-        try await artifact.flashUsing(store: store)
+        try await artifact.flashUsing(store: sharedObjectStore)
         nc.post(name: AppSupportStatusChangeNotification.artifactDidSaveNotification, object: self)
     }
 
@@ -113,7 +113,7 @@ extension Artifact {
     public func loadData() async throws {
         nc.post(name: AppSupportStatusChangeNotification.artifactWillLoadNotification, object: self)
 
-        self.artifact = try await PolisArtifact.loadFromLocalFileSystemUsing(store: store,
+        self.artifact = try await PolisArtifact.loadFromLocalFileSystemUsing(store: sharedObjectStore,
                                                                              facilityID: facilityID,
                                                                              objectType: .observingFacilityDetails) as! PolisArtifact
 

@@ -154,7 +154,7 @@ final class PolisServiceProviderTests: XCTestCase {
                                                              name: "Telescope Observer",
                                                              shortDescription: "The Big Bank Source",
                                                              url: "https://polis.net",
-                                                             supportedImplementations: [PolisConstants.frameworkSupportedImplementation.last!],
+                                                             supportedImplementations: [polisFrameworkSupportedImplementation.last!],
                                                              providerType: .mirror,
                                                              contact: StaticDataTypeTestingSupport.examplePerson())
 
@@ -177,7 +177,7 @@ final class PolisServiceProviderTests: XCTestCase {
                                                                    name: "Telescope Observer",
                                                                    shortDescription: "The Big Bank Source",
                                                                    url: "https://polis.net",
-                                                                   supportedImplementations: [PolisConstants.frameworkSupportedImplementation.last!],
+                                                                   supportedImplementations: [polisFrameworkSupportedImplementation.last!],
                                                                    providerType: .mirror,
                                                                    contact: StaticDataTypeTestingSupport.examplePerson())
         let sut       = PolisDirectory(providerDirectoryEntries: [sut_entry!])
@@ -249,7 +249,7 @@ final class PolisServiceProviderTests: XCTestCase {
 //        XCTAssertNoThrow(try jsonDecoder.decode(PolisResourceDirectory.self, from: string!.data(using: .utf8)!))
     }
 
-    static var allTests = [
+    static let allTests = [
         ("test_ProviderDirectoryEntry_codingSupport_shouldSucceed",              test_ProviderDirectoryEntry_codingSupport_shouldSucceed),
         ("test_DirectoryEntry_loadingPolisDirectoryEntryFromData_shouldSucceed", test_DirectoryEntry_loadingPolisDirectoryEntryFromData_shouldSucceed),
         ("test_PolisDirectory_codingSupport_shouldSucceed",                      test_PolisDirectory_codingSupport_shouldSucceed),

@@ -68,7 +68,7 @@ final class ObjectStoreConfigurationTests : XCTestCase {
         XCTAssertNotNil(store)
     }
 
-    static var allTests = [
+    static let allTests = [
         ("test_ObjectStoreConfiguration_creation_shouldSucceed",    test_ObjectStoreConfiguration_creation_shouldSucceed),
         ("test_ObjectStoreConfiguration_createStore_shouldSucceed", test_ObjectStoreConfiguration_createStore_shouldSucceed),
     ]

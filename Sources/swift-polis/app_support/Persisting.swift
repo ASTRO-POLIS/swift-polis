@@ -67,7 +67,6 @@ public protocol Persisting: Identifiable {
 
 //MARK: - PersistenObject -
 open class PersistentObject: Persisting {
-    static var store: ObjectStore?
     static var synchronisationProvider: RemoteSynchronisationProviding?
 
     static var polisFileResourceFinder: PolisFileResourceFinder!
@@ -109,8 +108,6 @@ open class PersistentObject: Persisting {
         case missingFacilityID
     }
 
-    let store: ObjectStore
-
     var localPath: String!
     var remoteReadPath: String!
     var remoteWriteAPI: String? // The push (PUT) remote API with body of the corresponding JSON representation
@@ -137,7 +134,6 @@ open class PersistentObject: Persisting {
         var facilityIDString = facilityID?.uuidString
         let polisIdString    = id.uuidString
 
-        self.store           = PersistentObject.store!
         self.id              = id
         self.lastUpdateTime  = lastUpdateTime
         self.lifecycleStatus = lifecycleStatus

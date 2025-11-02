@@ -49,16 +49,16 @@ public struct PolisConstants {
     ///
     /// See ``PolisReference``
     public static let auxiliaryServiceHostsPushKey = "ServiceHostsPushKey"
-
-    /// A list of supported implementations for this concrete framework.
-    ///
-    /// Until we have a stable version there should be only one supported version. After version 1.0 of the
-    /// standard is released, we should start supporting past versions.
-    public static var frameworkSupportedImplementation: [PolisImplementation] =
-    [
-        PolisImplementation(dataFormat: PolisImplementation.DataFormat.json,
-                            apiSupport: PolisImplementation.APILevel.staticData,
-                            version: SemanticVersion(with: "0.1.0-alpha.1")!
-                           ),
-    ]
 }
+
+/// A list of supported implementations for this concrete framework.
+///
+/// Until we have a stable version there should be only one supported version. After version 1.0 of the
+/// standard is released, we should start supporting past versions.
+nonisolated(unsafe) public let polisFrameworkSupportedImplementation: [PolisImplementation] =
+[
+    PolisImplementation(dataFormat: PolisImplementation.DataFormat.json,
+                        apiSupport: PolisImplementation.APILevel.staticData,
+                        version: SemanticVersion(with: "0.1.0-alpha.1")!
+                       ),
+]

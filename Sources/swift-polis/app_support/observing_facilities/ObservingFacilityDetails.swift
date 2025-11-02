@@ -170,7 +170,7 @@ public extension ObservingFacilityDetails {
 
                 for artifactID in artifactIDs {
                     if artifactWithID(artifactID) == nil {
-                        let pA   = try await PolisArtifact.loadFromLocalFileSystemUsing(store: store, facilityID: item.identity.id, objectID: artifactID)
+                        let pA   = try await PolisArtifact.loadFromLocalFileSystemUsing(store: sharedObjectStore, facilityID: item.identity.id, objectID: artifactID)
                         let newA = try Artifact(storedArtifact: pA as! PolisArtifact, facility: facility)
                         newArtifacts.append(newA)
                     }
@@ -246,7 +246,7 @@ extension ObservingFacilityDetails {
             facility.lastUpdateTime = Date.now
 
             // Make sure my directory exist, and if not - create it
-            let facilityFolder = await store.fileResourceFinder().observingFacilityFolder(observingFacilityID: id)
+            let facilityFolder = await sharedObjectStore.fileResourceFinder().observingFacilityFolder(observingFacilityID: id)
 
             if !(fm.fileExists(atPath: facilityFolder, isDirectory: &isDir) && (isDir.boolValue)) {
                 do    { try fm.createDirectory(atPath: facilityFolder, withIntermediateDirectories: true) }
@@ -257,7 +257,7 @@ extension ObservingFacilityDetails {
             }
 
             // Write data to disc
-            try await facilityDetails.flashUsing(store: store)
+            try await facilityDetails.flashUsing(store: sharedObjectStore)
 
             // Change my object status
             localPersistencyStatus = .savedNotSynced
@@ -281,7 +281,7 @@ extension ObservingFacilityDetails {
 
         // If the Facility's folder does not exist. the Facility is newly created and in memory only. So skip the loading
         // without throwing an exception.
-        let facilityFolder = await store.fileResourceFinder().observingFacilityFolder(observingFacilityID: id)
+        let facilityFolder = await sharedObjectStore.fileResourceFinder().observingFacilityFolder(observingFacilityID: id)
         if !(fm.fileExists(atPath: facilityFolder, isDirectory: &isDir) && (isDir.boolValue)) { return }
 
         // Now we assume the Facility folder exist, and it is a bad error if the Details file does not exist
@@ -290,7 +290,7 @@ extension ObservingFacilityDetails {
             throw ObservingFacilityError.unavailableOrUnreadableLocalData
         }
 
-        self.facilityDetails = try await PolisObservingFacilityDetails.loadFromLocalFileSystemUsing(store: store,
+        self.facilityDetails = try await PolisObservingFacilityDetails.loadFromLocalFileSystemUsing(store: sharedObjectStore,
                                                                                                     facilityID: item.identity.id,
                                                                                                     objectType: .observingFacilityDetails) as! PolisObservingFacilityDetails
 
@@ -305,8 +305,8 @@ extension ObservingFacilityDetails {
     public func didChange() async-> Bool { _originalFacilityDetails != self.facilityDetails }
 
     private func ensureIKnowMyFacility() async throws {
-        if self.facility != nil                                          { return }
-        guard let possibleFacility = await store.facilityWithId(id) else { throw ObjectStore.ObjectStoreError.objectWithIDNotFound }
+        if self.facility != nil                                                      { return }
+        guard let possibleFacility = await sharedObjectStore.facilityWithId(id) else { throw ObjectStore.ObjectStoreError.objectWithIDNotFound }
 
         self.facility = possibleFacility
     }
@@ -318,7 +318,7 @@ extension ObservingFacilityDetails {
         Task {
             // Load EarthFixedBaseObservingFacilityDetails
             if fixedSurfaceEarthBaseDetailsID != nil {
-                let polisObject = try await PolisEarthFixedBaseObservingFacilityDetails.loadFromLocalFileSystemUsing(store: store,
+                let polisObject = try await PolisEarthFixedBaseObservingFacilityDetails.loadFromLocalFileSystemUsing(store: sharedObjectStore,
                                                                                                                      facilityID: item.identity.id,
                                                                                                                      objectID: fixedSurfaceEarthBaseDetailsID) as! PolisEarthFixedBaseObservingFacilityDetails
                 earthFixBasedObservingFacility = try await EarthFixedBaseObservingFacilityDetails(earthFixedBaseObservingFacilityDetails: polisObject)

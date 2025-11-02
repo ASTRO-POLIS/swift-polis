@@ -133,7 +133,7 @@ final class ObjectStoreTests: XCTestCase {
         try await sut.removeExistingLocalStore()
     }
 
-    static var allTests = [
+    static let allTests = [
         ("test_ObjectStore_creatingEmptyStore_shouldSucceed",            test_ObjectStore_creatingEmptyStore_shouldSucceed),
         ("test_ObjectStore_creatingAndRemovingLocalStore_shouldSucceed", test_ObjectStore_creatingAndRemovingLocalStore_shouldSucceed),
         ("test_ObjectStore_createNewFacility_shouldSucceed",             test_ObjectStore_createNewFacility_shouldSucceed),

@@ -146,7 +146,7 @@ public struct PolisDirectory {
             if (providerType == .mirror) && (mirrorID == nil) { throw DirectoryEntryError.mirrorIdNotAssigned }
 
             let suggestedImplementations = Set(supportedImplementations)
-            let supportedImplementations = Set(PolisConstants.frameworkSupportedImplementation)
+            let supportedImplementations = Set(polisFrameworkSupportedImplementation)
             let intersection             = supportedImplementations.intersection(suggestedImplementations)
             let filtered                 = Array(intersection)
 

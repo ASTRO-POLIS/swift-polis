@@ -43,7 +43,7 @@ final class PolisStaticResourceFinderTests: XCTestCase {
         try super.setUpWithError()
         print("In setUp.")
 
-        version                    = PolisConstants.frameworkSupportedImplementation.last!.version
+        version                    = polisFrameworkSupportedImplementation.last!.version
         correctImplementation      = PolisImplementation(dataFormat: PolisImplementation.DataFormat.json,
                                                          apiSupport: PolisImplementation.APILevel.staticData,
                                                          version: version)
@@ -133,7 +133,7 @@ final class PolisStaticResourceFinderTests: XCTestCase {
                        "\(domain)polis/\(version.description)/polis_observing_facilities/\(facilityID.uuidString)/\(dataID.uuidString).json")
     }
 
-    static var allTests = [
+    static let allTests = [
         ("test_PolisStaticResourceFinder_creation_shouldSucceed",             test_PolisStaticResourceFinder_creation_shouldSucceed),
         ("test_PolisStaticResourceFinder_foldersAndFiles_shouldSucceed",      test_PolisStaticResourceFinder_foldersAndFiles_shouldSucceed),
         ("test_PolisStaticResourceFinder_remoteResourceFinder_shouldSucceed", test_PolisStaticResourceFinder_remoteResourceFinder_shouldSucceed)

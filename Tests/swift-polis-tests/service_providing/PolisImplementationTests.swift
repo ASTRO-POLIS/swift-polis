@@ -26,7 +26,6 @@ final class PolisImplementationTests: XCTestCase {
     private var jsonDecoder: PrettyJSONDecoder!
     private var data: Data!
     private var string: String!
-    private var originalFrameworkSupportedImplementation: [PolisImplementation]!
 
     //MARK: - Setup & Teardown -
 
@@ -42,22 +41,8 @@ final class PolisImplementationTests: XCTestCase {
         try super.setUpWithError()
         print("In setUp.")
 
-        jsonEncoder                              = PrettyJSONEncoder()
-        jsonDecoder                              = PrettyJSONDecoder()
-
-        originalFrameworkSupportedImplementation = PolisConstants.frameworkSupportedImplementation
-
-        PolisConstants.frameworkSupportedImplementation =
-        [
-            PolisImplementation(dataFormat: PolisImplementation.DataFormat.xml,
-                                apiSupport: PolisImplementation.APILevel.staticData,
-                                version: SemanticVersion(with: "0.8")!
-                               ),
-            PolisImplementation(dataFormat: PolisImplementation.DataFormat.json,
-                                apiSupport: PolisImplementation.APILevel.staticData,
-                                version: SemanticVersion(with: "0.1.0-alpha.1")!
-                               ),
-        ]
+        jsonEncoder = PrettyJSONEncoder()
+        jsonDecoder = PrettyJSONDecoder()
     }
 
     override func tearDownWithError() throws {
@@ -68,8 +53,6 @@ final class PolisImplementationTests: XCTestCase {
         string      = nil
         jsonEncoder = nil
         jsonDecoder = nil
-
-        PolisConstants.frameworkSupportedImplementation = originalFrameworkSupportedImplementation
     }
 
     //MARK: - Tests -
@@ -134,7 +117,7 @@ final class PolisImplementationTests: XCTestCase {
         let sut = PolisImplementation.latestSupportedImplementation()
 
         // When
-        let last    = PolisConstants.frameworkSupportedImplementation.last!
+        let last    = polisFrameworkSupportedImplementation.last!
         let version = last.version
         let api     = last.apiSupport
         let format  = last.dataFormat

@@ -8,10 +8,11 @@
 import Foundation
 import SoftwareEtudesUtilities
 
+@MainActor public var sharedObjectStore: ObjectStore!
+
 public actor ObjectStore {
 
     //MARK: - Public APIs -
-    public static func currentObjectStore() -> ObjectStore { _currentObjectStore }
 
     public enum ObjectStoreError: Error {
         case localStoreAlreadyExists
@@ -42,7 +43,7 @@ public actor ObjectStore {
             if _localConfiguration != nil {
                 let domain = _localConfiguration.isTesting ? PolisConstants.testBigBangPolisDomain : PolisConstants.bigBangPolisDomain
                 _remoteResourceFinder = try PolisRemoteResourceFinder(at: URL(string: domain)!,
-                                                                  supportedImplementation: PolisConstants.frameworkSupportedImplementation.last!)
+                                                                  supportedImplementation: polisFrameworkSupportedImplementation.last!)
             }
         }
        return _remoteResourceFinder
@@ -108,7 +109,7 @@ public actor ObjectStore {
     ///
     /// Loading always will be step-by-step and will start with the most important data and later will continue with detail data.
     public func loadLocalStoreAt(path: String) async throws {
-        _fileResourceFinder = try PolisFileResourceFinder(at: URL(string: path)!, supportedImplementation: PolisConstants.frameworkSupportedImplementation.last!)
+        _fileResourceFinder = try PolisFileResourceFinder(at: URL(string: path)!, supportedImplementation: polisFrameworkSupportedImplementation.last!)
 
         nc.post(name: AppSupportStatusChangeNotification.ObjectStoreWillLoadNotification, object: self)
 
@@ -192,10 +193,10 @@ public actor ObjectStore {
     let jsonEncoder = PrettyJSONEncoder()
     let jsonDecoder = PrettyJSONDecoder()
 
-    init(fileResourceFinder: PolisFileResourceFinder, remoteResourceFinder: PolisRemoteResourceFinder) async {
+    @MainActor init(fileResourceFinder: PolisFileResourceFinder, remoteResourceFinder: PolisRemoteResourceFinder) async {
         self._fileResourceFinder        = fileResourceFinder
         self._remoteResourceFinder      = remoteResourceFinder
-        ObjectStore._currentObjectStore = self
+        sharedObjectStore = self
 
         await assignStoreToStaticProperties()
     }
@@ -221,7 +222,7 @@ public actor ObjectStore {
     private var data: Data?
 
 
-    static private var _currentObjectStore: ObjectStore!
+    @MainActor static private var _currentObjectStore: ObjectStore!
     private var _isConfigured: Bool?
     private var _fileResourceFinder: PolisFileResourceFinder!
     private var _remoteResourceFinder: PolisRemoteResourceFinder!
@@ -237,8 +238,6 @@ public actor ObjectStore {
     private var _facilities = [ObservingFacility]()
 
     private func configureRelatedTypesAfterStoreInitialisation() {
-        // PersistentObject
-        PersistentObject.store                     = self
         PersistentObject.polisFileResourceFinder   = _fileResourceFinder
         PersistentObject.polisRemoteResourceFinder = _remoteResourceFinder
     }
@@ -389,7 +388,7 @@ extension ObjectStore {
     }
 
     private func assignStoreToStaticProperties() async {
-        PersistentObject.store = self
+//        PersistentObject.store = self
     }
 }
 
@@ -506,3 +505,4 @@ fileprivate extension LocalConfiguration {
         case lastSyncResult   = "last_sync_result"
     }
 }
+
