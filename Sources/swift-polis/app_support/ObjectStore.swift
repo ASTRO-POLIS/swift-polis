@@ -120,7 +120,7 @@ public actor ObjectStore {
         // N. Load store configuration
         try loadLocalConfiguration()
         if !localStoreExists() {
-            PolisLogger.shared.error("ObjectStore:loadLocalStore - Local store does not exist or misconfigured")
+            await MainActor.run { PolisLogger.shared.error("ObjectStore:loadLocalStore - Local store does not exist or misconfigured") }
             throw ObjectStoreError.localStoreNotFound
         }
         if let provider = try await PolisDirectory.ProviderDirectoryEntry.loadFromLocalFileSystemUsing(store: self) as? PolisDirectory.ProviderDirectoryEntry {
@@ -165,7 +165,7 @@ public actor ObjectStore {
             try fm.removeItem(atPath: _fileResourceFinder.baseFolder())
         }
         catch {
-            PolisLogger.shared.error("ObjectStore:removeExistingLocalStore - Cannot remove existing local store: \(error.localizedDescription)")
+            await MainActor.run { PolisLogger.shared.error("ObjectStore:removeExistingLocalStore - Cannot remove existing local store: \(error.localizedDescription)") }
             throw ObjectStoreError.fileIO
         }
         _isConfigured = false
@@ -447,15 +447,17 @@ extension ObjectStore {
         try updateLocalConfiguration()
     }
 
-    private func updateLocalConfiguration() throws {
+    private func updateLocalConfiguration() async throws {
+        let configPath = configurationFilePath()
+        
         do    { data = try jsonEncoder.encode(_localConfiguration) }
         catch {
-            PolisLogger.shared.error("ObjectStore:updateLocalConfiguration - Cannot encode POLIS Configuration Data")
+            await MainActor.run { PolisLogger.shared.error("ObjectStore:updateLocalConfiguration - Cannot encode POLIS Configuration Data") }
             throw ObjectStore.ObjectStoreError.cannotEncodePolisType
         }
 
-        if !fm.createFile(atPath: configurationFilePath(), contents: data) {
-            PolisLogger.shared.error("ObjectStore:updateLocalConfiguration - Cannot save POLIS Configuration Data to: \(configurationFilePath())")
+        if !fm.createFile(atPath: configPath, contents: data)  {
+            await MainActor.run { PolisLogger.shared.error("ObjectStore:updateLocalConfiguration - Cannot save POLIS Configuration Data to: \(configPath)") }
             throw ObjectStore.ObjectStoreError.cannotWriteFile
         }
         _localConfiguration.lastSyncDate = Date.now

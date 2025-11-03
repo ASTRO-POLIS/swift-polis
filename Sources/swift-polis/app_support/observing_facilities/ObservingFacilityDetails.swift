@@ -144,7 +144,7 @@ public extension ObservingFacilityDetails {
 
     func addEarthFixedBaseObservingFacilityDetails() async throws -> EarthFixedBaseObservingFacilityDetails {
         guard (earthFixBasedObservingFacility == nil) || (fixedSurfaceEarthBaseDetailsID == nil)  else {
-            PolisLogger.shared.error("ObservingFacility:addEarthFixedBaseObservingFacilityDetails - EarthFixedBaseObservingFacilityDetails already exists")
+            await MainActor.run { PolisLogger.shared.error("ObservingFacility:addEarthFixedBaseObservingFacilityDetails - EarthFixedBaseObservingFacilityDetails already exists") }
             throw ObjectStore.ObjectStoreError.polisObjectOfTheTypeAlreadyExists
         }
 
@@ -158,7 +158,6 @@ public extension ObservingFacilityDetails {
         return result
     }
 }
-
 //MARK: Working with artifacts
 public extension ObservingFacilityDetails {
     // Arifacts of interest could be also on other solar system bodies (e.g. Apollo landing site)
@@ -221,7 +220,7 @@ extension ObservingFacilityDetails {
     public func canEdit() async -> Bool {
         do    { try await ensureIKnowMyFacility() }
         catch {
-            PolisLogger.shared.error("ObservingFacilityDetails:canEdit Could not ensure I know my facility!")
+            await MainActor.run { PolisLogger.shared.error("ObservingFacilityDetails:canEdit Could not ensure I know my facility!") }
             return false
         }
 
@@ -251,7 +250,7 @@ extension ObservingFacilityDetails {
             if !(fm.fileExists(atPath: facilityFolder, isDirectory: &isDir) && (isDir.boolValue)) {
                 do    { try fm.createDirectory(atPath: facilityFolder, withIntermediateDirectories: true) }
                 catch {
-                    PolisLogger.shared.error("ObservingFacility:saveChanges - Cannot cannot create a facility directory at: \(facilityFolder)")
+                    await MainActor.run { PolisLogger.shared.error("ObservingFacility:saveChanges - Cannot cannot create a facility directory at: \(facilityFolder)") }
                     throw ObservingFacilityError.cannotWritePolisFile
                 }
             }
@@ -286,7 +285,7 @@ extension ObservingFacilityDetails {
 
         // Now we assume the Facility folder exist, and it is a bad error if the Details file does not exist
         if !fm.fileExists(atPath: localPath) {
-            PolisLogger.shared.error("ObservingFacility:loadData - No local Facility Details found at: \(localPath!)")
+            await MainActor.run { PolisLogger.shared.error("ObservingFacility:loadData - No local Facility Details found at: \(localPath!)") }
             throw ObservingFacilityError.unavailableOrUnreadableLocalData
         }
 
@@ -331,3 +330,4 @@ extension ObservingFacilityDetails {
     }
 
 }
+

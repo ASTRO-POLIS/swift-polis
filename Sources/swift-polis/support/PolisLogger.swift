@@ -28,7 +28,7 @@ import Foundation
 ///  **Note:** Future versions of `swift-polis` will use `SoftwareEtudes`' logging library.
 public class PolisLogger {
 
-    public static let shared = PolisLogger()
+    @MainActor public static let shared = PolisLogger()
 
     /// Should logging messages be accumulated.
     public var shouldLog = true
