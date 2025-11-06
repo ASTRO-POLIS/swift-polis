@@ -81,10 +81,10 @@ public actor ObjectStore {
                                                                   providerType: providerConfiguration.providerType,
                                                                   contact: admin)
 
-        try newLocalConfiguration(remoteSyncServer: URL(string: providerConfiguration.url ?? PolisConstants.testBigBangPolisDomain),
+        try await newLocalConfiguration(remoteSyncServer: URL(string: providerConfiguration.url ?? PolisConstants.testBigBangPolisDomain),
                                   isEditable: isEditable,
                                   isTesting: isTesting)
-        try updateLocalConfiguration()
+        try await updateLocalConfiguration()
 
         // 3. Create the provider root
         _polisProviderConfigurationEntry = directory
@@ -157,7 +157,7 @@ public actor ObjectStore {
     /// Removes unconditionally local data.
     ///
     /// Throws an error if the data cannot be removed.
-    public func removeExistingLocalStore() throws {
+    public func removeExistingLocalStore() async throws {
         nc.post(name: AppSupportStatusChangeNotification.ObjectStoreWillRemoveNotification, object: self)
 
         do {
@@ -428,7 +428,7 @@ public struct ProviderConfiguration {
 
 //MARK: - Working with LocalConfiguration
 extension ObjectStore {
-    private func newLocalConfiguration(remoteSyncServer: URL? = nil, isEditable: Bool, isTesting: Bool) throws {
+    private func newLocalConfiguration(remoteSyncServer: URL? = nil, isEditable: Bool, isTesting: Bool) async throws {
         var remoteURL: URL
 
         if let url = remoteSyncServer { remoteURL = url }
@@ -444,7 +444,7 @@ extension ObjectStore {
                                         lastSyncResult: .neverSynced)
 
         _localConfiguration = config
-        try updateLocalConfiguration()
+        try await updateLocalConfiguration()
     }
 
     private func updateLocalConfiguration() async throws {
