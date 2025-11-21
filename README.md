@@ -16,6 +16,7 @@ The framework contains general sources common to all support levels and sources,
 Most unique POLIS Items (Observing Facilities, Observatories, Devices) are stored permanently in the unique Facility folder. The JSON/XML files that store the corresponding information are named based on the UUID of the Item. But there are also Items that could be shared. Best example is the Manufacturer. The same company can build telescopes for many facilities. To avoid duplications and possible mistakes, POLIS introduces References. These are shared resources that could be addressed from multiple Facilities or Observatories. Such resources are addressed by an extended UUID in the format: `ref://<type>/<UUID>` (e.g. `ref://manufacturer/776E7D44-6307-4511-9857-6BE8EBE1252B`)
 
 **Note:** File names of POLIS Items are alway in the format `<UUID>.<format>` where `format` is either `json` or `xml`. Resource Directories are addressing the the conversion of resource UUIDs to actual files.
+
 ## Dependancies 
 In general we are trying to avoid dependancies to other projects. Why? We share the concerns of many other well respected developers on this subject. However, in the case of `swift-polis` we have decided to use software modules developed and maintained by members of our team. This guarantees that even in the case that the concrete author of the module abandons the project, someone from our team can take over the maintenance.
 Current dependences include:

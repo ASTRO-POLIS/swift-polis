@@ -88,7 +88,7 @@
         "value_type": "string"
     },
     "mode_of_operation": {
-        "description": "Defines the mode of operation (and therefore, the level of authomation) of corresponding POLIS Item.",
+        "description": "Defines the mode of operation (and therefore, the level of automation) of corresponding POLIS Item.",
         "value_type": "string",
         "value_set": [
             "manual",

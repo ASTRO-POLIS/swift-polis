@@ -16,7 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 import Foundation
-
+ 
 /// A model representing a single POLIS domain item.
 ///
 /// PolisItem is a value type that encapsulates identity, ownership, operational state,
