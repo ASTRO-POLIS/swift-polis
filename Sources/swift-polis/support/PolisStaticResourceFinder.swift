@@ -21,35 +21,10 @@ import SoftwareEtudesUtilities
 
 public class PolisStaticResourceFinder {
 
-    /// Template definition of well known paths and APIs
-    ///
-    /// All paths start with the root directory `polis` followed by the `version`. The only exceptions are the main POLIS
-    /// Provider info file (/polis/polis.json) that defines all supported versions and POLIS Directory (/polis/polis_directory.json).
-    ///
-    /// If possible clients should consider  using the latest supported version.
-    public struct PredefinedPaths {
-        // Level 1 resource paths. These are folders or files.
-        public static let baseServiceDirectory                 = "polis"                      // e.g. /polis/
-        public static let serviceProviderConfigurationFileName = "polis"                      // e.g. /polis/polis.json
-        public static let serviceProviderDirectoryFileName     = "polis_directory"            // e.g. /polis/polis_directory.json
-        public static let observingFacilitiesDirectory         = "polis_observing_facilities" // e.g. /polis/<version>/polis_observing_facilities/
-        public static let observingFacilitiesDirectoryFileName = "polis_observing_facilities" // e.g. /polis/<version>/polis_observing_facilities.json
-        public static let polisResources                       = "polis_resources"            // e.g. /polis/<version>/polis_resources/ .. e.g. manufacturers
-        public static let polisResourcesDirectoryFileName      = "polis_resources"            // e.g. /polis/<version>/polis_resources/polis_resources.json
-        public static let polisOwners                          = "polis_owners"               // e.g. /polis/<version>/polis_owners/ .. e.g. Caltech
-        public static let polisOwnersDirectoryFileName         = "polis_owners"               // e.g. /polis/<version>/polis_owners/polis_owners.json
-        public static let polisManufacturers                   = "polis_manufacturers"        // e.g. /polis/<version>/polis_manufacturers/ .. e.g. ASA
-        public static let polisManufacturersDirectoryFileName  = "polis_manufacturers"        // e.g. /polis/<version>/polis_manufacturers/polis_manufacturers.json
-    }
 
-    /// Possible (hopefully self-explanatory) errors while creating various Resource Finders
-    public enum ResourceFinderError: Error {
-        case basePathNotAccessible
-        case noSupportedImplementation
-    }
 
     public init(supportedImplementation: PolisImplementation) throws {
-        guard polisFrameworkSupportedImplementation.contains(supportedImplementation) else { throw ResourceFinderError.noSupportedImplementation }
+        guard polisFrameworkSupportedImplementation.contains(supportedImplementation) else { throw PolisResourceFinderError.noSupportedImplementation }
 
         self.dataFormatString = supportedImplementation.dataFormat.rawValue
         self.versionString    = supportedImplementation.version.description
@@ -71,9 +46,9 @@ public class PolisFileResourceFinder: PolisStaticResourceFinder {
 
         if enhancedPath.scheme == nil { enhancedPath = URL(fileURLWithPath: path.path) }
 
-        guard try enhancedPath.checkPromisedItemIsReachable()           else { throw ResourceFinderError.basePathNotAccessible }
-        guard enhancedPath.isDirectoryPath()                            else { throw ResourceFinderError.basePathNotAccessible }
-        guard FileManager.default.fileExists(atPath: enhancedPath.path) else { throw ResourceFinderError.basePathNotAccessible }
+        guard try enhancedPath.checkPromisedItemIsReachable()           else { throw PolisResourceFinderError.basePathNotAccessible }
+        guard enhancedPath.isDirectoryPath()                            else { throw PolisResourceFinderError.basePathNotAccessible }
+        guard FileManager.default.fileExists(atPath: enhancedPath.path) else { throw PolisResourceFinderError.basePathNotAccessible }
 
         rootPath = enhancedPath
 
@@ -137,24 +112,51 @@ public class PolisRemoteResourceFinder: PolisStaticResourceFinder {
     private var domain: String
 }
 
+/// Possible (hopefully self-explanatory) errors while creating various Resource Finders
+public enum PolisResourceFinderError: Error {
+    case basePathNotAccessible
+    case noSupportedImplementation
+}
+
+/// Template definition of well known paths and APIs
+///
+/// All paths start with the root directory `polis` followed by the `version`. The only exceptions are the main POLIS
+/// Provider info file (/polis/polis.json) that defines all supported versions and POLIS Directory (/polis/polis_directory.json).
+///
+/// If possible clients should consider  using the latest supported version.
+fileprivate struct PredefinedPaths {
+    // Level 1 resource paths. These are folders or files.
+    static let baseServiceDirectory                 = "polis"                      // e.g. /polis/
+    static let serviceProviderConfigurationFileName = "polis"                      // e.g. /polis/polis.json
+    static let serviceProviderDirectoryFileName     = "polis_directory"            // e.g. /polis/polis_directory.json
+    static let observingFacilitiesDirectory         = "polis_observing_facilities" // e.g. /polis/<version>/polis_observing_facilities/
+    static let observingFacilitiesDirectoryFileName = "polis_observing_facilities" // e.g. /polis/<version>/polis_observing_facilities.json
+    static let polisResources                       = "polis_resources"            // e.g. /polis/<version>/polis_resources/ .. e.g. manufacturers
+    static let polisResourcesDirectoryFileName      = "polis_resources"            // e.g. /polis/<version>/polis_resources/polis_resources.json
+    static let polisOwners                          = "polis_owners"               // e.g. /polis/<version>/polis_owners/ .. e.g. Caltech
+    static let polisOwnersDirectoryFileName         = "polis_owners"               // e.g. /polis/<version>/polis_owners/polis_owners.json
+    static let polisManufacturers                   = "polis_manufacturers"        // e.g. /polis/<version>/polis_manufacturers/ .. e.g. ASA
+    static let polisManufacturersDirectoryFileName  = "polis_manufacturers"        // e.g. /polis/<version>/polis_manufacturers/polis_manufacturers.json
+}
+
 fileprivate struct RelativePaths {
     var versionString: String
     var fileExtension: String
 
     // Folder paths
-    let basePath = "\(PolisStaticResourceFinder.PredefinedPaths.baseServiceDirectory)/"
+    let basePath = "\(PredefinedPaths.baseServiceDirectory)/"
 
-    func observingFacilitiesPath() -> String { "\(basePath)\(versionString)/\(PolisStaticResourceFinder.PredefinedPaths.observingFacilitiesDirectory)"}
-    func resourcesPath() -> String           { "\(basePath)\(versionString)/\(PolisStaticResourceFinder.PredefinedPaths.polisResources)" }
-    func ownersPath() -> String              { "\(basePath)\(versionString)/\(PolisStaticResourceFinder.PredefinedPaths.polisOwners)" }
-    func manufacturersPath() -> String       { "\(basePath)\(versionString)/\(PolisStaticResourceFinder.PredefinedPaths.polisManufacturers)" }
+    func observingFacilitiesPath() -> String { "\(basePath)\(versionString)/\(PredefinedPaths.observingFacilitiesDirectory)"}
+    func resourcesPath() -> String           { "\(basePath)\(versionString)/\(PredefinedPaths.polisResources)" }
+    func ownersPath() -> String              { "\(basePath)\(versionString)/\(PredefinedPaths.polisOwners)" }
+    func manufacturersPath() -> String       { "\(basePath)\(versionString)/\(PredefinedPaths.polisManufacturers)" }
 
     // File paths
-    func configurationFile() -> String                     { "\(basePath)\(PolisStaticResourceFinder.PredefinedPaths.serviceProviderConfigurationFileName).\(fileExtension)" }
-    func polisProviderDirectoryFile() -> String            { "\(basePath)\(PolisStaticResourceFinder.PredefinedPaths.serviceProviderDirectoryFileName).\(fileExtension)" }
-    func polisObservingFacilitiesDirectoryFile() -> String { "\(basePath)\(versionString)/\(PolisStaticResourceFinder.PredefinedPaths.observingFacilitiesDirectoryFileName).\(fileExtension)" }
-    func polisResourcesDirectoryFile() -> String           { "\(basePath)\(versionString)/\(PolisStaticResourceFinder.PredefinedPaths.polisResourcesDirectoryFileName).\(fileExtension)" }
-    func polisOwnersDirectoryFile() -> String              { "\(basePath)\(versionString)/\(PolisStaticResourceFinder.PredefinedPaths.polisOwnersDirectoryFileName).\(fileExtension)" }
-    func polisManufacturersDirectoryFile() -> String       { "\(basePath)\(versionString)/\(PolisStaticResourceFinder.PredefinedPaths.polisManufacturersDirectoryFileName).\(fileExtension)" }
+    func configurationFile() -> String                     { "\(basePath)\(PredefinedPaths.serviceProviderConfigurationFileName).\(fileExtension)" }
+    func polisProviderDirectoryFile() -> String            { "\(basePath)\(PredefinedPaths.serviceProviderDirectoryFileName).\(fileExtension)" }
+    func polisObservingFacilitiesDirectoryFile() -> String { "\(basePath)\(versionString)/\(PredefinedPaths.observingFacilitiesDirectoryFileName).\(fileExtension)" }
+    func polisResourcesDirectoryFile() -> String           { "\(basePath)\(versionString)/\(PredefinedPaths.polisResourcesDirectoryFileName).\(fileExtension)" }
+    func polisOwnersDirectoryFile() -> String              { "\(basePath)\(versionString)/\(PredefinedPaths.polisOwnersDirectoryFileName).\(fileExtension)" }
+    func polisManufacturersDirectoryFile() -> String       { "\(basePath)\(versionString)/\(PredefinedPaths.polisManufacturersDirectoryFileName).\(fileExtension)" }
 }
 
