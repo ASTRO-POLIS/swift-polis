@@ -24,6 +24,8 @@ let package = Package(
             name: "swift-polis",
             dependencies: [
                 .product(name: "SoftwareEtudesUtilities", package: "SoftwareEtudes"),
+                .product(name: "SoftwareEtudesLogging", package: "SoftwareEtudes"),
+                .product(name: "SoftwareEtudesCoreMessageDispatching", package: "SoftwareEtudes"),
                 .product(name: "UnitsAndMeasurements",    package: "ScienceEtudes"),
             ]
         ),
