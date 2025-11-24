@@ -19,27 +19,7 @@
 import Foundation
 import SoftwareEtudesUtilities
 
-public class PolisStaticResourceFinder {
-
-
-
-    public init(supportedImplementation: PolisImplementation) throws {
-        guard polisFrameworkSupportedImplementation.contains(supportedImplementation) else { throw PolisResourceFinderError.noSupportedImplementation }
-
-        self.dataFormatString = supportedImplementation.dataFormat.rawValue
-        self.versionString    = supportedImplementation.version.description
-        self.relativePaths    = RelativePaths(versionString: versionString, fileExtension: dataFormatString)
-    }
-
-    func fileExtension() -> String { ".\(self.dataFormatString)" }    // e.g. ".json"
-
-    let dataFormatString: String
-    let versionString: String
-
-    fileprivate let relativePaths: RelativePaths
-}
-
-public class PolisFileResourceFinder: PolisStaticResourceFinder {
+public class PolisFileResourceFinder {
 
     public init(at path: URL, supportedImplementation: PolisImplementation) throws {
         var enhancedPath = path
@@ -50,9 +30,9 @@ public class PolisFileResourceFinder: PolisStaticResourceFinder {
         guard enhancedPath.isDirectoryPath()                            else { throw PolisResourceFinderError.basePathNotAccessible }
         guard FileManager.default.fileExists(atPath: enhancedPath.path) else { throw PolisResourceFinderError.basePathNotAccessible }
 
-        rootPath = enhancedPath
-
-        try super.init(supportedImplementation: supportedImplementation)
+        rootPath       = enhancedPath
+        resourceFinder = try StaticResourceFinder(supportedImplementation: supportedImplementation)
+        relativePaths  = resourceFinder.relativePaths
     }
 
 
@@ -78,16 +58,22 @@ public class PolisFileResourceFinder: PolisStaticResourceFinder {
     public func manufacturerDataFile(manufacturerID: UUID) -> String                 { "\(manufacturersFolder())\(manufacturerID.uuidString)\(fileExtension())" }
 
     private let rootPath: URL
+    private let resourceFinder: StaticResourceFinder
+    private let relativePaths: RelativePaths
+
+    private func fileExtension() -> String { ".\(resourceFinder.dataFormatString)" }    // e.g. ".json"
 }
 
 
-public class PolisRemoteResourceFinder: PolisStaticResourceFinder {
+public class PolisRemoteResourceFinder {
 
     public init(at domain: URL, supportedImplementation: PolisImplementation) throws {
         self.domain = "\(domain.absoluteString)"
         if !self.domain.hasSuffix("/") { self.domain.append("/") }
 
-        try super.init(supportedImplementation: supportedImplementation)
+        resourceFinder = try StaticResourceFinder(supportedImplementation: supportedImplementation)
+        relativePaths  = resourceFinder.relativePaths
+
     }
 
     public func polisDomain() -> String { domain }
@@ -110,6 +96,11 @@ public class PolisRemoteResourceFinder: PolisStaticResourceFinder {
     public func manufacturerDataURL(manufacturerID: UUID) -> String                 { "\(manufacturerURL())\(manufacturerID.uuidString)/\(fileExtension())" }
 
     private var domain: String
+    private let resourceFinder: StaticResourceFinder
+    private let relativePaths: RelativePaths
+
+    private func fileExtension() -> String { ".\(resourceFinder.dataFormatString)" }    // e.g. ".json"
+
 }
 
 /// Possible (hopefully self-explanatory) errors while creating various Resource Finders
@@ -138,6 +129,25 @@ fileprivate struct PredefinedPaths {
     static let polisManufacturers                   = "polis_manufacturers"        // e.g. /polis/<version>/polis_manufacturers/ .. e.g. ASA
     static let polisManufacturersDirectoryFileName  = "polis_manufacturers"        // e.g. /polis/<version>/polis_manufacturers/polis_manufacturers.json
 }
+
+fileprivate struct StaticResourceFinder {
+
+    public init(supportedImplementation: PolisImplementation) throws {
+        guard polisFrameworkSupportedImplementation.contains(supportedImplementation) else { throw PolisResourceFinderError.noSupportedImplementation }
+
+        self.dataFormatString = supportedImplementation.dataFormat.rawValue
+        self.versionString    = supportedImplementation.version.description
+        self.relativePaths    = RelativePaths(versionString: versionString, fileExtension: dataFormatString)
+    }
+
+    let dataFormatString: String
+    let versionString: String
+    let relativePaths: RelativePaths
+
+    func fileExtension() -> String { ".\(self.dataFormatString)" }    // e.g. ".json"
+}
+
+
 
 fileprivate struct RelativePaths {
     var versionString: String
