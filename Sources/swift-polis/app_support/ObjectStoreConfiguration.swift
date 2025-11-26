@@ -110,7 +110,7 @@ public final class ObjectStoreConfiguration {
     private var _fileResourceFinder: PolisFileResourceFinder?
     private var _remoteResourceFinder: PolisRemoteResourceFinder?
 
-    private var logger          = PolisLogger.shared
+    private let logger          = SEPolisLogger.logger("ObjectStoreConfiguration")
     private let fm              = FileManager.default
     private var isDir: ObjCBool = false
 
