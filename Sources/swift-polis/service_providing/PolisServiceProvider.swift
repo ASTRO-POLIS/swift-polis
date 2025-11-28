@@ -190,7 +190,7 @@ public struct PolisDirectory {
 //MARK: - Observing Facility Directory -
 
 /// A compact list of all known Observing Facilities
-public struct PolisObservingFacilityDirectory: Codable {
+public struct PolisObservingFacilityDirectory: Codable, Sendable {
 
     /// It is expected that the list of observatory facilities is long and each facility's data could be way over 1MB. Therefore a
     /// compact list of facilities references is maintained separately containing only facility's `identity`  It is
@@ -198,7 +198,7 @@ public struct PolisObservingFacilityDirectory: Codable {
     /// invalidated (e.g. lastUpdate is changed).
     ///
     ///  **Note:** Only root facility (e.g. without a parent facility) should be listed!
-    public struct ObservingFacilityReference: Codable, Identifiable, Equatable {
+    public struct ObservingFacilityReference: Codable, Identifiable, Equatable, Sendable {
         public var identity: PolisIdentity
         public var gravitationalBodyRelationship: PolisObservingFacilityLocationType
         public var placeInTheSolarSystem : PolisPlaceInTheSolarSystem

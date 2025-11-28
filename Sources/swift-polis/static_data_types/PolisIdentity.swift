@@ -62,7 +62,7 @@ import Foundation
 ///
 /// Related Types
 /// - PolisLifecycleStatus: Enumerates object readiness and lifecycle states used by POLIS.
-public struct PolisIdentity: Codable, Identifiable, Equatable {
+public struct PolisIdentity: Codable, Identifiable, Equatable, Sendable {
 
     /// Globally unique identifier (UUID version 4) (ID in XML). The `id` is also needed for `Identifiable`
     /// protocol conformance.

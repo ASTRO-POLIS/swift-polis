@@ -25,7 +25,7 @@ import Foundation
 /// is used to mark that the item does not follow the POLIS standard, or violates community rules. Normally entities
 /// will be warned first, and if they continue to break standards and rules, they will be deleted.
 /// - `unknown`   - do not sync, but continue monitoring
-public enum PolisLifecycleStatus: String, Codable, Equatable {
+public enum PolisLifecycleStatus: String, Codable, Equatable, Sendable {
 
     /// `inactive` indicates new, being edited, or in process of being upgraded by the provider(s).
     case inactive
@@ -52,7 +52,7 @@ public enum PolisLifecycleStatus: String, Codable, Equatable {
     case unknown
 }
 
-public enum PolisObservingFacilityLocationType: String, Codable, CaseIterable, Equatable {
+public enum PolisObservingFacilityLocationType: String, Codable, CaseIterable, Equatable, Sendable {
     case surfaceFixed          = "surface_fixed"
     case surfaceMobile         = "surface_mobile"
     case airborneSelfPropelled = "airborne_self_propelled"
@@ -63,7 +63,7 @@ public enum PolisObservingFacilityLocationType: String, Codable, CaseIterable, E
     case other
 }
 
-public enum PolisPlaceInTheSolarSystem: String, Codable, CaseIterable, Equatable {
+public enum PolisPlaceInTheSolarSystem: String, Codable, CaseIterable, Equatable, Sendable {
     case sun         = "Sun"
 
     // Planets & Dwarfs

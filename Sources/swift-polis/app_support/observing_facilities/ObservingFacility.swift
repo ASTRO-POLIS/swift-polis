@@ -155,7 +155,7 @@ extension ObservingFacility {
             nc.post(name: AppSupportStatusChangeNotification.facilityWillSaveNotification, object: self)
 
             // Now make sure, that the Facility directory is updated
-            try await store.addOrUpdateObservingFacilityDirectoryEntry(self)
+            try await store.addOrUpdateObservingFacilityDirectoryEntry(self.observingFacilityEntry)
 
             nc.post(name: AppSupportStatusChangeNotification.facilityDidSaveNotification, object: self)
         }
@@ -181,4 +181,22 @@ extension ObservingFacility {
     }
 
     public func prepareToCloseTheObjectStore() async throws { } //TODO: Implement me!
+}
+
+internal extension ObservingFacility {
+    var observingFacilityEntry: ObservingFacilityEntry {
+        ObservingFacilityEntry(
+            id                           : self.id,
+            identity                     : self.identity,
+            placeInTheSolarSystem        : self.placeInTheSolarSystem,
+            gravitationalBodyRelationship: self.gravitationalBodyRelationship
+        )
+    }
+}
+
+internal struct ObservingFacilityEntry: Sendable {
+    let id                           : UUID
+    let identity                     : PolisIdentity
+    let placeInTheSolarSystem        : PolisPlaceInTheSolarSystem
+    let gravitationalBodyRelationship: PolisObservingFacilityLocationType
 }

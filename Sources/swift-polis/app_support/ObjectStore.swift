@@ -285,7 +285,7 @@ extension ObjectStore {
         return nil
     }
 
-    func addOrUpdateObservingFacilityDirectoryEntry(_ facility: ObservingFacility) async throws {
+    func addOrUpdateObservingFacilityDirectoryEntry(_ facility: ObservingFacilityEntry) async throws {
         if let index = _facilityDirectory.observingFacilityReferences.firstIndex(where: {$0.id == facility.id} ) {
             var ref = _facilityDirectory.observingFacilityReferences[index]
 
