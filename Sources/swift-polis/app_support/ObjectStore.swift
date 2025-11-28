@@ -267,7 +267,7 @@ extension ObjectStore {
         facility.placeInTheSolarSystem         = placeInTheSolarSystem
         try await facility.startEditing()
 
-        try await addOrUpdateObservingFacilityDirectoryEntry(facility)
+        try await addOrUpdateObservingFacilityDirectoryEntry(ObservingFacilityEntry(from: facility))
         _facilities.append(facility)
         try await facility.saveChanges()
 

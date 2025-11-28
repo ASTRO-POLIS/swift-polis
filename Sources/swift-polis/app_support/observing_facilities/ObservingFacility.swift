@@ -185,12 +185,7 @@ extension ObservingFacility {
 
 internal extension ObservingFacility {
     var observingFacilityEntry: ObservingFacilityEntry {
-        ObservingFacilityEntry(
-            id                           : self.id,
-            identity                     : self.identity,
-            placeInTheSolarSystem        : self.placeInTheSolarSystem,
-            gravitationalBodyRelationship: self.gravitationalBodyRelationship
-        )
+        ObservingFacilityEntry(from: self)
     }
 }
 
@@ -199,4 +194,15 @@ internal struct ObservingFacilityEntry: Sendable {
     let identity                     : PolisIdentity
     let placeInTheSolarSystem        : PolisPlaceInTheSolarSystem
     let gravitationalBodyRelationship: PolisObservingFacilityLocationType
+
+    init(from facility: ObservingFacility) {
+        id                            = facility.id
+        identity                      = facility.identity
+        placeInTheSolarSystem         = facility.placeInTheSolarSystem
+        gravitationalBodyRelationship = facility.gravitationalBodyRelationship
+    }
+
+    static func from(_ facility: ObservingFacility) -> Self {
+        .init(from: facility)
+    }
 }
