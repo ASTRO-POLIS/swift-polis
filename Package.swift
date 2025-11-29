@@ -10,6 +10,7 @@ let package = Package(
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(name: "swift-polis", targets: ["swift-polis"]),
+        .executable(name: "polis", targets: ["polis"])
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -27,7 +28,16 @@ let package = Package(
                 .product(name: "SoftwareEtudesLogging", package: "SoftwareEtudes"),
                 .product(name: "SoftwareEtudesCoreMessageDispatching", package: "SoftwareEtudes"),
                 .product(name: "UnitsAndMeasurements",    package: "ScienceEtudes"),
-            ]
+            ],
+        ),
+        .executableTarget(
+            name: "polis",
+            dependencies: [
+                .product(name: "SoftwareEtudesUtilities",               package: "SoftwareEtudes"),
+                .product(name: "SoftwareEtudesExecutableConfiguration", package: "SoftwareEtudes"),
+//                .target(name: "swift-polis")
+            ],
+            path: "Sources/polis-tool"
         ),
         .testTarget(
             name: "swift-polis-tests",
