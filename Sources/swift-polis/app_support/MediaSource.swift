@@ -72,7 +72,7 @@ public extension MediaSource {
 // MARK: - PolisPersisting implementation
 extension MediaSource {
     public func canEdit() async -> Bool {
-        await sharedObjectStore.isEditable()
+        await ObjectStore.sharedObjectStore.isEditable()
     }
 
     public func saveChanges() async throws {
@@ -89,7 +89,7 @@ extension MediaSource {
     public func loadData() async throws {
         nc.post(name: AppSupportStatusChangeNotification.mediaSourceWillLoadNotification, object: self)
 
-        self.mediaSource = try await PolisMediaSource.loadFromLocalFileSystemUsing(store: sharedObjectStore,
+        self.mediaSource = try await PolisMediaSource.loadFromLocalFileSystemUsing(store: ObjectStore.sharedObjectStore,
                                                                               facilityID: facilityID,
                                                                               objectType: .observingFacilityDetails) as! PolisMediaSource
 

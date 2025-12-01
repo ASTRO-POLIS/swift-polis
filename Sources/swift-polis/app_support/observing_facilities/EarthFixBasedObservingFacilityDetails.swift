@@ -145,7 +145,7 @@ extension EarthFixedBaseObservingFacilityDetails {
         guard await canEdit() else { return }
 
         nc.post(name: AppSupportStatusChangeNotification.earthBasedFacilityWillSaveNotification, object: self)
-        try await earthFixedBaseObservingFacilityDetails.flashUsing(store: sharedObjectStore)
+        try await earthFixedBaseObservingFacilityDetails.flashUsing(store: ObjectStore.sharedObjectStore)
         nc.post(name: AppSupportStatusChangeNotification.earthBasedFacilityDidSaveNotification, object: self)
     }
 
@@ -155,7 +155,7 @@ extension EarthFixedBaseObservingFacilityDetails {
     public func loadData() async throws {
         nc.post(name: AppSupportStatusChangeNotification.earthBasedFacilityWillLoadNotification, object: self)
 
-        self.earthFixedBaseObservingFacilityDetails = try await PolisEarthFixedBaseObservingFacilityDetails.loadFromLocalFileSystemUsing(store: sharedObjectStore,
+        self.earthFixedBaseObservingFacilityDetails = try await PolisEarthFixedBaseObservingFacilityDetails.loadFromLocalFileSystemUsing(store: ObjectStore.sharedObjectStore,
                                                                                                     facilityID: facilityID,
                                                                                                     objectType: .observingFacilityDetails) as! PolisEarthFixedBaseObservingFacilityDetails
 
@@ -169,8 +169,8 @@ extension EarthFixedBaseObservingFacilityDetails {
     public func prepareToCloseTheObjectStore() async throws { }
 
     private func ensureIKnowMyFacility() async throws {
-        if self.facility != nil                                                      { return }
-        guard let possibleFacility = await sharedObjectStore.facilityWithId(id) else { throw ObjectStore.ObjectStoreError.objectWithIDNotFound }
+        if self.facility != nil                                                                  { return }
+        guard let possibleFacility = await ObjectStore.sharedObjectStore.facilityWithId(id) else { throw ObjectStore.ObjectStoreError.objectWithIDNotFound }
 
         self.facility = possibleFacility
     }

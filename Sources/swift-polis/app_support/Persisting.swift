@@ -67,12 +67,12 @@ public protocol Persisting: Identifiable {
 
 //MARK: - PersistenObject -
 open class PersistentObject: Persisting {
-    static var synchronisationProvider: RemoteSynchronisationProviding?
+    @MainActor static var synchronisationProvider: RemoteSynchronisationProviding?
 
-    static var polisFileResourceFinder: PolisFileResourceFinder!
-    static var polisRemoteResourceFinder: PolisRemoteResourceFinder!
+    @MainActor static var polisFileResourceFinder: PolisFileResourceFinder!
+    @MainActor static var polisRemoteResourceFinder: PolisRemoteResourceFinder!
     static let auxiliaryServiceHosts = [String : String]()
-    static var remoteWriteAPI: String?
+    @MainActor static var remoteWriteAPI: String?
 
 
     public var id: UUID

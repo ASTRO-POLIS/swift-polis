@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol StorableItem {
+protocol StorableItem: Sendable {
     static func loadFromLocalFileSystemUsing(store: ObjectStore, facilityID: UUID?, objectID: UUID?, objectType: RepresentingStoredObjectType?) async throws -> AnyObject
     static func removeFromLocalFileSystemUsing(store: ObjectStore) async throws
 

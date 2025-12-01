@@ -19,7 +19,7 @@
 import Foundation
 import SoftwareEtudesUtilities
 
-public class PolisFileResourceFinder {
+public struct PolisFileResourceFinder: Sendable {
 
     public init(at path: URL, supportedImplementation: PolisImplementation) throws {
         var enhancedPath = path
@@ -65,7 +65,7 @@ public class PolisFileResourceFinder {
 }
 
 
-public class PolisRemoteResourceFinder {
+public struct PolisRemoteResourceFinder: Sendable {
 
     public init(at domain: URL, supportedImplementation: PolisImplementation) throws {
         self.domain = "\(domain.absoluteString)"

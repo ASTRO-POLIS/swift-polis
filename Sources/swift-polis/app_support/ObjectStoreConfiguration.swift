@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 public final class ObjectStoreConfiguration {
 
     public static let shared = ObjectStoreConfiguration()

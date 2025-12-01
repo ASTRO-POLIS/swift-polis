@@ -8,11 +8,12 @@
 import Foundation
 import SoftwareEtudesUtilities
 
-@MainActor public var sharedObjectStore: ObjectStore!
 
-public actor ObjectStore {
+@MainActor
+public class ObjectStore: @unchecked Sendable {
 
     //MARK: - Public APIs -
+    public static var sharedObjectStore: ObjectStore!
 
     public enum ObjectStoreError: Error {
         case localStoreAlreadyExists
@@ -193,12 +194,10 @@ public actor ObjectStore {
     let jsonEncoder = PrettyJSONEncoder()
     let jsonDecoder = PrettyJSONDecoder()
 
-    @MainActor init(fileResourceFinder: PolisFileResourceFinder, remoteResourceFinder: PolisRemoteResourceFinder) async {
+    init(fileResourceFinder: PolisFileResourceFinder, remoteResourceFinder: PolisRemoteResourceFinder) {
         self._fileResourceFinder        = fileResourceFinder
         self._remoteResourceFinder      = remoteResourceFinder
-        sharedObjectStore = self
-
-        await assignStoreToStaticProperties()
+        ObjectStore.sharedObjectStore = self
     }
 
     // POLIS related
@@ -385,10 +384,6 @@ extension ObjectStore {
         if result { _isConfigured = true }
 
         return result
-    }
-
-    private func assignStoreToStaticProperties() async {
-//        PersistentObject.store = self
     }
 }
 
