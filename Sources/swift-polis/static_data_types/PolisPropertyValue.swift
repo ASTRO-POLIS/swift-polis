@@ -32,9 +32,9 @@ import Foundation
 /// **Note:** This Measurement implementation is very rudimentary. It is a placeholder type. In future 
 /// implementations, it will be replaced by external implementations, capable of measurement computations
 /// and conversions.
-public struct PolisPropertyValue: Codable, Equatable {
+public struct PolisPropertyValue: Codable, Equatable, Sendable {
 
-    public enum ValueKind: String, Codable {
+    public enum ValueKind: String, Codable, Sendable {
         case string
         case int
         case float

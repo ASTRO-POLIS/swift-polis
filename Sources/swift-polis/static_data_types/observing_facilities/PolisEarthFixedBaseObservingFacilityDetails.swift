@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable, Equatable {
+public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable, Equatable, Sendable {
 
     // General info
     public var id: UUID

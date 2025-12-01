@@ -50,7 +50,7 @@ import SoftwareEtudesUtilities
 /// - Every POLIS Service Provider should be able to maintain the correct list of implementation variants for every other
 ///   `public` or `mirror` provider. Only `experimental` Service Providers should be allowed to implement
 ///   unsupported implementations.
-public struct PolisImplementation: Codable, Equatable  {
+public struct PolisImplementation: Codable, Equatable, Sendable {
 
     /// Defines various POLIS data formats
     ///
@@ -58,7 +58,7 @@ public struct PolisImplementation: Codable, Equatable  {
     /// are preferred for production-ready code. In contrast, JSON is often easier to use for new development (no need of
     /// schema support) and is often easier to be used within a mobile or a web application. Due to its fragility
     /// JSON-based implementation should be avoided in stable production systems.
-    public enum DataFormat: String, Codable, Equatable, Hashable {
+    public enum DataFormat: String, Codable, Equatable, Hashable, Sendable {
         /// The provider implements JSON APIs
         case json
 
@@ -72,7 +72,7 @@ public struct PolisImplementation: Codable, Equatable  {
     /// able to invest or capable of implementing the full set of APIs. In order to simplify the implementation of POLIS
     /// Providers used by amateur clubs or in education, the standard defines three API levels. The simplest one is
     /// nothing more than a website with static resources.
-    public enum APILevel: String, Codable, Equatable, Hashable {
+    public enum APILevel: String, Codable, Equatable, Hashable, Sendable {
 
         /// The service provider hosts only static data
         case staticData        = "static_data"

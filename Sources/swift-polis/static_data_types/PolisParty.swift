@@ -17,7 +17,7 @@ public protocol PolisParty: Codable {
 }
 
 //MARK: - PolisCommunicationChannel -
-public struct PolisCommunicationChannel: Codable, Equatable {
+public struct PolisCommunicationChannel: Codable, Equatable, Sendable {
 
     /// Twitter user id, e.g. @AstroPolis. "@" is expected to be part of the id.
     public var twitterIDs: [String]?
@@ -56,7 +56,7 @@ public struct PolisCommunicationChannel: Codable, Equatable {
 /// `PolisOwnershipType` is used to identify the ownership type of POLIS items (or devices) such as observing facilities, telescopes,
 /// CCD cameras, weather stations, etc. Different cases should be self-explanatory. The `private` type should be utilised by
 /// amateurs and hobbyists.
-public enum PolisOwnershipType: String, Codable, Equatable {
+public enum PolisOwnershipType: String, Codable, Equatable, Sendable {
     case education   // University, school, ...
     case research
     case commercial
@@ -76,7 +76,7 @@ public enum PolisOwnershipType: String, Codable, Equatable {
 ///
 /// In case the owner claims ownership over a single `PolisItem` the owner's data should be stored together with the Item's
 /// data. Otherwise shared ownership is recommended.
-public struct PolisOwner: Codable, Equatable {
+public struct PolisOwner: Codable, Equatable, Sendable {
     /// The ownership type as defined by `PolisOwnershipType`
     public var ownershipType: PolisOwnershipType
 
@@ -96,9 +96,9 @@ public struct PolisOwner: Codable, Equatable {
 }
 
 //MARK: - PolisPlace -
-public struct PolisPlace: Codable, Equatable, Identifiable {
+public struct PolisPlace: Codable, Equatable, Identifiable, Sendable {
 
-    public enum EarthContinent: String, Codable, Equatable {
+    public enum EarthContinent: String, Codable, Equatable, Sendable {
         case europe       = "Europe"
         case northAmerica = "North America"
         case southAmerica = "South America"
@@ -224,7 +224,7 @@ public struct PolisPlace: Codable, Equatable, Identifiable {
 }
 
 //MARK: - PolisPerson -
-public struct PolisPerson: PolisParty, Equatable {
+public struct PolisPerson: PolisParty, Equatable, Sendable {
     public var name: String
     public var email: String
     public var communication: PolisCommunicationChannel?
@@ -241,7 +241,7 @@ public struct PolisPerson: PolisParty, Equatable {
 }
 
 //MARK: - PolisOrganisation -
-public struct PolisOrganisation: PolisParty, Equatable {
+public struct PolisOrganisation: PolisParty, Equatable, Sendable {
     public var organisationType: PolisOwnershipType
     public var email: String
     public var name: String

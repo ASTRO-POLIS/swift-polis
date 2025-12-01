@@ -22,7 +22,7 @@ import SoftwareEtudesUtilities
 ///
 /// To avoid confusion (and potential syncing errors) it is required that the directory does contain the POLIS
 /// service provider entry that serves the directory list.
-public struct PolisDirectory {
+public struct PolisDirectory: Sendable {
 
     //MARK: - POLIS Directory Entry
 
@@ -30,13 +30,13 @@ public struct PolisDirectory {
     ///
     /// `PolisDirectoryEntry` is used to define the Polis provider itself, as well as as an entry in the list of known Polis
     /// providers.
-    public struct ProviderDirectoryEntry: Identifiable,Equatable {
+    public struct ProviderDirectoryEntry: Identifiable, Equatable, Sendable {
 
         /// `ProviderType` defines different types of POLIS Providers.
         /// 
         /// In general, only `publicPrimary` and `mirror` types should be used by clients. Astro clubs and other communities might
         /// access `private` providers, but they will probably only allow restricted access to members only.
-        public enum ProviderType: String, Codable,Equatable {
+        public enum ProviderType: String, Codable, Equatable {
 
             /// Only `publicPrimary` provider should be used in production or by publicly available client apps or websites. Public
             /// providers should run on servers with enough bandwidth and computational power capable of accommodating multiple
@@ -73,7 +73,7 @@ public struct PolisDirectory {
         /// 24h should be sufficient. Also note, that an external server might be unreachable or slow from one location, but reachable and responsive from another.
         /// If your Service Provider cannot reach another Service Provider reliably, first check if this is also observed elsewhere, and if this is the case, only then
         /// change the local reachability status.
-        public enum ServiceReachability: String, Codable, Equatable  {
+        public enum ServiceReachability: String, Codable, Equatable, Sendable  {
 
             /// `reachableAndResponsive` identifies stable and fast Service Provider.
             case reachableAndResponsive = "reachable_and_responsive"
