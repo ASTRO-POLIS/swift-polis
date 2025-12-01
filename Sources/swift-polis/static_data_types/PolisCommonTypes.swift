@@ -85,7 +85,7 @@ public enum PolisPlaceInTheSolarSystem: String, Codable, CaseIterable, Equatable
     case comet
 }
 
-public enum PolisModeOfOperation: String, Codable {
+public enum PolisModeOfOperation: String, Codable, Sendable {
     case manual
     case autonomous  // no dynamic schedular
     case remote
@@ -96,7 +96,7 @@ public enum PolisModeOfOperation: String, Codable {
     case unknown
 }
 
-public enum PolisElectromagneticSpectrumCoverage: String, Codable {
+public enum PolisElectromagneticSpectrumCoverage: String, Codable, Sendable {
     case gammaRay      = "gamma_ray"
     case xRay          = "x_ray"
     case ultraviolet

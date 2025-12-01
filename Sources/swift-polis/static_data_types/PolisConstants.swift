@@ -22,7 +22,7 @@ import SoftwareEtudesUtilities
 ///
 /// **Note:** some of these constants are NOT part of the POLIS standard. They are used only within
 /// this framework.
-public struct PolisConstants {
+public struct PolisConstants: Sendable {
     
     /// Used when we need a required name for an object, but the name is unknown at the time of creation
     public static let unknownObject = "<unknown>"

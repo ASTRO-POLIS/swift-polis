@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct PolisObservingFacilityDetails: Identifiable, Codable, Equatable {
+public struct PolisObservingFacilityDetails: Identifiable, Codable, Equatable, Sendable {
 
     // Identification and type
     public var item: PolisItem

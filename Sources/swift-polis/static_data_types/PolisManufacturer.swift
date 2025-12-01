@@ -15,7 +15,7 @@ import Foundation
 ///
 /// It is important that POLIS Providers guarantee the uniqueness of manufacturers and their products. This is not required by the standard, but it is strongly
 /// recommended and makes the experience better for everyone.
-public struct PolisManufacturer: Codable, Identifiable {
+public struct PolisManufacturer: Codable, Identifiable, Sendable {
     /// Makes `PolisManufacturer` uniquely identifiable.
     public var identity: PolisIdentity
 

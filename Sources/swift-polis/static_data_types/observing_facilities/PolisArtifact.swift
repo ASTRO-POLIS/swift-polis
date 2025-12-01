@@ -15,10 +15,10 @@ import Foundation
 ///
 /// **Note:** `PolisArtifact` is always part of an ``PolisObservingFacility`` and therefore inherits
 /// the visiting hours.
-public struct PolisArtifact: Codable, Identifiable, Equatable {
+public struct PolisArtifact: Codable, Identifiable, Equatable, Sendable {
 
     /// The type of the artifact
-    public enum ArtifactType: String, Codable, CaseIterable {
+    public enum ArtifactType: String, Codable, CaseIterable, Sendable {
         case museum
         case planetarium
         case monument
