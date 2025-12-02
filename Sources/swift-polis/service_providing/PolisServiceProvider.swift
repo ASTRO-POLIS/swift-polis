@@ -36,7 +36,7 @@ public struct PolisDirectory: Sendable {
         /// 
         /// In general, only `publicPrimary` and `mirror` types should be used by clients. Astro clubs and other communities might
         /// access `private` providers, but they will probably only allow restricted access to members only.
-        public enum ProviderType: String, Codable, Equatable {
+        public enum ProviderType: String, Codable, Equatable, Sendable {
 
             /// Only `publicPrimary` provider should be used in production or by publicly available client apps or websites. Public
             /// providers should run on servers with enough bandwidth and computational power capable of accommodating multiple

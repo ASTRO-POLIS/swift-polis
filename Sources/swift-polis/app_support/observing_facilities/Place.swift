@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 open class Place: PersistentObject {
 
     public var attentionOff: String?

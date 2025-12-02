@@ -25,6 +25,7 @@ public protocol PolisValidating {
     func validate()                                   -> (result: Bool, validationErrors: [PolisValidatorHelper.PolisValidationErrors]?)
 }
 
+@MainActor
 public class PolisValidatorHelper {
 
     public enum PolisValidationErrors: Error {

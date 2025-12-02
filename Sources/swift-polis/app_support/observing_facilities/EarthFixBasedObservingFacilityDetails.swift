@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
 
     //MARK: Public APIs
@@ -170,7 +171,7 @@ extension EarthFixedBaseObservingFacilityDetails {
 
     private func ensureIKnowMyFacility() async throws {
         if self.facility != nil                                                                  { return }
-        guard let possibleFacility = await ObjectStore.sharedObjectStore.facilityWithId(id) else { throw ObjectStore.ObjectStoreError.objectWithIDNotFound }
+        guard let possibleFacility = ObjectStore.sharedObjectStore.facilityWithId(id) else { throw ObjectStore.ObjectStoreError.objectWithIDNotFound }
 
         self.facility = possibleFacility
     }
