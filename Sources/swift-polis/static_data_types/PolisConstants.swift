@@ -55,7 +55,7 @@ public struct PolisConstants: Sendable {
 ///
 /// Until we have a stable version there should be only one supported version. After version 1.0 of the
 /// standard is released, we should start supporting past versions.
-nonisolated(unsafe) public let polisFrameworkSupportedImplementation: [PolisImplementation] =
+public let polisFrameworkSupportedImplementation: [PolisImplementation] =
 [
     PolisImplementation(dataFormat: PolisImplementation.DataFormat.json,
                         apiSupport: PolisImplementation.APILevel.staticData,

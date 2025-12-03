@@ -88,7 +88,7 @@ public struct AppSupportStatusChangeNotification {
 
 
 /// Defines the type to be used where to store local data the stored data
-public enum RepresentingStoredObjectType: Int, CaseIterable {
+public enum RepresentingStoredObjectType: Int, CaseIterable, Sendable {
     case unknown
     case observingFacilityDetails // Cannot be shared, this is the facility Info (Details)
     case place                    // Cannot be shared
