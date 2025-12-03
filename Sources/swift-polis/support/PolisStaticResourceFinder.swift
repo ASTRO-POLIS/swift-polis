@@ -133,7 +133,7 @@ fileprivate struct PredefinedPaths {
 fileprivate struct StaticResourceFinder {
 
     public init(supportedImplementation: PolisImplementation) throws {
-        guard polisFrameworkSupportedImplementation.contains(supportedImplementation) else { throw PolisResourceFinderError.noSupportedImplementation }
+        guard PolisConstants.polisFrameworkSupportedImplementations.contains(supportedImplementation) else { throw PolisResourceFinderError.noSupportedImplementation }
 
         self.dataFormatString = supportedImplementation.dataFormat.rawValue
         self.versionString    = supportedImplementation.version.description

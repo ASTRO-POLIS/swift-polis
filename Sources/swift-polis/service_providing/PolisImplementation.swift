@@ -88,42 +88,7 @@ public struct PolisImplementation: Codable, Equatable, Sendable  {
 
     //MARK: Static methods
 
-    /// Returns the most recent POLIS implementation variant supported by the framework.
-    ///
-    /// This helper scans the framework’s declared list of supported implementations
-    /// (`PolisConstants.frameworkSupportedImplementation`) and selects the one with
-    /// the highest semantic version. The returned value can be used as a sensible
-    /// default when a caller has no specific preference, or when negotiating
-    /// capabilities with a POLIS Service Provider.
-    ///
-    /// Returns:
-    /// - The `PolisImplementation` with the highest `SemanticVersion` among the
-    ///   framework-supported implementations.
-    ///
-    /// Important:
-    /// - The framework must declare at least one supported implementation in
-    ///   `PolisConstants.frameworkSupportedImplementation`. If the list is empty,
-    ///   this method will trigger a runtime failure.
-    ///
-    /// See also:
-    /// - `PolisImplementation.polisServiceProviderSupports(_:)` for testing whether
-    ///   a specific variant is supported.
-    /// - `SemanticVersion` for details on how version ordering is determined.
-    public static func latestSupportedImplementation() -> PolisImplementation {
-        var currentImplementation: PolisImplementation?
-
-        for info in polisFrameworkSupportedImplementation {
-            if currentImplementation != nil {
-                if (currentImplementation!.version > info.version) {
-                    currentImplementation = info
-                }
-            }
-            else { currentImplementation = info }
-        }
-
-        return currentImplementation!
-    }
-
+  
     /// Returns whether the current framework supports a specific POLIS implementation variant.
     ///
     /// This method checks the provided `implementation` against the framework’s declared list of
@@ -137,7 +102,7 @@ public struct PolisImplementation: Codable, Equatable, Sendable  {
     /// - Important: The match is exact. If you need semantic compatibility (e.g., any patch
     ///   version within a compatible range), perform additional version checks using `SemanticVersion`.
     public static func polisServiceProviderSupports(_ implementation: PolisImplementation) -> Bool {
-        for anImplementation in polisFrameworkSupportedImplementation {
+        for anImplementation in PolisConstants.polisFrameworkSupportedImplementations {
             if implementation == anImplementation { return true }
         }
         return false

@@ -114,10 +114,10 @@ final class PolisImplementationTests: XCTestCase {
 
     @MainActor func test_PolisImplementation_oldestSupportedImplementation_shouldSucceed() {
         // Given
-        let sut = PolisImplementation.latestSupportedImplementation()
+        let sut = PolisConstants().latestPolisFrameworkSupportedImplementation()
 
         // When
-        let last    = polisFrameworkSupportedImplementation.last!
+        let last    = PolisConstants().latestPolisFrameworkSupportedImplementation()
         let version = last.version
         let api     = last.apiSupport
         let format  = last.dataFormat

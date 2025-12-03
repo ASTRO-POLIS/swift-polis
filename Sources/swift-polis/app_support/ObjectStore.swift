@@ -44,7 +44,7 @@ public class ObjectStore: @unchecked Sendable {
             if _localConfiguration != nil {
                 let domain = _localConfiguration.isTesting ? PolisConstants.testBigBangPolisDomain : PolisConstants.bigBangPolisDomain
                 _remoteResourceFinder = try PolisRemoteResourceFinder(at: URL(string: domain)!,
-                                                                  supportedImplementation: polisFrameworkSupportedImplementation.last!)
+                                                                  supportedImplementation: PolisConstants().latestPolisFrameworkSupportedImplementation())
             }
         }
        return _remoteResourceFinder
@@ -78,7 +78,7 @@ public class ObjectStore: @unchecked Sendable {
                                     email: providerConfiguration.adminEmail,
                                     note: providerConfiguration.adminNote)
         let directory = try PolisDirectory.ProviderDirectoryEntry(name: providerConfiguration.name,
-                                                                  supportedImplementations: [PolisImplementation.latestSupportedImplementation()],
+                                                                  supportedImplementations: [PolisConstants().latestPolisFrameworkSupportedImplementation()],
                                                                   providerType: providerConfiguration.providerType,
                                                                   contact: admin)
 
@@ -110,7 +110,7 @@ public class ObjectStore: @unchecked Sendable {
     ///
     /// Loading always will be step-by-step and will start with the most important data and later will continue with detail data.
     public func loadLocalStoreAt(path: String) async throws {
-        _fileResourceFinder = try PolisFileResourceFinder(at: URL(string: path)!, supportedImplementation: polisFrameworkSupportedImplementation.last!)
+        _fileResourceFinder = try PolisFileResourceFinder(at: URL(string: path)!, supportedImplementation: PolisConstants().latestPolisFrameworkSupportedImplementation())
 
         nc.post(name: AppSupportStatusChangeNotification.ObjectStoreWillLoadNotification, object: self)
 
@@ -393,7 +393,7 @@ public struct ProviderConfiguration {
     public var name: String
     public var shortDescription: String?
     public var url: String?
-    public var supportedImplementations: [PolisImplementation]? = [PolisImplementation.latestSupportedImplementation()]
+    public var supportedImplementations: [PolisImplementation]? = [PolisConstants().latestPolisFrameworkSupportedImplementation()]
     public var providerType                                     = PolisDirectory.ProviderDirectoryEntry.ProviderType.experimental
 
     public var adminName: String
@@ -404,7 +404,7 @@ public struct ProviderConfiguration {
                 name: String,
                 shortDescription: String?                                               = nil,
                 url: String?                                                            = nil,
-                supportedImplementations: [PolisImplementation]?                        = [PolisImplementation.latestSupportedImplementation()],
+                supportedImplementations: [PolisImplementation]?                        = [PolisConstants().latestPolisFrameworkSupportedImplementation()],
                 providerType:PolisDirectory.ProviderDirectoryEntry.ProviderType         = PolisDirectory.ProviderDirectoryEntry.ProviderType.experimental,
                 adminName: String,
                 adminEmail: String,

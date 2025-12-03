@@ -49,16 +49,24 @@ public struct PolisConstants: Sendable {
     ///
     /// See ``PolisReference``
     public static let auxiliaryServiceHostsPushKey = "ServiceHostsPushKey"
+
+    /// A list of supported implementations for this concrete framework.
+    ///
+    /// Until we have a stable version there should be only one supported version. After version 1.0 of the
+    /// standard is released, we should start supporting past versions.
+    public static let polisFrameworkSupportedImplementations: [PolisImplementation] =
+    [
+        PolisImplementation(dataFormat: PolisImplementation.DataFormat.json,
+                            apiSupport: PolisImplementation.APILevel.staticData,
+                            version: SemanticVersion(with: "0.1.0-alpha.1")!
+                           ),
+    ]
+
+    public init() {}
+    
+    /// Returns latest supported by this framework POLIS version's implementation
+    public func latestPolisFrameworkSupportedImplementation() -> PolisImplementation {
+        PolisConstants.polisFrameworkSupportedImplementations.max(by: { $0.version < $1.version })!
+    }
 }
 
-/// A list of supported implementations for this concrete framework.
-///
-/// Until we have a stable version there should be only one supported version. After version 1.0 of the
-/// standard is released, we should start supporting past versions.
-public let polisFrameworkSupportedImplementation: [PolisImplementation] =
-[
-    PolisImplementation(dataFormat: PolisImplementation.DataFormat.json,
-                        apiSupport: PolisImplementation.APILevel.staticData,
-                        version: SemanticVersion(with: "0.1.0-alpha.1")!
-                       ),
-]

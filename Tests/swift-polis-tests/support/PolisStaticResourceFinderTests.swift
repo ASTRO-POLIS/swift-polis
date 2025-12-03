@@ -43,7 +43,7 @@ final class PolisStaticResourceFinderTests: XCTestCase {
         try super.setUpWithError()
         print("In setUp.")
 
-        version                    = polisFrameworkSupportedImplementation.last!.version
+        version                    = PolisConstants().latestPolisFrameworkSupportedImplementation().version
         correctImplementation      = PolisImplementation(dataFormat: PolisImplementation.DataFormat.json,
                                                          apiSupport: PolisImplementation.APILevel.staticData,
                                                          version: version)

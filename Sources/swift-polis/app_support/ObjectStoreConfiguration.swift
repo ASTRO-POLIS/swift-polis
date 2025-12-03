@@ -15,7 +15,7 @@ public final class ObjectStoreConfiguration {
     /// The (latest) version that will be used to sync working copy of the data for read access and editing
     ///
     /// Later implementations might sync also other (older) versions, but this is not required. Default implementation will use the newest possible software version.
-    public static var latestWorkingPolisVersion = polisFrameworkSupportedImplementation.last
+    public static var latestWorkingPolisVersion = PolisConstants().latestPolisFrameworkSupportedImplementation()
 
     public enum ConfigurationError: Error {
         case objectStoreConfigurationNotCompleted // ... in case required setters are not called
@@ -79,7 +79,7 @@ public final class ObjectStoreConfiguration {
             let polisImplementation = ObjectStoreConfiguration.latestWorkingPolisVersion
 
             if let url = URL(string: _localPolisRootFolder!) {
-                _fileResourceFinder = try PolisFileResourceFinder(at: url, supportedImplementation: polisImplementation!)
+                _fileResourceFinder = try PolisFileResourceFinder(at: url, supportedImplementation: polisImplementation)
             }
             else {
                 logger.error("ObjectStoreConfiguration:objectStore - Cannot create URL from root folder: \(_localPolisRootFolder!)")
@@ -87,7 +87,7 @@ public final class ObjectStoreConfiguration {
             }
 
             if let remoteURL = URL(string: _remoteDomain) {
-                try _remoteResourceFinder = PolisRemoteResourceFinder(at: remoteURL, supportedImplementation: polisFrameworkSupportedImplementation.last!)
+                try _remoteResourceFinder = PolisRemoteResourceFinder(at: remoteURL, supportedImplementation: PolisConstants().latestPolisFrameworkSupportedImplementation())
             }
             else {
                 logger.error("ObjectStoreConfiguration:objectStore - Cannot create URL from remote service provider: \(_remoteDomain)")

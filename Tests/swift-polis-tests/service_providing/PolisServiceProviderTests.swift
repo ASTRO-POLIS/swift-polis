@@ -154,7 +154,7 @@ final class PolisServiceProviderTests: XCTestCase {
                                                              name: "Telescope Observer",
                                                              shortDescription: "The Big Bank Source",
                                                              url: "https://polis.net",
-                                                             supportedImplementations: [polisFrameworkSupportedImplementation.last!],
+                                                             supportedImplementations: [PolisConstants().latestPolisFrameworkSupportedImplementation()],
                                                              providerType: .mirror,
                                                              contact: StaticDataTypeTestingSupport.examplePerson())
 
@@ -177,7 +177,7 @@ final class PolisServiceProviderTests: XCTestCase {
                                                                    name: "Telescope Observer",
                                                                    shortDescription: "The Big Bank Source",
                                                                    url: "https://polis.net",
-                                                                   supportedImplementations: [polisFrameworkSupportedImplementation.last!],
+                                                                   supportedImplementations: [PolisConstants().latestPolisFrameworkSupportedImplementation()],
                                                                    providerType: .mirror,
                                                                    contact: StaticDataTypeTestingSupport.examplePerson())
         let sut       = PolisDirectory(providerDirectoryEntries: [sut_entry!])
