@@ -8,14 +8,14 @@
 import Foundation
 import SoftwareEtudesUtilities
 
-public protocol RemoteSynchronisationProviding {
+public protocol RemoteSynchronisationProviding: Sendable {
     func pullChanges() async throws
     func pushChanges() async throws
 }
 
 //MARK: - Persisting -
 /// `PolisPersisting` is an API that regulate persistency and syncing for all in-memory objects having local file system representation.
-public protocol Persisting: Identifiable {
+public protocol Persisting: Identifiable, Sendable {
     /// Indicates if the object is in a process of being edited
     var isEditing: Bool { get }
 
@@ -64,29 +64,55 @@ public protocol Persisting: Identifiable {
     func prepareToCloseTheObjectStore() async throws
 }
 
+//MARK: - Some useful default implementations for Persisting protocol -
+public extension Persisting {
+    var isEditing: Bool { false }
+    func canEdit()                      async -> Bool { false }
+    func startEditing()                 async throws { }
+    func finishEditing()                async throws { }
+
+    func saveChanges()                  async throws { }
+    func revertToSaved()                async throws { }
+    func delete()                       async throws { }
+    func loadData()                     async throws { }
+
+    func didChange()                    async -> Bool { false }
+
+    func prepareToCloseTheObjectStore() async throws { }
+}
+
+//MARK: - Default implementation of RemoteSynchronisationProviding -
+public extension RemoteSynchronisationProviding {
+    func pullChanges() async throws { }
+    func pushChanges() async throws { }
+}
 
 //MARK: - PersistenObject -
-open class PersistentObject: Persisting {
+public struct PersistentObject: Persisting, Sendable, Identifiable {
+    static let auxiliaryServiceHosts = [String : String]()
+    @MainActor static var remoteWriteAPI         : String?
     @MainActor static var synchronisationProvider: RemoteSynchronisationProviding?
 
-    @MainActor static var polisFileResourceFinder: PolisFileResourceFinder!
-    @MainActor static var polisRemoteResourceFinder: PolisRemoteResourceFinder!
-    static let auxiliaryServiceHosts = [String : String]()
-    @MainActor static var remoteWriteAPI: String?
-
-
-    public var id: UUID
-    public var lastUpdateTime: Date
+    public var id             : UUID
+    public var lastUpdateTime : Date
     public var lifecycleStatus: PolisLifecycleStatus
 
     public internal(set) var isEditing = false
 
-    public func startEditing() async throws {
+    public mutating func startEditing() async throws {
         if await canEdit() { isEditing = true }
         else               { throw ObjectStore.ObjectStoreError.objectCannotBeEdited }
     }
 
-    public func finishEditing() async throws { isEditing = false }
+    public mutating func finishEditing() async throws { isEditing = false }
+
+    public init(id             : UUID = UUID(),
+                lastUpdateTime : Date = Date.now,
+                lifecycleStatus: PolisLifecycleStatus = .unknown) {
+        self.id              = id
+        self.lastUpdateTime  = lastUpdateTime
+        self.lifecycleStatus = lifecycleStatus
+    }
 
     //MARK: Non-public APIs
     enum LocalPersistencyStatus {
@@ -115,22 +141,25 @@ open class PersistentObject: Persisting {
     var representingStoredObjectType = RepresentingStoredObjectType.unknown
     var fileType                     = PolisImplementation.DataFormat.json
 
-    var localPersistencyStatus  = LocalPersistencyStatus.unowned
-    var remotePersistencyStatus = RemotePersistencyStatus.unowned
+    var localPersistencyStatus       = LocalPersistencyStatus.unowned
+    var remotePersistencyStatus      = RemotePersistencyStatus.unowned
 
-    let nc              = NotificationCenter.default
-    let fm              = FileManager.default
-    var isDir: ObjCBool = false
-    var jsonEncoder     = PrettyJSONEncoder()
-    var jsonDecoder     = PrettyJSONDecoder()
-    var jsonData: Data!
+    let nc                           = NotificationCenter.default
+    var isDir: ObjCBool              = false
+    var jsonEncoder                  = PrettyJSONEncoder()
+    var jsonDecoder                  = PrettyJSONDecoder()
+    var jsonData                     : Data!
+    var fm                           : FileManager { .default }
 
     init(id: UUID                                                   = UUID(),
          lastUpdateTime: Date                                       = Date.now,
          lifecycleStatus: PolisLifecycleStatus                      = .unknown,
          facilityID: UUID?                                          = nil,
          representingStoredObjectType: RepresentingStoredObjectType = .observingFacilityDetails,
-         fileType: PolisImplementation.DataFormat                   = .json) throws {
+         fileType: PolisImplementation.DataFormat                   = .json,
+         polisFileResourceFinder: PolisFileResourceFinder           = PolisEnvironment.shared.polisFileResourceFinder,
+         polisRemoteResourceFinder: PolisRemoteResourceFinder       = PolisEnvironment.shared.polisRemoteResourceFinder
+    ) throws {
         var facilityIDString = facilityID?.uuidString
         let polisIdString    = id.uuidString
 
@@ -139,21 +168,21 @@ open class PersistentObject: Persisting {
         self.lifecycleStatus = lifecycleStatus
 
         switch representingStoredObjectType {
-            case .observingFacilityDetails:
-                let fileName   = "\(facilityIDString!)/\(polisIdString).\(fileType)"
+        case .observingFacilityDetails:
+            let fileName     = "\(facilityIDString!)/\(polisIdString).\(fileType)"
 
-                facilityIDString = id.uuidString
-                localPath        = "\(PersistentObject.polisFileResourceFinder.observingFacilitiesFolder())\(fileName)"
-                remoteReadPath   = "\(PersistentObject.polisRemoteResourceFinder.polisProviderDirectoryURL())\(fileName)"
-            case .artifact, .place:
-                if let facilityID = facilityID {
-                    let fileName = "\(polisIdString).\(fileType)"
+            facilityIDString = id.uuidString
+            localPath        = "\(polisFileResourceFinder.observingFacilitiesFolder())\(fileName)"
+            remoteReadPath   = "\(polisRemoteResourceFinder.polisProviderDirectoryURL())\(fileName)"
+        case .artifact, .place:
+            if let facilityID = facilityID {
+                let fileName   = "\(polisIdString).\(fileType)"
 
-                    localPath      = "\(PersistentObject.polisFileResourceFinder.observingFacilityFolder(observingFacilityID: facilityID))\(fileName)"
-                    remoteReadPath = "\(PersistentObject.polisRemoteResourceFinder.observingFacilityURL(observingFacilityID: facilityID))\(fileName)"
-                }
-                else { throw PersistentObjectError.missingFacilityID }
-            default: throw PersistentObjectError.referenceTypeNotImplemented
+                localPath      = "\(polisFileResourceFinder.observingFacilityFolder(observingFacilityID: facilityID))\(fileName)"
+                remoteReadPath = "\(polisRemoteResourceFinder.observingFacilityURL(observingFacilityID: facilityID))\(fileName)"
+            }
+            else { throw PersistentObjectError.missingFacilityID }
+        default: throw PersistentObjectError.referenceTypeNotImplemented
         }
 
         self.representingStoredObjectType = representingStoredObjectType
@@ -164,106 +193,139 @@ open class PersistentObject: Persisting {
 }
 
 //MARK: - IdentifiableObject -
-open class IdentifiableObject: PersistentObject {
+public struct IdentifiableObject: Sendable {
+    public var persistentObject     : PersistentObject
+    public var persistenceDescriptor: PersistenceDescriptor?
+
     // Polis Identity defined
-    public var externalReferences: [String]?
-    public var name: String
-    public var localName: String?
-    public var abbreviation: String?
-    public var shortDescription: String?
-    public var startTime: Date?
-    public var endTime: Date?
+    public var externalReferences   : [String]?
+    public var name                 : String
+    public var localName            : String?
+    public var abbreviation         : String?
+    public var shortDescription     : String?
+    public var startTime            : Date?
+    public var endTime              : Date?
     public var polisRegistrationTime: Date?
 
+    public var id: UUID {
+        get { persistentObject.id }
+        set { persistentObject.id = newValue }
+    }
+
+    public var lastUpdateTime: Date {
+        get { persistentObject.lastUpdateTime }
+        set { persistentObject.lastUpdateTime = newValue }
+    }
+    
+    public var lifecycleStatus: PolisLifecycleStatus {
+        get { persistentObject.lifecycleStatus }
+        set { persistentObject.lifecycleStatus = newValue }
+    }
+
+    public var isEditing: Bool = false
+
     /// Designated initialiser
-    init(id: UUID                                                   = UUID(),
-         lastUpdateTime: Date                                       = Date(),
-         name: String,
-         facilityID: UUID?                                          = nil,
-         representingStoredObjectType: RepresentingStoredObjectType = .observingFacilityDetails,
-         fileType: PolisImplementation.DataFormat                   = .json) throws {
-        self.name = name
-        try super.init(id: id,
-                             lastUpdateTime: lastUpdateTime,
-                             facilityID: facilityID,
-                             representingStoredObjectType: representingStoredObjectType,
-                             fileType: fileType)
+    public init(id                   : UUID = UUID(),
+                lastUpdateTime       : Date = Date(),
+                lifecycleStatus      : PolisLifecycleStatus = .unknown,
+                name                 : String,
+                externalReferences   : [String]? = nil,
+                localName            : String? = nil,
+                abbreviation         : String? = nil,
+                shortDescription     : String? = nil,
+                startTime            : Date? = nil,
+                endTime              : Date? = nil,
+                polisRegistrationTime: Date? = nil) {
+        self.persistentObject      = .init(id: id, lastUpdateTime: lastUpdateTime, lifecycleStatus: lifecycleStatus)
+        self.name                  = name
+        self.externalReferences    = externalReferences
+        self.localName             = localName
+        self.abbreviation          = abbreviation
+        self.shortDescription      = shortDescription
+        self.startTime             = startTime
+        self.endTime               = endTime
+        self.polisRegistrationTime = polisRegistrationTime
     }
 
     var identity: PolisIdentity {
         get {
-            PolisIdentity(id: id,
-                          externalReferences: externalReferences,
-                          lastUpdateTime: lastUpdateTime,
-                          lifecycleStatus: lifecycleStatus,
-                          name: name,
-                          localName: localName,
-                          abbreviation: abbreviation,
-                          shortDescription: shortDescription,
-                          startTime: startTime,
-                          endTime: endTime,
+            PolisIdentity(id                   : id,
+                          externalReferences   : externalReferences,
+                          lastUpdateTime       : lastUpdateTime,
+                          lifecycleStatus      : lifecycleStatus,
+                          name                 : name,
+                          localName            : localName,
+                          abbreviation         : abbreviation,
+                          shortDescription     : shortDescription,
+                          startTime            : startTime,
+                          endTime              : endTime,
                           polisRegistrationTime: polisRegistrationTime)
         }
         set {
-            id                    = newValue.id
-            externalReferences    = newValue.externalReferences
-            lastUpdateTime        = newValue.lastUpdateTime
-            name                  = newValue.name ?? "<unnamed>"
-            lifecycleStatus       = newValue.lifecycleStatus
-            localName             = newValue.localName
-            abbreviation          = newValue.abbreviation
-            shortDescription      = newValue.shortDescription
-            startTime             = newValue.startTime
-            endTime               = newValue.endTime
-            polisRegistrationTime = newValue.polisRegistrationTime
+            persistentObject.id               = newValue.id
+            externalReferences                = newValue.externalReferences
+            persistentObject.lastUpdateTime   = newValue.lastUpdateTime
+            name                              = newValue.name ?? "<unnamed>"
+            persistentObject.lifecycleStatus  = newValue.lifecycleStatus
+            localName                         = newValue.localName
+            abbreviation                      = newValue.abbreviation
+            shortDescription                  = newValue.shortDescription
+            startTime                         = newValue.startTime
+            endTime                           = newValue.endTime
+            polisRegistrationTime             = newValue.polisRegistrationTime
         }
     }
 }
 
 //MARK: - ObjectItem -
-open class ObjectItem: IdentifiableObject {
-    public var owner: PolisOwner?
-    public var parentID: UUID?
-    public var automationLabel: String?
-    public var mediaSourceID: UUID?
+public struct ObjectItem: Sendable {
+    public var identifiableObject: IdentifiableObject
+    public var owner             : PolisOwner?
+    public var parentID          : UUID?
+    public var automationLabel   : String?
+    public var mediaSourceID     : UUID?
+
+    public init(identifiableObject: IdentifiableObject,
+                owner             : PolisOwner? = nil,
+                parentID          : UUID? = nil,
+                automationLabel   : String? = nil,
+                mediaSourceID     : UUID? = nil) {
+        self.identifiableObject = identifiableObject
+        self.owner              = owner
+        self.parentID           = parentID
+        self.automationLabel    = automationLabel
+        self.mediaSourceID      = mediaSourceID
+    }
 
     var item: PolisItem {
         get {
-            PolisItem(identity: identity,
-                      owner: owner,
-                      parentID: parentID,
+            PolisItem(identity       : identifiableObject.identity,
+                      owner          : owner,
+                      parentID       : parentID,
                       automationLabel: automationLabel,
-                      mediaSourceID: mediaSourceID)
+                      mediaSourceID  : mediaSourceID)
         }
         set {
-            identity        = newValue.identity
-            owner           = newValue.owner
-            parentID        = newValue.parentID
-            automationLabel = newValue.automationLabel
-            mediaSourceID   = newValue.mediaSourceID
+            identifiableObject.identity = newValue.identity
+            owner                       = newValue.owner
+            parentID                    = newValue.parentID
+            automationLabel             = newValue.automationLabel
+            mediaSourceID               = newValue.mediaSourceID
         }
     }
 }
 
-//MARK:  - Some useful default implementations for Persisting protocol -
-extension Persisting {
-    public func canEdit()                      async -> Bool { false } // Better be on the safe side
-    public func startEditing()                 async throws { }
-    public func finishEditing()                async throws { }
+//MARK: - PersistenceDescriptor -
+public struct PersistenceDescriptor: Sendable {
+    var representingStoredObjectType = RepresentingStoredObjectType.unknown
+    var fileType                     = PolisImplementation.DataFormat.json
+    var facilityID                   : UUID?
 
-    public func saveChanges()                  async throws { }
-    public func revertToSaved()                async throws { }
-    public func delete()                       async throws { }
-    public func loadData()                     async throws { }
-
-    public func didChange()                    async -> Bool { false }
-
-    public func prepareToCloseTheObjectStore() async throws { }
-}
-
-
-//MARK: - Default implementation of RemoteSynchronisationProviding -
-extension RemoteSynchronisationProviding {
-    func pullChanges() async throws { }
-    func pushChanges() async throws { }
+    public init(representingStoredObjectType: RepresentingStoredObjectType,
+                fileType                    : PolisImplementation.DataFormat = .json,
+                facilityID                  : UUID? = nil) {
+        self.representingStoredObjectType = representingStoredObjectType
+        self.fileType                     = fileType
+        self.facilityID                   = facilityID
+    }
 }

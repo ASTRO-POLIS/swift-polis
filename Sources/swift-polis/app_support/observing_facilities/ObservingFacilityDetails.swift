@@ -7,11 +7,24 @@
 
 import Foundation
 
-open class ObservingFacilityDetails: ObjectItem {
+public actor ObservingFacilityDetails: @preconcurrency Persisting, Sendable {
+
+    public var objectItem: ObjectItem
+    public var id        : UUID { objectItem.identifiableObject.id }
+
+    public var isEditing: Bool {
+        get { objectItem.identifiableObject.isEditing }
+        set { objectItem.identifiableObject.isEditing = newValue }
+    }
+
+    var identity: PolisIdentity {
+        get { objectItem.identifiableObject.identity }
+        set { objectItem.identifiableObject.identity = newValue }
+    }
 
     //MARK: - Public APIs
 
-    public enum FacilityRepType {
+    public enum FacilityRepType: Sendable {
         case fixedEarthBased
     }
 
@@ -54,9 +67,8 @@ open class ObservingFacilityDetails: ObjectItem {
     public var history: String?
 
     // Parent Facility & Facility concrete type details
-    public var facility: ObservingFacility!
+    internal var facility: ObservingFacility!
     public var earthFixBasedObservingFacility: EarthFixedBaseObservingFacilityDetails?
-
 
     //MARK: - Non-private APIs -
 
@@ -66,9 +78,12 @@ open class ObservingFacilityDetails: ObjectItem {
 
     var artifactIDs: Set<UUID>?                  //TODO: Load data
 
+    var fm   : FileManager { .default }
+    var isDir: ObjCBool = false
+
     var facilityDetails: PolisObservingFacilityDetails {
         get {
-            PolisObservingFacilityDetails(item: self.item,
+            PolisObservingFacilityDetails(item: self.objectItem.item,
                                    observingFacilityCode:observingFacilityCode,
                                    solarSystemBodyName: solarSystemBodyName,
                                    orbitingAroundPlaceInTheSolarSystemNamed: orbitingAroundPlaceInTheSolarSystemNamed,
@@ -86,7 +101,7 @@ open class ObservingFacilityDetails: ObjectItem {
                                    artifactIDs: artifactIDs)
         }
         set {
-            item                                     = newValue.item
+            objectItem.item                          = newValue.item
             observingFacilityCode                    = newValue.observingFacilityCode
             solarSystemBodyName                      = newValue.solarSystemBodyName
             orbitingAroundPlaceInTheSolarSystemNamed = newValue.orbitingAroundPlaceInTheSolarSystemNamed
@@ -105,38 +120,49 @@ open class ObservingFacilityDetails: ObjectItem {
       }
     }
 
-    init(id: UUID = UUID(), lastUpdateTime: Date = Date(), name: String = PolisConstants.unknownObject) throws {
-        try super.init(id: id, lastUpdateTime: lastUpdateTime, name: name, facilityID: id)
+    init(id: UUID = UUID(), lastUpdateTime: Date = Date(), name: String = PolisConstants.unknownObject) async throws {
+        var identifiableObject                   = IdentifiableObject(id: id, lastUpdateTime: lastUpdateTime, name: name)
+        identifiableObject.persistenceDescriptor = PersistenceDescriptor(representingStoredObjectType: .unknown, facilityID: id)
+        self.objectItem                          = ObjectItem(identifiableObject: identifiableObject)
 
-        finaliseInitialisation()
+        await finaliseInitialisation()
     }
 
-    init(identity: PolisIdentity, lastUpdateTime: Date = Date()) throws {
-        try super.init(id: identity.id, lastUpdateTime: lastUpdateTime, name: identity.name ?? PolisConstants.unknownObject)
+    init(identity: PolisIdentity, lastUpdateTime: Date = Date()) async throws {
+        let name               = identity.name ?? PolisConstants.unknownObject
+        let identifiableObject = IdentifiableObject(id: identity.id, lastUpdateTime: lastUpdateTime, name: name)
+        self.objectItem        = ObjectItem(identifiableObject: identifiableObject)
 
-        finaliseInitialisation()
+        await finaliseInitialisation()
     }
 
+    internal func attachFacility(_ facility: ObservingFacility) {
+        self.facility = facility
+    }
+
+    internal func updateIdentity(_ identity: PolisIdentity) {
+        objectItem.item.identity = identity
+    }
+    
     //MARK: Private APIs
     private let logger = SEPolisLogger.logger("ObservingFacility")
     private var _originalFacilityDetails: PolisObservingFacilityDetails!
     private var _allArtifacts = [Artifact]()
 
-    private func finaliseInitialisation() {
-        self.representingStoredObjectType = .observingFacilityDetails
-        self.localPersistencyStatus       = .inMemoryOnly
-        self.remotePersistencyStatus      = .noRemoteRepresentation
+    private func finaliseInitialisation() async {
+        var persistentObject = self.objectItem.identifiableObject.persistentObject
+        persistentObject.representingStoredObjectType = .observingFacilityDetails
+        persistentObject.localPersistencyStatus       = .inMemoryOnly
+        persistentObject.remotePersistencyStatus      = .noRemoteRepresentation
+        persistentObject.localPath                    = PolisEnvironment.shared.polisFileResourceFinder.observingFacilityFile(observingFacilityID: id)
+        persistentObject.remoteReadPath               = PolisEnvironment.shared.polisRemoteResourceFinder.observingFacilityURL(observingFacilityID: id)
+        persistentObject.lifecycleStatus              = .active
 
-        self.localPath                    = PersistentObject.polisFileResourceFinder.observingFacilityFile(observingFacilityID: id)
-        self.remoteReadPath               = PersistentObject.polisRemoteResourceFinder.observingFacilityURL(observingFacilityID: id)
+        self.objectItem.identifiableObject.polisRegistrationTime = Date()
+        self.solarSystemBodyName                                 = placeInTheSolarSystem.rawValue
 
-        self.polisRegistrationTime       = Date()
-        self.lifecycleStatus             = .active
-        self.solarSystemBodyName         = placeInTheSolarSystem.rawValue
-
-        _originalFacilityDetails         = self.facilityDetails
+        _originalFacilityDetails                                 = self.facilityDetails
     }
-
 
 }
 
@@ -149,9 +175,9 @@ public extension ObservingFacilityDetails {
             throw ObjectStore.ObjectStoreError.polisObjectOfTheTypeAlreadyExists
         }
 
-        let result = try await EarthFixedBaseObservingFacilityDetails(facility: facility)
+        let result = try await EarthFixedBaseObservingFacilityDetails(facilityID: facility.id)
 
-        fixedSurfaceEarthBaseDetailsID = result.id
+        fixedSurfaceEarthBaseDetailsID = await result.id
         earthFixBasedObservingFacility = result
 
         try await result.saveChanges()
@@ -169,9 +195,9 @@ public extension ObservingFacilityDetails {
                 var newArtifacts: [Artifact] = []
 
                 for artifactID in artifactIDs {
-                    if artifactWithID(artifactID) == nil {
-                        let pA   = try await PolisArtifact.loadFromLocalFileSystemUsing(store:  ObjectStore.sharedObjectStore, facilityID: item.identity.id, objectID: artifactID)
-                        let newA = try Artifact(storedArtifact: pA as! PolisArtifact, facility: facility)
+                    if await artifactWithID(artifactID) == nil {
+                        let pA   = try await PolisArtifact.loadFromLocalFileSystemUsing(store:  ObjectStore.sharedObjectStore, facilityID: objectItem.item.identity.id, objectID: artifactID)
+                        let newA = try await Artifact(storedArtifact: pA as! PolisArtifact, facility: facility)
                         newArtifacts.append(newA)
                     }
                 }
@@ -184,7 +210,7 @@ public extension ObservingFacilityDetails {
 
     func addArtifact(artifactType: PolisArtifact.ArtifactType, visitingOpportunities: String? = nil, mediaID: UUID? = nil) async throws -> Artifact {
         let artifactIdentity = PolisIdentity(id: UUID())
-        let artifact         = try Artifact(identity: artifactIdentity,
+        let artifact         = try await Artifact(identity: artifactIdentity,
                                             facility: facility,
                                             artifactType: artifactType,
                                             visitingOpportunities: visitingOpportunities,
@@ -204,9 +230,9 @@ public extension ObservingFacilityDetails {
         //TODO: Implement me!
     }
 
-    private func artifactWithID(_ artifactID: UUID) -> Artifact? {
+    private func artifactWithID(_ artifactID: UUID) async -> Artifact? {
         for artifact in _allArtifacts {
-            if artifact.identity.id == artifactID { return artifact }
+            if await artifact.identity.id == artifactID { return artifact }
         }
         return nil
     }
@@ -229,6 +255,8 @@ extension ObservingFacilityDetails {
     }
 
     public func saveChanges() async throws {
+        let nc = self.objectItem.identifiableObject.persistentObject.nc
+
         try await ensureIKnowMyFacility()
         
         // Make sure all non-nil leaf objects are saved. If they are changed, we will know this
@@ -239,14 +267,14 @@ extension ObservingFacilityDetails {
         //TODO: Load other types of facilities when they are implemented
 
         // Now if I am changed, save my data
-        if await didChange() || (localPersistencyStatus == .inMemoryOnly) {
+        if await didChange() || (objectItem.identifiableObject.persistentObject.localPersistencyStatus == .inMemoryOnly) {
             nc.post(name: AppSupportStatusChangeNotification.facilityDetailsWillSaveNotification, object: nil)
 
             // Let the parent facility that we did change
-            facility.lastUpdateTime = Date.now
+            await facility.update({ $0.lastUpdateTime = .now })
 
             // Make sure my directory exist, and if not - create it
-            let facilityFolder = await  ObjectStore.sharedObjectStore.fileResourceFinder().observingFacilityFolder(observingFacilityID: id)
+            let facilityFolder = await ObjectStore.sharedObjectStore.fileResourceFinder().observingFacilityFolder(observingFacilityID: id)
 
             if !(fm.fileExists(atPath: facilityFolder, isDirectory: &isDir) && (isDir.boolValue)) {
                 do    { try fm.createDirectory(atPath: facilityFolder, withIntermediateDirectories: true) }
@@ -260,7 +288,7 @@ extension ObservingFacilityDetails {
             try await facilityDetails.flashUsing(store:  ObjectStore.sharedObjectStore)
 
             // Change my object status
-            localPersistencyStatus = .savedNotSynced
+            objectItem.identifiableObject.persistentObject.localPersistencyStatus = .savedNotSynced
 
             //TODO: Save Referenced Items!
 
@@ -277,6 +305,8 @@ extension ObservingFacilityDetails {
     }
 
     public func loadData() async throws {
+        let nc = self.objectItem.identifiableObject.persistentObject.nc
+
         nc.post(name: AppSupportStatusChangeNotification.facilityDetailsWillLoadNotification, object: self)
 
         // If the Facility's folder does not exist. the Facility is newly created and in memory only. So skip the loading
@@ -285,18 +315,19 @@ extension ObservingFacilityDetails {
         if !(fm.fileExists(atPath: facilityFolder, isDirectory: &isDir) && (isDir.boolValue)) { return }
 
         // Now we assume the Facility folder exist, and it is a bad error if the Details file does not exist
-        if !fm.fileExists(atPath: localPath) {
+        let localPath = objectItem.identifiableObject.persistentObject.localPath
+        if !fm.fileExists(atPath: localPath!) {
             logger.error("loadData - No local Facility Details found at: \(localPath!)")
             throw ObservingFacilityError.unavailableOrUnreadableLocalData
         }
 
         self.facilityDetails = try await PolisObservingFacilityDetails.loadFromLocalFileSystemUsing(store: ObjectStore.sharedObjectStore,
-                                                                                                    facilityID: item.identity.id,
+                                                                                                    facilityID: objectItem.item.identity.id,
                                                                                                     objectType: .observingFacilityDetails) as! PolisObservingFacilityDetails
 
         // Now load more details like Location, Artifacts, Media, etc.
         try await loadReferencedItems()
-        localPersistencyStatus = .savedAndSynced
+        objectItem.identifiableObject.persistentObject.localPersistencyStatus = .savedAndSynced
 
         nc.post(name: AppSupportStatusChangeNotification.facilityDetailsDidLoadNotification, object: self)
         nc.post(name: AppSupportStatusChangeNotification.facilityDidChangeNotification, object: facility)
@@ -318,9 +349,10 @@ extension ObservingFacilityDetails {
         Task {
             // Load EarthFixedBaseObservingFacilityDetails
             if fixedSurfaceEarthBaseDetailsID != nil {
-                let polisObject = try await PolisEarthFixedBaseObservingFacilityDetails.loadFromLocalFileSystemUsing(store: ObjectStore.sharedObjectStore,
-                                                                                                                     facilityID: item.identity.id,
-                                                                                                                     objectID: fixedSurfaceEarthBaseDetailsID) as! PolisEarthFixedBaseObservingFacilityDetails
+                let polisObject = try await PolisEarthFixedBaseObservingFacilityDetails.loadFromLocalFileSystemUsing(
+                    store: ObjectStore.sharedObjectStore,
+                    facilityID: objectItem.item.identity.id,
+                    objectID: fixedSurfaceEarthBaseDetailsID) as! PolisEarthFixedBaseObservingFacilityDetails
                 earthFixBasedObservingFacility = try await EarthFixedBaseObservingFacilityDetails(earthFixedBaseObservingFacilityDetails: polisObject)
             }
         }
@@ -329,6 +361,4 @@ extension ObservingFacilityDetails {
     private func saveReferencedItems() async throws {
         //TODO: Implement me!
     }
-
 }
-

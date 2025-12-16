@@ -8,25 +8,25 @@
 import Foundation
 import SoftwareEtudesUtilities
 
-public class ObservingFacility: Persisting {
+public actor ObservingFacility: @preconcurrency Persisting {
 
     //MARK: - Public APIs -
 
     // Identity related
-    public var id: UUID
-    public var externalReferences: [String]?
-    public var lastUpdateTime: Date
-    public var name: String?
-    public var localName: String?
-    public var abbreviation: String?
-    public var shortDescription: String?
-    public var startTime: Date?
-    public var endTime: Date?
+    public var id                   : UUID
+    public var externalReferences   : [String]?
+    public var lastUpdateTime       : Date
+    public var name                 : String?
+    public var localName            : String?
+    public var abbreviation         : String?
+    public var shortDescription     : String?
+    public var startTime            : Date?
+    public var endTime              : Date?
     public var polisRegistrationTime: Date?
 
     // ObservingFacilityReference related
     public var gravitationalBodyRelationship: PolisObservingFacilityLocationType
-    public var placeInTheSolarSystem : PolisPlaceInTheSolarSystem
+    public var placeInTheSolarSystem        : PolisPlaceInTheSolarSystem
 
     public var observingFacilityDetails: ObservingFacilityDetails
 
@@ -85,7 +85,7 @@ public class ObservingFacility: Persisting {
          polisRegistrationTime: Date?                                      = nil,
          gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
          placeInTheSolarSystem: PolisPlaceInTheSolarSystem                 = .earth,
-         store: ObjectStore) throws {
+         store: ObjectStore) async throws {
         self.id                                = id
         self.externalReferences                = externalReferences
         self.lastUpdateTime                    = lastUpdateTime
@@ -100,11 +100,11 @@ public class ObservingFacility: Persisting {
         self.placeInTheSolarSystem             = placeInTheSolarSystem
         self.store                             = store
 
-        try self.observingFacilityDetails      = ObservingFacilityDetails(id: id, lastUpdateTime: lastUpdateTime, name: self.name!)
-        self.observingFacilityDetails.facility = self
+        try self.observingFacilityDetails      = await ObservingFacilityDetails(id: id, lastUpdateTime: lastUpdateTime, name: self.name!)
+        await self.observingFacilityDetails.attachFacility(self)
     }
 
-    init(facilityReference: PolisObservingFacilityDirectory.ObservingFacilityReference, store: ObjectStore) throws {
+    init(facilityReference: PolisObservingFacilityDirectory.ObservingFacilityReference, store: ObjectStore) async throws {
         self.id                                = facilityReference.identity.id
         self.externalReferences                = facilityReference.identity.externalReferences
         self.lastUpdateTime                    = facilityReference.identity.lastUpdateTime
@@ -119,17 +119,23 @@ public class ObservingFacility: Persisting {
         self.placeInTheSolarSystem             = facilityReference.placeInTheSolarSystem
         self.store                             = store
 
-        try self.observingFacilityDetails      = ObservingFacilityDetails(id: id, lastUpdateTime: lastUpdateTime, name: self.name!)
-        self.observingFacilityDetails.facility = self
+        try self.observingFacilityDetails      = await ObservingFacilityDetails(id: id, lastUpdateTime: lastUpdateTime, name: self.name!)
+        await self.observingFacilityDetails.attachFacility(self)
+    }
+
+    internal func getId() -> UUID { id }
+
+    internal func update(_ facility: @Sendable (isolated ObservingFacility) -> Void) {
+        facility(self)
     }
 
     //MARK: Private APIs -
     private let nc              = NotificationCenter.default
-    private let fm              = FileManager.default
     private var isDir: ObjCBool = false
     private var jsonEncoder     = PrettyJSONEncoder()
     private var jsonDecoder     = PrettyJSONDecoder()
     private var jsonData: Data!
+    private var fm              : FileManager { .default }
 }
 
 //MARK: - Persisting -
@@ -148,14 +154,15 @@ extension ObservingFacility {
 
     public func saveChanges() async throws {
         // Make sure that the Details are saved. If they are changed, the details will change also the facility
-        observingFacilityDetails.item.identity = self.identity
+        await observingFacilityDetails.updateIdentity(self.identity)
+
         try await observingFacilityDetails.saveChanges()
 
         if await didChange() {
             nc.post(name: AppSupportStatusChangeNotification.facilityWillSaveNotification, object: self)
 
             // Now make sure, that the Facility directory is updated
-            try await store.addOrUpdateObservingFacilityDirectoryEntry(self.observingFacilityEntry)
+            try await store.addOrUpdateObservingFacilityDirectoryEntry(self.observingFacilityEntry())
 
             nc.post(name: AppSupportStatusChangeNotification.facilityDidSaveNotification, object: self)
         }
@@ -184,8 +191,8 @@ extension ObservingFacility {
 }
 
 internal extension ObservingFacility {
-    var observingFacilityEntry: ObservingFacilityEntry {
-        ObservingFacilityEntry(from: self)
+    func observingFacilityEntry() async -> ObservingFacilityEntry {
+        await ObservingFacilityEntry.from(self)
     }
 }
 
@@ -195,14 +202,10 @@ internal struct ObservingFacilityEntry: Sendable {
     let placeInTheSolarSystem        : PolisPlaceInTheSolarSystem
     let gravitationalBodyRelationship: PolisObservingFacilityLocationType
 
-    init(from facility: ObservingFacility) {
-        id                            = facility.id
-        identity                      = facility.identity
-        placeInTheSolarSystem         = facility.placeInTheSolarSystem
-        gravitationalBodyRelationship = facility.gravitationalBodyRelationship
-    }
-
-    static func from(_ facility: ObservingFacility) -> Self {
-        .init(from: facility)
+    static func from(_ facility: ObservingFacility) async -> Self {
+        .init(id                           : await facility.id,
+              identity                     : await facility.identity,
+              placeInTheSolarSystem        : await facility.placeInTheSolarSystem,
+              gravitationalBodyRelationship: await facility.gravitationalBodyRelationship)
     }
 }

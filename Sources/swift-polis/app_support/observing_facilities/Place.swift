@@ -7,8 +7,10 @@
 
 import Foundation
 
-@MainActor
-open class Place: PersistentObject {
+public actor Place: @preconcurrency Persisting, Sendable {
+
+    public var persistentObject: PersistentObject
+    public var persistenceDescriptor: PersistenceDescriptor
 
     public var attentionOff: String?
     public var houseName: String?
@@ -50,15 +52,13 @@ open class Place: PersistentObject {
 
     public var timeZoneIdentifier: String?        // .. as defined with `TimeZone.knownTimeZoneIdentifiers`
 
-    public var facility: ObservingFacility!
-
     //MARK: - Non-public APIs -
     var facilityID: UUID
     var place: PolisPlace {
         get {
             PolisPlace(id: id,
                        lastUpdateTime: lastUpdateTime,
-                       facilityID: facility.id,
+                       facilityID: facilityID,
                        attentionOff: attentionOff,
                        houseName: houseName,
                        street: street,
@@ -92,42 +92,54 @@ open class Place: PersistentObject {
                        timeZoneIdentifier: timeZoneIdentifier)
         }
         set {
-            id                 = newValue.id
-            lastUpdateTime     = newValue.lastUpdateTime
-            facilityID         = newValue.facilityID
-            attentionOff       = newValue.attentionOff
-            houseName          = newValue.houseName
-            street             = newValue.street
-            houseNumber        = newValue.houseNumber
-            houseNumberSuffix  = newValue.houseNumberSuffix
-            floor              = newValue.floor
-            apartment          = newValue.apartment
-            district           = newValue.district
-            site               = newValue.site
-            block              = newValue.block
-            zipCode            = newValue.zipCode
-            province           = newValue.province
-            regionOrState      = newValue.regionOrState
-            regionOrStateCode  = newValue.regionOrStateCode
-            country            = newValue.country
-            countryID          = newValue.countryID
-            continent          = newValue.continent
-            poBox              = newValue.poBox
-            poBoxZip           = newValue.poBoxZip
-            posteRestante      = newValue.posteRestante
-            eastLongitude      = newValue.eastLongitude
-            latitude           = newValue.latitude
-            altitude           = newValue.altitude
-            streetLine1        = newValue.streetLine1
-            streetLine2        = newValue.streetLine2
-            streetLine3        = newValue.streetLine3
-            streetLine4        = newValue.streetLine4
-            streetLine5        = newValue.streetLine5
-            streetLine6        = newValue.streetLine6
-            note               = newValue.note
-            timeZoneIdentifier = newValue.timeZoneIdentifier
+            persistentObject.id             = newValue.id
+            persistentObject.lastUpdateTime = newValue.lastUpdateTime
+            facilityID                      = newValue.facilityID
+            attentionOff                    = newValue.attentionOff
+            houseName                       = newValue.houseName
+            street                          = newValue.street
+            houseNumber                     = newValue.houseNumber
+            houseNumberSuffix               = newValue.houseNumberSuffix
+            floor                           = newValue.floor
+            apartment                       = newValue.apartment
+            district                        = newValue.district
+            site                            = newValue.site
+            block                           = newValue.block
+            zipCode                         = newValue.zipCode
+            province                        = newValue.province
+            regionOrState                   = newValue.regionOrState
+            regionOrStateCode               = newValue.regionOrStateCode
+            country                         = newValue.country
+            countryID                       = newValue.countryID
+            continent                       = newValue.continent
+            poBox                           = newValue.poBox
+            poBoxZip                        = newValue.poBoxZip
+            posteRestante                   = newValue.posteRestante
+            eastLongitude                   = newValue.eastLongitude
+            latitude                        = newValue.latitude
+            altitude                        = newValue.altitude
+            streetLine1                     = newValue.streetLine1
+            streetLine2                     = newValue.streetLine2
+            streetLine3                     = newValue.streetLine3
+            streetLine4                     = newValue.streetLine4
+            streetLine5                     = newValue.streetLine5
+            streetLine6                     = newValue.streetLine6
+            note                            = newValue.note
+            timeZoneIdentifier              = newValue.timeZoneIdentifier
         }
     }
+
+    public var id: UUID { persistentObject.id }
+    public var lastUpdateTime: Date {
+        get { persistentObject.lastUpdateTime }
+        set { persistentObject.lastUpdateTime = newValue }
+    }
+    public var lifecycleStatus: PolisLifecycleStatus {
+        get { persistentObject.lifecycleStatus }
+        set { persistentObject.lifecycleStatus = newValue }
+    }
+
+    public var isEditing: Bool = false
 
     init(id: UUID                              = UUID(),
          lastUpdateTime: Date                  = Date.now,
@@ -162,8 +174,9 @@ open class Place: PersistentObject {
          streetLine6: String?                  = nil,
          note: String?                         = nil,
          timeZoneIdentifier: String?           = nil,
-         facility: ObservingFacility) throws {
-        self.facilityID         = facility.id
+         facilityID: UUID) throws {
+        self.persistentObject   = PersistentObject(id: id, lastUpdateTime: lastUpdateTime, lifecycleStatus: .active)
+        self.facilityID         = facilityID
         self.attentionOff       = attentionOff
         self.houseName          = houseName
         self.street             = street
@@ -195,13 +208,14 @@ open class Place: PersistentObject {
         self.streetLine6        = streetLine6
         self.note               = note
         self.timeZoneIdentifier = timeZoneIdentifier
-        self.facility           = facility
+        self.facilityID         = facilityID
 
-        try super.init(id: id,
-                    lastUpdateTime: lastUpdateTime,
-                    lifecycleStatus: .active,
-                    facilityID: facilityID,
-                    representingStoredObjectType: .place)
+        persistentObject        = PersistentObject(id             : id,
+                                                   lastUpdateTime : lastUpdateTime,
+                                                   lifecycleStatus: .active)
+        persistenceDescriptor   = PersistenceDescriptor(representingStoredObjectType: .place,
+                                                   fileType       : PolisImplementation.DataFormat.json,
+                                                   facilityID     : facilityID)
     }
 }
 

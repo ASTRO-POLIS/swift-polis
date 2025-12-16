@@ -7,6 +7,12 @@
 
 import Foundation
 
-open class VisitingHours: IdentifiableObject {
+public actor VisitingHours: @preconcurrency Persisting, Sendable {
 
+    public var identifiableObject: IdentifiableObject
+    public var id                : UUID { identifiableObject.identity.id }
+
+    init(identifiableObject: IdentifiableObject) {
+        self.identifiableObject = identifiableObject
+    }
 }

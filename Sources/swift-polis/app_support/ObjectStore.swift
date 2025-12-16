@@ -8,12 +8,10 @@
 import Foundation
 import SoftwareEtudesUtilities
 
-
-@MainActor
-public class ObjectStore: @unchecked Sendable {
+public actor ObjectStore: Sendable {
 
     //MARK: - Public APIs -
-    public static var sharedObjectStore: ObjectStore!
+    public static let sharedObjectStore = ObjectStore()
 
     public enum ObjectStoreError: Error {
         case localStoreAlreadyExists
@@ -99,7 +97,7 @@ public class ObjectStore: @unchecked Sendable {
         _facilityDirectory = PolisObservingFacilityDirectory(lastUpdate: Date.now, observingFacilityReferences: [])
         try await flush(item: _facilityDirectory)
 
-        configureRelatedTypesAfterStoreInitialisation()
+        await configureRelatedTypesAfterStoreInitialisation()
         nc.post(name: AppSupportStatusChangeNotification.ObjectStoreDidCreateNotification, object: self)
         _isConfigured = true
     }
@@ -116,7 +114,7 @@ public class ObjectStore: @unchecked Sendable {
 
 
         // N. Finally, configure related classes
-        configureRelatedTypesAfterStoreInitialisation()
+        await configureRelatedTypesAfterStoreInitialisation()
 
         // N. Load store configuration
         try loadLocalConfiguration()
@@ -140,7 +138,7 @@ public class ObjectStore: @unchecked Sendable {
 
         // N. For each Facility Ref from the Facility Directory create a minimal Facility object and initiate its Loading
         for anEntry in _facilityDirectory.observingFacilityReferences {
-            let aFacility = try ObservingFacility(facilityReference: anEntry, store: self)
+            let aFacility = try await ObservingFacility(facilityReference: anEntry, store: self)
             _facilities.append(aFacility)
             try await aFacility.loadData()
         }
@@ -152,7 +150,7 @@ public class ObjectStore: @unchecked Sendable {
         //TODO: Implement me!
 
         // N. Finally, configure related classes
-        configureRelatedTypesAfterStoreInitialisation()
+        await configureRelatedTypesAfterStoreInitialisation()
     }
 
     /// Removes unconditionally local data.
@@ -194,11 +192,7 @@ public class ObjectStore: @unchecked Sendable {
     let jsonEncoder = PrettyJSONEncoder()
     let jsonDecoder = PrettyJSONDecoder()
 
-    init(fileResourceFinder: PolisFileResourceFinder, remoteResourceFinder: PolisRemoteResourceFinder) {
-        self._fileResourceFinder        = fileResourceFinder
-        self._remoteResourceFinder      = remoteResourceFinder
-        ObjectStore.sharedObjectStore = self
-    }
+    init() { }
 
     // POLIS related
     func facilityDirectory() -> PolisObservingFacilityDirectory { _facilityDirectory! }
@@ -211,6 +205,11 @@ public class ObjectStore: @unchecked Sendable {
             try await currentItem?.flashUsing(store: self)
             currentItem = try await currentItem?.parentItem(store: self)
         }
+    }
+
+    func config(fileResourceFinder: PolisFileResourceFinder, remoteResourceFinder: PolisRemoteResourceFinder) {
+        self._fileResourceFinder   = fileResourceFinder
+        self._remoteResourceFinder = remoteResourceFinder
     }
 
     //MARK: - Private APIs -
@@ -236,9 +235,8 @@ public class ObjectStore: @unchecked Sendable {
     // Cached objects
     private var _facilities = [ObservingFacility]()
 
-    private func configureRelatedTypesAfterStoreInitialisation() {
-        PersistentObject.polisFileResourceFinder   = _fileResourceFinder
-        PersistentObject.polisRemoteResourceFinder = _remoteResourceFinder
+    private func configureRelatedTypesAfterStoreInitialisation() async {
+        await PolisEnvironment.configure(.init(polisFileResourceFinder: _fileResourceFinder, polisRemoteResourceFinder: _remoteResourceFinder))
     }
 }
 
@@ -260,13 +258,15 @@ extension ObjectStore {
         gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
         placeInTheSolarSystem : PolisPlaceInTheSolarSystem                = .earth
     ) async throws -> ObservingFacility {
-        let facility = try ObservingFacility(id: UUID(), name: name, store: self)
+        let facility = try await ObservingFacility(id: UUID(), name: name, store: self)
 
-        facility.gravitationalBodyRelationship = gravitationalBodyRelationship
-        facility.placeInTheSolarSystem         = placeInTheSolarSystem
+        await facility.update {
+            $0.gravitationalBodyRelationship = gravitationalBodyRelationship
+            $0.placeInTheSolarSystem         = placeInTheSolarSystem
+        }
         try await facility.startEditing()
 
-        try await addOrUpdateObservingFacilityDirectoryEntry(ObservingFacilityEntry(from: facility))
+        try await addOrUpdateObservingFacilityDirectoryEntry(ObservingFacilityEntry.from(facility))
         _facilities.append(facility)
         try await facility.saveChanges()
 
@@ -276,10 +276,10 @@ extension ObjectStore {
     /// Tries to find a Facility with specified ID
     ///
     /// - Parameter id: the ID  of the Facility
-    /// - Returns: if the Facility is found, it is returned, otherwise nil
-    public func facilityWithId(_ id: UUID)  -> ObservingFacility? {
+    /// - Returns: if the Facility is found, it is returned, otherwise nilinternal
+    public func facilityWithId(_ id: UUID) async  -> ObservingFacility? {
         for aFacility in _facilities {
-            if aFacility.id == id { return aFacility }
+            if await aFacility.getId() == id { return aFacility }
         }
         return nil
     }

@@ -7,6 +7,12 @@
 
 import Foundation
 
-open class Device: IdentifiableObject {
+public actor Device: @preconcurrency Persisting, Sendable {
 
+    public var identifiableObject: IdentifiableObject
+    public var id                : UUID { identifiableObject.identity.id }
+
+    init(identifiableObject: IdentifiableObject) {
+        self.identifiableObject = identifiableObject
+    }
 }

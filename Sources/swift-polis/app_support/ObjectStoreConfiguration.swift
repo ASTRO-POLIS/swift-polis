@@ -94,7 +94,8 @@ public final class ObjectStoreConfiguration {
                 throw ConfigurationError.cannotCreateObjectStore
             }
 
-            _objectStore = ObjectStore(fileResourceFinder: _fileResourceFinder!, remoteResourceFinder: _remoteResourceFinder!)
+            _objectStore = ObjectStore.sharedObjectStore
+            await _objectStore?.config(fileResourceFinder: _fileResourceFinder!, remoteResourceFinder: _remoteResourceFinder!)
         }
         return _objectStore!
     }

@@ -7,12 +7,18 @@
 
 import Foundation
 
-open class MediaSource: IdentifiableObject {
+public actor MediaSource: @preconcurrency Persisting, Sendable {
 
-    public var mediaItems: [PolisMediaSource.MediaItem] = []
+    public var identifiableObject: IdentifiableObject
+    public var id                : UUID { identifiableObject.identity.id }
+    public var mediaItems        : [PolisMediaSource.MediaItem] = []
 
-    public var facility: ObservingFacility?
     var facilityID: UUID?
+
+    var identity: PolisIdentity {
+        get { identifiableObject.identity }
+        set { identifiableObject.identity  = newValue }
+    }
 
     var mediaSource: PolisMediaSource {
         get {
@@ -24,29 +30,21 @@ open class MediaSource: IdentifiableObject {
         }
     }
 
-    public init(identity: PolisIdentity,
-                facility: ObservingFacility? = nil,
-                name:     String) throws {
+    public init(identity: PolisIdentity, facilityID: UUID, name: String) async throws {
+        self.facilityID                               = facilityID
+        self.identifiableObject                       = IdentifiableObject(id: identity.id, lastUpdateTime: identity.lastUpdateTime, name: name)
+        self.identifiableObject.persistenceDescriptor = PersistenceDescriptor(representingStoredObjectType: .unknown, facilityID: facilityID)
 
-        self.facility   = facility
-        self.facilityID = facility?.id
-
-        try super.init(id: identity.id,
-                       lastUpdateTime: identity.lastUpdateTime,
-                       name: name,
-                       facilityID: facility?.id,
-                       representingStoredObjectType: .unknown)
-
-        finaliseInitialisation()
+        await finaliseInitialisation()
     }
 
     // MARK: - Private
     private var _originalMediaSource: PolisMediaSource!
 
-    private func finaliseInitialisation() {
-        self.localPersistencyStatus  = .inMemoryOnly
-        self.remotePersistencyStatus = .noRemoteRepresentation
-        _originalMediaSource         = mediaSource
+    private func finaliseInitialisation() async {
+        self.identifiableObject.persistentObject.localPersistencyStatus  = .inMemoryOnly
+        self.identifiableObject.persistentObject.remotePersistencyStatus = .noRemoteRepresentation
+        _originalMediaSource                                             = mediaSource
     }
 }
 
@@ -77,6 +75,8 @@ extension MediaSource {
 
     public func saveChanges() async throws {
         guard await didChange() else { return }
+        let nc = self.identifiableObject.persistentObject.nc
+
         nc.post(name: AppSupportStatusChangeNotification.mediaSourceWillSaveNotification, object: self)
         // try await mediaSource.flashUsing(store: store) // TODO: Implement me!
         nc.post(name: AppSupportStatusChangeNotification.mediaSourceDidSaveNotification, object: self)
@@ -87,6 +87,8 @@ extension MediaSource {
     public func delete() async throws { } // TODO: Implement me!
 
     public func loadData() async throws {
+        let nc = self.identifiableObject.persistentObject.nc
+
         nc.post(name: AppSupportStatusChangeNotification.mediaSourceWillLoadNotification, object: self)
 
         self.mediaSource = try await PolisMediaSource.loadFromLocalFileSystemUsing(store: ObjectStore.sharedObjectStore,

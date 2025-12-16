@@ -7,6 +7,12 @@
 
 import Foundation
 
-open class Observatory: IdentifiableObject {
+public actor Observatory: @preconcurrency Persisting, Sendable {
 
+    public var identifiableObject: IdentifiableObject
+    public var id                : UUID { identifiableObject.id }
+
+    init(identifiableObject: IdentifiableObject) {
+        self.identifiableObject = identifiableObject
+    }
 }

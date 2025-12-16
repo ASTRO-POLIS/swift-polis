@@ -7,8 +7,20 @@
 
 import Foundation
 
-@MainActor
-open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
+public actor EarthFixedBaseObservingFacilityDetails: @preconcurrency Persisting, Sendable {
+
+    public var persistentObject     : PersistentObject
+    public var persistenceDescriptor: PersistenceDescriptor
+
+    public var id: UUID {
+        get { persistentObject.id }
+        set { persistentObject.id = newValue }
+    }
+
+    public var lastUpdateTime: Date {
+        get { persistentObject.lastUpdateTime }
+        set { persistentObject.lastUpdateTime = newValue }
+    }
 
     //MARK: Public APIs
 
@@ -26,8 +38,6 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
     public var surfaceSize: PolisPropertyValue?             // [m^2]
 
     public var place: Place!
-
-    public var facility: ObservingFacility!
 
     //MARK: Non-private APIs
     var facilityID: UUID
@@ -72,7 +82,7 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
          traditionalLandOwners: String?                        = nil,
          dominantWindDirection: PolisDirection.RoughDirection? = nil,
          surfaceSize: PolisPropertyValue?                      = nil,
-         facility: ObservingFacility,
+         facilityID: UUID,
          visitingHoursID: UUID?                                = nil,
          placeID: UUID?                                        = nil) async throws {
         self.accessRestrictions        = accessRestrictions
@@ -82,16 +92,16 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
         self.traditionalLandOwners     = traditionalLandOwners
         self.dominantWindDirection     = dominantWindDirection
         self.surfaceSize               = surfaceSize
-        self.facility                  = facility
         self.visitingHoursID           = visitingHoursID
         self.placeID                   = placeID
+        self.facilityID                = facilityID
 
-        facilityID                    = facility.id
+        persistentObject               = PersistentObject(id             : id,
+                                                          lastUpdateTime : lastUpdateTime,
+                                                          lifecycleStatus: .unknown)
+        persistenceDescriptor          = PersistenceDescriptor(representingStoredObjectType: .observingFacilityDetails,
+                                                          facilityID     : facilityID)
 
-        try super.init(id: id,
-                             lastUpdateTime: lastUpdateTime,
-                             facilityID: facilityID,
-                             representingStoredObjectType: .observingFacilityDetails)
         try await finaliseInitialisation()
     }
 
@@ -106,10 +116,11 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
         self.facilityID                = earthFixedBaseObservingFacilityDetails.facilityID
         self.visitingHoursID           = earthFixedBaseObservingFacilityDetails.visitingHoursID
 
-        try super.init(id: earthFixedBaseObservingFacilityDetails.id,
-                             lastUpdateTime: earthFixedBaseObservingFacilityDetails.lastUpdateTime,
-                             facilityID: earthFixedBaseObservingFacilityDetails.facilityID,
-                             representingStoredObjectType: .observingFacilityDetails)
+        self.persistentObject          = PersistentObject(id             : earthFixedBaseObservingFacilityDetails.id,
+                                                          lastUpdateTime : earthFixedBaseObservingFacilityDetails.lastUpdateTime,
+                                                          lifecycleStatus: .unknown)
+        self.persistenceDescriptor     = PersistenceDescriptor(representingStoredObjectType: .observingFacilityDetails,
+                                                          facilityID     : earthFixedBaseObservingFacilityDetails.facilityID)
 
         self.earthFixedBaseObservingFacilityDetails = earthFixedBaseObservingFacilityDetails
         try await finaliseInitialisation()
@@ -119,12 +130,12 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
     private var _originalEarthFixedBaseObservingFacilityDetails: PolisEarthFixedBaseObservingFacilityDetails!
 
     private func finaliseInitialisation() async throws {
-        localPersistencyStatus = .inMemoryOnly
+        persistentObject.localPersistencyStatus = .inMemoryOnly
         _originalEarthFixedBaseObservingFacilityDetails = earthFixedBaseObservingFacilityDetails
 
         if placeID == nil {
-            try place = Place(id: UUID(), facility: facility)
-//            placeID   = place.id
+            try place = Place(id: UUID(), facilityID: facilityID)
+            // placeID = place.id
         }
         else {
             do    { try await place.loadData() }
@@ -136,15 +147,16 @@ open class EarthFixedBaseObservingFacilityDetails: PersistentObject {
 //MARK: - PolisPersisting implementation -
 extension EarthFixedBaseObservingFacilityDetails {
     public func canEdit() async -> Bool {
-        (localPersistencyStatus == .inMemoryOnly) || (_originalEarthFixedBaseObservingFacilityDetails != earthFixedBaseObservingFacilityDetails)
+        (persistentObject.localPersistencyStatus == .inMemoryOnly) || (_originalEarthFixedBaseObservingFacilityDetails != earthFixedBaseObservingFacilityDetails)
     }
 
-//    public override func startEditing()        async throws { }
-//    public override func finishEditing()       async throws { }
+    //    public override func startEditing()        async throws { }
+    //    public override func finishEditing()       async throws { }
 
     public func saveChanges() async throws {
         guard await canEdit() else { return }
 
+        let nc = persistentObject.nc
         nc.post(name: AppSupportStatusChangeNotification.earthBasedFacilityWillSaveNotification, object: self)
         try await earthFixedBaseObservingFacilityDetails.flashUsing(store: ObjectStore.sharedObjectStore)
         nc.post(name: AppSupportStatusChangeNotification.earthBasedFacilityDidSaveNotification, object: self)
@@ -154,15 +166,17 @@ extension EarthFixedBaseObservingFacilityDetails {
     public func delete()                       async throws { }
 
     public func loadData() async throws {
+        let nc = persistentObject.nc
         nc.post(name: AppSupportStatusChangeNotification.earthBasedFacilityWillLoadNotification, object: self)
 
-        self.earthFixedBaseObservingFacilityDetails = try await PolisEarthFixedBaseObservingFacilityDetails.loadFromLocalFileSystemUsing(store: ObjectStore.sharedObjectStore,
-                                                                                                    facilityID: facilityID,
-                                                                                                    objectType: .observingFacilityDetails) as! PolisEarthFixedBaseObservingFacilityDetails
+        self.earthFixedBaseObservingFacilityDetails = try await
+        PolisEarthFixedBaseObservingFacilityDetails.loadFromLocalFileSystemUsing(store: ObjectStore.sharedObjectStore,
+                                                                                 facilityID: facilityID,
+                                                                                 objectType: .observingFacilityDetails) as! PolisEarthFixedBaseObservingFacilityDetails
 
         //TODO: Load referenced objects!
         nc.post(name: AppSupportStatusChangeNotification.earthBasedFacilityDidLoadNotification, object: self)
-        nc.post(name: AppSupportStatusChangeNotification.facilityDidChangeNotification, object: facility)
+        nc.post(name: AppSupportStatusChangeNotification.facilityDidChangeNotification, object: facilityID)
     }
 
     public func didChange()                    async -> Bool { false }
@@ -170,10 +184,13 @@ extension EarthFixedBaseObservingFacilityDetails {
     public func prepareToCloseTheObjectStore() async throws { }
 
     private func ensureIKnowMyFacility() async throws {
+        // TODO: check
+        /*
         if self.facility != nil                                                                  { return }
-        guard let possibleFacility = ObjectStore.sharedObjectStore.facilityWithId(id) else { throw ObjectStore.ObjectStoreError.objectWithIDNotFound }
+        guard let possibleFacility = await ObjectStore.sharedObjectStore.facilityWithId(id) else { throw ObjectStore.ObjectStoreError.objectWithIDNotFound }
 
         self.facility = possibleFacility
+         */
     }
 
 }
