@@ -7,7 +7,7 @@
 
 import Foundation
 
-public actor Artifact: @preconcurrency Persisting, Sendable {
+public actor Artifact: @preconcurrency Persisting {
 
     public var identifiableObject   : IdentifiableObject
     public var artifactType         : PolisArtifact.ArtifactType

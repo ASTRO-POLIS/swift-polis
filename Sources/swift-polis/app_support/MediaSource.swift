@@ -7,7 +7,7 @@
 
 import Foundation
 
-public actor MediaSource: @preconcurrency Persisting, Sendable {
+public actor MediaSource: @preconcurrency Persisting {
 
     public var identifiableObject: IdentifiableObject
     public var id                : UUID { identifiableObject.identity.id }

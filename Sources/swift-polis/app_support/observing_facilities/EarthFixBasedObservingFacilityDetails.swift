@@ -7,7 +7,7 @@
 
 import Foundation
 
-public actor EarthFixedBaseObservingFacilityDetails: @preconcurrency Persisting, Sendable {
+public actor EarthFixedBaseObservingFacilityDetails: @preconcurrency Persisting {
 
     public var persistentObject     : PersistentObject
     public var persistenceDescriptor: PersistenceDescriptor

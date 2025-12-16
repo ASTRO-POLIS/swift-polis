@@ -7,7 +7,7 @@
 
 import Foundation
 
-public actor Observatory: @preconcurrency Persisting, Sendable {
+public actor Observatory: @preconcurrency Persisting {
 
     public var identifiableObject: IdentifiableObject
     public var id                : UUID { identifiableObject.id }

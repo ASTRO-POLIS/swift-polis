@@ -7,7 +7,7 @@
 
 import Foundation
 
-public actor Place: @preconcurrency Persisting, Sendable {
+public actor Place: @preconcurrency Persisting {
 
     public var persistentObject: PersistentObject
     public var persistenceDescriptor: PersistenceDescriptor

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public actor VisitingHours: @preconcurrency Persisting, Sendable {
+public actor VisitingHours: @preconcurrency Persisting {
 
     public var identifiableObject: IdentifiableObject
     public var id                : UUID { identifiableObject.identity.id }

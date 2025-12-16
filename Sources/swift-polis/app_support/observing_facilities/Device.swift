@@ -7,7 +7,7 @@
 
 import Foundation
 
-public actor Device: @preconcurrency Persisting, Sendable {
+public actor Device: @preconcurrency Persisting {
 
     public var identifiableObject: IdentifiableObject
     public var id                : UUID { identifiableObject.identity.id }
