@@ -25,9 +25,9 @@ struct AppSupportTestingSupport {
     static let testingPath = "/Users/Shared/Work/polis_tests"
 
     static  func objectStore(removeOldData: Bool = false) async throws -> ObjectStore {
-        let storeConfig = ObjectStoreConfiguration()
+        let storeConfig = await ObjectStoreConfiguration()
 
-        try storeConfig.setLocalPolisRootFolder(AppSupportTestingSupport.testingPath)
+        try await storeConfig.setLocalPolisRootFolder(AppSupportTestingSupport.testingPath)
 
         return  try await storeConfig.objectStore()
     }
