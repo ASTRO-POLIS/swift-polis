@@ -47,7 +47,7 @@ final class ObjectStoreConfigurationTests : XCTestCase {
     }
 
     //MARK: - Tests -
-    func test_ObjectStoreConfiguration_creation_shouldSucceed() throws {
+    @MainActor func test_ObjectStoreConfiguration_creation_shouldSucceed() throws {
         // Given
         let sut = ObjectStoreConfiguration()
 
@@ -58,18 +58,18 @@ final class ObjectStoreConfigurationTests : XCTestCase {
 
     func test_ObjectStoreConfiguration_createStore_shouldSucceed() async throws {
         // Given
-        let sut = ObjectStoreConfiguration()
+        let sut = await ObjectStoreConfiguration()
 
         // When
-        try sut.setLocalPolisRootFolder("/tmp")
+        try await sut.setLocalPolisRootFolder("/tmp")
         let store = try await sut.objectStore()
 
         // Then
         XCTAssertNotNil(store)
     }
 
-    static let allTests = [
-        ("test_ObjectStoreConfiguration_creation_shouldSucceed",    test_ObjectStoreConfiguration_creation_shouldSucceed),
-        ("test_ObjectStoreConfiguration_createStore_shouldSucceed", test_ObjectStoreConfiguration_createStore_shouldSucceed),
-    ]
+//    static let allTests = [
+//        ("test_ObjectStoreConfiguration_creation_shouldSucceed",    test_ObjectStoreConfiguration_creation_shouldSucceed),
+//        ("test_ObjectStoreConfiguration_createStore_shouldSucceed", test_ObjectStoreConfiguration_createStore_shouldSucceed),
+//    ]
 }

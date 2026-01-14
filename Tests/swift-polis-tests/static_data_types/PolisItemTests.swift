@@ -72,7 +72,7 @@ final class PolisItemTests: XCTestCase {
     }
 
 
-    static var allTests = [
-        ("test_Owner_codingSupport_shouldSucceed", test_Owner_codingSupport_shouldSucceed),
-    ]
+//    static var allTests = [
+//        ("test_Owner_codingSupport_shouldSucceed", test_Owner_codingSupport_shouldSucceed),
+//    ]
 }

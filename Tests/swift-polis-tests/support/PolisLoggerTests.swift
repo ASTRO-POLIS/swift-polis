@@ -46,7 +46,7 @@ final class PolisLoggerTests: XCTestCase {
     }
 
     //MARK: - Tests -
-    func test_PolisLogger_sharedInstance_shouldExist() throws {
+    @MainActor func test_PolisLogger_sharedInstance_shouldExist() throws {
         // Given
         let sut = PolisLogger.shared
 
@@ -93,9 +93,9 @@ final class PolisLoggerTests: XCTestCase {
     }
 
 
-    static let allTests = [
-        ("test_PolisLogger_sharedInstance_shouldExist", test_PolisLogger_sharedInstance_shouldExist),
-        ("test_PolisLogger_creatingLogs_shouldSucceed", test_PolisLogger_creatingLogs_shouldSucceed),
-        ("test_PolisLogger_flushingLogs_shouldSucceed", test_PolisLogger_flushingLogs_shouldSucceed),
-    ]
+//    static let allTests = [
+//        ("test_PolisLogger_sharedInstance_shouldExist", test_PolisLogger_sharedInstance_shouldExist),
+//        ("test_PolisLogger_creatingLogs_shouldSucceed", test_PolisLogger_creatingLogs_shouldSucceed),
+//        ("test_PolisLogger_flushingLogs_shouldSucceed", test_PolisLogger_flushingLogs_shouldSucceed),
+//    ]
 }
