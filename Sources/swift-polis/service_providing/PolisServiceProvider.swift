@@ -198,7 +198,7 @@ public struct PolisObservingFacilityDirectory: Codable, Sendable {
     /// invalidated (e.g. lastUpdate is changed).
     ///
     ///  **Note:** Only root facility (e.g. without a parent facility) should be listed!
-    public struct ObservingFacilityReference: Codable, Identifiable, Equatable, Sendable {
+    public struct ObservingFacilityReference: Codable, Identifiable, Equatable, Sendable, PolisObject {
         public var identity: PolisIdentity
         public var gravitationalBodyRelationship: PolisObservingFacilityLocationType
         public var placeInTheSolarSystem : PolisPlaceInTheSolarSystem

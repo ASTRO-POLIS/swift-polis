@@ -7,6 +7,8 @@
 
 import Foundation
 
+protocol PolisObject { }
+
 //MARK: - PolisLifecycleStatus -
 /// The current status of the POLIS item (object) and its readiness to be used in different environments.
 ///
