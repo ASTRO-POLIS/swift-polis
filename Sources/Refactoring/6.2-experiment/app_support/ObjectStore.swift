@@ -108,7 +108,7 @@ public actor ObjectStore: Sendable {
     ///
     /// Loading always will be step-by-step and will start with the most important data and later will continue with detail data.
     public func loadLocalStoreAt(path: String) async throws {
-        _fileResourceFinder = try PolisFileResourceFinder(at: URL(string: path)!, supportedImplementation: PolisConstants().latestPolisFrameworkSupportedImplementation())
+//        _fileResourceFinder = try PolisFileResourceFinder(at: URL(string: path)!, supportedImplementation: PolisConstants().latestPolisFrameworkSupportedImplementation())
 
         nc.post(name: AppSupportStatusChangeNotification.ObjectStoreWillLoadNotification, object: self)
 
@@ -221,9 +221,9 @@ public actor ObjectStore: Sendable {
 
 
     @MainActor static private var _currentObjectStore: ObjectStore!
-    private var _isConfigured: Bool?
-    private var _fileResourceFinder: PolisFileResourceFinder!
-    private var _remoteResourceFinder: PolisRemoteResourceFinder!
+//    private var _isConfigured: Bool?
+//    private var _fileResourceFinder: PolisFileResourceFinder!
+//    private var _remoteResourceFinder: PolisRemoteResourceFinder!
 
     private var _localConfiguration: LocalConfiguration!
 
@@ -317,43 +317,43 @@ extension ObjectStore {
 //MARK: - Working with files and folders -
 extension ObjectStore {
 
-    /// This method returns all currently possible POLIS directories. Use it whenever the list is needed.
-    private func polisDirectoryPaths() -> [String] {
-        [
-            _fileResourceFinder.baseFolder(),                        // ../polis/
-            _fileResourceFinder.observingFacilitiesFolder(),         // ../polis/<version>/polis_observing_facilities/
-            _fileResourceFinder.resourcesFolder(),                   // ../polis/<version>/polis_resources/
-            _fileResourceFinder.ownersFolder(),                      // ../polis/<version>/polis_owners/
-            _fileResourceFinder.manufacturersFolder(),               // ../polis/<version>/polis_manufacturers/
-        ]
-    }
+//    /// This method returns all currently possible POLIS directories. Use it whenever the list is needed.
+//    private func polisDirectoryPaths() -> [String] {
+//        [
+//            _fileResourceFinder.baseFolder(),                        // ../polis/
+//            _fileResourceFinder.observingFacilitiesFolder(),         // ../polis/<version>/polis_observing_facilities/
+//            _fileResourceFinder.resourcesFolder(),                   // ../polis/<version>/polis_resources/
+//            _fileResourceFinder.ownersFolder(),                      // ../polis/<version>/polis_owners/
+//            _fileResourceFinder.manufacturersFolder(),               // ../polis/<version>/polis_manufacturers/
+//        ]
+//    }
+//
+//    /// This method returns all currently possible POLIS essential files required by the standard. Use it whenever the list is needed.
+//    private func essentialPolisFiles() -> [String] {
+//        [
+//            _fileResourceFinder.configurationFile(),                 // ../polis/polis.json
+//            _fileResourceFinder.polisProviderDirectoryFile(),        // ../polis/polis_directory.json
+//            _fileResourceFinder.observingFacilitiesDirectoryFile(),  // ../polis/<version>/polis_observing_facilities.json
+//        ]
+//    }
 
-    /// This method returns all currently possible POLIS essential files required by the standard. Use it whenever the list is needed.
-    private func essentialPolisFiles() -> [String] {
-        [
-            _fileResourceFinder.configurationFile(),                 // ../polis/polis.json
-            _fileResourceFinder.polisProviderDirectoryFile(),        // ../polis/polis_directory.json
-            _fileResourceFinder.observingFacilitiesDirectoryFile(),  // ../polis/<version>/polis_observing_facilities.json
-        ]
-    }
+//    //TODO: Move these methods to SoftwareEtudes
+//    func tryToEnsureFoldersExistence(paths: [String]) -> Bool {
+//        do {
+//            for path in paths {
+//                if !(fm.fileExists(atPath: path, isDirectory: &isDir) && (isDir.boolValue)) {
+//                    try fm.createDirectory(atPath: path, withIntermediateDirectories: true)
+//                }
+//            }
+//            return true
+//        }
+//        catch {
+//            logger.error("Error: cannot access or create folder - \(error.localizedDescription)")
+//            return false
+//        }
+//    }
 
-    //TODO: Move these methods to SoftwareEtudes
-    func tryToEnsureFoldersExistence(paths: [String]) -> Bool {
-        do {
-            for path in paths {
-                if !(fm.fileExists(atPath: path, isDirectory: &isDir) && (isDir.boolValue)) {
-                    try fm.createDirectory(atPath: path, withIntermediateDirectories: true)
-                }
-            }
-            return true
-        }
-        catch {
-            logger.error("Error: cannot access or create folder - \(error.localizedDescription)")
-            return false
-        }
-    }
-
-    private func ensurePolisFoldersExistence()  -> Bool { tryToEnsureFoldersExistence(paths: polisDirectoryPaths()) }
+//    private func ensurePolisFoldersExistence()  -> Bool { tryToEnsureFoldersExistence(paths: polisDirectoryPaths()) }
 
     private func checkPolisDirectoryPathsExistence(paths: [String]) -> Bool {
         for path in paths {

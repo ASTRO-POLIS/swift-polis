@@ -57,7 +57,7 @@ import Foundation
 /// Thread-safety:
 /// - As a struct with internal mutable state (children set), treat instances as
 ///   non-thread-safe if mutated concurrently.
-public struct PolisItem: Codable, Equatable, Sendable {
+public struct PolisItem: Codable, Equatable, Sendable, PolisObject {
 
     /// Uniquely identifies the POLIS Item
     public var identity: PolisIdentity

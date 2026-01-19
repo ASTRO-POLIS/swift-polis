@@ -35,7 +35,7 @@ let package = Package(
             dependencies: [
                 .product(name: "SoftwareEtudesUtilities",               package: "SoftwareEtudes"),
                 .product(name: "SoftwareEtudesExecutableConfiguration", package: "SoftwareEtudes"),
-//                .target(name: "swift-polis")
+                "swift-polis"
             ],
             path: "Sources/polis-tool"
         ),

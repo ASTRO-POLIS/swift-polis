@@ -8,6 +8,7 @@
 import Foundation
 import SoftwareEtudesUtilities
 @preconcurrency import SoftwareEtudesExecutableConfiguration
+import swift_polis
 
     let helpPrompt = """
 NAME
@@ -40,6 +41,8 @@ EXIT STATUS
 
 @MainActor var exitCode = ExitCodes.noError
 
+@MainActor var storeCoordinator: ObjectStoreCoordinator!
+
 @main
 struct PolisTool {
 
@@ -50,6 +53,10 @@ struct PolisTool {
         parseArguments()
 
         //TODO: 2. Check arguments and paths
+
+        //TODO: N Configure ObjectStoreCoordinator
+        storeCoordinator = ObjectStoreCoordinator.shared
+        
         //TODO: N. Setup various controllers
         //TODO: N. Decide what to do
 

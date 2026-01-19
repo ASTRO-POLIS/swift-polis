@@ -7,6 +7,9 @@
 
 import Foundation
 
+/// Marks an object as POLIS objet
+///
+/// This allows the system to save, sync, update, and delete objects, change their status, and notify observers about the changes
 protocol PolisObject { }
 
 //MARK: - PolisLifecycleStatus -
