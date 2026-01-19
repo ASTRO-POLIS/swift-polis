@@ -7,6 +7,6 @@
 
 enum ExitCodes: Int32 {
     case noError                      = 0   // No error
-    case invalidArgumentFormat        = 1   // Argument should start either with "-" or "--"
-
+    case invalidArgumentFormat        = 1   // Invalid arguments: arguments outside the allowed set
+    case unknown                      = 99  // Unknown error
 }

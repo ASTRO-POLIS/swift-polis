@@ -127,6 +127,6 @@ extension ObjectStoreCoordinator {
         }
     }
 
-    private func ensurePolisFoldersExistence()  -> Bool { tryToEnsureFoldersExistence(paths: polisDirectoryPaths()) }
+    private func ensurePolisFoldersExistence() -> Bool { tryToEnsureFoldersExistence(paths: polisDirectoryPaths()) }
 
 }
