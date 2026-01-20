@@ -1,5 +1,5 @@
 //===----------------------------------------------------------------------===//
-//  PolisLogger.swift
+//  PolisLoggerTests.swift
 //===----------------------------------------------------------------------===//
 //
 // This source file is part of the ASTRO-POLIS open source project
@@ -18,84 +18,71 @@
 //  Created by Georg Tuparev on 20/10/2024
 //
 
-import XCTest
+import Testing
+import Foundation
+import Logging
 
 @testable import swift_polis
 
-final class PolisLoggerTests: XCTestCase {
-    //MARK: - Setup & Teardown -
-
-    override class func setUp() {
-        print("In class setUp.")
+@Suite("PolisLogger Console Tests")
+@MainActor
+struct PolisLoggerTests {
+    
+    //MARK: - Setup
+    
+    /// Use ObjectStoreCoordinator to initialise the logger
+    static func setupLogger() {
+        _ = ObjectStoreCoordinator.shared
     }
-
-    override class func tearDown() {
-        print("In class tearDown.")
+    
+    //MARK: - Tests: Logger Creation
+    @Test("Logger with default name should have 'default' label")
+    func loggerWithDefaultName() {
+        Self.setupLogger()
+        let logger = PolisLogger.logger()
+        #expect(logger.label == "default")
     }
-
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-
-        print("In setUp.")
+    
+    @Test("Logger with custom name should have that name as label")
+    func loggerWithCustomName() {
+        Self.setupLogger()
+        let logger = PolisLogger.logger("CustomLogger")
+        #expect(logger.label == "CustomLogger")
     }
-
-    override func tearDownWithError() throws {
-        print("In tearDown.")
-
-        try super.tearDownWithError()
+    
+    //MARK: - Tests: Console Output (check Xcode console for output)
+    @Test("Info log should appear in console")
+    func infoLogToConsole() {
+        Self.setupLogger()
+        let logger = PolisLogger.logger("InfoTest")
+        logger.info("=== INFO: This message should appear in Xcode console ===")
     }
-
-    //MARK: - Tests -
-    @MainActor func test_PolisLogger_sharedInstance_shouldExist() throws {
-        // Given
-        let sut = PolisLogger.shared
-
-        // Then
-        XCTAssertNotNil(sut)
+    
+    @Test("Warning log should appear in console")
+    func warningLogToConsole() {
+        Self.setupLogger()
+        let logger = PolisLogger.logger("WarningTest")
+        logger.warning("=== WARNING: This message should appear in Xcode console ===")
     }
-
-    func test_PolisLogger_creatingLogs_shouldSucceed() throws {
-        // Given
-        let sut = PolisLogger()
-
-        // When
-        sut.shouldLog = true
-
-        sut.info("blah")
-        sut.info("blah blah")
-        sut.warning("foo")
-        sut.error("bar")
-
-        // Then
-        XCTAssertEqual(sut.infoMessages().count, 2)
-        XCTAssertEqual(sut.warningMessages().count, 1)
-        XCTAssertEqual(sut.errorMessages().count, 1)
+    
+    @Test("Error log should appear in console")
+    func errorLogToConsole() {
+        Self.setupLogger()
+        let logger = PolisLogger.logger("ErrorTest")
+        logger.error("=== ERROR: This message should appear in Xcode console ===")
     }
-
-    func test_PolisLogger_flushingLogs_shouldSucceed() throws {
-        // Given
-        let sut = PolisLogger()
-
-        // When
-        sut.shouldLog = true
-
-        sut.info("blah")
-        sut.info("blah blah")
-        sut.warning("foo")
-        sut.error("bar")
-
-        sut.flush()
-
-        // Then
-        XCTAssertEqual(sut.infoMessages().count, 0)
-        XCTAssertEqual(sut.warningMessages().count, 0)
-        XCTAssertEqual(sut.errorMessages().count, 0)
+    
+    @Test("Debug log should appear in console")
+    func debugLogToConsole() {
+        Self.setupLogger()
+        let logger = PolisLogger.logger("DebugTest")
+        logger.debug("=== DEBUG: This message should appear in Xcode console ===")
     }
-
-
-//    static let allTests = [
-//        ("test_PolisLogger_sharedInstance_shouldExist", test_PolisLogger_sharedInstance_shouldExist),
-//        ("test_PolisLogger_creatingLogs_shouldSucceed", test_PolisLogger_creatingLogs_shouldSucceed),
-//        ("test_PolisLogger_flushingLogs_shouldSucceed", test_PolisLogger_flushingLogs_shouldSucceed),
-//    ]
+    
+    @Test("Critical log should appear in console")
+    func criticalLogToConsole() {
+        Self.setupLogger()
+        let logger = PolisLogger.logger("CriticalTest")
+        logger.critical("=== CRITICAL: This message should appear in Xcode console ===")
+    }
 }
