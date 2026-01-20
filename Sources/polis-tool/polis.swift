@@ -8,7 +8,9 @@
 import Foundation
 import SoftwareEtudesUtilities
 @preconcurrency import SoftwareEtudesExecutableConfiguration
+import SoftwareEtudesLogging
 import swift_polis
+
 
     let helpPrompt = """
 NAME
@@ -24,11 +26,11 @@ DESCRIPTION
 ARGUMENTS
    -c path_to_local_polis_folder         -- The path to the local copy of the POLIS provider static data [optional in test mode]
    -r url_to_remote_polis_provider       -- The fURL to the remote POLIS provider used for syncing [required]
-   -m | --mode status | create | sync    -- Defines one of the three execution modi [optional]
+   --mode status | create | sync         -- Defines one of the three execution modi [optional]
                                          -- - status: returns the status of the local and the remote service provider 
                                          -- - create: creates a new local service provider
                                          -- - sync: bidirectional sync between the local and the remote service providers
-   -l | --log                            -- Path to the log file. If absent, the tool prints only to the console. [optional]
+   --log                                 -- Path to the log file. If absent, the tool prints only to the console. [optional]
    --log_level [DEBUG | WARNING | ERROR] -- Defines the logging level. Default is WARNING [optional]
    -t | --test                           -- Executes the utility in test mode. Can use build-in configuration. Could be used ONLY 
                                             while debugging. Changes are temporary only! [optional]
@@ -40,11 +42,16 @@ EXIT STATUS
    99   -- unknown error
 """
 
-@MainActor var exitCode  = ExitCodes.noError
 @MainActor var storeCoordinator: ObjectStoreCoordinator!
+@MainActor var exitCode  = ExitCodes.noError
 @MainActor var isTesting = false
+@MainActor var modeOfOperation: ModeOfOperation!
+@MainActor var logLevel  = LogLevel.debug
 
-let testingPath = "/Users/Shared/Work/polis_tests"
+@MainActor var rootPath: String?
+@MainActor var remoteHost: String?
+@MainActor var logFile: String?
+let testingPath          = "/Users/Shared/Work/polis_tests"
 
 @main
 struct PolisTool {
@@ -55,7 +62,10 @@ struct PolisTool {
         // 1. Parse the command line arguments
         parseArguments()
 
-        //TODO: 2. Check arguments and paths
+        // 2. Check arguments
+        if !areArgumentsValid() { exitDescribingErrors(code: exitCode) }
+
+        //TODO: 3. Check paths
 
         //TODO: N Configure ObjectStoreCoordinator
         storeCoordinator = ObjectStoreCoordinator.shared
@@ -75,7 +85,7 @@ fileprivate let clap                       = CommandLineParser(arguments: Comman
 @MainActor private func parseArguments() {
     guard let clap = clap else { fatalError("FATAL ERROR: cannot initialise command line parser ") }
 
-    do    { try clap.setAllowedArguments(["-l", "--log", "-h", "--help", "-t", "--test"]) }
+    do    { try clap.setAllowedArguments(["-l", "--log", "-h", "--help", "-t", "--test", "-c", "-r", "--mode", "--log_level"]) }
     catch { exitDescribingErrors(code: .invalidArgumentFormat) }
 
     if clap.containsRaw(argument: "-h") || clap.containsRaw(argument: "--help") {
@@ -83,7 +93,27 @@ fileprivate let clap                       = CommandLineParser(arguments: Comman
         exitDescribingErrors(code: .noError)
     }
 
-    //MARK: Implement me!
+    if clap.containsRaw(argument: "-c")                                         { rootPath        = clap.firstRawArgument(after: "-c") }
+    if clap.containsRaw(argument: "-r")                                         { remoteHost      = clap.firstRawArgument(after: "-r") }
+    if clap.containsRaw(argument: "--mode")                                     { modeOfOperation = ModeOfOperation(rawValue: clap.firstRawArgument(after: "--mode")!) }
+    if clap.containsRaw(argument: "-log")                                       { logFile         = clap.firstRawArgument(after: "-log") }
+    if clap.containsRaw(argument: "--log_level")                                { logLevel        = LogLevel(rawValue: clap.firstRawArgument(after: "--log_level")!) ?? .warning }
+    if clap.containsRaw(argument: "-t") || clap.containsRaw(argument: "--test") { isTesting       = true }
+}
+
+@MainActor private func areArgumentsValid() -> Bool {
+    if !isTesting && (rootPath == nil) {
+        exitCode = .pathToLocalProviderIsRequired
+        return false
+    }
+
+    if (modeOfOperation == .sync) && (remoteHost == nil) {
+        exitCode = .remoteHostProviderIsRequired
+        return false
+    }
+
+    //TODO: Implement me!
+    return true
 }
 
 @MainActor private func exitDescribingErrors(code: ExitCodes) {
@@ -92,10 +122,13 @@ fileprivate let clap                       = CommandLineParser(arguments: Comman
 
         switch code {
             case .noError: break
-            case .invalidArgumentFormat: print(">>> Invalid arguments: arguments outside the allowed set")
-            case .unknown:               print(">>> Unknown error")
+            case .invalidArgumentFormat:         print(">>> Invalid arguments: arguments outside the allowed set")
+            case .pathToLocalProviderIsRequired: print(">>> If the tool is not in test mode, the \"-c path\" argument is required")
+            case .remoteHostProviderIsRequired:  print(">>> In sync mode mode, the \"-r url\" argument is required")
+            case .unknown:                       print(">>> Unknown error")
         }
         print(">>> Exiting with errors)")
     }
     exit(code.rawValue)
 }
+
