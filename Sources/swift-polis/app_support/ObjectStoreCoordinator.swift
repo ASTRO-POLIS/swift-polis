@@ -55,9 +55,12 @@ public actor ObjectStoreCoordinator {
     private var _remoteResourceFinder: PolisRemoteResourceFinder!
 
     private init() {
-        PolisLogger.setup(subsystem: "test.polis.observer", level: Logging.Logger.Level.info)
+        
+        let logFileURL = URL(fileURLWithPath: "/tmp/polis.log")
+        PolisLogger.setup(subsystem: "test.polis.observer", level: Logging.Logger.Level.trace,
+                          logFileURL: logFileURL, includeConsole: true)
+        
         self.logger = PolisLogger.logger()
-
         self.logger.info("ObjectStoreCoordinator initialised")
     }
 
