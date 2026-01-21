@@ -21,12 +21,16 @@
 import Testing
 import Foundation
 import Logging
+import SoftwareEtudesLogging
+import SoftwareEtudesCoreMessageDispatching
 
 @testable import swift_polis
 
+//MARK: - Console Tests Suite
+
 @Suite("PolisLogger Console Tests")
 @MainActor
-struct PolisLoggerTests {
+struct PolisLoggerConsoleTests {
     
     //MARK: - Setup
     
@@ -36,6 +40,7 @@ struct PolisLoggerTests {
     }
     
     //MARK: - Tests: Logger Creation
+    
     @Test("Logger with default name should have 'default' label")
     func loggerWithDefaultName() {
         Self.setupLogger()
@@ -50,7 +55,8 @@ struct PolisLoggerTests {
         #expect(logger.label == "CustomLogger")
     }
     
-    //MARK: - Tests: Console Output (check Xcode console for output)
+    //MARK: - Tests: Console Output
+    
     @Test("Info log should appear in console")
     func infoLogToConsole() {
         Self.setupLogger()
@@ -84,5 +90,61 @@ struct PolisLoggerTests {
         Self.setupLogger()
         let logger = PolisLogger.logger("CriticalTest")
         logger.critical("=== CRITICAL: This message should appear in Xcode console ===")
+    }
+}
+
+//MARK: - File Dispatcher Tests Suite
+
+@Suite("PolisLogger File Dispatcher Tests")
+@MainActor
+struct PolisLoggerFileTests {
+    
+    //MARK: - Properties
+    static let testLogFileURL = URL(fileURLWithPath: "/tmp/polis.log")
+    
+    //MARK: - Setup
+    
+    /// Setup logger via ObjectStoreCoordinator (same as console tests)
+    static func setupFileLogger() {
+        _ = ObjectStoreCoordinator.shared
+    }
+    
+    //MARK: - Helper Methods
+    
+    /// Waits for file dispatcher to flush and returns file content
+    private func waitAndReadLogFile() async throws -> String {
+        // Wait longer for async Task.detached in SoftwareEtudesLogging.Logger
+        try await Task.sleep(for: .seconds(5))
+        
+        print("🔍 Checking file at: \(Self.testLogFileURL.path)")
+        
+        let fileExists = FileManager.default.fileExists(atPath: Self.testLogFileURL.path)
+        print("🔍 File exists: \(fileExists)")
+        
+        guard fileExists else {
+            throw FileTestError.logFileNotFound
+        }
+        
+        let content    = try String(contentsOf: Self.testLogFileURL, encoding: .utf8)
+        return content
+    }
+    
+    enum FileTestError: Error {
+        case logFileNotFound
+    }
+    
+    //MARK: - Tests: File Creation
+    
+    @Test("Log file should be created after logging")
+    func logFileCreated() async throws {
+        Self.setupFileLogger()
+        
+        let logger     = PolisLogger.logger("FileCreationTest")
+        logger.info("Trigger file creation")
+        
+        try await Task.sleep(for: .seconds(3))
+        
+        let fileExists = FileManager.default.fileExists(atPath: Self.testLogFileURL.path)
+        #expect(fileExists, "Log file should exist at \(Self.testLogFileURL.path)")
     }
 }
