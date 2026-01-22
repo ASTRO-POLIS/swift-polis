@@ -22,5 +22,6 @@ enum ExitCodes: Int32 {
     case invalidArgumentFormat         = 1   // Invalid arguments: arguments outside the allowed set
     case pathToLocalProviderIsRequired = 2   // If the tool is not in test mode, the "-c path" argument is required
     case remoteHostProviderIsRequired  = 3   // In sync mode mode, the "-r url" argument is required
+    case fileIO                        = 4   // File I/O Error
     case unknown                       = 99  // Unknown error
 }

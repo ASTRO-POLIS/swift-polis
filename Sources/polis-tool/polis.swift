@@ -39,6 +39,9 @@ ARGUMENTS
 EXIT STATUS
    The polis utility exits 0 on success, and > 0 if an error occurs
     1   -- Invalid arguments: arguments outside the allowed set
+    2   -- If the tool is not in test mode, the "-c path" argument is required
+    3   -- In sync mode mode, the "-r url" argument is required
+    4   -- File I/O Error
    99   -- unknown error
 """
 
@@ -65,7 +68,11 @@ struct PolisTool {
         // 2. Check arguments
         if !areArgumentsValid() { exitDescribingErrors(code: exitCode) }
 
-        //TODO: 3. Check paths
+        // 3. Check paths
+        if !checkPaths() {
+            exitCode = .fileIO
+            exitDescribingErrors(code: exitCode)
+        }
 
         //TODO: N Configure ObjectStoreCoordinator
         storeCoordinator = ObjectStoreCoordinator.shared
@@ -77,28 +84,31 @@ struct PolisTool {
 }
 
 //MARK: - Private API -
-fileprivate let clap                       = CommandLineParser(arguments: CommandLine.arguments)
-@MainActor fileprivate var fm              = FileManager.default
-@MainActor fileprivate var isDir: ObjCBool = false
+fileprivate let _clap                       = CommandLineParser(arguments: CommandLine.arguments)
+@MainActor fileprivate var _fm              = FileManager.default
+@MainActor fileprivate var _isDir: ObjCBool = false
 
 
 @MainActor private func parseArguments() {
-    guard let clap = clap else { fatalError("FATAL ERROR: cannot initialise command line parser ") }
+    guard let _clap = _clap else { fatalError("FATAL ERROR: cannot initialise command line parser ") }
 
-    do    { try clap.setAllowedArguments(["-l", "--log", "-h", "--help", "-t", "--test", "-c", "-r", "--mode", "--log_level"]) }
+    do    { try _clap.setAllowedArguments(["-l", "--log", "-h", "--help", "-t", "--test", "-c", "-r", "--mode", "--log_level"]) }
     catch { exitDescribingErrors(code: .invalidArgumentFormat) }
 
-    if clap.containsRaw(argument: "-h") || clap.containsRaw(argument: "--help") {
+    if _clap.containsRaw(argument: "-h") || _clap.containsRaw(argument: "--help") {
         print(helpPrompt)
         exitDescribingErrors(code: .noError)
     }
 
-    if clap.containsRaw(argument: "-c")                                         { rootPath        = clap.firstRawArgument(after: "-c") }
-    if clap.containsRaw(argument: "-r")                                         { remoteHost      = clap.firstRawArgument(after: "-r") }
-    if clap.containsRaw(argument: "--mode")                                     { modeOfOperation = ModeOfOperation(rawValue: clap.firstRawArgument(after: "--mode")!) }
-    if clap.containsRaw(argument: "-log")                                       { logFile         = clap.firstRawArgument(after: "-log") }
-    if clap.containsRaw(argument: "--log_level")                                { logLevel        = LogLevel(rawValue: clap.firstRawArgument(after: "--log_level")!) ?? .warning }
-    if clap.containsRaw(argument: "-t") || clap.containsRaw(argument: "--test") { isTesting       = true }
+    if _clap.containsRaw(argument: "-c")                                          { rootPath        = _clap.firstRawArgument(after: "-c") }
+    if _clap.containsRaw(argument: "-r")                                          { remoteHost      = _clap.firstRawArgument(after: "-r") }
+    if _clap.containsRaw(argument: "--mode")                                      { modeOfOperation = ModeOfOperation(rawValue: _clap.firstRawArgument(after: "--mode")!) }
+    if _clap.containsRaw(argument: "-log")                                        { logFile         = _clap.firstRawArgument(after: "-log") }
+    if _clap.containsRaw(argument: "--log_level")                                 { logLevel        = LogLevel(rawValue: _clap.firstRawArgument(after: "--log_level")!) ?? .warning }
+    if _clap.containsRaw(argument: "-t") || _clap.containsRaw(argument: "--test") {
+        rootPath        = testingPath
+        isTesting       = true
+    }
 }
 
 @MainActor private func areArgumentsValid() -> Bool {
@@ -116,6 +126,16 @@ fileprivate let clap                       = CommandLineParser(arguments: Comman
     return true
 }
 
+@MainActor private func checkPaths() -> Bool {
+    if !(_fm.fileExists(atPath: rootPath!, isDirectory: &_isDir) && (_isDir.boolValue)) {
+        do    { try _fm.createDirectory(atPath: rootPath!, withIntermediateDirectories: true) }
+        catch { return false }
+    }
+
+    //TODO: Implement me!
+    return true
+}
+
 @MainActor private func exitDescribingErrors(code: ExitCodes) {
     if code != ExitCodes.noError {
         print(helpPrompt)
@@ -125,6 +145,7 @@ fileprivate let clap                       = CommandLineParser(arguments: Comman
             case .invalidArgumentFormat:         print(">>> Invalid arguments: arguments outside the allowed set")
             case .pathToLocalProviderIsRequired: print(">>> If the tool is not in test mode, the \"-c path\" argument is required")
             case .remoteHostProviderIsRequired:  print(">>> In sync mode mode, the \"-r url\" argument is required")
+            case .fileIO:                        print(">>> File I/O failed")
             case .unknown:                       print(">>> Unknown error")
         }
         print(">>> Exiting with errors)")
