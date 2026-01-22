@@ -12,6 +12,8 @@ import SoftwareEtudesLogging
 public actor ObjectStoreCoordinator {
     @MainActor public static let shared = ObjectStoreCoordinator()
 
+    @MainActor public static var logFile = "/tmp/polis.log"
+
     public enum ObjectStoreCoordinatorError: Error {
         case unaccessiblePath
         case unaccessibleRemoteHost
@@ -19,6 +21,8 @@ public actor ObjectStoreCoordinator {
         case cannotAccessOrCreateStandardPolisFolders
     }
 
+    @MainActor public static func setLogFile(_ path: String) { logFile = path }
+    
     public let logger: Logging.Logger
 
     public func setPathToPolisFolder(_ path: String) throws {
@@ -30,6 +34,7 @@ public actor ObjectStoreCoordinator {
     }
 
     public func setRemoteProvider(host: String, pathToPolisFolder: String? = nil) throws {
+
         //TODO: Implement me!
     }
 
@@ -54,12 +59,13 @@ public actor ObjectStoreCoordinator {
     private var _fileResourceFinder: PolisFileResourceFinder!
     private var _remoteResourceFinder: PolisRemoteResourceFinder!
 
-    private init() {
-        
-        let logFileURL = URL(fileURLWithPath: "/tmp/polis.log")
-        PolisLogger.setup(subsystem: "test.polis.observer", level: Logging.Logger.Level.trace,
-                          logFileURL: logFileURL, includeConsole: true)
-        
+    @MainActor private init() {
+        let logFileURL = URL(fileURLWithPath: ObjectStoreCoordinator.logFile)
+        PolisLogger.setup(subsystem: "test.polis.observer",
+                          level: Logging.Logger.Level.trace,
+                          logFileURL: logFileURL,
+                          includeConsole: true)
+
         self.logger = PolisLogger.logger()
         self.logger.info("ObjectStoreCoordinator initialised")
     }
@@ -133,3 +139,4 @@ extension ObjectStoreCoordinator {
     private func ensurePolisFoldersExistence() -> Bool { tryToEnsureFoldersExistence(paths: polisDirectoryPaths()) }
 
 }
+
