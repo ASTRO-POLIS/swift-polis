@@ -71,7 +71,16 @@ public actor ObjectStoreCoordinator {
     }
 
     private func resetObjectStoreIfNeeded() {
+        _fileResourceFinder = nil
         //TODO: Implement me!
+    }
+}
+
+//MARK: - Global Object Store Functionality -
+extension ObjectStoreCoordinator {
+    public func isLocalObjectStoreFullyConfigured() -> Bool {
+        //TODO: Implement me!
+        return false
     }
 }
 

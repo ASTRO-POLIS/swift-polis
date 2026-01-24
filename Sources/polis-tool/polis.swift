@@ -27,7 +27,7 @@ ARGUMENTS
    -c path_to_local_polis_folder         -- The path to the local copy of the POLIS provider static data [optional in test mode]
    -r url_to_remote_polis_provider       -- The fURL to the remote POLIS provider used for syncing [required]
    --mode status | create | sync         -- Defines one of the three execution modi [optional]
-                                         -- - status: returns the status of the local and the remote service provider 
+                                         -- - status: returns the status of the local and the remote service provider (default)
                                          -- - create: creates a new local service provider
                                          -- - sync: bidirectional sync between the local and the remote service providers
    --log                                 -- Path to the log file. If absent, the tool prints only to the console. [optional]
@@ -42,19 +42,20 @@ EXIT STATUS
     2   -- If the tool is not in test mode, the "-c path" argument is required
     3   -- In sync mode mode, the "-r url" argument is required
     4   -- File I/O Error
+    5   -- Cannot configure the Object Store Configurator
    99   -- unknown error
 """
 
 @MainActor var storeCoordinator: ObjectStoreCoordinator!
-@MainActor var exitCode  = ExitCodes.noError
-@MainActor var isTesting = false
-@MainActor var modeOfOperation: ModeOfOperation!
-@MainActor var logLevel  = LogLevel.debug
+@MainActor var exitCode        = ExitCodes.noError
+@MainActor var isTesting       = false
+@MainActor var modeOfOperation = ModeOfOperation.status
+@MainActor var logLevel        = LogLevel.debug
 
 @MainActor var rootPath: String?
 @MainActor var remoteHost: String?
 @MainActor var logFile: String?
-let testingPath          = "/Users/Shared/Work/polis_tests"
+let testingPath                = "/Users/Shared/Work/polis_tests"
 
 @main
 struct PolisTool {
@@ -73,12 +74,30 @@ struct PolisTool {
             exitCode = .fileIO
             exitDescribingErrors(code: exitCode)
         }
+        if (rootPath == nil) && isTesting { rootPath = testingPath }
 
         //TODO: N Configure ObjectStoreCoordinator
         storeCoordinator = ObjectStoreCoordinator.shared
+        do    { try await storeCoordinator.setPathToPolisFolder(rootPath!) }
+        catch {
+            exitCode = .cannotConfigureStoreConfigurator
+            exitDescribingErrors(code: exitCode)
+        }
 
         //TODO: N. Setup various controllers
+
         //TODO: N. Decide what to do
+        switch modeOfOperation {
+            case .status:
+                if await storeCoordinator.isLocalObjectStoreFullyConfigured() {
+                    //TODO: Describe the status
+                }
+                else { await storeCoordinator.logger.warning("Local Object Store is not fully configured. Please run 'polis --mode create' to create a new object store.") }
+            case .create: break
+            case .sync: break
+        }
+        // Prepare the app to terminate
+        exitDescribingErrors(code: exitCode)
     }
 
 }
@@ -102,7 +121,7 @@ fileprivate let _clap                       = CommandLineParser(arguments: Comma
 
     if _clap.containsRaw(argument: "-c")                                          { rootPath        = _clap.firstRawArgument(after: "-c") }
     if _clap.containsRaw(argument: "-r")                                          { remoteHost      = _clap.firstRawArgument(after: "-r") }
-    if _clap.containsRaw(argument: "--mode")                                      { modeOfOperation = ModeOfOperation(rawValue: _clap.firstRawArgument(after: "--mode")!) }
+    if _clap.containsRaw(argument: "--mode")                                      { modeOfOperation = ModeOfOperation(rawValue: _clap.firstRawArgument(after: "--mode")!) ?? .status }
     if _clap.containsRaw(argument: "-log")                                        { logFile         = _clap.firstRawArgument(after: "-log") }
     if _clap.containsRaw(argument: "--log_level")                                 { logLevel        = LogLevel(rawValue: _clap.firstRawArgument(after: "--log_level")!) ?? .warning }
     if _clap.containsRaw(argument: "-t") || _clap.containsRaw(argument: "--test") {
@@ -142,14 +161,16 @@ fileprivate let _clap                       = CommandLineParser(arguments: Comma
 
         switch code {
             case .noError: break
-            case .invalidArgumentFormat:         print(">>> Invalid arguments: arguments outside the allowed set")
-            case .pathToLocalProviderIsRequired: print(">>> If the tool is not in test mode, the \"-c path\" argument is required")
-            case .remoteHostProviderIsRequired:  print(">>> In sync mode mode, the \"-r url\" argument is required")
-            case .fileIO:                        print(">>> File I/O failed")
-            case .unknown:                       print(">>> Unknown error")
+            case .invalidArgumentFormat:            print(">>> Invalid arguments: arguments outside the allowed set")
+            case .pathToLocalProviderIsRequired:    print(">>> If the tool is not in test mode, the \"-c path\" argument is required")
+            case .remoteHostProviderIsRequired:     print(">>> In sync mode mode, the \"-r url\" argument is required")
+            case .fileIO:                           print(">>> File I/O failed")
+            case .cannotConfigureStoreConfigurator: print(">>> Cannot configure the Object Store Configurator. Multiple reasons are possible.")
+            case .unknown:                          print(">>> Unknown error")
         }
         print(">>> Exiting with errors)")
     }
+    _clap?.prepareProcessForTermination()
     exit(code.rawValue)
 }
 
