@@ -355,24 +355,24 @@ extension ObjectStore {
 
 //    private func ensurePolisFoldersExistence()  -> Bool { tryToEnsureFoldersExistence(paths: polisDirectoryPaths()) }
 
-    private func checkPolisDirectoryPathsExistence(paths: [String]) -> Bool {
-        for path in paths {
-            if !(fm.fileExists(atPath: path, isDirectory: &isDir) && (isDir.boolValue)) {
-                return false
-            }
-        }
-
-        return true
-    }
-
-    private func checkPolisFilesExistence(paths: [String]) -> Bool {
-        for path in paths {
-            if !fm.isReadableFile(atPath: path) { return false }
-        }
-
-        return true
-    }
-
+//    private func checkPolisDirectoryPathsExistence(paths: [String]) -> Bool {
+//        for path in paths {
+//            if !(fm.fileExists(atPath: path, isDirectory: &isDir) && (isDir.boolValue)) {
+//                return false
+//            }
+//        }
+//
+//        return true
+//    }
+//
+//    private func checkPolisFilesExistence(paths: [String]) -> Bool {
+//        for path in paths {
+//            if !fm.isReadableFile(atPath: path) { return false }
+//        }
+//
+//        return true
+//    }
+//
     /// If `true` we can start loading data or doing other changes to the local POLIS provider
     private func localStoreExists() -> Bool {
         let configFileExists = fm.isReadableFile(atPath: configurationFilePath())

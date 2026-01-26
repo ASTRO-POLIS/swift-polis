@@ -71,16 +71,31 @@ public actor ObjectStoreCoordinator {
     }
 
     private func resetObjectStoreIfNeeded() {
+        _isConfigured       = false
         _fileResourceFinder = nil
         //TODO: Implement me!
+    }
+
+    private func prepareObjectStoreForUse() throws {
+        if _isConfigured { return }
+
+        guard let patURL = URL(string: _pathToPolisFolder) else {
+            logger.error("\(String(describing: _pathToPolisFolder)) is not a valid URL")
+            throw ObjectStoreCoordinatorError.unaccessiblePath
+        }
+        _fileResourceFinder = try PolisFileResourceFinder(at: patURL, supportedImplementation: PolisConstants().latestPolisFrameworkSupportedImplementation())
+        _isConfigured = true
     }
 }
 
 //MARK: - Global Object Store Functionality -
 extension ObjectStoreCoordinator {
+    /// The method checks only for existence of folders and files, but not for their validity
     public func isLocalObjectStoreFullyConfigured() -> Bool {
-        //TODO: Implement me!
-        return false
+        do    { try prepareObjectStoreForUse() }
+        catch { return false }
+        
+        return checkPolisDirectoryPathsExistence(paths: polisDirectoryPaths()) && checkPolisFilesExistence(paths: essentialPolisFiles())
     }
 }
 
@@ -128,6 +143,25 @@ extension ObjectStoreCoordinator {
             _fileResourceFinder.observingFacilitiesDirectoryFile(),  // ../polis/<version>/polis_observing_facilities.json
         ]
     }
+
+    private func checkPolisDirectoryPathsExistence(paths: [String]) -> Bool {
+        for path in paths {
+            if !(_fm.fileExists(atPath: path, isDirectory: &_isDir) && (_isDir.boolValue)) {
+                return false
+            }
+        }
+
+        return true
+    }
+
+    private func checkPolisFilesExistence(paths: [String]) -> Bool {
+        for path in paths {
+            if !_fm.isReadableFile(atPath: path) { return false }
+        }
+
+        return true
+    }
+
 
     //TODO: Move these methods to SoftwareEtudes
     func tryToEnsureFoldersExistence(paths: [String]) -> Bool {
