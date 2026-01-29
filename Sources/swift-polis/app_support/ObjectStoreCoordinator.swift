@@ -63,7 +63,7 @@ public actor ObjectStoreCoordinator {
         let logFileURL = URL(fileURLWithPath: ObjectStoreCoordinator.logFile)
         PolisLogger.setup(subsystem: "test.polis.observer",
                           level: Logging.Logger.Level.trace,
-                          logFileURL: logFileURL,
+                          logFileURL: nil,
                           includeConsole: true)
 
         self.logger = PolisLogger.logger()

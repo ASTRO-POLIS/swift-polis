@@ -57,6 +57,13 @@ EXIT STATUS
 @MainActor var logFile: String?
 let testingPath                = "/Users/Shared/Work/polis_tests"
 
+final class PolisTerminationHandler: CommandLineParserDelegate {
+    func processWillTerminate() -> Bool {
+        PolisLogger.flush()
+        return true
+    }
+}
+
 @main
 struct PolisTool {
 
@@ -78,11 +85,16 @@ struct PolisTool {
 
         //TODO: N Configure ObjectStoreCoordinator
         storeCoordinator = ObjectStoreCoordinator.shared
+        await storeCoordinator.logger.info("Polis tool started")
         do    { try await storeCoordinator.setPathToPolisFolder(rootPath!) }
         catch {
             exitCode = .cannotConfigureStoreConfigurator
             exitDescribingErrors(code: exitCode)
         }
+        await storeCoordinator.logger.info("Polis tool configuration complete")
+        
+        // Wait for async logging to complete before exit
+        try await Task.sleep(for: .seconds(1))
 
         //TODO: N. Setup various controllers
 
@@ -110,6 +122,8 @@ fileprivate let _clap                       = CommandLineParser(arguments: Comma
 
 @MainActor private func parseArguments() {
     guard let _clap = _clap else { fatalError("FATAL ERROR: cannot initialise command line parser ") }
+
+    _clap.commandLineParserDelegate = PolisTerminationHandler()
 
     do    { try _clap.setAllowedArguments(["-l", "--log", "-h", "--help", "-t", "--test", "-c", "-r", "--mode", "--log_level"]) }
     catch { exitDescribingErrors(code: .invalidArgumentFormat) }
