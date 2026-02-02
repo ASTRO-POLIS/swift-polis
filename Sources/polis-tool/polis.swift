@@ -71,15 +71,15 @@ struct PolisTool {
         //MARK: Implement me!
 
         // 1. Parse the command line arguments
-        parseArguments()
+        await parseArguments()
 
         // 2. Check arguments
-        if !areArgumentsValid() { exitDescribingErrors(code: exitCode) }
+        if !areArgumentsValid() { await exitDescribingErrors(code: exitCode) }
 
         // 3. Check paths
         if !checkPaths() {
             exitCode = .fileIO
-            exitDescribingErrors(code: exitCode)
+            await exitDescribingErrors(code: exitCode)
         }
         if (rootPath == nil) && isTesting { rootPath = testingPath }
 
@@ -89,12 +89,9 @@ struct PolisTool {
         do    { try await storeCoordinator.setPathToPolisFolder(rootPath!) }
         catch {
             exitCode = .cannotConfigureStoreConfigurator
-            exitDescribingErrors(code: exitCode)
+            await exitDescribingErrors(code: exitCode)
         }
         await storeCoordinator.logger.info("Polis tool configuration complete")
-        
-        // Wait for async logging to complete before exit
-        try await Task.sleep(for: .seconds(1))
 
         //TODO: N. Setup various controllers
 
@@ -109,7 +106,7 @@ struct PolisTool {
             case .sync: break
         }
         // Prepare the app to terminate
-        exitDescribingErrors(code: exitCode)
+        await exitDescribingErrors(code: exitCode)
     }
 
 }
@@ -120,17 +117,17 @@ fileprivate let _clap                       = CommandLineParser(arguments: Comma
 @MainActor fileprivate var _isDir: ObjCBool = false
 
 
-@MainActor private func parseArguments() {
+@MainActor private func parseArguments() async {
     guard let _clap = _clap else { fatalError("FATAL ERROR: cannot initialise command line parser ") }
 
     _clap.commandLineParserDelegate = PolisTerminationHandler()
 
     do    { try _clap.setAllowedArguments(["-l", "--log", "-h", "--help", "-t", "--test", "-c", "-r", "--mode", "--log_level"]) }
-    catch { exitDescribingErrors(code: .invalidArgumentFormat) }
+    catch { await exitDescribingErrors(code: .invalidArgumentFormat) }
 
     if _clap.containsRaw(argument: "-h") || _clap.containsRaw(argument: "--help") {
         print(helpPrompt)
-        exitDescribingErrors(code: .noError)
+        await exitDescribingErrors(code: .noError)
     }
 
     if _clap.containsRaw(argument: "-c")                                          { rootPath        = _clap.firstRawArgument(after: "-c") }
@@ -169,7 +166,7 @@ fileprivate let _clap                       = CommandLineParser(arguments: Comma
     return true
 }
 
-@MainActor private func exitDescribingErrors(code: ExitCodes) {
+@MainActor private func exitDescribingErrors(code: ExitCodes) async {
     if code != ExitCodes.noError {
         print(helpPrompt)
 
@@ -185,6 +182,9 @@ fileprivate let _clap                       = CommandLineParser(arguments: Comma
         print(">>> Exiting with errors)")
     }
     _clap?.prepareProcessForTermination()
+
+    // Wait for async logging to complete before exit
+    try? await Task.sleep(for: .seconds(1))
     exit(code.rawValue)
 }
 
