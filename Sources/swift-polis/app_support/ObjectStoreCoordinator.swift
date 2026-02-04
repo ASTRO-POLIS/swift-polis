@@ -14,6 +14,15 @@ public actor ObjectStoreCoordinator {
 
     @MainActor public static var logFile = "/tmp/polis.log"
 
+    public enum ObjectStoreStatus {
+        case unknown               // The status when `ObjectStoreCoordinator.shared` is called for tee first time
+        case notConfigured         // This is the status when the root path is verified, but no data are stored in the local store
+        case partiallyConfigured   // Example: all sub-folders exist, but not all essential files are create
+        case fullyConfigured       // All essential sub-folders and POLIS critical files do exist
+        case configuredAndSynced   // The local store is synced with the remote service provider. The sync might be in progress
+        case misconfigured         // Missing sub-folders files, or misformated files
+    }
+
     public enum ObjectStoreCoordinatorError: Error {
         case unaccessiblePath
         case unaccessibleRemoteHost
@@ -22,10 +31,17 @@ public actor ObjectStoreCoordinator {
     }
 
     @MainActor public static func setLogFile(_ path: String) { logFile = path }
-    
+
+    /// This is the only logger used in POLIS
     public let logger: Logging.Logger
 
+    /// Check the status of the Object Store before accessing it.
+    public var objectStoreStatus = ObjectStoreStatus.unknown
+
+    /// If a new (different) path is set, the ObjectStore will be reset or created
     public func setPathToPolisFolder(_ path: String) throws {
+        if path == _pathToPolisFolder { return }
+
         if _fm.fileExists(atPath: path, isDirectory: &_isDir) && _isDir.boolValue {
             _pathToPolisFolder = path
             resetObjectStoreIfNeeded()
@@ -33,6 +49,9 @@ public actor ObjectStoreCoordinator {
         else { throw ObjectStoreCoordinatorError.unaccessiblePath }
     }
 
+    /// If local Object Store is empty, this method will start creating the local store syncing it with the remote store.
+    ///
+    /// **Note:** The process of syncing could be slow. Appropriate Notifications will be posted when the syncing is complete.
     public func setRemoteProvider(host: String, pathToPolisFolder: String? = nil) throws {
 
         //TODO: Implement me!
@@ -61,9 +80,10 @@ public actor ObjectStoreCoordinator {
 
     @MainActor private init() {
         let logFileURL = URL(fileURLWithPath: ObjectStoreCoordinator.logFile)
+
         PolisLogger.setup(subsystem: "test.polis.observer",
                           level: Logging.Logger.Level.trace,
-                          logFileURL: nil,
+                          logFileURL: logFileURL,
                           includeConsole: true)
 
         self.logger = PolisLogger.logger()

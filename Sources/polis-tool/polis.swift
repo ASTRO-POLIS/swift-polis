@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Logging
 import SoftwareEtudesUtilities
 @preconcurrency import SoftwareEtudesExecutableConfiguration
 import SoftwareEtudesLogging
@@ -54,6 +55,7 @@ EXIT STATUS
 
 @MainActor var rootPath: String?
 @MainActor var remoteHost: String?
+@MainActor var logger: Logging.Logger!
 @MainActor var logFile: String?
 let testingPath                = "/Users/Shared/Work/polis_tests"
 
@@ -77,7 +79,7 @@ struct PolisTool {
         if !areArgumentsValid() { await exitDescribingErrors(code: exitCode) }
 
         // 3. Check paths
-        if !checkPaths() {
+        if !makeSureRootPathExists() {
             exitCode = .fileIO
             await exitDescribingErrors(code: exitCode)
         }
@@ -85,7 +87,8 @@ struct PolisTool {
 
         //TODO: N Configure ObjectStoreCoordinator
         storeCoordinator = ObjectStoreCoordinator.shared
-        await storeCoordinator.logger.info("Polis tool started")
+        logger           = await storeCoordinator.logger
+        logger.info("Polis tool started")
         do    { try await storeCoordinator.setPathToPolisFolder(rootPath!) }
         catch {
             exitCode = .cannotConfigureStoreConfigurator
@@ -97,14 +100,11 @@ struct PolisTool {
 
         //TODO: N. Decide what to do
         switch modeOfOperation {
-            case .status:
-                if await storeCoordinator.isLocalObjectStoreFullyConfigured() {
-                    //TODO: Describe the status
-                }
-                else { await storeCoordinator.logger.warning("Local Object Store is not fully configured. Please run 'polis --mode create' to create a new object store.") }
-            case .create: break
-            case .sync: break
+            case .status: logger.info("Object Store status not implemented")
+            case .create: logger.info("Object Store create not implemented")
+            case .sync:   logger.info("Object Store sync not implemented")
         }
+        
         // Prepare the app to terminate
         await exitDescribingErrors(code: exitCode)
     }
@@ -136,8 +136,8 @@ fileprivate let _clap                       = CommandLineParser(arguments: Comma
     if _clap.containsRaw(argument: "-log")                                        { logFile         = _clap.firstRawArgument(after: "-log") }
     if _clap.containsRaw(argument: "--log_level")                                 { logLevel        = LogLevel(rawValue: _clap.firstRawArgument(after: "--log_level")!) ?? .warning }
     if _clap.containsRaw(argument: "-t") || _clap.containsRaw(argument: "--test") {
-        rootPath        = testingPath
-        isTesting       = true
+        rootPath  = testingPath
+        isTesting = true
     }
 }
 
@@ -156,7 +156,7 @@ fileprivate let _clap                       = CommandLineParser(arguments: Comma
     return true
 }
 
-@MainActor private func checkPaths() -> Bool {
+@MainActor private func makeSureRootPathExists() -> Bool {
     if !(_fm.fileExists(atPath: rootPath!, isDirectory: &_isDir) && (_isDir.boolValue)) {
         do    { try _fm.createDirectory(atPath: rootPath!, withIntermediateDirectories: true) }
         catch { return false }
