@@ -83,7 +83,6 @@ struct PolisTool {
             exitCode = .fileIO
             await exitDescribingErrors(code: exitCode)
         }
-        if (rootPath == nil) && isTesting { rootPath = testingPath }
 
         //TODO: N Configure ObjectStoreCoordinator
         storeCoordinator = ObjectStoreCoordinator.shared
@@ -100,7 +99,7 @@ struct PolisTool {
 
         //TODO: N. Decide what to do
         switch modeOfOperation {
-            case .status: logger.info("Object Store status not implemented")
+            case .status: await requestLocalProviderStatus()
             case .create: logger.info("Object Store create not implemented")
             case .sync:   logger.info("Object Store sync not implemented")
         }
@@ -109,6 +108,25 @@ struct PolisTool {
         await exitDescribingErrors(code: exitCode)
     }
 
+    @MainActor static func requestLocalProviderStatus() async {
+        print("LOCAL POLIS SERVICE PROVIDER STATUS")
+
+        let objectStoreDescription = await storeCoordinator.objectStoreDescription()
+        let objectStoreStatus      = objectStoreDescription.status
+
+        switch objectStoreStatus {
+            case .unknown:             print("    Status: Unknown (perhaps the Service provider is misconfigured or non existent or the root path is not set)" )
+            case .notConfigured:       print("    Status: Not Configured (the root folder exists and is accessible, but sub-folders are missing)" )
+            case .partiallyConfigured: print("    Status: Partially Configured (there are missing basic configuration files)" )
+            case .fullyConfigured: break
+            case .configuredAndSynced: break
+            case .misconfigured: break
+        }
+
+        // Now describe the status
+        print("---> Root path status: \(objectStoreDescription.rootPathAccessibilityStatus.rawValue)")
+        print("---> Root path: \(objectStoreDescription.rootPath ?? "not set")")
+    }
 }
 
 //MARK: - Private API -
@@ -142,7 +160,7 @@ fileprivate let _clap                       = CommandLineParser(arguments: Comma
 }
 
 @MainActor private func areArgumentsValid() -> Bool {
-    if !isTesting && (rootPath == nil) {
+    if rootPath == nil {
         exitCode = .pathToLocalProviderIsRequired
         return false
     }
@@ -162,7 +180,6 @@ fileprivate let _clap                       = CommandLineParser(arguments: Comma
         catch { return false }
     }
 
-    //TODO: Implement me!
     return true
 }
 

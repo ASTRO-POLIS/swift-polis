@@ -26,7 +26,7 @@ struct ObjectChange {
 
 public class ObjetChangeDispatcher {
     init() {
-        NotificationCenter.default.addObserver(self, selector: #selector(handleNotification), name: AppSupportStatusChangeNotification.ObjectChangeNotification, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(handleNotification), name: PolisChangeNotification.ObjectChangeNotification, object: nil)
     }
 
     @MainActor @objc private func handleNotification(notification: NSNotification) {

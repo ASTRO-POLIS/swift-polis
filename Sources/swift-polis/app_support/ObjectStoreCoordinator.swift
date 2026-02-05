@@ -14,15 +14,6 @@ public actor ObjectStoreCoordinator {
 
     @MainActor public static var logFile = "/tmp/polis.log"
 
-    public enum ObjectStoreStatus {
-        case unknown               // The status when `ObjectStoreCoordinator.shared` is called for tee first time
-        case notConfigured         // This is the status when the root path is verified, but no data are stored in the local store
-        case partiallyConfigured   // Example: all sub-folders exist, but not all essential files are create
-        case fullyConfigured       // All essential sub-folders and POLIS critical files do exist
-        case configuredAndSynced   // The local store is synced with the remote service provider. The sync might be in progress
-        case misconfigured         // Missing sub-folders files, or misformated files
-    }
-
     public enum ObjectStoreCoordinatorError: Error {
         case unaccessiblePath
         case unaccessibleRemoteHost
@@ -35,9 +26,6 @@ public actor ObjectStoreCoordinator {
     /// This is the only logger used in POLIS
     public let logger: Logging.Logger
 
-    /// Check the status of the Object Store before accessing it.
-    public var objectStoreStatus = ObjectStoreStatus.unknown
-
     /// If a new (different) path is set, the ObjectStore will be reset or created
     public func setPathToPolisFolder(_ path: String) throws {
         if path == _pathToPolisFolder { return }
@@ -45,6 +33,7 @@ public actor ObjectStoreCoordinator {
         if _fm.fileExists(atPath: path, isDirectory: &_isDir) && _isDir.boolValue {
             _pathToPolisFolder = path
             resetObjectStoreIfNeeded()
+            try prepareObjectStoreForUse()
         }
         else { throw ObjectStoreCoordinatorError.unaccessiblePath }
     }
@@ -78,6 +67,8 @@ public actor ObjectStoreCoordinator {
     private var _fileResourceFinder: PolisFileResourceFinder!
     private var _remoteResourceFinder: PolisRemoteResourceFinder!
 
+    private var _objectStoreDescription = ObjectStoreDescription(status: .unknown)
+
     @MainActor private init() {
         let logFileURL = URL(fileURLWithPath: ObjectStoreCoordinator.logFile)
 
@@ -87,6 +78,8 @@ public actor ObjectStoreCoordinator {
                           includeConsole: true)
 
         self.logger = PolisLogger.logger()
+
+
         self.logger.info("ObjectStoreCoordinator initialised")
     }
 
@@ -99,23 +92,44 @@ public actor ObjectStoreCoordinator {
     private func prepareObjectStoreForUse() throws {
         if _isConfigured { return }
 
+        _objectStoreDescription.setRootPath(_pathToPolisFolder)
+
         guard let patURL = URL(string: _pathToPolisFolder) else {
+            _objectStoreDescription.setRootPathAccessibilityStatus(.unaccessible)
             logger.error("\(String(describing: _pathToPolisFolder)) is not a valid URL")
             throw ObjectStoreCoordinatorError.unaccessiblePath
         }
+
         _fileResourceFinder = try PolisFileResourceFinder(at: patURL, supportedImplementation: PolisConstants().latestPolisFrameworkSupportedImplementation())
-        _isConfigured = true
+
+        _objectStoreDescription.setRootPathAccessibilityStatus(.accessible)
+
+        _isConfigured       = true
+        //TODO: Implement me!
+    }
+}
+
+//MARK: - Configuration related APIs -
+extension ObjectStoreCoordinator {
+    private func tryToConfigureLocalObjectStore() {
+        //TODO: Implement me!
+    }
+
+    private func initialiseObjectStoreDescription() {
+        _objectStoreDescription.setStatus(.unknown)
+        _objectStoreDescription.setRootPathAccessibilityStatus(.unset)
+        //TODO: Implement me!
     }
 }
 
 //MARK: - Global Object Store Functionality -
 extension ObjectStoreCoordinator {
-    /// The method checks only for existence of folders and files, but not for their validity
-    public func isLocalObjectStoreFullyConfigured() -> Bool {
-        do    { try prepareObjectStoreForUse() }
-        catch { return false }
-        
-        return checkPolisDirectoryPathsExistence(paths: polisDirectoryPaths()) && checkPolisFilesExistence(paths: essentialPolisFiles())
+    /// Describes the status of the local POLIS provider
+    public func objectStoreDescription() async -> ObjectStoreDescription {
+        if _objectStoreDescription.status != .configuredAndSynced { tryToConfigureLocalObjectStore() }
+
+        //TODO: Implement me!
+       return _objectStoreDescription
     }
 }
 

@@ -16,7 +16,7 @@ import Foundation
         let facility          = ObservingFacility(polisRep: rep as! PolisObjectRep)
         let change            = ObjectChange(changeType: .newObject, changeSource: .user, object: facility)
 
-        NotificationCenter.default.post(name: AppSupportStatusChangeNotification.ObjectChangeNotification, object: change)
+//        NotificationCenter.default.post(name: PolisChangeNotification.ObjectChangeNotification, object: change)
 
         //TODO: Implement me!
         return facility

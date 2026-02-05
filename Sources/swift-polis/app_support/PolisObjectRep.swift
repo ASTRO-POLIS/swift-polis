@@ -7,16 +7,13 @@
 
 import Foundation
 
-public struct AppSupportStatusChangeNotification {
-    // Object Store Notifications
-    public static let ObjectChangeNotification = Notification.Name("ObjectChange")
-}
-
+/// Used to identify the type of the Polis Object to be wrapped for file and sync operations)
 enum PolisObjectType {
     case facility
     case facilityDetail
 }
 
+/// Represents a POLIS Data Structure
 struct PolisObjectRep<PolisObject> {
     let polisObject: PolisObject
     let localPath: String
@@ -134,6 +131,7 @@ public struct ObjectItem: Sendable {
     var polisRep: PolisObjectRep<PolisObject>
 
     init(polisRep: PolisObjectRep<PolisObject>) {
+        //TODO: Implement me!
         self.polisRep = PolisObjectRep(polisObject: polisRep as! PolisObject, localPath: "bla", objectType: .facility)
     }
 }
