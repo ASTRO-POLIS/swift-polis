@@ -20,7 +20,7 @@ public struct PolisChangeNotification {
 }
 
 public enum ObjectStoreStatusType: Sendable {
-    case unknown               // The status when `ObjectStoreCoordinator.shared` is called for tee first time
+    case unknown               // The status when `ObjectStoreCoordinator.shared` is called for the first time
     case notConfigured         // This is the status when the root path is verified, but no data are stored in the local store
     case partiallyConfigured   // Example: all sub-folders exist, but not all essential files are create
     case fullyConfigured       // All essential sub-folders and POLIS critical files do exist

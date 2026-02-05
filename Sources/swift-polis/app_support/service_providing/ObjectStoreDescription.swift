@@ -12,6 +12,7 @@ public struct ObjectStoreDescription: Sendable {
     public enum PathAccessibilityStatus: String, Sendable {
         case unknown                         = "Unknown"
         case unset                           = "Unset"
+        case set                             = "Set"
         case unaccessible                    = "Unaccessible"
         case accessible                      = "Accessible"
         case accessibleWrongFormat           = "Accessible Wrong Format"            // Applies only to files
@@ -26,7 +27,7 @@ public struct ObjectStoreDescription: Sendable {
 
     public internal(set) var polisFoldersAccessibilityStatus = PathAccessibilityStatus.unknown
     public internal(set) var polisFilesAccessibilityStatus  = PathAccessibilityStatus.unknown
-    public internal(set) var polisFileResourceFinder: PolisFileResourceFinder!
+    public internal(set) var polisFileResourceFinderStatus = PathAccessibilityStatus.unknown
 
     //MARK: Internal APIs
     init(status: ObjectStoreStatusType = ObjectStoreStatusType.unknown) {
@@ -39,5 +40,6 @@ public struct ObjectStoreDescription: Sendable {
     mutating func setRootPath(_ path: String)                                       { rootPath = path }
 
     mutating func setPolisFoldersAccessibilityStatus(_ status: PathAccessibilityStatus) { polisFoldersAccessibilityStatus = status }
-    mutating func setPolisFilesAccessibilityStatus(_ status: PathAccessibilityStatus)   { polisFilesAccessibilityStatus = status }
+    mutating func setPolisFilesAccessibilityStatus(_ status: PathAccessibilityStatus)   { polisFilesAccessibilityStatus   = status }
+    mutating func setPolisFileResourceFinderStatus(_ status: PathAccessibilityStatus)   { polisFileResourceFinderStatus   = status }
 }

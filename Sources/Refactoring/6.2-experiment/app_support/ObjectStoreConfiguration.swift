@@ -26,22 +26,22 @@ public final class ObjectStoreConfiguration {
     }
 
     //MARK:  Configuration APIs
-    /// Sets the root folder for all POLIS data
-    ///
-    /// The folder must be readable and writable. If inaccessible `rootFolderNotAccessible` will be thrown.
-    /// - Parameter localPolisRootFolder: full path to the root folder
-    public func setLocalPolisRootFolder(_ localPolisRootFolder: String) throws {
-        if !(fm.fileExists(atPath: localPolisRootFolder, isDirectory: &isDir) && (isDir.boolValue)) {
-            logger.warning("ObjectStoreConfiguration:setLocalPolisRootFolder - Root folder \(localPolisRootFolder) does not exist or is not a directory")
-            throw ConfigurationError.rootFolderNotAccessible
-        }
-
-        if _localPolisRootFolder != localPolisRootFolder {
-            _configurationDidChange = true
-            _fileResourceFinder     = nil
-            _localPolisRootFolder   = localPolisRootFolder
-        }
-    }
+//    /// Sets the root folder for all POLIS data
+//    ///
+//    /// The folder must be readable and writable. If inaccessible `rootFolderNotAccessible` will be thrown.
+//    /// - Parameter localPolisRootFolder: full path to the root folder
+//    public func setLocalPolisRootFolder(_ localPolisRootFolder: String) throws {
+//        if !(fm.fileExists(atPath: localPolisRootFolder, isDirectory: &isDir) && (isDir.boolValue)) {
+//            logger.warning("ObjectStoreConfiguration:setLocalPolisRootFolder - Root folder \(localPolisRootFolder) does not exist or is not a directory")
+//            throw ConfigurationError.rootFolderNotAccessible
+//        }
+//
+//        if _localPolisRootFolder != localPolisRootFolder {
+//            _configurationDidChange = true
+//            _fileResourceFinder     = nil
+//            _localPolisRootFolder   = localPolisRootFolder
+//        }
+//    }
     
     /// Sets the remote Service Provider domain used to sync the static data
     ///
