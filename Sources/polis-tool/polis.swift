@@ -100,7 +100,7 @@ struct PolisTool {
         //TODO: N. Decide what to do
         switch modeOfOperation {
             case .status: await requestLocalProviderStatus()
-            case .create: logger.info("Object Store create not implemented")
+            case .create: try await createNewLocalObjectStore() 
             case .sync:   logger.info("Object Store sync not implemented")
         }
         
@@ -129,6 +129,12 @@ struct PolisTool {
         print("---> Essential POLIS Service Provider configuration folders status: \(objectStoreDescription.polisFoldersAccessibilityStatus.rawValue)")
         print("---> Essential POLIS Service Provider configuration files status: \(objectStoreDescription.polisFilesAccessibilityStatus.rawValue)")
         print("---> POLIS Service Provider File Resource Finder Status: \(objectStoreDescription.polisFileResourceFinderStatus.rawValue)")
+    }
+
+    @MainActor static func createNewLocalObjectStore() async throws {
+        print("LOCAL POLIS SERVICE PROVIDER CREATION")
+
+        //TODO: Implement me!
     }
 }
 

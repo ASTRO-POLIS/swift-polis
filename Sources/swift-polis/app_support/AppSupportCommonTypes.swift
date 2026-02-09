@@ -16,7 +16,6 @@ public struct PolisChangeNotification {
 
     /// This notification is posted before the Object Store is fully reset. Such reset could occur if `ObjectStoreConfigurator` is reconfigured.
     public static let ObjectStoreWillResetNotification = Notification.Name("ObjectStoreWillReset")
-
 }
 
 public enum ObjectStoreStatusType: Sendable {

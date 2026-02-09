@@ -27,93 +27,6 @@ final class PolisServiceProviderTests: XCTestCase {
     private var string: String!
 
     //MARK: Test dada
-    private let jsonDataFromDirectoryEntry = """
-{
-    "id": "090E3F63-EF2A-4123-8518-77D5664EAA01",
-    "mirror_id": "62B5E7C7-4A90-4569-9B13-4AEF324441E4",
-    "reachability_status": "reachable_and_responsive",
-    "name": "Telescope Observer",
-    "short_description": "The Big Bank Source",
-    "last_update_time": "2023-07-22T12:10:06Z",
-    "url": "https://polis.net",
-    "supported_implementations": [
-        {
-            "api_support": "static_data",
-            "version": "0.2.0-alpha.1",
-            "data_format": "json"
-        }
-    ],
-    "provider_type": "mirror",
-    "contact": {
-        "name": "Amon Ra",
-        "email": "ra@god.cun",
-        "communication": {
-            "skype_ids": [
-                "cool_astro"
-            ],
-            "instagram_ids": [
-                "GalaxyFarAway"
-            ],
-            "twitter_ids": [
-                "@CoolAstro",
-                "@GalaxyFarAway"
-            ],
-            "whatsapp_phone_numbers": [
-                "+1 900 1234567"
-            ],
-            "mastodon_ids": [
-                "@GalaxyFarAway@mastodon.social"
-            ],
-            "facebook_ids": [
-                "916735592641"
-            ]
-        },
-        "address": {
-           "attention_off": "Mrs. Royal Astronomer",
-           "street": "Observatory str.",
-           "region_or_state": "California",
-           "poste_restante": "The Observing Man",
-           "house_number_suffix": "a",
-           "note": "Send only stars and love",
-           "po_box": "4242",
-           "district": "Stars",
-           "street_line_6": "6",
-           "block": "43",
-           "place": "Sun hill",
-           "region_or_state_code": "CA",
-           "street_line_5": "5",
-           "province": "Star cluster",
-           "street_line_1": "1",
-           "east_longitude": {
-              "unit": "degrees",
-              "value": "75.3",
-              "value_kind": "double"
-           },
-           "apartment": "24",
-           "latitude": {
-              "value": "41.15",
-              "unit": "degrees",
-              "value_kind": "double"
-          },
-          "street_line_2": "2",
-          "house_name": "Galaxy.",
-          "street_line_4": "4",
-          "floor": 1,
-          "country_id": "AM",
-          "altitude": {
-              "value": "2450",
-              "value_kind": "double",
-              "unit": "m"
-          },
-          "po_box_zip": "ST1256",
-          "house_number": 42,
-          "street_line_3": "3",
-          "zip_code": "ST1234"
-        },
-        "note": "Do not disturb during weekends"
-    }
-}
-"""
 
     //MARK: - Setup & Teardown -
 
@@ -167,7 +80,7 @@ final class PolisServiceProviderTests: XCTestCase {
     }
 
     func test_DirectoryEntry_loadingPolisDirectoryEntryFromData_shouldSucceed() throws {
-        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectory.ProviderDirectoryEntry.self, from: jsonDataFromDirectoryEntry.data(using: .utf8)!))
+        XCTAssertNoThrow(try jsonDecoder.decode(PolisDirectory.ProviderDirectoryEntry.self, from: ServiceProviderDataSource.exampleServiceProviderTemplate.data(using: .utf8)!))
    }
 
     func test_PolisDirectory_codingSupport_shouldSucceed() throws {

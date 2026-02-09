@@ -25,11 +25,6 @@ import SoftwareEtudesUtilities
 
 struct StaticDataTypeTestingSupport {
 
-    //MARK: PolisImplementation
-    static func examplePolisImplementation() -> PolisImplementation {
-        PolisImplementation(dataFormat: .json, apiSupport: .staticData,  version: SemanticVersion(majorNumber: 0, minorNumber: 1, patchNumber: 0, preReleaseVersion: "alpha-1") )
-    }
-
     //MARK: PolisIdentity
     static func examplePolisIdentityBAO() -> PolisIdentity {
         PolisIdentity(externalReferences:    ["https://bao.am/device?id=1234", "https://bao.am/rtml?dump-1234"],

@@ -19,6 +19,7 @@ public actor ObjectStoreCoordinator {
         case unaccessibleRemoteHost
         case objectStoreNotConfigured
         case cannotAccessOrCreateStandardPolisFolders
+        case rootPathNotSet
     }
 
     @MainActor public static func setLogFile(_ path: String) { logFile = path }
@@ -31,7 +32,7 @@ public actor ObjectStoreCoordinator {
         if path == _pathToPolisFolder { return }
 
         if _fm.fileExists(atPath: path, isDirectory: &_isDir) && _isDir.boolValue {
-            _pathToPolisFolder = path
+            _pathToPolisFolder = path.normalisedFolderPath()
             resetObjectStoreIfNeeded()
             try prepareObjectStoreForUse()
         }
@@ -51,10 +52,16 @@ public actor ObjectStoreCoordinator {
     /// The local data will be stored at the path set by `setRemoteProvider(host, pathToPolisFolder:)`. If data at the path already exist, and
     /// `moveExistingStore` is `true`, the existing folder will be moved to `/tmp` folder. Otherwise error will be thrown. If there is an existing `ObjectStore`,
     /// the store will be given a chance to sync all unsaved data before being reset.
-    public func createLocalStore(moveExistingStore: Bool? = false) throws {
-        if (moveExistingStore != nil) && (moveExistingStore!) { try moveLocalDataToTemporaryFolder() }
+    public func createLocalStore(moveExistingStore: Bool = false) throws {
+        // Check of the root path is set
+        guard let path = _pathToPolisFolder else { throw ObjectStoreCoordinatorError.rootPathNotSet }
+
+        if moveExistingStore { try moveLocalDataToTemporaryFolder() }
+        else                 { try removeExistingLocalDataIfNeeded() }
+
         try prepareObjectStoreForUse(createIfNeeded: true)
-    }
+        //TODO: Implement me!
+ }
 
     //MARK: - Private APIs
     private let _fm: FileManager = .default
@@ -190,6 +197,13 @@ extension ObjectStoreCoordinator {
 
     private func moveLocalDataToTemporaryFolder() throws {
         //TODO: Implement me!
+    }
+
+    /// Removes existing local POLIS data without asking questions
+    private func removeExistingLocalDataIfNeeded() throws {
+        let pathToExamine = "\(_pathToPolisFolder!)polis/"
+
+        if _fm.fileExists(atPath: pathToExamine) { try _fm.removeItem(atPath: pathToExamine) }
     }
 
     /// This method returns all currently possible POLIS directories. Use it whenever the list is needed.
