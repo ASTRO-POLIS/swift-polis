@@ -175,7 +175,15 @@ extension ObjectStoreCoordinator {
 
         // Check if all essential files exist
         if !checkPolisFilesExistence(paths: essentialPolisFiles()) {
-            if createIfNeeded && (!checkPolisFilesExistence(paths: essentialPolisFiles())) { return }
+            //TODO: Continue digging here!
+
+            if createIfNeeded {
+                //TODO: 1. Create polis main file
+                //TODO: 2. Create polis directory file
+                //TODO: 3. Create polis facility directory file
+
+                return
+            }
             else {
                 _objectStoreDescription.setPolisFilesAccessibilityStatus(.unaccessible)
                 return
@@ -244,6 +252,9 @@ extension ObjectStoreCoordinator {
         return true
     }
 
+    private func makeSureServiceProviderConfigurationFileExists() throws {
+        //TODO: Implement me!
+    }
 
     //TODO: Move these methods to SoftwareEtudes
     func tryToEnsureFoldersExistence(paths: [String]) -> Bool {

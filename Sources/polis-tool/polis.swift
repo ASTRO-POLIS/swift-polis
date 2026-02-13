@@ -131,6 +131,7 @@ struct PolisTool {
         print("---> POLIS Service Provider File Resource Finder Status: \(objectStoreDescription.polisFileResourceFinderStatus.rawValue)")
     }
 
+    //TODO: By default this will create BigBang provider, and this is not good. We should ask (and make it a default) behaviour to use the BigBang as a remote server (set automatically)!
     @MainActor static func createNewLocalObjectStore() async throws {
         print("LOCAL POLIS SERVICE PROVIDER CREATION")
 
