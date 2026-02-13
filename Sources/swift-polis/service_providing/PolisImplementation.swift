@@ -4,7 +4,7 @@
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
-// Copyright (c) 2021-2025 Tuparev Technologies and the ASTRO-POLIS project
+// Copyright (c) 2021-2026 Tuparev Technologies and the ASTRO-POLIS project
 // authors.
 // Licensed under MIT License Modern Variant
 //
@@ -136,11 +136,11 @@ public struct PolisImplementation: Codable, Equatable, Sendable  {
 
 //MARK: - Comparable
 extension PolisImplementation.APILevel: Comparable {
-    //TODO: $$$ZH This method is obviously wrong!
+    //TODO: $$$ZH This method is obviously wrong! Can you fix it?
     public static func < (left: PolisImplementation.APILevel, right: PolisImplementation.APILevel) -> Bool {
         if      (left == .staticData)        && (left == right)               { return true }
-        else if (left == .dynamicStatus)     && (right == .dynamicScheduling) { return true } //TODO: Add dynamic options!
-        else if (left == .dynamicScheduling) && (right == .dynamicScheduling) { return true } //TODO: Add dynamic options!
+        else if (left == .dynamicStatus)     && (right == .dynamicScheduling) { return true } //TODO: Add dynamic options! (Not first version)
+        else if (left == .dynamicScheduling) && (right == .dynamicScheduling) { return true } //TODO: Add dynamic options! (Not first version)
 
         return false
     }
@@ -158,6 +158,7 @@ public extension PolisImplementation {
 
 //MARK: This makes `PolisImplementation` Equatable
 extension PolisImplementation: Hashable {
+    //TODO: Test this!
     public func hash(into hasher: inout Hasher) {
         hasher.combine(apiSupport)
         hasher.combine(version.description)

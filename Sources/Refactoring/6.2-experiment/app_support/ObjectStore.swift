@@ -373,18 +373,18 @@ extension ObjectStore {
 //        return true
 //    }
 //
-    /// If `true` we can start loading data or doing other changes to the local POLIS provider
-    private func localStoreExists() -> Bool {
-        let configFileExists = fm.isReadableFile(atPath: configurationFilePath())
-
-        let result = (configFileExists &&
-                      checkPolisDirectoryPathsExistence(paths: polisDirectoryPaths()) &&
-                      checkPolisFilesExistence(paths: essentialPolisFiles()))
-
-        if result { _isConfigured = true }
-
-        return result
-    }
+//    /// If `true` we can start loading data or doing other changes to the local POLIS provider
+//    private func localStoreExists() -> Bool {
+//        let configFileExists = fm.isReadableFile(atPath: configurationFilePath())
+//
+//        let result = (configFileExists &&
+//                      checkPolisDirectoryPathsExistence(paths: polisDirectoryPaths()) &&
+//                      checkPolisFilesExistence(paths: essentialPolisFiles()))
+//
+//        if result { _isConfigured = true }
+//
+//        return result
+//    }
 }
 
 //MARK: - ProviderConfiguration -

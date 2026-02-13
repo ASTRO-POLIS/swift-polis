@@ -93,14 +93,14 @@ struct PolisTool {
             exitCode = .cannotConfigureStoreConfigurator
             await exitDescribingErrors(code: exitCode)
         }
-        await storeCoordinator.logger.info("Polis tool configuration complete")
+        logger.info("Polis tool configuration complete")
 
         //TODO: N. Setup various controllers
 
         //TODO: N. Decide what to do
         switch modeOfOperation {
             case .status: await requestLocalProviderStatus()
-            case .create: logger.info("Object Store create not implemented")
+            case .create: try await createNewLocalObjectStore() 
             case .sync:   logger.info("Object Store sync not implemented")
         }
         
@@ -109,10 +109,10 @@ struct PolisTool {
     }
 
     @MainActor static func requestLocalProviderStatus() async {
-        print("LOCAL POLIS SERVICE PROVIDER STATUS")
-
         let objectStoreDescription = await storeCoordinator.objectStoreDescription()
         let objectStoreStatus      = objectStoreDescription.status
+
+        print("LOCAL POLIS SERVICE PROVIDER STATUS")
 
         switch objectStoreStatus {
             case .unknown:             print("    Status: Unknown (perhaps the Service provider is misconfigured or non existent or the root path is not set)" )
@@ -125,7 +125,17 @@ struct PolisTool {
 
         // Now describe the status
         print("---> Root path status: \(objectStoreDescription.rootPathAccessibilityStatus.rawValue)")
-        print("---> Root path: \(objectStoreDescription.rootPath ?? "not set")")
+        print("---> Root path: \(objectStoreDescription.rootPath ?? "<not set>")")
+        print("---> Essential POLIS Service Provider configuration folders status: \(objectStoreDescription.polisFoldersAccessibilityStatus.rawValue)")
+        print("---> Essential POLIS Service Provider configuration files status: \(objectStoreDescription.polisFilesAccessibilityStatus.rawValue)")
+        print("---> POLIS Service Provider File Resource Finder Status: \(objectStoreDescription.polisFileResourceFinderStatus.rawValue)")
+    }
+
+    //TODO: By default this will create BigBang provider, and this is not good. We should ask (and make it a default) behaviour to use the BigBang as a remote server (set automatically)!
+    @MainActor static func createNewLocalObjectStore() async throws {
+        print("LOCAL POLIS SERVICE PROVIDER CREATION")
+
+        //TODO: Implement me!
     }
 }
 

@@ -8,17 +8,18 @@ source code and / or ideas to SWIFT-POLIS project.
 
 - Tuparev Technologies (all contributors with '@tuparev.com')
 - Frederic Hessman
-- Stefan Kreutter
+- Hunter Wiliam Holland
+- Thomas Jackson
 - Tomi Engel
 
 ## Contributors
 
-- Frederic Hessman <Hessman@Astro.physik.Uni-Goettingen.de>
+- Frederic Hessman <piano4sale@web.de>
 - Georg Tuparev <gtupare@tuparev.com>
 - Hasmik Andreasyan <h.andreasyan@tuparev.com>
 - Hasmik Mirzakhanyan <h.mirzakhanyan@tuparev.com>
-- Hunter Wiliam Holland <hunterholland@tuparev.com>
+- Hunter Wiliam Holland <huholland.fl@gmail.com>
 - Philip Tuparev <patupar@tuparev.com>
-- Stefan Kreutter <sklists@objectfarm.org>
 - Thomas Jackson <Tmjjacko@googlemail.com>
 - Tomi Engel <tomi@objectfarm.org>
+- Zhanna Hakobyan <zh.hakobyan@tuparev.com>
