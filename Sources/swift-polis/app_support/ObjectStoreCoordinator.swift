@@ -78,7 +78,7 @@ public actor ObjectStoreCoordinator {
     private var _fileResourceFinder: PolisFileResourceFinder!
     private var _remoteResourceFinder: PolisRemoteResourceFinder!
 
-    private var _objectStoreDescription = ObjectStoreDescription(status: .unknown)
+    private var _objectStoreDescription = ObjectStoreDescription(status: .notConfigured)
 
     @MainActor private init() {
         //FIXME: This will crash on iOS!
@@ -107,6 +107,7 @@ extension ObjectStoreCoordinator {
         if _isConfigured { return objectStoreDescription() }
 
         _objectStoreDescription.setRootPath(_pathToPolisFolder)
+        _objectStoreDescription.setStatus(.notConfigured)
 
         // Check if the root pat is a valid URL
         guard let pathURL = URL(string: _pathToPolisFolder) else {
@@ -119,11 +120,13 @@ extension ObjectStoreCoordinator {
         _fileResourceFinder = try PolisFileResourceFinder(at: pathURL, supportedImplementation: PolisConstants().latestPolisFrameworkSupportedImplementation())
         _objectStoreDescription.setRootPathAccessibilityStatus(.accessible)
         _objectStoreDescription.setPolisFileResourceFinderStatus(.set)
-        _objectStoreDescription.setStatus(.notConfigured)
+        _objectStoreDescription.setStatus(.rootPathSetAndValid)
+        _objectStoreDescription.setPolisFoldersAccessibilityStatus(.unaccessible)
+        _objectStoreDescription.setPolisFilesAccessibilityStatus(.unaccessible)
 
         // Check if all essential paths exist
         if checkPolisDirectoryPathsExistence(paths: polisDirectoryPaths()) {
-            _objectStoreDescription.setStatus(.partiallyConfigured)
+            _objectStoreDescription.setStatus(.folderHierarchyCreated)
             _objectStoreDescription.setPolisFoldersAccessibilityStatus(.accessible)
         }
         else { return objectStoreDescription() }
@@ -143,8 +146,9 @@ extension ObjectStoreCoordinator {
     /// `moveExistingStore` is `true`, the existing folder will be moved to `/tmp` folder. Otherwise error will be thrown. If there is an existing `ObjectStore`,
     /// the store will be given a chance to sync all unsaved data before being reset.
     public func createLocalStore(moveExistingStore: Bool = false) throws {
-        // Check of the root path is set
-        guard let path = _pathToPolisFolder else { throw ObjectStoreCoordinatorError.rootPathNotSet }
+        _ = try objectStoreStatus()
+        let objectStoreStatus = _objectStoreDescription.status
+
 
         if moveExistingStore { try moveLocalDataToTemporaryFolder() }
         else                 { try removeExistingLocalDataIfNeeded() }

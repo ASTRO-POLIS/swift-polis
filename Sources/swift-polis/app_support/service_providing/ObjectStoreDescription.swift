@@ -26,11 +26,11 @@ public struct ObjectStoreDescription: Sendable {
     public internal(set) var rootPath: String?
 
     public internal(set) var polisFoldersAccessibilityStatus = PathAccessibilityStatus.unknown
-    public internal(set) var polisFilesAccessibilityStatus  = PathAccessibilityStatus.unknown
-    public internal(set) var polisFileResourceFinderStatus = PathAccessibilityStatus.unknown
+    public internal(set) var polisFilesAccessibilityStatus   = PathAccessibilityStatus.unknown
+    public internal(set) var polisFileResourceFinderStatus   = PathAccessibilityStatus.unknown
 
     //MARK: Internal APIs
-    init(status: ObjectStoreStatusType = ObjectStoreStatusType.unknown) {
+    init(status: ObjectStoreStatusType = ObjectStoreStatusType.notConfigured) {
         self.status = status
     }
 

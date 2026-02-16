@@ -85,7 +85,7 @@ struct PolisTool {
         }
 
         //TODO: N Configure ObjectStoreCoordinator
-        ObjectStoreCoordinator.isBigBangServiceProvider = true // Should be yes in case this is the initial (primordial) Service Provider
+        ObjectStoreCoordinator.isBigBangServiceProvider = true // Should be `true` in case this is the initial (primordial) Service Provider
         storeCoordinator = ObjectStoreCoordinator.shared
 
         // N. Configure the logger
@@ -120,13 +120,14 @@ struct PolisTool {
         print("LOCAL POLIS SERVICE PROVIDER STATUS")
 
         switch objectStoreStatus {
-            case .unknown:             print("    Status: Unknown (perhaps the Service provider is misconfigured or non existent or the root path is not set)" )
-            case .notConfigured:       print("    Status: Not Configured (the root folder exists and is accessible, but sub-folders are missing)" )
-            case .partiallyConfigured: print("    Status: Partially Configured (there are missing basic configuration files)" )
+            case .notConfigured:                        print("    Status: Not Configured - the root path is not set" )
+            case .rootPathSetAndValid:                  print("    Status: Root Path Set And Valid - the root folder exists and is accessible, but sub-folders are missing" )
+            case .folderHierarchyCreated:               print("    Status: Folder Hierarchy Created - there are missing basic configuration files" )
             case .fullyConfigured: break
-            case .configuredAndSynced: break
-            case .misconfigured: break
+            case .fullyConfiguredAndSynced: break
+            case .misconfiguredOrMissingEssentialFiles: break
         }
+        //TODO: Implement me!
 
         // Now describe the status
         print("---> Root path status: \(objectStoreDescription.rootPathAccessibilityStatus.rawValue)")
@@ -138,6 +139,9 @@ struct PolisTool {
 
     //TODO: By default this will create BigBang provider, and this is not good. We should ask (and make it a default) behaviour to use the BigBang as a remote server (set automatically)!
     @MainActor static func createNewLocalObjectStore() async throws {
+        let objectStoreDescription = try await storeCoordinator.objectStoreStatus()
+        let objectStoreStatus      = objectStoreDescription.status
+
         print("LOCAL POLIS SERVICE PROVIDER CREATION")
 
         //TODO: Implement me!
