@@ -1,99 +1,31 @@
-# swift-polis
+# `swift-polis` framework
 
-## Framework organisation
-The framework contains general sources common to all support levels and sources, specific or level 1, 2, or 3 (StaticData, DynamicStatus, or DynamicScheduling)
+## Programatically working with POLIS Service Provider
 
-### Common for the entire framework sources
+The main type to be used to manage a POLIS Service Provider is `ObjectStoreCoordinator`. This (actor) class could be use to work with the POLIS provider. No other types should be used to create, sync, or update Provider's data. `ObjectStoreCoordinator` is a singleton that could be always accessed like this:
 
-### Level 1 support (static resources)
+```swift
+   let coordinator = ObjectStoreCoordinator.share
+```
+   
+Before using `ObjectStoreCoordinator`'s shared instance it is recommended to set few static variables of the class. One can set them later too, but this will cause a complete reset of the POLIS Object Store.
 
-### Level 2 support
+```swift
+    ObjectStoreCoordinator.isBigBangServiceProvider = true // Should be yes in case this is the initial (primordial) Service Provider 
 
-### Level 3 support
+    // Configure the logger
+    try await storeCoordinator.setLogFilePath("/tmp/astro/polis.log") // This should be set only on macOS! Default value is /tmp/polis.log
+    logger = await storeCoordinator.logger()
+    logger.info("Polis tool started")
 
-## IDs vs. Reference IDs and Data Organisation
+    // Set the local polis root path
+    do    { try await storeCoordinator.setPathToPolisFolder("/tmp/polis_root") }
+    catch { logger.error("Cannot access POLIS Root Path!") }
 
-Most unique POLIS Items (Observing Facilities, Observatories, Devices) are stored permanently in the unique Facility folder. The JSON/XML files that store the corresponding information are named based on the UUID of the Item. But there are also Items that could be shared. Best example is the Manufacturer. The same company can build telescopes for many facilities. To avoid duplications and possible mistakes, POLIS introduces References. These are shared resources that could be addressed from multiple Facilities or Observatories. Such resources are addressed by an extended UUID in the format: `ref://<type>/<UUID>` (e.g. `ref://manufacturer/776E7D44-6307-4511-9857-6BE8EBE1252B`)
-
-**Note:** File names of POLIS Items are alway in the format `<UUID>.<format>` where `format` is either `json` or `xml`. Resource Directories are addressing the the conversion of resource UUIDs to actual files.
-
-## Dependancies 
-In general we are trying to avoid dependancies to other projects. Why? We share the concerns of many other well respected developers on this subject. However, in the case of `swift-polis` we have decided to use software modules developed and maintained by members of our team. This guarantees that even in the case that the concrete author of the module abandons the project, someone from our team can take over the maintenance.
-Current dependences include:
-- [SoftwareEtudes](https://github.com/tuparev/SoftwareEtudes)
-We use this package mainly for the `SemanticVersion` type that helps us manage POLIS versions, and few other helpful utilities. This package is maintained by the authors of `swift-polis`, so we can guarantee, that it will not get out of sync.
-
-## To be refactored...
-
-This is a Swift implementation of the POLIS standard. It contains mostly API types and a predefined set of well known constants. It also implements the entire software infrastructure needed by POLIS client software and / or POLIS providers.
-
-Polis supports two (more formats may be possible in the future) API formats - JSON and XML. Each API format could support zero, one, or more versions. This framework makes the API and version details completely opaque. The software based on this framework should focus on the business logic (POLIS provider management or client software with the primary goal to visualise the data) while the framework handles compatibility to various API formats and versions.
-
-The simplest configuration is the Polis client. The client monitors and syncs with a predefined Polis provider and sends update notifications to the client software. The framework could also be used to create and maintain a Polis provider of any type (e.g. experimental, public, etc.). As a minimum, the framework maintains a local copy of all POLIS data needed. In the case that the framework is also used to maintain a POLIS provider, two independent data structures are created, and the provider is updated only when this is demanded in order to avoid configuration mismatches for the external clients of this Polis provider.
-
-## Static data stored to the local file system
-
-**Note:** If an entry is not marked by either `client` or `provider` it means that it is used in both cases (as most data structures are common to both client cache and provider data).
-
-- .../(client/provider)root_path/... - Root path is the folder that contains all POLIS related data. In the case that the framework is also used to maintain a POLIS provider, two root paths (for the client and for the provider) are required.
-
-
-### Random notes to be sorted later
-**Note about RTML:** As often as possible types are similar to types defined by [RTML](http://www.astro.physik.uni-goettingen.de/~hessman/misc/RTML-3.2b.xsd)
-
-**Note about testing:** The tests are only to test encoding and decoding different types from and to JSON and (later) to XML formatters.  For some types the implementation of `CustomStringConvertible` will be also tested in order to support easy debugging.
-
-## Questions
-- Should Owners be attached to Item only (possible repetitions and inconsistencies) or Item owned and Referenced (more complex implementation)?
-
-## To Do
-- ⛔️ Fix Address Tests!
-- ⛔️ Fix PolisDirectory.ProviderDirectoryEntry Tests!
-
-- General ToDo - document `local` vs. `reference` UUIDs
-
-- Implement PolisProviderManager
-    - ✅ Implement, document and test the creation of the provider from scratch (core information files and directories).
-    - Implement, test, and document the access from existing local files
-    - Implement, test, and document of creation, editing, deleting, and loading existent Facility Details
-    - Implement, test, and document of creation, editing, deleting, and loading existent Facility Location
-- Reimplement PolisFacility
-    - ✅ Implement Facility details
-    - ✅ Implement Facility Location
-    - Test
-    - Document
-    - JSON examples
-- Implement Observatory
-    - ✅ Implement
-    - Test
-    - Document
-    - JSON examples
-- Implement Device
-    - ✅ Implement
-    - Test
-    - Document
-    - JSON examples
-- Finish the implementation of 
-    - ✅ the Manufacturer 
-    - and back-index to shared device details. Manufacturers are referenced objects only (so no duplications)
-    - Test 
-    - Document
-- PolisDirection needs more documentation
-- PolisCommunicationChannel 
-    - Test
-    - Document
-- PolisAddress
-    - Test
-    - Document
-- PolisOrganisation
-    - Test
-    - Document
-    - JSON examples
-- In PolisMediaSource, correct the documentation so that it reflects the Image to Media Transition 
-- Document `PolisModeOfOperation`
-- Document `PolisElectromagneticSpectrumCoverage`
-
-- General ToDo - Finalise, test, and document Provider Manager
-- General ToDo - After everything else is finished, produce valid JSON schemas
-- General ToDo - Implement Validation for all type
-
+    // Set the remote POLIS provider. 
+    // THIS SHOULD NOT BE SET IN CASE A BIG BANG PROVIDER IS BEING CREATED!
+    do    { try await storeCoordinator.setRemoteProvider(host: "https://polis.observer") }
+    catch { logger.error("Cannot access POLIS Remote Host!") }
+    
+    logger.info("Polis tool configuration complete")
+```

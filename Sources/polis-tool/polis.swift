@@ -85,9 +85,14 @@ struct PolisTool {
         }
 
         //TODO: N Configure ObjectStoreCoordinator
+        ObjectStoreCoordinator.isBigBangServiceProvider = true // Should be yes in case this is the initial (primordial) Service Provider
         storeCoordinator = ObjectStoreCoordinator.shared
-        logger           = await storeCoordinator.logger
+
+        // N. Configure the logger
+        try await storeCoordinator.setLogFilePath("/tmp/astro/polis.log") // This should be set only on macOS! Default value is /tmp/polis.log
+        logger = await storeCoordinator.logger()
         logger.info("Polis tool started")
+
         do    { try await storeCoordinator.setPathToPolisFolder(rootPath!) }
         catch {
             exitCode = .cannotConfigureStoreConfigurator
@@ -99,7 +104,7 @@ struct PolisTool {
 
         //TODO: N. Decide what to do
         switch modeOfOperation {
-            case .status: await requestLocalProviderStatus()
+            case .status: try await requestLocalProviderStatus()
             case .create: try await createNewLocalObjectStore() 
             case .sync:   logger.info("Object Store sync not implemented")
         }
@@ -108,8 +113,8 @@ struct PolisTool {
         await exitDescribingErrors(code: exitCode)
     }
 
-    @MainActor static func requestLocalProviderStatus() async {
-        let objectStoreDescription = await storeCoordinator.objectStoreDescription()
+    @MainActor static func requestLocalProviderStatus() async throws {
+        let objectStoreDescription = try await storeCoordinator.objectStoreStatus()
         let objectStoreStatus      = objectStoreDescription.status
 
         print("LOCAL POLIS SERVICE PROVIDER STATUS")

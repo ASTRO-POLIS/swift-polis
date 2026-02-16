@@ -10,9 +10,14 @@ import Logging
 import SoftwareEtudesLogging
 
 public actor ObjectStoreCoordinator {
+
+    //MARK: Static APIs
+
     @MainActor public static let shared = ObjectStoreCoordinator()
 
-    @MainActor public static var logFile = "/tmp/polis.log"
+    @MainActor public static var isBigBangServiceProvider = false
+
+    //MARK: Sub-types
 
     public enum ObjectStoreCoordinatorError: Error {
         case unaccessiblePath
@@ -22,10 +27,7 @@ public actor ObjectStoreCoordinator {
         case rootPathNotSet
     }
 
-    @MainActor public static func setLogFile(_ path: String) { logFile = path }
-
-    /// This is the only logger used in POLIS
-    public let logger: Logging.Logger
+    //MARK: Public APIs
 
     /// If a new (different) path is set, the ObjectStore will be reset or created
     public func setPathToPolisFolder(_ path: String) throws {
@@ -33,18 +35,106 @@ public actor ObjectStoreCoordinator {
 
         if _fm.fileExists(atPath: path, isDirectory: &_isDir) && _isDir.boolValue {
             _pathToPolisFolder = path.normalisedFolderPath()
-            resetObjectStoreIfNeeded()
-            try prepareObjectStoreForUse()
+            resetObjectStore()
         }
         else { throw ObjectStoreCoordinatorError.unaccessiblePath }
     }
+
 
     /// If local Object Store is empty, this method will start creating the local store syncing it with the remote store.
     ///
     /// **Note:** The process of syncing could be slow. Appropriate Notifications will be posted when the syncing is complete.
     public func setRemoteProvider(host: String, pathToPolisFolder: String? = nil) throws {
+        if host == _remoteHost { return }
 
+        _remoteHost = host
+        resetObjectStore()
         //TODO: Implement me!
+    }
+
+    public func logger() -> Logging.Logger { _logger }
+    public func setLogFilePath( _ path: String) throws {
+        //TODO: If current log file exists, flush and start a new one.
+        _logFile = path
+    }
+
+    //MARK: - Private APIs
+#if os(macOS)
+    private var _logFile: String? = "/tmp/polis.log"
+#else
+    private var _logFile: String? = nil
+#endif
+
+    /// This is the only logger used in POLIS
+    private var _logger: Logging.Logger
+
+    private let _fm: FileManager = .default
+    private var _isDir: ObjCBool = false
+
+    private var _isConfigured    = false
+    private var _pathToPolisFolder: String!
+    private var _remoteHost: String?
+
+    private var _fileResourceFinder: PolisFileResourceFinder!
+    private var _remoteResourceFinder: PolisRemoteResourceFinder!
+
+    private var _objectStoreDescription = ObjectStoreDescription(status: .unknown)
+
+    @MainActor private init() {
+        //FIXME: This will crash on iOS!
+        let logFileURL = URL(fileURLWithPath: _logFile!)
+
+        //TODO: Log File might be undefined ($$$AK, please fix)
+        // Initialising the Log to channel to console and file
+        PolisLogger.setup(subsystem: "test.polis.observer",
+                          level: Logging.Logger.Level.trace,
+                          logFileURL: logFileURL,
+                          includeConsole: true)
+        self._logger = PolisLogger.logger()
+        self._logger.info("ObjectStoreCoordinator initialised")
+    }
+}
+
+
+//
+// =====================================================================================================================
+//
+
+
+//MARK: - Global Object Store Functionality -
+extension ObjectStoreCoordinator {
+    public func objectStoreStatus() throws-> ObjectStoreDescription {
+        if _isConfigured { return objectStoreDescription() }
+
+        _objectStoreDescription.setRootPath(_pathToPolisFolder)
+
+        // Check if the root pat is a valid URL
+        guard let pathURL = URL(string: _pathToPolisFolder) else {
+            _objectStoreDescription.setRootPathAccessibilityStatus(.unaccessible)
+            _logger.error("\(String(describing: _pathToPolisFolder)) is not a valid URL")
+            throw ObjectStoreCoordinatorError.unaccessiblePath
+        }
+
+        // Configure PolisFileResourceFinder
+        _fileResourceFinder = try PolisFileResourceFinder(at: pathURL, supportedImplementation: PolisConstants().latestPolisFrameworkSupportedImplementation())
+        _objectStoreDescription.setRootPathAccessibilityStatus(.accessible)
+        _objectStoreDescription.setPolisFileResourceFinderStatus(.set)
+        _objectStoreDescription.setStatus(.notConfigured)
+
+        // Check if all essential paths exist
+        if checkPolisDirectoryPathsExistence(paths: polisDirectoryPaths()) {
+            _objectStoreDescription.setStatus(.partiallyConfigured)
+            _objectStoreDescription.setPolisFoldersAccessibilityStatus(.accessible)
+        }
+        else { return objectStoreDescription() }
+
+        // Check if all essential files exist
+        if checkPolisFilesExistence(paths: essentialPolisFiles()) {
+            _objectStoreDescription.setPolisFilesAccessibilityStatus(.accessible)
+            _isConfigured = true //TODO: When finished, should be true
+        }
+
+        return objectStoreDescription()
     }
 
     /// Creates local POLIS provider
@@ -59,79 +149,22 @@ public actor ObjectStoreCoordinator {
         if moveExistingStore { try moveLocalDataToTemporaryFolder() }
         else                 { try removeExistingLocalDataIfNeeded() }
 
-        try prepareObjectStoreForUse(createIfNeeded: true)
-        //TODO: Implement me!
- }
-
-    //MARK: - Private APIs
-    private let _fm: FileManager = .default
-    private var _isDir: ObjCBool = false
-
-    private var _isConfigured    = false
-    private var _pathToPolisFolder: String!
-
-    private var _fileResourceFinder: PolisFileResourceFinder!
-    private var _remoteResourceFinder: PolisRemoteResourceFinder!
-
-    private var _objectStoreDescription = ObjectStoreDescription(status: .unknown)
-
-    @MainActor private init() {
-        let logFileURL = URL(fileURLWithPath: ObjectStoreCoordinator.logFile)
-
-        PolisLogger.setup(subsystem: "test.polis.observer",
-                          level: Logging.Logger.Level.trace,
-                          logFileURL: logFileURL,
-                          includeConsole: true)
-
-        self.logger = PolisLogger.logger()
-
-
-        self.logger.info("ObjectStoreCoordinator initialised")
-    }
-
-}
-
-//MARK: - Configuration related APIs -
-extension ObjectStoreCoordinator {
-    private func tryToConfigureLocalObjectStore() {
+//        try prepareObjectStoreForUse(createIfNeeded: true)
         //TODO: Implement me!
     }
 
-    private func initialiseObjectStoreDescription() {
-        _objectStoreDescription.setStatus(.unknown)
-        _objectStoreDescription.setRootPathAccessibilityStatus(.unset)
-        //TODO: Implement me!
-    }
-}
-
-//MARK: - Global Object Store Functionality -
-extension ObjectStoreCoordinator {
     /// Describes the status of the local POLIS provider
-    public func objectStoreDescription() async -> ObjectStoreDescription {
-        if _objectStoreDescription.status != .configuredAndSynced { tryToConfigureLocalObjectStore() }
-
-        //TODO: Implement me!
-       return _objectStoreDescription
-    }
-}
-
-//MARK: - Managing Observing Facilities -
-extension ObjectStoreCoordinator {
-
-    public func addObservingFacility(_ facility: ObservingFacility) { ObjectStore.shared.addObservingFacility(facility) }
-}
-
-//MARK: - Polis Service Providing -
-extension ObjectStoreCoordinator {
+    public func objectStoreDescription() -> ObjectStoreDescription { _objectStoreDescription }
 
     /// Performs complete reset to:
     /// - `ObjectStoreCoordinator`
     /// - `ObjectStoreDescription`
     /// - `ObjectStore`
-    private func resetObjectStoreIfNeeded() {
+    private func resetObjectStore() {
         _isConfigured           = false
         _fileResourceFinder     = nil
-        _objectStoreDescription = ObjectStoreDescription(status: .unknown)
+        _remoteResourceFinder   = nil
+        _objectStoreDescription = ObjectStoreDescription()
 
         ObjectStore.shared.reset()
     }
@@ -144,64 +177,76 @@ extension ObjectStoreCoordinator {
     /// - Parameter createIfNeeded: If true and the Service Provider does not exist, it will try to create a new one [default == false]
     ///
     /// **Important:** While progressing, this method adds information to the Object Store Description struct!
-    private func prepareObjectStoreForUse(createIfNeeded: Bool = false) throws {
-        if _isConfigured { return }
+//    private func prepareObjectStoreForUse(createIfNeeded: Bool = false) throws {
+//        if _isConfigured { return }
 
-        _objectStoreDescription.setRootPath(_pathToPolisFolder)
+//        _objectStoreDescription.setRootPath(_pathToPolisFolder)
 
-        // Check if the root pat is a valid URL
-        guard let patURL = URL(string: _pathToPolisFolder) else {
-            _objectStoreDescription.setRootPathAccessibilityStatus(.unaccessible)
-            logger.error("\(String(describing: _pathToPolisFolder)) is not a valid URL")
-            throw ObjectStoreCoordinatorError.unaccessiblePath
-        }
+//        // Check if the root pat is a valid URL
+//        guard let patURL = URL(string: _pathToPolisFolder) else {
+//            _objectStoreDescription.setRootPathAccessibilityStatus(.unaccessible)
+//            _logger.error("\(String(describing: _pathToPolisFolder)) is not a valid URL")
+//            throw ObjectStoreCoordinatorError.unaccessiblePath
+//        }
+//
+//        // Configure PolisFileResourceFinder
+//        _fileResourceFinder = try PolisFileResourceFinder(at: patURL, supportedImplementation: PolisConstants().latestPolisFrameworkSupportedImplementation())
+//        _objectStoreDescription.setRootPathAccessibilityStatus(.accessible)
+//        _objectStoreDescription.setPolisFileResourceFinderStatus(.set)
+//        _objectStoreDescription.setStatus(.notConfigured)
 
-        // Configure PolisFileResourceFinder
-        _fileResourceFinder = try PolisFileResourceFinder(at: patURL, supportedImplementation: PolisConstants().latestPolisFrameworkSupportedImplementation())
-        _objectStoreDescription.setRootPathAccessibilityStatus(.accessible)
-        _objectStoreDescription.setPolisFileResourceFinderStatus(.set)
-        _objectStoreDescription.setStatus(.notConfigured)
+//        // Check if all essential paths exist
+//        if !checkPolisDirectoryPathsExistence(paths: polisDirectoryPaths()) {
+//            if createIfNeeded && !tryToEnsureFoldersExistence(paths: polisDirectoryPaths()) { return }
+//            else {
+//                _objectStoreDescription.setPolisFoldersAccessibilityStatus(.unaccessible)
+//                return
+//            }
+//        }
+//        _objectStoreDescription.setStatus(.partiallyConfigured)
+//        _objectStoreDescription.setPolisFoldersAccessibilityStatus(.accessible)
 
-        // Check if all essential paths exist
-        if !checkPolisDirectoryPathsExistence(paths: polisDirectoryPaths()) {
-            if createIfNeeded && !tryToEnsureFoldersExistence(paths: polisDirectoryPaths()) { return }
-            else {
-                _objectStoreDescription.setPolisFoldersAccessibilityStatus(.unaccessible)
-                return
-            }
-        }
-        _objectStoreDescription.setStatus(.partiallyConfigured)
-        _objectStoreDescription.setPolisFoldersAccessibilityStatus(.accessible)
+//        // Check if all essential files exist
+//        if !checkPolisFilesExistence(paths: essentialPolisFiles()) {
+//            //TODO: Continue digging here!
+//
+//            if createIfNeeded {
+//                //TODO: 1. Create polis main file
+//                //TODO: 2. Create polis directory file
+//                //TODO: 3. Create polis facility directory file
+//
+//                return
+//            }
+//            else {
+//                _objectStoreDescription.setPolisFilesAccessibilityStatus(.unaccessible)
+//                return
+//            }
+//        }
+//        _objectStoreDescription.setPolisFilesAccessibilityStatus(.accessible)
+//
+//
+//        //TODO: Try to load essential files
+//
+//        //TODO: Try to configure the ObjectStore essentials
+//
+//        _isConfigured = false //TODO: When finished, should be true
+//
+//        //TODO: Start background data loading task
+//
+//        //TODO: Add logs
+//    }
 
-        // Check if all essential files exist
-        if !checkPolisFilesExistence(paths: essentialPolisFiles()) {
-            //TODO: Continue digging here!
 
-            if createIfNeeded {
-                //TODO: 1. Create polis main file
-                //TODO: 2. Create polis directory file
-                //TODO: 3. Create polis facility directory file
+}
 
-                return
-            }
-            else {
-                _objectStoreDescription.setPolisFilesAccessibilityStatus(.unaccessible)
-                return
-            }
-        }
-        _objectStoreDescription.setPolisFilesAccessibilityStatus(.accessible)
+//MARK: - Managing Observing Facilities -
+extension ObjectStoreCoordinator {
 
+    public func addObservingFacility(_ facility: ObservingFacility) { ObjectStore.shared.addObservingFacility(facility) }
+}
 
-        //TODO: Try to load essential files
-
-        //TODO: Try to configure the ObjectStore essentials
-
-        _isConfigured = false //TODO: When finished, should be true
-
-        //TODO: Start background data loading task
-
-        //TODO: Add logs
-    }
+//MARK: - Polis Service Providing -
+extension ObjectStoreCoordinator {
 
     private func moveLocalDataToTemporaryFolder() throws {
         //TODO: Implement me!
@@ -267,7 +312,7 @@ extension ObjectStoreCoordinator {
             return true
         }
         catch {
-            logger.error("Error: cannot access or create folder - \(error.localizedDescription)")
+            _logger.error("Error: cannot access or create folder - \(error.localizedDescription)")
             return false
         }
     }
