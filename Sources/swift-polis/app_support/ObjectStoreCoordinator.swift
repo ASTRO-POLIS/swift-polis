@@ -103,7 +103,7 @@ public actor ObjectStoreCoordinator {
 
 //MARK: - Global Object Store Functionality -
 extension ObjectStoreCoordinator {
-    public func objectStoreStatus() throws-> ObjectStoreDescription {
+    @discardableResult public func objectStoreStatus() throws-> ObjectStoreDescription {
         if _isConfigured { return objectStoreDescription() }
 
         _objectStoreDescription.setRootPath(_pathToPolisFolder)
@@ -143,19 +143,37 @@ extension ObjectStoreCoordinator {
     /// Creates local POLIS provider
     ///
     /// The local data will be stored at the path set by `setRemoteProvider(host, pathToPolisFolder:)`. If data at the path already exist, and
-    /// `moveExistingStore` is `true`, the existing folder will be moved to `/tmp` folder. Otherwise error will be thrown. If there is an existing `ObjectStore`,
-    /// the store will be given a chance to sync all unsaved data before being reset.
+    /// `moveExistingStore` is `true`, the existing folder will be moved to `/tmp` folder. Otherwise the existing store will be removed unconditionally.
     public func createLocalStore(moveExistingStore: Bool = false) throws {
-        _ = try objectStoreStatus()
-        let objectStoreStatus = _objectStoreDescription.status
+        try objectStoreStatus()
+        var storeStatus = _objectStoreDescription.status
 
+        // Remove or backup existing data
+        if storeStatus.rawValue >= ObjectStoreStatusType.folderHierarchyCreated.rawValue {
+            if moveExistingStore { try moveLocalDataToTemporaryFolder() }
+            else                 { try removeExistingLocalDataIfNeeded() }
+            try objectStoreStatus()
+            storeStatus = _objectStoreDescription.status
+        }
 
-        if moveExistingStore { try moveLocalDataToTemporaryFolder() }
-        else                 { try removeExistingLocalDataIfNeeded() }
+        // Now we have a clean slate to start creating the local store
 
-//        try prepareObjectStoreForUse(createIfNeeded: true)
+        // 1. Create the folder structure first
+        if !checkPolisDirectoryPathsExistence(paths: polisDirectoryPaths()) {
+            if tryToEnsureFoldersExistence(paths: polisDirectoryPaths()) {
+                _objectStoreDescription.setPolisFoldersAccessibilityStatus(.accessible)
+                _objectStoreDescription.setStatus(.folderHierarchyCreated)
+            }
+            else {
+                _objectStoreDescription.setPolisFoldersAccessibilityStatus(.unaccessible)
+                throw ObjectStoreCoordinatorError.cannotAccessOrCreateStandardPolisFolders
+            }
+        }
+
+        //        try prepareObjectStoreForUse(createIfNeeded: true)
         //TODO: Implement me!
-    }
+   }
+
 
     /// Describes the status of the local POLIS provider
     public func objectStoreDescription() -> ObjectStoreDescription { _objectStoreDescription }
@@ -173,40 +191,7 @@ extension ObjectStoreCoordinator {
         ObjectStore.shared.reset()
     }
 
-    /// Prepares:
-    /// - `ObjectStoreCoordinator`
-    /// - `ObjectStoreDescription`
-    /// - `ObjectStore`
-    /// to be used , or at least identifies their status and readiness if they already exist partially. Might create a new Service Provider
-    /// - Parameter createIfNeeded: If true and the Service Provider does not exist, it will try to create a new one [default == false]
-    ///
-    /// **Important:** While progressing, this method adds information to the Object Store Description struct!
 //    private func prepareObjectStoreForUse(createIfNeeded: Bool = false) throws {
-//        if _isConfigured { return }
-
-//        _objectStoreDescription.setRootPath(_pathToPolisFolder)
-
-//        // Check if the root pat is a valid URL
-//        guard let patURL = URL(string: _pathToPolisFolder) else {
-//            _objectStoreDescription.setRootPathAccessibilityStatus(.unaccessible)
-//            _logger.error("\(String(describing: _pathToPolisFolder)) is not a valid URL")
-//            throw ObjectStoreCoordinatorError.unaccessiblePath
-//        }
-//
-//        // Configure PolisFileResourceFinder
-//        _fileResourceFinder = try PolisFileResourceFinder(at: patURL, supportedImplementation: PolisConstants().latestPolisFrameworkSupportedImplementation())
-//        _objectStoreDescription.setRootPathAccessibilityStatus(.accessible)
-//        _objectStoreDescription.setPolisFileResourceFinderStatus(.set)
-//        _objectStoreDescription.setStatus(.notConfigured)
-
-//        // Check if all essential paths exist
-//        if !checkPolisDirectoryPathsExistence(paths: polisDirectoryPaths()) {
-//            if createIfNeeded && !tryToEnsureFoldersExistence(paths: polisDirectoryPaths()) { return }
-//            else {
-//                _objectStoreDescription.setPolisFoldersAccessibilityStatus(.unaccessible)
-//                return
-//            }
-//        }
 //        _objectStoreDescription.setStatus(.partiallyConfigured)
 //        _objectStoreDescription.setPolisFoldersAccessibilityStatus(.accessible)
 
@@ -227,17 +212,6 @@ extension ObjectStoreCoordinator {
 //            }
 //        }
 //        _objectStoreDescription.setPolisFilesAccessibilityStatus(.accessible)
-//
-//
-//        //TODO: Try to load essential files
-//
-//        //TODO: Try to configure the ObjectStore essentials
-//
-//        _isConfigured = false //TODO: When finished, should be true
-//
-//        //TODO: Start background data loading task
-//
-//        //TODO: Add logs
 //    }
 
 

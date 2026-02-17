@@ -69,7 +69,7 @@ public actor ObjectStore: Sendable {
         nc.post(name: AppSupportStatusChangeNotification.ObjectStoreWillCreateNotification, object: self)
 
         // 1. Create POLIS Folders
-        if !ensurePolisFoldersExistence() { throw ObjectStoreError.cannotAccessOrCreateStandardPolisFolder }
+//        if !ensurePolisFoldersExistence() { throw ObjectStoreError.cannotAccessOrCreateStandardPolisFolder }
 
         // 2. Create Configuration instances and Provider data
         let admin     = PolisPerson(name: providerConfiguration.adminName,

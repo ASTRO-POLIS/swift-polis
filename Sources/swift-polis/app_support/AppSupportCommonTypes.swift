@@ -18,23 +18,23 @@ public struct PolisChangeNotification {
     public static let ObjectStoreWillResetNotification = Notification.Name("ObjectStoreWillReset")
 }
 
-public enum ObjectStoreStatusType: Sendable {
+public enum ObjectStoreStatusType: Int, Sendable {
     /// The status when `ObjectStoreCoordinator.shared` is called for the first time
-    case notConfigured
+    case notConfigured                        = 0
 
     /// This is the status when the root path is verified, but no data are stored in the local store
-    case rootPathSetAndValid
+    case rootPathSetAndValid                  = 1
 
     /// Example: all sub-folders exist, but not all essential files are create
-    case folderHierarchyCreated
+    case folderHierarchyCreated               = 2
 
     /// Misformated files or missing files
-    case misconfiguredOrMissingEssentialFiles
+    case misconfiguredOrMissingEssentialFiles = 3
 
     /// All essential sub-folders and POLIS critical files do exist
-    case fullyConfigured
+    case fullyConfigured                      = 4
 
     /// The local store is synced with the remote service provider. The sync might be in progress
-    case fullyConfiguredAndSynced
+    case fullyConfiguredAndSynced             = 5
 }
 

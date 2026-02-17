@@ -44,7 +44,8 @@ EXIT STATUS
     3   -- In sync mode mode, the "-r url" argument is required
     4   -- File I/O Error
     5   -- Cannot configure the Object Store Configurator
-   99   -- unknown error
+    6   -- Cannot create local POLIS Service Provider
+   99   -- Unknown error
 """
 
 @MainActor var storeCoordinator: ObjectStoreCoordinator!
@@ -144,7 +145,21 @@ struct PolisTool {
 
         print("LOCAL POLIS SERVICE PROVIDER CREATION")
 
-        //TODO: Implement me!
+        if objectStoreStatus.rawValue >= ObjectStoreStatusType.fullyConfigured.rawValue {
+            logger.info( "A local object store has already been configured. Aborting.")
+            await exitDescribingErrors(code: .noError)
+        }
+        else {
+            do {
+                try await storeCoordinator.createLocalStore()
+                logger.info( "A local object store has been successfully configured.")
+                await exitDescribingErrors(code: .noError)
+           }
+            catch {
+                logger.error( "Failed to create a local object store. Aborting.")
+                await exitDescribingErrors(code: .cannotCreateLocalProvider)
+            }
+        }
     }
 }
 
@@ -213,6 +228,7 @@ fileprivate let _clap                       = CommandLineParser(arguments: Comma
             case .remoteHostProviderIsRequired:     print(">>> In sync mode mode, the \"-r url\" argument is required")
             case .fileIO:                           print(">>> File I/O failed")
             case .cannotConfigureStoreConfigurator: print(">>> Cannot configure the Object Store Configurator. Multiple reasons are possible.")
+            case .cannotCreateLocalProvider:        print(">>> Cannot create local POLIS Service Provider" )
             case .unknown:                          print(">>> Unknown error")
         }
         print(">>> Exiting with errors)")

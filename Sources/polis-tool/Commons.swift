@@ -24,5 +24,6 @@ enum ExitCodes: Int32 {
     case remoteHostProviderIsRequired     = 3   // In sync mode mode, the "-r url" argument is required
     case fileIO                           = 4   // File I/O Error
     case cannotConfigureStoreConfigurator = 5   // Cannot configure the Object Store Configurator
+    case cannotCreateLocalProvider        = 6   // Cannot create local POLIS Service Provider
     case unknown                          = 99  // Unknown error
 }
