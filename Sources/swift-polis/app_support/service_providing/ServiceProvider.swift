@@ -20,6 +20,26 @@ open class ServiceProvider {
     public var providerType = PolisDirectory.ProviderDirectoryEntry.ProviderType.experimental
     //TODO: Implement me!    public var contact: Person
 
+    //MARK: Internal APIs
+    init(_ directoryEntry: PolisDirectory.ProviderDirectoryEntry) {
+        self._originalPolisRecord = directoryEntry
+        updateFromDirectoryEntry(directoryEntry)
+    }
+
     //MARK: Private APIs
     private var _originalPolisRecord: PolisDirectory.ProviderDirectoryEntry?
+
+    private func updateFromDirectoryEntry(_ directoryEntry: PolisDirectory.ProviderDirectoryEntry) {
+        id                       = directoryEntry.id
+        mirrorID                 = directoryEntry.mirrorID
+        reachabilityStatus       = directoryEntry.reachabilityStatus
+        name                     = directoryEntry.name
+        shortDescription         = directoryEntry.shortDescription
+        lastUpdateTime           = directoryEntry.lastUpdateTime
+        url                      = directoryEntry.url
+        supportedImplementations = directoryEntry.supportedImplementations
+        providerType             = directoryEntry.providerType
+
+        //TODO: Implement me!
+    }
 }

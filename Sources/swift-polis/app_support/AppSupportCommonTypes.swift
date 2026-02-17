@@ -7,6 +7,15 @@
 
 import Foundation
 
+public protocol PolisObjectPersisting {
+    func hasChanged() -> Bool
+    func saveLocally() async throws
+    func saveRemotely() async throws
+
+    func loadFromLocalProvider() async throws
+    func loadFromRemoteProvider() async throws
+}
+
 public struct PolisChangeNotification {
     // Object Store Notifications
     /// Sent when  Object Store is ready to be used. It can take some time between  configuring the `ObjectStoreConfigurator` and receiving this
@@ -38,3 +47,14 @@ public enum ObjectStoreStatusType: Int, Sendable {
     case fullyConfiguredAndSynced             = 5
 }
 
+//MARK: - Extensions -
+
+// Default implementation, so that the protocol could be adopted step by step
+public extension PolisObjectPersisting {
+    func hasChanged() -> Bool { false }
+    func saveLocally() async throws { }
+    func saveRemotely() async throws { }
+
+    func loadFromLocalProvider() async throws { }
+    func loadFromRemoteProvider() async throws { }
+}
