@@ -128,9 +128,116 @@ final class PolisImplementationTests: XCTestCase {
         XCTAssertEqual(sut.dataFormat, format)
     }
 
+    func test_PolisImplementation_latestSupportedImplementation_jsonStatic_shouldReturnLatestJSONStatic() throws {
+        // Given
+        let v1xml = PolisImplementation(dataFormat: PolisImplementation.DataFormat.xml,
+                                         apiSupport: PolisImplementation.APILevel.staticData,
+                                         version: SemanticVersion(with: "1.0.0-alpha.1")!)
+        let v2xml = PolisImplementation(dataFormat: PolisImplementation.DataFormat.xml,
+                                         apiSupport: PolisImplementation.APILevel.staticData,
+                                         version: SemanticVersion(with: "2.0.0-alpha.1")!)
+        let v2json = PolisImplementation(dataFormat: PolisImplementation.DataFormat.json,
+                                         apiSupport: PolisImplementation.APILevel.staticData,
+                                         version: SemanticVersion(with: "2.0.0-alpha.1")!)
+
+        let supported = [v1xml, v2xml, v2json]
+
+        let request = PolisImplementation.SupportRequest(acceptableFormats: [.json],
+                                                         minimumAPILevel: .staticData)
+
+        // When
+        let result = PolisImplementation.latestSupportedImplementation(for: request, in: supported)
+
+        // Then
+        XCTAssertEqual(result, v2json)
+    }
+
+    func test_PolisImplementation_latestSupportedImplementation_minimumDynamicStatus_shouldReturnLatestDynamicStatus() throws {
+        // Given
+        let v2jsonStatic = PolisImplementation(dataFormat: PolisImplementation.DataFormat.json,
+                                                apiSupport: PolisImplementation.APILevel.staticData,
+                                                version: SemanticVersion(with: "2.0.0-alpha.1")!)
+        let v21jsonDynamic = PolisImplementation(dataFormat: PolisImplementation.DataFormat.json,
+                                                apiSupport: PolisImplementation.APILevel.dynamicStatus,
+                                                version: SemanticVersion(with: "2.1.0-alpha.1")!)
+        let v3jsonStatic = PolisImplementation(dataFormat: PolisImplementation.DataFormat.json,
+                                                apiSupport: PolisImplementation.APILevel.staticData,
+                                                version: SemanticVersion(with: "3.0.0-alpha.1")!)
+
+        let supported = [v2jsonStatic, v21jsonDynamic, v3jsonStatic]
+
+        let request = PolisImplementation.SupportRequest(acceptableFormats: [.json],
+                                                         minimumAPILevel: .dynamicStatus)
+
+        // When
+        let result = PolisImplementation.latestSupportedImplementation(for: request, in: supported)
+
+        // Then
+        XCTAssertEqual(result, v21jsonDynamic)
+    }
+
+    func test_PolisImplementation_latestSupportedImplementation_whenNoMatch_shouldReturnNil() throws {
+        // Given
+        let v1xml = PolisImplementation(dataFormat: PolisImplementation.DataFormat.xml,
+                                        apiSupport: PolisImplementation.APILevel.staticData,
+                                        version: SemanticVersion(with: "1.0.0-alpha.1")!)
+
+        let supported = [v1xml]
+
+        let request = PolisImplementation.SupportRequest(acceptableFormats: [.json],
+                                                         minimumAPILevel: .staticData)
+
+        // When
+        let result = PolisImplementation.latestSupportedImplementation(for: request, in: supported)
+
+        // Then
+        XCTAssertNil(result)
+    }
+
+    func test_PolisImplementation_hashable_equalInstances_shouldHaveEqualHashes() throws {
+        // Given
+        let sut1 = PolisImplementation(dataFormat: PolisImplementation.DataFormat.json,
+                                       apiSupport: PolisImplementation.APILevel.staticData,
+                                       version: SemanticVersion(with: "1.0.0-alpha.1")!)
+        let sut2 = PolisImplementation(dataFormat: PolisImplementation.DataFormat.json,
+                                       apiSupport: PolisImplementation.APILevel.staticData,
+                                       version: SemanticVersion(with: "1.0.0-alpha.1")!)
+
+        // When
+        let h1 = sut1.hashValue
+        let h2 = sut2.hashValue
+
+        // Then
+        XCTAssertEqual(sut1, sut2)
+        XCTAssertEqual(h1, h2)
+    }
+
+    func test_PolisImplementation_hashable_nonEqualInstances_shouldNotBeEqual() throws {
+        // Given
+        let sut1 = PolisImplementation(dataFormat: PolisImplementation.DataFormat.json,
+                                       apiSupport: PolisImplementation.APILevel.staticData,
+                                       version: SemanticVersion(with: "1.0.0-alpha.1")!)
+        let sut2 = PolisImplementation(dataFormat: PolisImplementation.DataFormat.xml,
+                                       apiSupport: PolisImplementation.APILevel.staticData,
+                                       version: SemanticVersion(with: "1.0.0-alpha.1")!)
+
+        // When
+        let h1 = sut1.hashValue
+        let h2 = sut2.hashValue
+
+        // Then
+        XCTAssertNotEqual(sut1, sut2)
+        XCTAssertNotEqual(h1, h2)
+    }
+
     static let allTests = [
         ("test_PolisImplementation_dataFormat_shouldSucceed",                   test_PolisImplementation_dataFormat_shouldSucceed),
         ("test_PolisImplementation_apiLevel_shouldSucceed",                     test_PolisImplementation_apiLevel_shouldSucceed),
         ("test_PolisImplementation_supportedImplementation_shouldSucceed",      test_PolisImplementation_supportedImplementation_shouldSucceed),
+        ("test_PolisImplementation_latestSupportedImplementation_jsonStatic_shouldReturnLatestJSONStatic",      test_PolisImplementation_latestSupportedImplementation_jsonStatic_shouldReturnLatestJSONStatic),
+        ("test_PolisImplementation_latestSupportedImplementation_minimumDynamicStatus_shouldReturnLatestDynamicStatus",      test_PolisImplementation_latestSupportedImplementation_minimumDynamicStatus_shouldReturnLatestDynamicStatus),
+        ("test_PolisImplementation_latestSupportedImplementation_whenNoMatch_shouldReturnNil",      test_PolisImplementation_latestSupportedImplementation_whenNoMatch_shouldReturnNil),
+        ("test_PolisImplementation_hashable_equalInstances_shouldHaveEqualHashes", test_PolisImplementation_hashable_equalInstances_shouldHaveEqualHashes),
+        ("test_PolisImplementation_hashable_nonEqualInstances_shouldNotBeEqual", test_PolisImplementation_hashable_nonEqualInstances_shouldNotBeEqual),
     ]
 }
