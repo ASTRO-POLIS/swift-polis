@@ -27,14 +27,14 @@ public struct PolisManufacturer: Codable, Identifiable, Sendable {
     /// The point-of-contact for the manufacturer.
     public var contact: PolisPerson?
 
-    public var addresses: [PolisPlace]?
+    public var addresses: [PolisPlaceOnEarth]?
 
     public var communication: PolisCommunicationChannel?
 
     public init(identity: PolisIdentity,
                 url: URL?                                 = nil,
                 contact: PolisPerson?                     = nil,
-                addresses: [PolisPlace]?                  = nil,
+                addresses: [PolisPlaceOnEarth]?           = nil,
                 communication: PolisCommunicationChannel? = nil) {
         self.identity      = identity
         self.url           = url

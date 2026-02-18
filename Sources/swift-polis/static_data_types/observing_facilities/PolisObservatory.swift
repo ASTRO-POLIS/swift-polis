@@ -23,7 +23,7 @@ public class PolisObservatory: Identifiable, Codable {
     public var electromagneticSpectrumCoverage: [PolisElectromagneticSpectrumCoverage]?
     public var observatoryType: ObservatoryType
 
-    public var location: PolisPlace?
+    public var location: PolisPlaceOnEarth?
 
     public var configurationIDs: Set<UUID>?
     public var deviceIDs: Set<UUID>?
@@ -33,7 +33,7 @@ public class PolisObservatory: Identifiable, Codable {
     public init(identity: PolisIdentity,
                 electromagneticSpectrumCoverage: [PolisElectromagneticSpectrumCoverage]? = nil,
                 observatoryType: ObservatoryType                                         = .unknown,
-                location: PolisPlace?                                                    = nil,
+                location: PolisPlaceOnEarth?                                             = nil,
                 configurationIDs: Set<UUID>?                                             = nil,
                 deviceIDs: Set<UUID>?                                                    = nil) {
         self.identity                                                                    = identity

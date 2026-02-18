@@ -96,7 +96,7 @@ public struct PolisOwner: Codable, Equatable, Sendable {
 }
 
 //MARK: - PolisPlace -
-public struct PolisPlace: Codable, Equatable, Identifiable, Sendable {
+public struct PolisPlaceOnEarth: Codable, Equatable, Identifiable, Sendable {
 
     public enum EarthContinent: String, Codable, Equatable, Sendable {
         case europe       = "Europe"
@@ -284,7 +284,7 @@ extension PolisCommunicationChannel {
 }
 
 //MARK: - PolisAddress
-extension PolisPlace {
+extension PolisPlaceOnEarth {
     public enum CodingKeys: String, CodingKey {
         case id
         case lastUpdateTime     = "last_update_time"

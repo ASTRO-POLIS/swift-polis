@@ -77,9 +77,9 @@ struct StaticDataTypeTestingSupport {
     }
 
     //MARK: PolisPlace
-    static func examplePolisPlace() -> PolisPlace {
+    static func examplePolisPlace() -> PolisPlaceOnEarth {
         //TODO: We need the Facility here!
-        PolisPlace(facilityID: UUID(),
+        PolisPlaceOnEarth(facilityID: UUID(),
                    attentionOff: "Mrs. Royal Astronomer",
                    houseName: "Galaxy.",
                    street: "Observatory str.",
