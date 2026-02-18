@@ -108,6 +108,56 @@ public struct PolisImplementation: Codable, Equatable, Sendable  {
         return false
     }
 
+    public struct SupportRequest: Sendable, Hashable {
+
+        public var acceptableFormats:  Set<DataFormat>
+        public var minimumAPILevel:    APILevel
+
+        public init(acceptableFormats: Set<DataFormat>,
+                    minimumAPILevel:   APILevel) {
+            self.acceptableFormats = acceptableFormats
+            self.minimumAPILevel   = minimumAPILevel
+        }
+    }
+
+    public static func latestSupportedImplementation(for request: SupportRequest) -> PolisImplementation? {
+        return latestSupportedImplementation(for: request,
+                                             in:  PolisConstants.polisFrameworkSupportedImplementations)
+    }
+
+    public static func latestSupportedImplementation(for request: SupportRequest,
+                                                     in supportedImplementations: [PolisImplementation]) -> PolisImplementation? {
+
+        var best: PolisImplementation? = nil
+
+        for candidate in supportedImplementations {
+
+            guard request.acceptableFormats.contains(candidate.dataFormat) else { continue }
+            guard candidate.apiSupport >= request.minimumAPILevel          else { continue }
+            guard let current = best                                       else { best = candidate; continue }
+
+            if candidate.version > current.version {
+                best = candidate
+                continue
+            }
+
+            if candidate.version == current.version {
+                if candidate.apiSupport > current.apiSupport {
+                    best = candidate
+                    continue
+                }
+
+                if (candidate.apiSupport == current.apiSupport),
+                    candidate.dataFormat.rawValue > current.dataFormat.rawValue {
+                    best = candidate
+                    continue
+                }
+            }
+        }
+
+        return best
+    }
+
     //MARK: - Public APIs -
     public var dataFormat: DataFormat
     public var apiSupport: APILevel
@@ -136,16 +186,19 @@ public struct PolisImplementation: Codable, Equatable, Sendable  {
 
 //MARK: - Comparable
 extension PolisImplementation.APILevel: Comparable {
-    //TODO: $$$ZH This method is obviously wrong! Can you fix it?
-    public static func < (left: PolisImplementation.APILevel, right: PolisImplementation.APILevel) -> Bool {
-        if      (left == .staticData)        && (left == right)               { return true }
-        else if (left == .dynamicStatus)     && (right == .dynamicScheduling) { return true } //TODO: Add dynamic options! (Not first version)
-        else if (left == .dynamicScheduling) && (right == .dynamicScheduling) { return true } //TODO: Add dynamic options! (Not first version)
 
-        return false
+    fileprivate var orderIndex: Int {
+        switch self {
+        case .staticData:        return 0
+        case .dynamicStatus:     return 1
+        case .dynamicScheduling: return 2
+        }
+    }
+
+    public static func < (left: PolisImplementation.APILevel, right: PolisImplementation.APILevel) -> Bool {
+        return left.orderIndex < right.orderIndex
     }
 }
-
 
 //MARK: - This extension is needed for supporting a well formatted JSON API
 public extension PolisImplementation {
@@ -158,8 +211,9 @@ public extension PolisImplementation {
 
 //MARK: This makes `PolisImplementation` Equatable
 extension PolisImplementation: Hashable {
-    //TODO: Test this!
+
     public func hash(into hasher: inout Hasher) {
+        hasher.combine(dataFormat)
         hasher.combine(apiSupport)
         hasher.combine(version.description)
     }
