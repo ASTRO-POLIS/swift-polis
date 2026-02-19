@@ -42,7 +42,7 @@ struct ServiceProviderDataSource {
     "url": "https://universe.net",
     "supported_implementations": [ \(PolisImplementationDataSource.currentFrameworkVersionTemplate) ],
     "provider_type": "mirror",
-    "contact": \(PolisPersonDataSource.examplePersonTemplate)
+    "contactEmail": "contact@example.com"
 }
 """
 
@@ -62,21 +62,8 @@ struct ServiceProviderDataSource {
         }
     ],
     "provider_type": "public_primary",
-    "contact": {
-        "name": "POLIS Admin",
-        "email": "polis@tuparev.com",
-        "communication": {
-        },
-        "address": {
-           "street": "Sofijski geroj",
-           "house_number_suffix": "b",
-           "apartment": "27",
-          "floor": 4,
-          "country_id": "BG",
-          "house_number": 3,
-          "zip_code": "1612"
-        },
-        "note": "Do not disturb during weekends"
+    "contactEmail": "polis@tuparev.com",
+    "note": "Do not disturb during weekends"
     }
 }
 """
@@ -97,15 +84,8 @@ struct ServiceProviderDataSource {
         }
     ],
     "provider_type": "public_secondary",
-    "contact": {
-        "name": "POLIS Admin",
-        "email": "polis@example.com",
-        "communication": {
-        },
-        "address": {
-          "country_id": "US"
-        },
-        "note": "This data need to be edited"
+    "contactEmail": "polis@example.com",
+    "note": "Do not disturb during weekends"
     }
 }
 """
