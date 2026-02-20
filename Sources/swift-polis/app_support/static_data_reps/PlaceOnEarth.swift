@@ -56,43 +56,11 @@ open class PlaceOnEarth {
     //MARK: Internal APIs
 
     init(_ place: PolisPlaceOnEarth) {
+        self.id = place.id
+        self.lastUpdateTime = place.lastUpdateTime
+        self.facilityID = place.facilityID
+
         self._originalPolisRecord = place
-
-        //FIXME: Why we need these assignments here, but similar assignments are not needed in `ServiceProvider`?
-        self.id                 = place.id
-        self.lastUpdateTime     = place.lastUpdateTime
-        self.facilityID         = place.facilityID
-        self.attentionOff       = place.attentionOff
-        self.houseName          = place.houseName
-        self.street             = place.street
-        self.houseNumber        = place.houseNumber
-        self.houseNumberSuffix  = place.houseNumberSuffix
-        self.floor              = place.floor
-        self.apartment          = place.apartment
-        self.district           = place.district
-        self.site               = place.site
-        self.zipCode            = place.zipCode
-        self.province           = place.province
-        self.regionOrState      = place.regionOrState
-        self.regionOrStateCode  = place.regionOrStateCode
-        self.country            = place.country
-        self.countryID          = place.countryID
-        self.continent          = place.continent
-        self.poBox              = place.poBox
-        self.poBoxZip           = place.poBoxZip
-        self.posteRestante      = place.posteRestante
-        self.eastLongitude      = place.eastLongitude
-        self.latitude           = place.latitude
-        self.altitude           = place.altitude
-        self.streetLine1        = place.streetLine1
-        self.streetLine2        = place.streetLine2
-        self.streetLine3        = place.streetLine3
-        self.streetLine4        = place.streetLine4
-        self.streetLine5        = place.streetLine5
-        self.streetLine6        = place.streetLine6
-        self.note               = place.note
-        self.timeZoneIdentifier = place.timeZoneIdentifier
-
         updateFromPolisPlace(place)
      }
 
