@@ -42,7 +42,7 @@ struct ServiceProviderDataSource {
     "url": "https://universe.net",
     "supported_implementations": [ \(PolisImplementationDataSource.currentFrameworkVersionTemplate) ],
     "provider_type": "mirror",
-    "contactEmail": "contact@example.com"
+    "contact_email": "contact@example.com"
 }
 """
 
@@ -62,7 +62,7 @@ struct ServiceProviderDataSource {
         }
     ],
     "provider_type": "public_primary",
-    "contactEmail": "polis@tuparev.com",
+    "contact_email": "polis@tuparev.com",
     "note": "Do not disturb during weekends"
     }
 }
@@ -84,7 +84,7 @@ struct ServiceProviderDataSource {
         }
     ],
     "provider_type": "public_secondary",
-    "contactEmail": "polis@example.com",
+    "contact_email": "polis@example.com",
     "note": "Do not disturb during weekends"
     }
 }
