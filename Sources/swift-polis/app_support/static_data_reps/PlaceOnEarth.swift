@@ -9,9 +9,9 @@ import Foundation
 
 open class PlaceOnEarth {
 
-    public private(set) var id: UUID
-    public var lastUpdateTime: Date
-    public var facilityID: UUID // We need this because we need to know where to store the JSON file
+    public private(set) var id: UUID!
+    public var lastUpdateTime = Date.now
+    public var facilityID: UUID? // We need this because we need to know where to store the JSON file
 
     public var attentionOff: String?
     public var houseName: String?
@@ -56,10 +56,6 @@ open class PlaceOnEarth {
     //MARK: Internal APIs
 
     init(_ place: PolisPlaceOnEarth) {
-        self.id = place.id
-        self.lastUpdateTime = place.lastUpdateTime
-        self.facilityID = place.facilityID
-
         self._originalPolisRecord = place
         updateFromPolisPlace(place)
      }

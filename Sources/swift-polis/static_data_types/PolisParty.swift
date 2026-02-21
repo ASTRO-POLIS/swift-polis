@@ -110,7 +110,7 @@ public struct PolisPlaceOnEarth: Codable, Equatable, Identifiable, Sendable {
 
     public var id: UUID
     public var lastUpdateTime: Date
-    public var facilityID: UUID // We need this because we need to know where to store the JSON file
+    public var facilityID: UUID? // We need this because we need to know where to store the JSON file
 
     public var attentionOff: String?
     public var houseName: String?
