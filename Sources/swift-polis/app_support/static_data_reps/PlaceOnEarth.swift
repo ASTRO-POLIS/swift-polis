@@ -7,7 +7,7 @@
 
 import Foundation
 
-open class PlaceOnEarth {
+open class PlaceOnEarth: PolisObjectPersisting {
 
     public private(set) var id: UUID!
     public var lastUpdateTime = Date.now
@@ -98,5 +98,17 @@ open class PlaceOnEarth {
         note               = place.note
         timeZoneIdentifier = place.timeZoneIdentifier
     }
+
+}
+
+//MARK: - Implementing PolisObjectPersisting protocol -
+extension PlaceOnEarth {
+    public static func pathToLocalPolisFile() -> String { "" }
+    public static func loadFromLocalProvider() async throws -> PolisObjectPersisting { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
+    public static func loadFromRemoteProvider() async throws -> PolisObjectPersisting { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
+
+    public func hasChanged() -> Bool { false }
+    public func saveLocally() async throws { }
+    public func saveRemotely() async throws { }
 
 }

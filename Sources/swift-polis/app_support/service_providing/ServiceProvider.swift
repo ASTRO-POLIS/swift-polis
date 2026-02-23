@@ -7,7 +7,7 @@
 
 import Foundation
 
-open class ServiceProvider {
+open class ServiceProvider: PolisObjectPersisting {
 
     public private(set) var id: UUID!
     public var mirrorID: UUID?
@@ -23,11 +23,13 @@ open class ServiceProvider {
     //MARK: Internal APIs
     init(_ directoryEntry: PolisDirectory.ProviderDirectoryEntry) {
         self._originalPolisRecord = directoryEntry
+
         updateFromDirectoryEntry(directoryEntry)
     }
 
     //MARK: Private APIs
     private var _originalPolisRecord: PolisDirectory.ProviderDirectoryEntry?
+    private var _currentPolisRecord: PolisDirectory.ProviderDirectoryEntry?
 
     private func updateFromDirectoryEntry(_ directoryEntry: PolisDirectory.ProviderDirectoryEntry) {
         id                       = directoryEntry.id
@@ -40,6 +42,26 @@ open class ServiceProvider {
         supportedImplementations = directoryEntry.supportedImplementations
         providerType             = directoryEntry.providerType
 
-        //TODO: Implement me!
+        _currentPolisRecord      = directoryEntry
     }
+}
+
+//
+//=====================================================================================================================
+//
+
+//MARK: : - PolisObjectPersisting implementation - 
+public extension ServiceProvider {
+    @MainActor static func pathToLocalPolisFile() async -> String {
+        let fileResourceFinder = await ObjectStoreCoordinator.shared.fileResourceFinder()!
+        return fileResourceFinder.polisProviderDirectoryFile()
+    }
+
+    static func loadFromLocalProvider() async throws -> PolisObjectPersisting { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
+    static func loadFromRemoteProvider() async throws -> PolisObjectPersisting { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
+
+    func hasChanged() -> Bool { false }
+    func saveLocally() async throws { }
+    func saveRemotely() async throws { }
+
 }

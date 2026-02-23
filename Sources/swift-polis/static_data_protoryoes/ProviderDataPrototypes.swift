@@ -64,7 +64,6 @@ struct ServiceProviderDataSource {
     "provider_type": "public_primary",
     "contact_email": "polis@tuparev.com",
     "note": "Do not disturb during weekends"
-    }
 }
 """
 

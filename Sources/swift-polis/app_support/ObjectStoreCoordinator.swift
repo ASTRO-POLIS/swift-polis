@@ -7,6 +7,7 @@
 
 import Foundation
 import Logging
+import SoftwareEtudesUtilities
 import SoftwareEtudesLogging
 
 public actor ObjectStoreCoordinator {
@@ -22,9 +23,13 @@ public actor ObjectStoreCoordinator {
     public enum ObjectStoreCoordinatorError: Error {
         case unaccessiblePath
         case unaccessibleRemoteHost
+        case cannotWriteFileToLocalStore
         case objectStoreNotConfigured
         case cannotAccessOrCreateStandardPolisFolders
         case rootPathNotSet
+        case cannotCreatePolisObjectFromStringExample
+
+        case unknownError
     }
 
     //MARK: Public APIs
@@ -58,6 +63,8 @@ public actor ObjectStoreCoordinator {
         _logFile = path
     }
 
+    public func fileResourceFinder() -> PolisFileResourceFinder? { _fileResourceFinder }
+
     //MARK: - Private APIs
 #if os(macOS)
     private var _logFile: String? = "/tmp/polis.log"
@@ -79,6 +86,8 @@ public actor ObjectStoreCoordinator {
     private var _remoteResourceFinder: PolisRemoteResourceFinder!
 
     private var _objectStoreDescription = ObjectStoreDescription(status: .notConfigured)
+
+    private var _serviceProvider: ServiceProvider?
 
     @MainActor private init() {
         //FIXME: This will crash on iOS!
@@ -144,7 +153,7 @@ extension ObjectStoreCoordinator {
     ///
     /// The local data will be stored at the path set by `setRemoteProvider(host, pathToPolisFolder:)`. If data at the path already exist, and
     /// `moveExistingStore` is `true`, the existing folder will be moved to `/tmp` folder. Otherwise the existing store will be removed unconditionally.
-    public func createLocalStore(moveExistingStore: Bool = false) throws {
+    public func createLocalStore(moveExistingStore: Bool = false) async throws {
         try objectStoreStatus()
         var storeStatus = _objectStoreDescription.status
 
@@ -170,6 +179,15 @@ extension ObjectStoreCoordinator {
             }
         }
 
+        //TODO: Create & Store the service provider configuration file (polis.json)
+        try await createServiceProviderConfigurationFile()
+
+        //TODO: Create & Store the polis directory file (polis_directory.json)
+        try await createPolisDirectoryFile()
+
+        //TODO: Create & Store the observing facilities directory file (polis_observing_facilities.json)
+        try await createObservingFacilitiesDirectoryFile()
+
         //        try prepareObjectStoreForUse(createIfNeeded: true)
         //TODO: Implement me!
    }
@@ -186,15 +204,14 @@ extension ObjectStoreCoordinator {
         _isConfigured           = false
         _fileResourceFinder     = nil
         _remoteResourceFinder   = nil
+        _serviceProvider        = nil
+
         _objectStoreDescription = ObjectStoreDescription()
 
         ObjectStore.shared.reset()
     }
 
 //    private func prepareObjectStoreForUse(createIfNeeded: Bool = false) throws {
-//        _objectStoreDescription.setStatus(.partiallyConfigured)
-//        _objectStoreDescription.setPolisFoldersAccessibilityStatus(.accessible)
-
 //        // Check if all essential files exist
 //        if !checkPolisFilesExistence(paths: essentialPolisFiles()) {
 //            //TODO: Continue digging here!
@@ -214,7 +231,39 @@ extension ObjectStoreCoordinator {
 //        _objectStoreDescription.setPolisFilesAccessibilityStatus(.accessible)
 //    }
 
+    private func createServiceProviderConfigurationFile() async throws {
+        var  polisDirectory: PolisDirectory.ProviderDirectoryEntry
 
+        do {
+            if await ObjectStoreCoordinator.isBigBangServiceProvider { polisDirectory = try ServiceProviderDataSource.bigBangPolisDirectoryEntryExample() }
+            else                                                     { polisDirectory = try ServiceProviderDataSource.defaultPolisDirectoryEntryExample() }
+            polisDirectory.lastUpdateTime = Date.now
+            _serviceProvider = ServiceProvider(polisDirectory)
+
+            let data = try  PrettyJSONEncoder().encode(polisDirectory)
+            let path = await ServiceProvider.pathToLocalPolisFile()
+
+            if !_fm.createFile(atPath: path, contents: data)  {
+                _logger.error("Cannot save POLIS Directory file to: \(path)")
+                throw ObjectStoreCoordinatorError.cannotWriteFileToLocalStore
+            }
+
+        }
+        catch {
+            _logger.error("Error: create POLIS object out of example string")
+            throw ObjectStoreCoordinatorError.cannotCreatePolisObjectFromStringExample
+        }
+
+        //TODO: Send Notification!
+    }
+
+    private func createPolisDirectoryFile() async throws {
+        //TODO: Implement me!
+    }
+
+    private func createObservingFacilitiesDirectoryFile() async throws {
+        //TODO: Implement me!
+    }
 }
 
 //MARK: - Managing Observing Facilities -

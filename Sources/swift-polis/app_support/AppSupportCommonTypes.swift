@@ -8,12 +8,13 @@
 import Foundation
 
 public protocol PolisObjectPersisting {
+    @MainActor static func pathToLocalPolisFile() async -> String
+    static func loadFromLocalProvider() async throws -> PolisObjectPersisting
+    static func loadFromRemoteProvider() async throws -> PolisObjectPersisting
+
     func hasChanged() -> Bool
     func saveLocally() async throws
     func saveRemotely() async throws
-
-    func loadFromLocalProvider() async throws
-    func loadFromRemoteProvider() async throws
 }
 
 public struct PolisChangeNotification {
@@ -51,10 +52,11 @@ public enum ObjectStoreStatusType: Int, Sendable {
 
 // Default implementation, so that the protocol could be adopted step by step
 public extension PolisObjectPersisting {
+    @MainActor static func pathToLocalPolisFile() async -> String { "" }
+    static func loadFromLocalProvider() async throws -> PolisObjectPersisting { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
+    static func loadFromRemoteProvider() async throws -> PolisObjectPersisting { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
+
     func hasChanged() -> Bool { false }
     func saveLocally() async throws { }
     func saveRemotely() async throws { }
-
-    func loadFromLocalProvider() async throws { }
-    func loadFromRemoteProvider() async throws { }
 }
