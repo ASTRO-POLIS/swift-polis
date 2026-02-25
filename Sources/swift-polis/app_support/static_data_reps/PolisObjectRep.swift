@@ -60,6 +60,20 @@ public struct IdentifiableObject: Sendable {
         self.polisRegistrationTime = polisRegistrationTime
     }
 
+    public init(identity: PolisIdentity)  {
+        self.id                    = identity.id
+        self.lastUpdateTime        = identity.lastUpdateTime
+        self.lifecycleStatus       = identity.lifecycleStatus
+        self.name                  = identity.name ?? "<unnamed>"
+        self.externalReferences    = identity.externalReferences
+        self.localName             = identity.localName
+        self.abbreviation          = identity.abbreviation
+        self.shortDescription      = identity.shortDescription
+        self.startTime             = identity.startTime
+        self.endTime               = identity.endTime
+        self.polisRegistrationTime = identity.polisRegistrationTime
+    }
+
     var identity: PolisIdentity {
         get {
             PolisIdentity(id                   : id,

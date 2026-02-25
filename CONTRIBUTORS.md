@@ -14,6 +14,7 @@ source code and / or ideas to SWIFT-POLIS project.
 
 ## Contributors
 
+- Ani Klekchyan <a.klekchyan@tuparev.com>
 - Frederic Hessman <piano4sale@web.de>
 - Georg Tuparev <gtupare@tuparev.com>
 - Hasmik Andreasyan <h.andreasyan@tuparev.com>

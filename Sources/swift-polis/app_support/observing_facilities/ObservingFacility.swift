@@ -7,21 +7,30 @@
 
 import Foundation
 
-@Observable open class ObservingFacility: PersistentObject, @unchecked Sendable {
+@Observable public class ObservingFacility: Identifiable {
 
-    public static func newObservingFacility() -> ObservingFacility {
-        let identity          = PolisIdentity()
-        let facilityReference = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: identity)
-        let rep               = PolisObjectRep(polisObject: facilityReference, localPath: "", objectType: PolisObjectType.facility)
-        let facility          = ObservingFacility(polisRep: rep as! PolisObjectRep)
-        let change            = ObjectChange(changeType: .newObject, changeSource: .user, object: facility)
+    public var facilityIdentity: IdentifiableObject
+    public var gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed
+    public var placeInTheSolarSystem : PolisPlaceInTheSolarSystem                = .earth
 
-//        NotificationCenter.default.post(name: PolisChangeNotification.ObjectChangeNotification, object: change)
+    public var id: UUID { facilityIdentity.id }
 
-        //TODO: Implement me!
-        return facility
+    //TODO: Here we need to list additional objects like Details, Artifacts, Locations, SubFacilities, Observatories, and Devices. All of them should be optional
+
+    public init(facilityIdentity: IdentifiableObject,
+                gravitationalBodyRelationship: PolisObservingFacilityLocationType,
+                placeInTheSolarSystem: PolisPlaceInTheSolarSystem) {
+        self.facilityIdentity              = facilityIdentity
+        self.gravitationalBodyRelationship = gravitationalBodyRelationship
+        self.placeInTheSolarSystem         = placeInTheSolarSystem
     }
 
-    func update() { }
+    //MARK: Internal APIs
+
+    var facilityReference: PolisObservingFacilityDirectory.ObservingFacilityReference {
+        PolisObservingFacilityDirectory.ObservingFacilityReference(identity: facilityIdentity.identity,
+                                                                   gravitationalBodyRelationship: gravitationalBodyRelationship,
+                                                                   placeInTheSolarSystem: placeInTheSolarSystem)
+    }
 }
 
