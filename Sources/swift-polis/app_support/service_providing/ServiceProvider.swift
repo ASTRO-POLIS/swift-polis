@@ -18,13 +18,26 @@ open class ServiceProvider: PolisObjectPersisting {
     public var url: String?
     public var supportedImplementations: [PolisImplementation] = []
     public var providerType = PolisDirectory.ProviderDirectoryEntry.ProviderType.experimental
-    //TODO: Implement me!    public var contact: Person
+    public var contactEmail: String!
 
     //MARK: Internal APIs
     init(_ directoryEntry: PolisDirectory.ProviderDirectoryEntry) {
         self._originalPolisRecord = directoryEntry
 
         updateFromDirectoryEntry(directoryEntry)
+    }
+
+    var directoryEntry : PolisDirectory.ProviderDirectoryEntry? {
+        try? PolisDirectory.ProviderDirectoryEntry(id: id,
+                                                   mirrorID: mirrorID,
+                                                   reachabilityStatus: reachabilityStatus,
+                                                   name: name,
+                                                   shortDescription: shortDescription,
+                                                   lastUpdateTime: lastUpdateTime,
+                                                   url: url,
+                                                   supportedImplementations: supportedImplementations,
+                                                   providerType: providerType,
+                                                   contactEmail: contactEmail)
     }
 
     //MARK: Private APIs
@@ -41,6 +54,7 @@ open class ServiceProvider: PolisObjectPersisting {
         url                      = directoryEntry.url
         supportedImplementations = directoryEntry.supportedImplementations
         providerType             = directoryEntry.providerType
+        contactEmail             = directoryEntry.contactEmail
 
         _currentPolisRecord      = directoryEntry
     }
@@ -54,14 +68,21 @@ open class ServiceProvider: PolisObjectPersisting {
 public extension ServiceProvider {
     @MainActor static func pathToLocalPolisFile() async -> String {
         let fileResourceFinder = await ObjectStoreCoordinator.shared.fileResourceFinder()!
-        return fileResourceFinder.polisProviderDirectoryFile()
+        return fileResourceFinder.configurationFile()
     }
 
+    //TODO: Implement me!
     static func loadFromLocalProvider() async throws -> PolisObjectPersisting { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
+
+    //TODO: Implement me!
     static func loadFromRemoteProvider() async throws -> PolisObjectPersisting { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
 
+    //TODO: Implement me!
     func hasChanged() -> Bool { false }
-    func saveLocally() async throws { }
-    func saveRemotely() async throws { }
 
+    //TODO: Implement me!
+    func saveLocally() async throws { }
+
+    //TODO: Implement me!
+    func saveRemotely() async throws { }
 }

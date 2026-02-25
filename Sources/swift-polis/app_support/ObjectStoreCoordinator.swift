@@ -28,6 +28,7 @@ public actor ObjectStoreCoordinator {
         case cannotAccessOrCreateStandardPolisFolders
         case rootPathNotSet
         case cannotCreatePolisObjectFromStringExample
+        case missingServiceProvider
 
         case unknownError
     }
@@ -88,6 +89,7 @@ public actor ObjectStoreCoordinator {
     private var _objectStoreDescription = ObjectStoreDescription(status: .notConfigured)
 
     private var _serviceProvider: ServiceProvider?
+    private var _serviceProviderDirectory: ServiceProviderDirectory?
 
     @MainActor private init() {
         //FIXME: This will crash on iOS!
@@ -201,12 +203,13 @@ extension ObjectStoreCoordinator {
     /// - `ObjectStoreDescription`
     /// - `ObjectStore`
     private func resetObjectStore() {
-        _isConfigured           = false
-        _fileResourceFinder     = nil
-        _remoteResourceFinder   = nil
-        _serviceProvider        = nil
+        _isConfigured             = false
+        _fileResourceFinder       = nil
+        _remoteResourceFinder     = nil
+        _serviceProvider          = nil
+        _serviceProviderDirectory = nil
 
-        _objectStoreDescription = ObjectStoreDescription()
+        _objectStoreDescription   = ObjectStoreDescription()
 
         ObjectStore.shared.reset()
     }
@@ -232,22 +235,21 @@ extension ObjectStoreCoordinator {
 //    }
 
     private func createServiceProviderConfigurationFile() async throws {
-        var  polisDirectory: PolisDirectory.ProviderDirectoryEntry
+        var  polisDirectoryEntry: PolisDirectory.ProviderDirectoryEntry
 
         do {
-            if await ObjectStoreCoordinator.isBigBangServiceProvider { polisDirectory = try ServiceProviderDataSource.bigBangPolisDirectoryEntryExample() }
-            else                                                     { polisDirectory = try ServiceProviderDataSource.defaultPolisDirectoryEntryExample() }
-            polisDirectory.lastUpdateTime = Date.now
-            _serviceProvider = ServiceProvider(polisDirectory)
+            if await ObjectStoreCoordinator.isBigBangServiceProvider { polisDirectoryEntry = try ServiceProviderDataSource.bigBangPolisDirectoryEntryExample() }
+            else                                                     { polisDirectoryEntry = try ServiceProviderDataSource.defaultPolisDirectoryEntryExample() }
+            polisDirectoryEntry.lastUpdateTime = Date.now
+            _serviceProvider                   = ServiceProvider(polisDirectoryEntry)
 
-            let data = try  PrettyJSONEncoder().encode(polisDirectory)
+            let data = try  PrettyJSONEncoder().encode(polisDirectoryEntry)
             let path = await ServiceProvider.pathToLocalPolisFile()
 
             if !_fm.createFile(atPath: path, contents: data)  {
-                _logger.error("Cannot save POLIS Directory file to: \(path)")
+                _logger.error("Cannot save POLIS Directory Entry file to: \(path)")
                 throw ObjectStoreCoordinatorError.cannotWriteFileToLocalStore
             }
-
         }
         catch {
             _logger.error("Error: create POLIS object out of example string")
@@ -258,7 +260,25 @@ extension ObjectStoreCoordinator {
     }
 
     private func createPolisDirectoryFile() async throws {
-        //TODO: Implement me!
+        guard let polisDirectoryEntry = _serviceProvider?.directoryEntry else { throw ObjectStoreCoordinatorError.missingServiceProvider }
+        guard let polisDirectory = PolisDirectory(lastUpdateTime: Date.now, providerDirectoryEntries: [polisDirectoryEntry])
+        else { throw ObjectStoreCoordinatorError.missingServiceProvider }
+
+        do {
+            let data = try  PrettyJSONEncoder().encode(polisDirectory)
+            let path = await ServiceProviderDirectory.pathToLocalPolisFile()
+
+            if !_fm.createFile(atPath: path, contents: data)  {
+                _logger.error("Cannot save POLIS Directory file to: \(path)")
+                throw ObjectStoreCoordinatorError.cannotWriteFileToLocalStore
+            }
+            _serviceProviderDirectory = ServiceProviderDirectory(polisDirectory)
+        }
+        catch {
+            _logger.error("Error: Cannot create POLIS Directory out of existing POLIS Directory Entry")
+            throw ObjectStoreCoordinatorError.unknownError
+        }
+        //TODO: Send Notification!
     }
 
     private func createObservingFacilitiesDirectoryFile() async throws {
