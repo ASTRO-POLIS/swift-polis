@@ -152,9 +152,9 @@ struct PolisTool {
         else {
             do {
                 try await storeCoordinator.createLocalStore()
-                logger.info( "A local object store has been successfully configured.")
+                logger.info( "A local object store has been successfully created and configured.")
                 await exitDescribingErrors(code: .noError)
-           }
+            }
             catch {
                 logger.error( "Failed to create a local object store. Aborting.")
                 await exitDescribingErrors(code: .cannotCreateLocalProvider)

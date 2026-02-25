@@ -90,6 +90,7 @@ public actor ObjectStoreCoordinator {
 
     private var _serviceProvider: ServiceProvider?
     private var _serviceProviderDirectory: ServiceProviderDirectory?
+    private var _observingFacilityDirectory: ObservingFacilityDirectory?
 
     @MainActor private init() {
         //FIXME: This will crash on iOS!
@@ -181,17 +182,16 @@ extension ObjectStoreCoordinator {
             }
         }
 
-        //TODO: Create & Store the service provider configuration file (polis.json)
+        // 2. Create required files
         try await createServiceProviderConfigurationFile()
-
-        //TODO: Create & Store the polis directory file (polis_directory.json)
         try await createPolisDirectoryFile()
-
-        //TODO: Create & Store the observing facilities directory file (polis_observing_facilities.json)
         try await createObservingFacilitiesDirectoryFile()
 
-        //        try prepareObjectStoreForUse(createIfNeeded: true)
-        //TODO: Implement me!
+        // 3. Set the status as fully configured
+        _objectStoreDescription.status = .fullyConfigured
+
+        //TODO: 4. Configure the ObjectStore!
+        //TODO: 5. If there is a remote provider, start the initial syncing.
    }
 
 
@@ -203,36 +203,17 @@ extension ObjectStoreCoordinator {
     /// - `ObjectStoreDescription`
     /// - `ObjectStore`
     private func resetObjectStore() {
-        _isConfigured             = false
-        _fileResourceFinder       = nil
-        _remoteResourceFinder     = nil
-        _serviceProvider          = nil
-        _serviceProviderDirectory = nil
+        _isConfigured               = false
+        _fileResourceFinder         = nil
+        _remoteResourceFinder       = nil
+        _serviceProvider            = nil
+        _serviceProviderDirectory   = nil
+        _observingFacilityDirectory = nil
 
-        _objectStoreDescription   = ObjectStoreDescription()
+        _objectStoreDescription     = ObjectStoreDescription()
 
         ObjectStore.shared.reset()
     }
-
-//    private func prepareObjectStoreForUse(createIfNeeded: Bool = false) throws {
-//        // Check if all essential files exist
-//        if !checkPolisFilesExistence(paths: essentialPolisFiles()) {
-//            //TODO: Continue digging here!
-//
-//            if createIfNeeded {
-//                //TODO: 1. Create polis main file
-//                //TODO: 2. Create polis directory file
-//                //TODO: 3. Create polis facility directory file
-//
-//                return
-//            }
-//            else {
-//                _objectStoreDescription.setPolisFilesAccessibilityStatus(.unaccessible)
-//                return
-//            }
-//        }
-//        _objectStoreDescription.setPolisFilesAccessibilityStatus(.accessible)
-//    }
 
     private func createServiceProviderConfigurationFile() async throws {
         var  polisDirectoryEntry: PolisDirectory.ProviderDirectoryEntry
@@ -282,7 +263,24 @@ extension ObjectStoreCoordinator {
     }
 
     private func createObservingFacilitiesDirectoryFile() async throws {
-        //TODO: Implement me!
+        let polisFacilityDirectory       = PolisObservingFacilityDirectory(lastUpdate: Date.now, observingFacilityReferences: [])
+        let observingFacilitiesDirectory = ObservingFacilityDirectory(polisFacilityDirectory)
+
+        do {
+            let data = try  PrettyJSONEncoder().encode(polisFacilityDirectory)
+            let path = await ObservingFacilityDirectory.pathToLocalPolisFile()
+
+            if !_fm.createFile(atPath: path, contents: data)  {
+                _logger.error("Cannot save POLIS Observing Facilities Directory file to: \(path)")
+                throw ObjectStoreCoordinatorError.cannotWriteFileToLocalStore
+            }
+            _observingFacilityDirectory = observingFacilitiesDirectory
+        }
+        catch {
+            _logger.error("Error: Cannot create empty POLIS Observing Facility Directory")
+            throw ObjectStoreCoordinatorError.unknownError
+        }
+        //TODO: Send Notification!
     }
 }
 
