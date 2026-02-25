@@ -57,3 +57,58 @@ the ObjectStoreController.
  These specialised notifications obviously will be encapsulated in their own Swift Types.
  */
 
+
+
+
+/*
+
+ Suggestion:
+ 1. Encapsulate NotificationCenter usage in a "Mediator" layer.
+    So neither the Coordinator nor the Client will communicate directly with NotificationCenter.
+    Also this makes it easy to replace "NotificationCenter.MainActorMessage" if needed.
+ 2.
+
+ Mediator's responsibilities:
+ - abstracting and encapsulating NotificationCenter usage
+ - transferring payloads between components without modifying the data
+ - performing format(only) validation before dispatching the payload (e.g. non-empty identifiers)
+
+
+Questions:
+ 1. what should be in payload object?
+    - action   // create / update / delete / load / ?
+    - entity   // facility / artifact / serviceProviderConfiguration / ?
+    - id       // object identifier (enum/string ?)
+    - type     // command / event             // this could give a little more distinction or separation
+                  - command: sent from UI
+                  - event: sent from coordinator
+
+ 2. when a client performs one action that updates several objects, what is the expected behavior?
+    — send individual notifications
+    - send one combined notification (batch)
+      Example:
+        The client edited ObservingFacilityDetails.ObservingFacility.startTime.
+        Who should receive the notification? (ObservingFacilityDetails / ObservingFacility)
+        Should we also notify parent directories/metadata objects?
+
+ 3. should there be a logic as a queue, in case when the request is in progress but the client asks again?
+
+ 4. how the error case should look?
+    - error types (failedToLoad / failedToSync / timeout / noInternet / unknown / ?)
+    - should errors be sent as a separate message type (PolisErrorMessage), or as an event with action == error?
+
+ 5. should the Client listen to all notifications and filter or should they subscribe only to their own entity/id?
+
+ 6. does every entity support every action?
+    Example:
+      Can Client send .delete for artifact?
+      Can Client send .delete for PolisDirectory?
+
+ 7. should there be a special type of notifications without payload?
+    Example:
+      ClientWillTerminate
+      ServiceProviderReadyToTerminate
+      // probably the list will increase later
+
+
+ */
