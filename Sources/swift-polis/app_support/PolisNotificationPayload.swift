@@ -7,17 +7,13 @@
 
 import Foundation
 
-public struct PolisNotificationPayload: Hashable, Sendable {
+public struct PolisNotificationPayload: Hashable {
 
-    public enum Action: Sendable {
+    public enum Action {
         case create, update, delete, load
     }
 
-    public enum Entity: Sendable {
-        case facility, artifact
-    }
-
+    public let entity: PolisObjectType
     public let action: Action
-    public let entity: Entity
     public let id    : UUID
 }

@@ -8,7 +8,7 @@
 import Foundation
 
 /// Used to identify the type of the Polis Object to be wrapped for file and sync operations)
-enum PolisObjectType {
+public enum PolisObjectType {
     case serviceProvider
     case observingFacility
     case observingFacilityDetail
