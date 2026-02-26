@@ -176,3 +176,11 @@ might implement grouping of notification into a single detached Task.
 
 
  */
+
+struct DidChange: NotificationCenter.MainActorMessage {
+    typealias Subject = ObjectStoreCoordinator
+
+    let payload: PolisNotificationPayload
+
+    init(_ payload: PolisNotificationPayload) { self.payload = payload }
+}

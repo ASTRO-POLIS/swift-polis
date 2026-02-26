@@ -370,25 +370,11 @@ extension ObjectStoreCoordinator {
 
 extension ObjectStoreCoordinator {
 
-    @available(iOS 26.0, macOS 26.0, tvOS 26.0, watchOS 26.0, *)
-    public struct DidChange: NotificationCenter.MainActorMessage {
-        public typealias Subject = ObjectStoreCoordinator
-        public static var name: Notification.Name { .init("CoordinatorNotification") }
-        public let payload: PolisNotificationPayload
-
-        public init(_ payload: PolisNotificationPayload) { self.payload = payload }
+    @MainActor func post(_ payload: PolisNotificationPayload) {
+        NotificationCenter.default.post(DidChange(payload), subject: self)
     }
 
-    @MainActor public func post(_ payload: PolisNotificationPayload) {
-        if #available(macOS 26.0, *) {
-            NotificationCenter.default.post(DidChange(payload), subject: self)
-        } else {
-            //TODO: $$$GT should we implement this case too?
-        }
-    }
-
-    @available(macOS 26.0, *) @MainActor
-    public func listen(_ handler: @escaping (PolisNotificationPayload) -> Void) -> NotificationCenter.ObservationToken {
+    @MainActor func listen(_ handler: @escaping (PolisNotificationPayload) -> Void) -> NotificationCenter.ObservationToken {
         NotificationCenter.default.addObserver(of: self, for: DidChange.self) { msg in
             handler(msg.payload)
         }

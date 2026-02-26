@@ -7,20 +7,23 @@
 
 import Foundation
 
-public struct PolisNotificationPayload: Hashable {
+struct PolisNotificationPayload: Hashable {
 
-    public enum Action {
-        case create, update, delete, load
+    enum ActionType {
+        case sync
+        case load
+        case create
+        case update
+        case delete
     }
 
-    public let entity: PolisObjectType
-    public let action: Action
-    public let id    : UUID
+    let entity: PolisObjectType
+    let actionType: ActionType
+    let id: UUID
 
-    public init(entity: PolisObjectType, action: Action, id: UUID)
-    {
-        self.entity = entity
-        self.action = action
-        self.id     = id
+    init(entity: PolisObjectType, actionType: ActionType, id: UUID) {
+        self.entity     = entity
+        self.actionType = actionType
+        self.id         = id
     }
 }
