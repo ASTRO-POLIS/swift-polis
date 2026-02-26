@@ -16,4 +16,11 @@ public struct PolisNotificationPayload: Hashable {
     public let entity: PolisObjectType
     public let action: Action
     public let id    : UUID
+
+    public init(entity: PolisObjectType, action: Action, id: UUID)
+    {
+        self.entity = entity
+        self.action = action
+        self.id     = id
+    }
 }
