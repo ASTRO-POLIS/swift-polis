@@ -13,8 +13,6 @@ public protocol PolisObjectPersisting {
     static func loadFromRemoteProvider() async throws -> PolisObjectPersisting
 
     func hasChanged() -> Bool
-    func saveLocally() async throws
-    func saveRemotely() async throws
 }
 
 public struct PolisChangeNotification {
@@ -57,6 +55,4 @@ public extension PolisObjectPersisting {
     static func loadFromRemoteProvider() async throws -> PolisObjectPersisting { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
 
     func hasChanged() -> Bool { false }
-    func saveLocally() async throws { }
-    func saveRemotely() async throws { }
 }

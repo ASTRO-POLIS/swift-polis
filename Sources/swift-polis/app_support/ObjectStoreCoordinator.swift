@@ -86,6 +86,7 @@ public actor ObjectStoreCoordinator {
     private var _fileResourceFinder: PolisFileResourceFinder!
     private var _remoteResourceFinder: PolisRemoteResourceFinder!
 
+    private var _os = ObjectStore.shared
     private var _objectStoreDescription = ObjectStoreDescription(status: .notConfigured)
 
     private var _serviceProvider: ServiceProvider?
@@ -212,7 +213,7 @@ extension ObjectStoreCoordinator {
 
         _objectStoreDescription     = ObjectStoreDescription()
 
-        ObjectStore.shared.reset()
+        _os.reset()
     }
 
     private func createServiceProviderConfigurationFile() async throws {
@@ -236,6 +237,7 @@ extension ObjectStoreCoordinator {
             _logger.error("Error: create POLIS object out of example string")
             throw ObjectStoreCoordinatorError.cannotCreatePolisObjectFromStringExample
         }
+        _os.setServiceProvider(_serviceProvider)
 
         //TODO: Send Notification!
     }
@@ -287,7 +289,6 @@ extension ObjectStoreCoordinator {
 //MARK: - Managing Observing Facilities -
 extension ObjectStoreCoordinator {
 
-    public func addObservingFacility(_ facility: ObservingFacility) { ObjectStore.shared.addObservingFacility(facility) }
 }
 
 //MARK: - Polis Service Providing -

@@ -30,9 +30,6 @@ public class ObjetChangeDispatcher {
     }
 
     @MainActor @objc private func handleNotification(notification: NSNotification) {
-        Task {
-            await ObjectStoreCoordinator.shared.addObservingFacility(notification.object as! ObservingFacility)
-        }
     }
 
 }

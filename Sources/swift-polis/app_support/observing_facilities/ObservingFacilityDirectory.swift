@@ -41,12 +41,6 @@ public extension ObservingFacilityDirectory {
 
     //TODO: Implement me!
     func hasChanged() -> Bool { false }
-
-    //TODO: Implement me!
-    func saveLocally() async throws { }
-
-    //TODO: Implement me!
-    func saveRemotely() async throws { }
 }
 
 

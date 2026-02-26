@@ -14,16 +14,23 @@ import Foundation
 
     //MARK: - Internal APIs
     func reset() {
+        _serviceProvider = nil
+
         _observingFacilities.removeAll()
     }
 
     //MARK: - Private APIs
-    public internal(set) var observingFacilities = [ObservingFacility]()
+    private var _serviceProvider: ServiceProvider?
+
+    private var _observingFacilities = [ObservingFacility]()
+}
+
+//MARK: - Service Provider -
+extension ObjectStore {
+    public func serviceProvider() -> ServiceProvider? { _serviceProvider }
+    func setServiceProvider(_ serviceProvider: ServiceProvider?) { self._serviceProvider = serviceProvider }
 }
 
 //MARK: - Observing Facilities -
 extension ObjectStore {
-
-    func addObservingFacility(_ facility: ObservingFacility) { _observingFacilities.append(facility) }
-
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-open class ServiceProvider: PolisObjectPersisting {
+@Observable public final class ServiceProvider: PolisObjectPersisting {
 
     public private(set) var id: UUID!
     public var mirrorID: UUID?
@@ -79,10 +79,4 @@ public extension ServiceProvider {
 
     //TODO: Implement me!
     func hasChanged() -> Bool { false }
-
-    //TODO: Implement me!
-    func saveLocally() async throws { }
-
-    //TODO: Implement me!
-    func saveRemotely() async throws { }
 }
