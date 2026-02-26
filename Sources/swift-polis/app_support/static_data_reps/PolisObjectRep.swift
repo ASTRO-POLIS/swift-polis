@@ -156,6 +156,8 @@ public struct ObjectItem: Sendable {
     }
 }
 
+//MARK: - Persistent Object Hierarchy Roots -
+
 @Observable open class PersistentObject: @unchecked Sendable, PolisObjectPersisting {
 
     var polisRep: PolisObjectRep<PolisObject>
@@ -165,7 +167,21 @@ public struct ObjectItem: Sendable {
     }
 }
 
+@Observable open class IdentifiablePersistentObject: PersistentObject, @unchecked Sendable {
 
+    var identity: IdentifiableObject
+
+    init(identity: IdentifiableObject) {
+        self.identity = identity
+        // Provide a placeholder PolisObjectRep since this subclass doesn't yet manage a concrete PolisObject.
+        let placeholderRep = PolisObjectRep<PolisObject>(originalPolisObject: DummyPolisType(), localPath: "", objectType: .unknown)
+        super.init(polisRep: placeholderRep)
+    }
+}
+
+struct DummyPolisType: PolisObject {
+
+}
 //MARK: - Extensions -
 
 // Default implementation, so that the protocol could be adopted step by step
@@ -180,3 +196,4 @@ extension PolisObjectPersisting {
 
     func hasChanged() -> Bool { false }
 }
+
