@@ -61,18 +61,28 @@ the ObjectStoreController.
 
 
 /*
+Zhanna's suggestions and questions
 
  Suggestion:
  1. Encapsulate NotificationCenter usage in a "Mediator" layer.
     So neither the Coordinator nor the Client will communicate directly with NotificationCenter.
     Also this makes it easy to replace "NotificationCenter.MainActorMessage" if needed.
- 2.
 
- Mediator's responsibilities:
+ [GT] I am with mixed feelings. Mediator pattern work well when it is a bridge between two different functionality modules or
+ domains. IMHO is is an overkill when all types "know" each-other and work in collaboration. In addition, this might
+ introduce additional headaches of implementing Actors and async/await. On the other hand I was very
+ disappointed with the Notification extensions in Swift 6.x and even discussed with Ani the possibility to use our
+ Message Dispatching to replace it. Your suggestion is somehow close to our idea about Message Dispatching.
+
+ 2. Mediator's responsibilities:
  - abstracting and encapsulating NotificationCenter usage
  - transferring payloads between components without modifying the data
  - performing format(only) validation before dispatching the payload (e.g. non-empty identifiers)
 
+ [GT] "performing format validation" -> this should be a responsibility of the corresponding type, because the type knows
+ itself best. One of the super-powers of EOF is that every Enterprise Object does it's own validation in a well defined
+ and standardised way. And one of Java's nightmares is that they do not do this, but have entire protocol and class
+ hierarchy of messy and often useless formatters.
 
 Questions:
  1. what should be in payload object?
@@ -83,7 +93,12 @@ Questions:
                   - command: sent from UI
                   - event: sent from coordinator
 
- 2. when a client performs one action that updates several objects, what is the expected behavior?
+[GT]
+- entity -> entityType as an enum
+- id: UUID (Identifiable protocol, makes it also Hashable in a trivial way
+- type -> not needed. entityType and id are enough to uniquely identify any instance in the object hierarchy.
+
+ 2. when a client performs one action that updates several objects, what is the expected behaviour?
     — send individual notifications
     - send one combined notification (batch)
       Example:
@@ -91,24 +106,73 @@ Questions:
         Who should receive the notification? (ObservingFacilityDetails / ObservingFacility)
         Should we also notify parent directories/metadata objects?
 
+ [GT]
+ - The way how Hasmik did design the app is one_polis_type-one_screen. When "Save" is pressed, the app quits, or the screen
+ (view) is changed, the entire instance is marked as changed without any atomic level bookkeeping (e.g. only the name
+ did change). This is faster and less complicated to implement. So, in a way there is an automatic packaging of changes.
+
  3. should there be a logic as a queue, in case when the request is in progress but the client asks again?
+
+[GT] No. The MainActor dies serialise the calls and besides, it is too complicated. Future version of the Coordinator
+might implement grouping of notification into a single detached Task.
 
  4. how the error case should look?
     - error types (failedToLoad / failedToSync / timeout / noInternet / unknown / ?)
     - should errors be sent as a separate message type (PolisErrorMessage), or as an event with action == error?
 
+[GT] Good question, that might have different equivalently valid answers.
+- The wise software engineers would tell you, that each notification should have an ID, and should be dequeued only when
+"OK" was received. In practice I think this introduces an unnecessary complications.
+ - The naive but more practical solution would be if the Coordinator tells directly the "client" instance that the last
+ operation from certain type did fail.
+ - Errors are supposed to happen extremely rarely. We do not care if the internet is down, because next time we use the
+ app the internet presumably will be up. And how often is your file system full or damaged?
+ - We might have some additional non-blocking warnings, that tell the user things like the data is not synced with the
+ remote server.
+
  5. should the Client listen to all notifications and filter or should they subscribe only to their own entity/id?
+
+ [GT] There are 3 possible implementations
+ - Naive and somehow slow, but simple -> listen to all notifications
+ - A bit faster, but more complex -> listen to notification only if the data is visible for the user
+ - A bit faster, but even more complex -> listen only my own notifications.
+ I would start with the first one, and if it degrades performance, will update to the second.
 
  6. does every entity support every action?
     Example:
       Can Client send .delete for artifact?
       Can Client send .delete for PolisDirectory?
 
+ [GT] If the question is about client instances - yes. The Coordinator will ignore forbidden actions.
+
  7. should there be a special type of notifications without payload?
     Example:
       ClientWillTerminate
       ServiceProviderReadyToTerminate
       // probably the list will increase later
+[GT] YES
+
+ [GT] Summary: for the sake of simplicity, and because we really are running out of time, I would suggest we use
+ Swift 6.x type MainActor notifications.
+
+ */
+
+/*
+
+ Georg's suggestion for To Do list:
+
+ Because we have to experiment with 3 new elements:
+ - Swift 6.x async/await,
+ - Swift 6.x Notifications, and
+ - @Observable pattern (for the SwiftUI)
+
+ I would like to suggest:
+ - I will make ServiceProvider (the simplest and fully independent type) @Observable
+ - Zhanna can experiment with create and didChange notifications
+ - Hasmik can create a separate Window+ view for it's editing
+ - And I will send notifications from the Coordinator and will handle the persistence.
+
+ Does this sound as a plan?
 
 
  */
