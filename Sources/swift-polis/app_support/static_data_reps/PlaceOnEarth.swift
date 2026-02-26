@@ -103,12 +103,9 @@ open class PlaceOnEarth: PolisObjectPersisting {
 
 //MARK: - Implementing PolisObjectPersisting protocol -
 extension PlaceOnEarth {
-    public static func pathToLocalPolisFile() -> String { "" }
-    public static func loadFromLocalProvider() async throws -> PolisObjectPersisting { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
-    public static func loadFromRemoteProvider() async throws -> PolisObjectPersisting { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
+    @MainActor static func pathToLocalPolisFile() -> String { "" }
+    @MainActor static func loadFromLocalProvider() async throws -> PolisObjectPersisting { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
+    @MainActor static func loadFromRemoteProvider() async throws -> PolisObjectPersisting { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
 
     public func hasChanged() -> Bool { false }
-    public func saveLocally() async throws { }
-    public func saveRemotely() async throws { }
-
 }

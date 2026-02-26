@@ -9,15 +9,31 @@ import Foundation
 
 /// Used to identify the type of the Polis Object to be wrapped for file and sync operations)
 enum PolisObjectType {
-    case facility
-    case facilityDetail
+    case serviceProvider
+    case observingFacility
+    case observingFacilityDetail
+    case artifact
+    case observatory
+    case device
+    case locationObEarth
+
+    case unknown
 }
 
-/// Represents a POLIS Data Structure
+/// Represents any POLIS Data Structure
 struct PolisObjectRep<PolisObject> {
-    let polisObject: PolisObject
+    let originalPolisObject: PolisObject
+    let currentPolisObject: PolisObject? = nil
     let localPath: String
     let objectType: PolisObjectType
+}
+
+protocol PolisObjectPersisting {
+    @MainActor static func pathToLocalPolisFile() async -> String
+    @MainActor static func loadFromLocalProvider(objectID: UUID?, rootFacilityID: UUID?, objectType: PolisObjectType) async throws -> PolisObjectPersisting
+    @MainActor static func loadFromRemoteProvider(objectID: UUID?, rootFacilityID: UUID?, objectType: PolisObjectType) async throws -> PolisObjectPersisting
+
+    func hasChanged() -> Bool
 }
 
 public struct IdentifiableObject: Sendable {
@@ -140,13 +156,27 @@ public struct ObjectItem: Sendable {
     }
 }
 
-@Observable open class PersistentObject: @unchecked Sendable {
+@Observable open class PersistentObject: @unchecked Sendable, PolisObjectPersisting {
 
     var polisRep: PolisObjectRep<PolisObject>
 
     init(polisRep: PolisObjectRep<PolisObject>) {
-        //TODO: Implement me!
-        self.polisRep = PolisObjectRep(polisObject: polisRep as! PolisObject, localPath: "bla", objectType: .facility)
+        self.polisRep = polisRep
     }
 }
 
+
+//MARK: - Extensions -
+
+// Default implementation, so that the protocol could be adopted step by step
+extension PolisObjectPersisting {
+    @MainActor static func pathToLocalPolisFile() async -> String { "" } // Used only for POLIS files with fixed and predefined paths
+    @MainActor static func loadFromLocalProvider(objectID: UUID? = nil, rootFacilityID: UUID? = nil, objectType: PolisObjectType = .unknown) async throws -> PolisObjectPersisting {
+        throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath
+    }
+    @MainActor static func loadFromRemoteProvider(objectID: UUID? = nil, rootFacilityID: UUID? = nil, objectType: PolisObjectType = .unknown) async throws -> PolisObjectPersisting {
+        throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath
+    }
+
+    func hasChanged() -> Bool { false }
+}

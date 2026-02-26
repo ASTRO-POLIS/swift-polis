@@ -32,17 +32,17 @@ open class ServiceProviderDirectory: PolisObjectPersisting {
 //
 
 //MARK: : - PolisObjectPersisting implementation -
-public extension ServiceProviderDirectory {
+extension ServiceProviderDirectory {
     @MainActor static func pathToLocalPolisFile() async -> String {
         let fileResourceFinder = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         return fileResourceFinder.polisProviderDirectoryFile()
     }
 
     //TODO: Implement me!
-    static func loadFromLocalProvider() async throws -> PolisObjectPersisting { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
+    @MainActor static func loadFromLocalProvider() async throws -> PolisObjectPersisting { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
 
     //TODO: Implement me!
-    static func loadFromRemoteProvider() async throws -> PolisObjectPersisting { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
+    @MainActor static func loadFromRemoteProvider() async throws -> PolisObjectPersisting { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
 
     //TODO: Implement me!
     func hasChanged() -> Bool { false }
