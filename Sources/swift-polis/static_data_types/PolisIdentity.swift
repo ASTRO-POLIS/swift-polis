@@ -134,7 +134,9 @@ public struct PolisIdentity: Codable, Identifiable, Equatable, Sendable, PolisOb
         self.startTime             = startTime
         self.endTime               = endTime
         self.polisRegistrationTime = polisRegistrationTime
-   }
+    }
+
+    public func polisDataType() -> PolisDataType { .identity }
 }
 
 extension PolisIdentity {

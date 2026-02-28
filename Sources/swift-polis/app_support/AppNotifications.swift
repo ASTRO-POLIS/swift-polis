@@ -7,6 +7,68 @@
 
 import Foundation
 
+/// The goal of the new notification mechanism is to unify and simplify change notifications that are posted either by
+/// clients (UI or server-side components), or changing persistent data (local or remote). `PolisNotificationPayload`
+/// combines all information needed to achieve this goal.
+struct PolisNotificationPayload {
+
+    enum ActionType {
+        case sync
+        case load
+        case create
+        case update
+        case delete
+    }
+
+    let entity: PolisObjectType
+    let actionType: ActionType
+    let id: UUID
+    let polisObject: (any PolisObject)?
+
+    init(entity: PolisObjectType, actionType: ActionType, id: UUID, polisObject: (any PolisObject)? = nil) {
+        self.entity      = entity
+        self.actionType  = actionType
+        self.id          = id
+        self.polisObject = polisObject
+    }
+}
+
+
+/// This Notification Message is posted by the `ObjectStoreCoordinator` when any persistent POLIS Type (struct) is changed
+/// either because of a side effect of other changes, or if the file or the remote cache was modified. The corresponding
+/// `PersistentObject` decides to handle the notification by analysing the payload (the object type and id). The
+/// corresponding stored properties are updated, and because `PersistentObject` is `Observable`, the UI View or the
+/// server component are automatically notified.
+struct PolisObjectDidChange: NotificationCenter.MainActorMessage {
+    typealias Subject = ObjectStoreCoordinator
+
+    let payload: PolisNotificationPayload
+
+    init(_ payload: PolisNotificationPayload) { self.payload = payload }
+}
+
+/// This Notification Message is posted by a subclass of a `PersistentObject` when one or multiple properties are modified
+/// either by a UI Client or a Server-side client. The `ObjectStoreCoordinator` handles the notification by first analysing
+/// if other POLIS objects need to be modified, and then making the changes persistent. The `ObjectStoreCoordinator` might
+/// decide to cache multiple notifications, and then to process them as a batch for performance reasons. If one
+/// `PersistentObject` appears multiple times in the cache queue, only the last Notification Message is considered. From
+/// time to time and after multiple changed notifications are handled, the changes will also be synced to the remote
+/// POLIS Service Providers.
+struct RepObjectDidChange: NotificationCenter.MainActorMessage {
+    typealias Subject = PersistentObject
+
+    let payload: PolisNotificationPayload
+
+    init(_ payload: PolisNotificationPayload) { self.payload = payload }
+}
+
+
+//
+// ====================================================================================================================
+//
+
+// This below are discussion about how to implement the new Notification mechanism.
+
 /*
 
  Intro written by Georg:
@@ -174,13 +236,4 @@ might implement grouping of notification into a single detached Task.
 
  Does this sound as a plan?
 
-
  */
-
-struct DidChange: NotificationCenter.MainActorMessage {
-    typealias Subject = ObjectStoreCoordinator
-
-    let payload: PolisNotificationPayload
-
-    init(_ payload: PolisNotificationPayload) { self.payload = payload }
-}

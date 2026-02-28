@@ -180,8 +180,9 @@ public struct ObjectItem: Sendable {
 }
 
 struct DummyPolisType: PolisObject {
-
+    var polisDataType = PolisDataType.unknown
 }
+
 //MARK: - Extensions -
 
 // Default implementation, so that the protocol could be adopted step by step

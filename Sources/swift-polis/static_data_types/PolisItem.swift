@@ -102,6 +102,8 @@ public struct PolisItem: Codable, Equatable, Sendable, PolisObject {
     public mutating func addChildWith(id: UUID)     { _childrenIDs.insert(id) }
     public mutating func removeChildWith(id: UUID)  { _childrenIDs.remove(id) }
 
+    func polisDataType() -> PolisDataType { .item }
+
     //MARK: - Private properties
     private var _childrenIDs = Set<UUID>()
 

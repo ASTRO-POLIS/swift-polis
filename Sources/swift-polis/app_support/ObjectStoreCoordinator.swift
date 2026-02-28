@@ -371,11 +371,11 @@ extension ObjectStoreCoordinator {
 extension ObjectStoreCoordinator {
 
     @MainActor func post(_ payload: PolisNotificationPayload) {
-        NotificationCenter.default.post(DidChange(payload), subject: self)
+        NotificationCenter.default.post(PolisObjectDidChange(payload), subject: self)
     }
 
     @MainActor func listen(_ handler: @escaping (PolisNotificationPayload) -> Void) -> NotificationCenter.ObservationToken {
-        NotificationCenter.default.addObserver(of: self, for: DidChange.self) { msg in
+        NotificationCenter.default.addObserver(of: self, for: PolisObjectDidChange.self) { msg in
             handler(msg.payload)
         }
     }

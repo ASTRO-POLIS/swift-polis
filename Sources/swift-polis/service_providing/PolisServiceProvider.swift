@@ -199,6 +199,7 @@ public struct PolisObservingFacilityDirectory: Codable, Sendable {
     ///
     ///  **Note:** Only root facility (e.g. without a parent facility) should be listed!
     public struct ObservingFacilityReference: Codable, Identifiable, Equatable, Sendable, PolisObject {
+        
         public var identity: PolisIdentity
         public var gravitationalBodyRelationship: PolisObservingFacilityLocationType
         public var placeInTheSolarSystem : PolisPlaceInTheSolarSystem
@@ -229,6 +230,8 @@ public struct PolisObservingFacilityDirectory: Codable, Sendable {
         }
         return nil
     }
+
+    func polisDataType() -> PolisDataType { .observingFacility }
 }
 
 //MARK: - Making types Codable -

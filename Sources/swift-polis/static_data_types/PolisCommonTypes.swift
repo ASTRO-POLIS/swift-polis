@@ -10,7 +10,17 @@ import Foundation
 /// Marks an object as POLIS objet
 ///
 /// This allows the system to save, sync, update, and delete objects, change their status, and notify observers about the changes
-protocol PolisObject { }
+protocol PolisObject: Codable {
+    func polisDataType() -> PolisDataType
+}
+
+public enum PolisDataType: Codable, Equatable, Hashable, Sendable {
+    case identity
+    case item
+    case observingFacility
+    
+    case unknown
+}
 
 //MARK: - PolisLifecycleStatus -
 /// The current status of the POLIS item (object) and its readiness to be used in different environments.
@@ -113,4 +123,8 @@ public enum PolisElectromagneticSpectrumCoverage: String, Codable, Sendable {
     case other
     case unknown
     case neutrino
+}
+
+extension PolisObject {
+    func polisDataType() -> PolisDataType { .unknown }
 }
