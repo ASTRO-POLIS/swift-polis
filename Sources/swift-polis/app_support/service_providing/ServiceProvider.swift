@@ -7,7 +7,7 @@
 
 import Foundation
 
-@Observable public final class ServiceProvider: PolisObjectPersisting {
+@Observable public final class ServiceProvider: PersistentObject, @unchecked Sendable {
 
     public private(set) var id: UUID!
     public var mirrorID: UUID?
@@ -22,9 +22,21 @@ import Foundation
 
     //MARK: Internal APIs
     init(_ directoryEntry: PolisDirectory.ProviderDirectoryEntry) {
-        self._originalPolisRecord = directoryEntry
+        let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(originalPolisObject: directoryEntry as! any PolisObject as any PolisObject,
+                                                                 localPath: "",
+                                                                 objectType: .serviceProvider)
+        id                       = directoryEntry.id
+        mirrorID                 = directoryEntry.mirrorID
+        reachabilityStatus       = directoryEntry.reachabilityStatus
+        name                     = directoryEntry.name
+        shortDescription         = directoryEntry.shortDescription
+        lastUpdateTime           = directoryEntry.lastUpdateTime
+        url                      = directoryEntry.url
+        supportedImplementations = directoryEntry.supportedImplementations
+        providerType             = directoryEntry.providerType
+        contactEmail             = directoryEntry.contactEmail
 
-        updateFromDirectoryEntry(directoryEntry)
+        super.init(polisRep: sP)
     }
 
     var directoryEntry : PolisDirectory.ProviderDirectoryEntry? {
@@ -40,32 +52,6 @@ import Foundation
                                                    contactEmail: contactEmail)
     }
 
-    //MARK: Private APIs
-    private var _originalPolisRecord: PolisDirectory.ProviderDirectoryEntry?
-    private var _currentPolisRecord: PolisDirectory.ProviderDirectoryEntry?
-
-    private func updateFromDirectoryEntry(_ directoryEntry: PolisDirectory.ProviderDirectoryEntry) {
-        id                       = directoryEntry.id
-        mirrorID                 = directoryEntry.mirrorID
-        reachabilityStatus       = directoryEntry.reachabilityStatus
-        name                     = directoryEntry.name
-        shortDescription         = directoryEntry.shortDescription
-        lastUpdateTime           = directoryEntry.lastUpdateTime
-        url                      = directoryEntry.url
-        supportedImplementations = directoryEntry.supportedImplementations
-        providerType             = directoryEntry.providerType
-        contactEmail             = directoryEntry.contactEmail
-
-        _currentPolisRecord      = directoryEntry
-    }
-}
-
-//
-//=====================================================================================================================
-//
-
-//MARK: : - PolisObjectPersisting implementation - 
-extension ServiceProvider {
     @MainActor static func pathToLocalPolisFile() async -> String {
         let fileResourceFinder = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         return fileResourceFinder.configurationFile()
@@ -78,5 +64,19 @@ extension ServiceProvider {
     @MainActor static func loadFromRemoteProvider() async throws -> PolisObjectPersisting { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
 
     //TODO: Implement me!
-    func hasChanged() -> Bool { false }
+    override func hasChanged() -> Bool { false }
+
+    override func saveToLocalProvider() async throws {
+        if _hasChanged {
+            let payload = PolisNotificationPayload(entity: .serviceProvider, actionType: .update, id: id)
+            await MainActor.run {
+                NotificationCenter.default.post(PolisObjectDidChange(payload))
+            }
+        }
+    }
+
+    //TODO: Implement me!
+    func deleteFromLocalProvider() async throws { }
+
 }
+

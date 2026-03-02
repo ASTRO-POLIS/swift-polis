@@ -23,9 +23,16 @@ public enum PolisObjectType {
 /// Represents any POLIS Data Structure
 struct PolisObjectRep<PolisObject> {
     let originalPolisObject: PolisObject
-    let currentPolisObject: PolisObject? = nil
+    var currentPolisObject: PolisObject? = nil
     let localPath: String
     let objectType: PolisObjectType
+
+    init(originalPolisObject: PolisObject, currentPolisObject: PolisObject? = nil, localPath: String, objectType: PolisObjectType) {
+        self.originalPolisObject = originalPolisObject
+        self.currentPolisObject  = currentPolisObject
+        self.localPath           = localPath
+        self.objectType          = objectType
+    }
 }
 
 protocol PolisObjectPersisting {
@@ -34,6 +41,8 @@ protocol PolisObjectPersisting {
     @MainActor static func loadFromRemoteProvider(objectID: UUID?, rootFacilityID: UUID?, objectType: PolisObjectType) async throws -> PolisObjectPersisting
 
     func hasChanged() -> Bool
+    func saveToLocalProvider() async throws
+    func deleteFromLocalProvider() async throws
 }
 
 public struct IdentifiableObject: Sendable {
@@ -161,10 +170,15 @@ public struct ObjectItem: Sendable {
 @Observable open class PersistentObject: @unchecked Sendable, PolisObjectPersisting {
 
     var polisRep: PolisObjectRep<PolisObject>
+    var _hasChanged = false
 
     init(polisRep: PolisObjectRep<PolisObject>) {
         self.polisRep = polisRep
     }
+
+    //MARK: - PolisObjectPersisting partial implementation
+    func hasChanged() -> Bool { _hasChanged }
+    func saveToLocalProvider() async throws { _hasChanged = true }
 }
 
 @Observable open class IdentifiablePersistentObject: PersistentObject, @unchecked Sendable {
@@ -196,5 +210,7 @@ extension PolisObjectPersisting {
     }
 
     func hasChanged() -> Bool { false }
+    func saveToLocalProvider() async throws { }
+    func deleteFromLocalProvider() async throws { }
 }
 
