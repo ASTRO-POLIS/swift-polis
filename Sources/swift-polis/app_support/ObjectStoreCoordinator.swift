@@ -79,6 +79,10 @@ public actor ObjectStoreCoordinator {
     private let _fm: FileManager = .default
     private var _isDir: ObjCBool = false
 
+    // Notifications
+    private let _nc = NotificationCenter.default
+    private var _didChangeToken: NotificationCenter.ObservationToken?
+
     private var _isConfigured    = false
     private var _pathToPolisFolder: String!
     private var _remoteHost: String?
@@ -261,7 +265,11 @@ extension ObjectStoreCoordinator {
             _logger.error("Error: Cannot create POLIS Directory out of existing POLIS Directory Entry")
             throw ObjectStoreCoordinatorError.unknownError
         }
-        //TODO: Send Notification!
+
+        // Register change notifications
+        let payload = PolisNotificationPayload(entity: .serviceProvider, actionType: .update, id: _serviceProvider!.id, polisObject: _serviceProvider as? any PolisObject)
+        let rep     = RepObjectDidChange(payload)
+        register(rep)
     }
 
     private func createObservingFacilitiesDirectoryFile() async throws {
@@ -370,6 +378,12 @@ extension ObjectStoreCoordinator {
 
 extension ObjectStoreCoordinator {
 
+    func register(_ persistentObject: RepObjectDidChange) {
+        _didChangeToken = _nc.addObserver(for: RepObjectDidChange.self) { message in
+            print("New name: \(message.payload.id)")
+        }
+    }
+
     @MainActor func post(_ payload: PolisNotificationPayload) {
         NotificationCenter.default.post(PolisObjectDidChange(payload), subject: self)
     }
@@ -380,3 +394,4 @@ extension ObjectStoreCoordinator {
         }
     }
 }
+

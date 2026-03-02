@@ -30,7 +30,7 @@ public struct PolisDirectory: Sendable {
     ///
     /// `PolisDirectoryEntry` is used to define the Polis provider itself, as well as as an entry in the list of known Polis
     /// providers.
-    public struct ProviderDirectoryEntry: Identifiable, Equatable, Sendable {
+    public struct ProviderDirectoryEntry: Identifiable, Equatable, Sendable, PolisObject {
 
         /// `ProviderType` defines different types of POLIS Providers.
         /// 
@@ -163,6 +163,9 @@ public struct PolisDirectory: Sendable {
             self.providerType             = providerType
             self.contactEmail             = contactEmail
         }
+
+        func polisDataType() -> PolisDataType { .providerDirectoryEntry }
+
     }
 
     public var lastUpdateTime: Date                               // Used for syncing
