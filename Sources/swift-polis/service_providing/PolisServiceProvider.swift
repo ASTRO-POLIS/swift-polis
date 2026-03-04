@@ -22,7 +22,7 @@ import SoftwareEtudesUtilities
 ///
 /// To avoid confusion (and potential syncing errors) it is required that the directory does contain the POLIS
 /// service provider entry that serves the directory list.
-public struct PolisDirectory: Sendable {
+public struct PolisDirectory: Sendable, PolisObject {
 
     //MARK: - POLIS Directory Entry
 
@@ -183,6 +183,8 @@ public struct PolisDirectory: Sendable {
         self.lastUpdateTime           = lastUpdateTime
         self.providerDirectoryEntries = providerDirectoryEntries
     }
+
+    func polisDataType() -> PolisDataType { .providerDirectory }
 
     //TODO: Move to AppSupport!
 //    //MARK: Non-public APIs

@@ -7,30 +7,31 @@
 
 import Foundation
 
-@Observable public class ObservingFacility: Identifiable {
+@Observable public class ObservingFacility: IdentifiablePersistentObject, @unchecked Sendable {
 
-    public var facilityIdentity: IdentifiableObject
     public var gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed
     public var placeInTheSolarSystem : PolisPlaceInTheSolarSystem                = .earth
 
-    public var id: UUID { facilityIdentity.id }
+    public var id: UUID { identity.id }
 
     //TODO: Here we need to list additional objects like Details, Artifacts, Locations, SubFacilities, Observatories, and Devices. All of them should be optional
 
-    public init(facilityIdentity: IdentifiableObject,
-                gravitationalBodyRelationship: PolisObservingFacilityLocationType,
-                placeInTheSolarSystem: PolisPlaceInTheSolarSystem) {
-        self.facilityIdentity              = facilityIdentity
-        self.gravitationalBodyRelationship = gravitationalBodyRelationship
-        self.placeInTheSolarSystem         = placeInTheSolarSystem
-    }
 
     //MARK: Internal APIs
-
     var facilityReference: PolisObservingFacilityDirectory.ObservingFacilityReference {
-        PolisObservingFacilityDirectory.ObservingFacilityReference(identity: facilityIdentity.identity,
+        PolisObservingFacilityDirectory.ObservingFacilityReference(identity: identity.identity,
                                                                    gravitationalBodyRelationship: gravitationalBodyRelationship,
                                                                    placeInTheSolarSystem: placeInTheSolarSystem)
     }
+
+    init(identity: IdentifiableObject,
+         gravitationalBodyRelationship: PolisObservingFacilityLocationType,
+         placeInTheSolarSystem: PolisPlaceInTheSolarSystem) {
+        self.gravitationalBodyRelationship = gravitationalBodyRelationship
+        self.placeInTheSolarSystem         = placeInTheSolarSystem
+
+        super.init(identity: identity)
+    }
+
 }
 

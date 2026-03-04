@@ -296,6 +296,14 @@ extension ObjectStoreCoordinator {
 
 //MARK: - Managing Observing Facilities -
 extension ObjectStoreCoordinator {
+    public func createObservingFacility(identity: IdentifiableObject,
+                                        gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
+                                        placeInTheSolarSystem: PolisPlaceInTheSolarSystem = .earth) -> ObservingFacility {
+        //TODO: Implement me!
+        .init(identity: identity,
+              gravitationalBodyRelationship: gravitationalBodyRelationship,
+              placeInTheSolarSystem: placeInTheSolarSystem)
+    }
 
 }
 
