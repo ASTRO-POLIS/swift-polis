@@ -62,6 +62,13 @@ struct RepObjectDidChange: NotificationCenter.MainActorMessage {
     init(_ payload: PolisNotificationPayload) { self.payload = payload }
 }
 
+struct ClientWillTerminate: NotificationCenter.MainActorMessage {
+    typealias Subject = PersistentObject
+}
+
+struct ServiceProviderReadyToTerminate: NotificationCenter.MainActorMessage {
+    typealias Subject = ObjectStoreCoordinator
+}
 
 //
 // ====================================================================================================================

@@ -401,5 +401,16 @@ extension ObjectStoreCoordinator {
             handler(msg.payload)
         }
     }
+
+    @MainActor func postReadyToTerminate() {
+        NotificationCenter.default.post(ServiceProviderReadyToTerminate(), subject: self)
+    }
+
+    @MainActor func listenReadyToTerminate(_ handler: @escaping () -> Void) -> NotificationCenter.ObservationToken {
+        NotificationCenter.default.addObserver(of: self, for: ServiceProviderReadyToTerminate.self) { _ in
+            //TODO: Prepare for termination before calling the 'handler'
+            handler()
+        }
+    }
 }
 
