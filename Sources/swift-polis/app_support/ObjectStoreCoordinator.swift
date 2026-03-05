@@ -412,12 +412,9 @@ extension ObjectStoreCoordinator {
         NotificationCenter.default.post(PolisServiceProviderReadyToTerminate(), subject: self)
     }
 
-    //TODO: $$$ZH Is it not better to implement this like in startObservingRepObjectChangeNotifications()?
-    @MainActor func listenReadyToTerminate(_ handler: @escaping () -> Void) -> NotificationCenter.ObservationToken {
-        NotificationCenter.default.addObserver(of: self, for: PolisServiceProviderReadyToTerminate.self) { _ in
-            //TODO: Prepare for termination before calling the 'handler'
-            handler()
+    @MainActor private func startObservingServiceProviderReadyToTerminate() {
+        _didChangeToken = _nc.addObserver(for: PolisServiceProviderReadyToTerminate.self) { _ in
+            print(">>> Polis service provider ready to terminate.")
         }
     }
 }
-
