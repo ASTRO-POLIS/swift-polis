@@ -14,7 +14,7 @@ open class ObservingFacilityDirectory: PolisObjectPersisting {
     init(_ facilityDirectory: PolisObservingFacilityDirectory) {
         self.lastUpdate = facilityDirectory.lastUpdate
         for facility in facilityDirectory.observingFacilityReferences {
-            let facility = ObservingFacility(facilityIdentity: IdentifiableObject(identity: facility.identity),
+            let facility = ObservingFacility(identity: IdentifiableObject(identity: facility.identity),
                                              gravitationalBodyRelationship: facility.gravitationalBodyRelationship,
                                              placeInTheSolarSystem: facility.placeInTheSolarSystem)
             observingFacilities.append(facility)

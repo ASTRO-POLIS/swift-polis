@@ -62,13 +62,20 @@ struct RepObjectDidChange: NotificationCenter.MainActorMessage {
     init(_ payload: PolisNotificationPayload) { self.payload = payload }
 }
 
-struct ClientWillTerminate: NotificationCenter.MainActorMessage {
+/// This Notification Message is posted when a client (UI or Server app) is about to terminate. In order to prevent loss
+/// of data, the corresponding client application should wait until it receives `PolisServiceProviderReadyToTerminate`
+/// message.
+struct PolisClientWillTerminate: NotificationCenter.MainActorMessage {
     typealias Subject = PersistentObject
 }
 
-struct ServiceProviderReadyToTerminate: NotificationCenter.MainActorMessage {
+/// This Notification Message is posted when all persistent data are stored locally and all syncing processes are finished.
+/// **Note:** Normally, while syncing with remote provider, the Polis framework send Change Notification messages. During
+/// the process of termination such messages are suppressed.
+struct PolisServiceProviderReadyToTerminate: NotificationCenter.MainActorMessage {
     typealias Subject = ObjectStoreCoordinator
 }
+
 
 //
 // ====================================================================================================================

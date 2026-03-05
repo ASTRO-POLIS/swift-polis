@@ -81,7 +81,7 @@ public actor ObjectStoreCoordinator {
 
     // Notifications
     private let _nc = NotificationCenter.default
-    private var _didChangeToken: NotificationCenter.ObservationToken?
+    @MainActor private var _didChangeToken: NotificationCenter.ObservationToken?
 
     private var _isConfigured    = false
     private var _pathToPolisFolder: String!
@@ -109,6 +109,9 @@ public actor ObjectStoreCoordinator {
                           includeConsole: true)
         self._logger = PolisLogger.logger()
         self._logger.info("ObjectStoreCoordinator initialised")
+
+        // Observing various notifications
+        startObservingRepObjectChangeNotifications()
     }
 }
 
@@ -265,11 +268,6 @@ extension ObjectStoreCoordinator {
             _logger.error("Error: Cannot create POLIS Directory out of existing POLIS Directory Entry")
             throw ObjectStoreCoordinatorError.unknownError
         }
-
-        // Register change notifications
-        let payload = PolisNotificationPayload(entity: .serviceProvider, actionType: .update, id: _serviceProvider!.id, polisObject: _serviceProvider as? any PolisObject)
-        let rep     = RepObjectDidChange(payload)
-        register(rep)
     }
 
     private func createObservingFacilitiesDirectoryFile() async throws {
@@ -383,31 +381,40 @@ extension ObjectStoreCoordinator {
 
 }
 
-
+//MARK: Object change notifications
 extension ObjectStoreCoordinator {
 
-    func register(_ persistentObject: RepObjectDidChange) {
+    // These are methods that register `ObjectStoreCoordinator` to observe various global and change notifications and
+    // to post notifications, related to the persistency of the local data provider or updates by the remote service
+    // provider.
+    
+    /// Registers `ObjectStoreCoordinator` as observer of Change Notifications posted by any `PersistentObject` instance.
+    ///
+    /// Depending on the framework version, data load, data format, and provider type (static or dynamic), this method
+    /// might group multiple change notifications for performance reasons and process them on a background task.
+    @MainActor private func startObservingRepObjectChangeNotifications() {
         _didChangeToken = _nc.addObserver(for: RepObjectDidChange.self) { message in
-            print("New name: \(message.payload.id)")
+            //TODO: Implement me! (main-actor safe work goes here if needed)
+            print(">>> Change Message Object id: \(message.payload.id)")
         }
     }
 
+    //TODO: We need to make this message more genera! The idea is not to calculate the payload every time depending on what object did change!
     @MainActor func post(_ payload: PolisNotificationPayload) {
         NotificationCenter.default.post(PolisObjectDidChange(payload), subject: self)
     }
 
-    @MainActor func listen(_ handler: @escaping (PolisNotificationPayload) -> Void) -> NotificationCenter.ObservationToken {
-        NotificationCenter.default.addObserver(of: self, for: PolisObjectDidChange.self) { msg in
-            handler(msg.payload)
-        }
-    }
 
+    //MARK: Global notifications
+
+    //TODO: Move this to PersistentObject!
     @MainActor func postReadyToTerminate() {
-        NotificationCenter.default.post(ServiceProviderReadyToTerminate(), subject: self)
+        NotificationCenter.default.post(PolisServiceProviderReadyToTerminate(), subject: self)
     }
 
+    //TODO: $$$ZH Is it not better to implement this like in startObservingRepObjectChangeNotifications()?
     @MainActor func listenReadyToTerminate(_ handler: @escaping () -> Void) -> NotificationCenter.ObservationToken {
-        NotificationCenter.default.addObserver(of: self, for: ServiceProviderReadyToTerminate.self) { _ in
+        NotificationCenter.default.addObserver(of: self, for: PolisServiceProviderReadyToTerminate.self) { _ in
             //TODO: Prepare for termination before calling the 'handler'
             handler()
         }
