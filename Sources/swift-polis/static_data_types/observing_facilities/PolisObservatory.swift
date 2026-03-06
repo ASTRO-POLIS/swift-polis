@@ -59,3 +59,8 @@ public extension PolisObservatory {
     }
 }
 
+extension PolisObservatory: Equatable {
+    public static func == (lhs: PolisObservatory, rhs: PolisObservatory) -> Bool {
+        lhs.id == rhs.id
+    }
+}

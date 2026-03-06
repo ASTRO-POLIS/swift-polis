@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct PolisDevice: Codable, Identifiable, Sendable {
+public struct PolisDevice: Codable, Identifiable, Equatable, Sendable {
 
     public var item: PolisItem
 
