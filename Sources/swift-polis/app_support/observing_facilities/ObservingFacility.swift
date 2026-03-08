@@ -33,5 +33,16 @@ import Foundation
         super.init(identity: identity)
     }
 
+    //MARK: PolisObjectPersisting
+    override func pathToLocalPolisFile() async -> String {
+        let rF = await ObjectStoreCoordinator.shared.fileResourceFinder()
+
+        return rF!.observingFacilityFolder(observingFacilityID: identity.id)
+    }
+
+    override func hasChanged() -> Bool { false }
+    override func saveToLocalProvider() async throws { }
+    override func deleteFromLocalProvider() async throws { }
+
 }
 

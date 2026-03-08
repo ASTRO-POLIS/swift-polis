@@ -36,10 +36,7 @@ struct PolisObjectRep<PolisObject> {
 }
 
 protocol PolisObjectPersisting {
-    @MainActor static func pathToLocalPolisFile() async -> String
-    @MainActor static func loadFromLocalProvider(objectID: UUID?, rootFacilityID: UUID?, objectType: PolisObjectType) async throws -> PolisObjectPersisting
-    @MainActor static func loadFromRemoteProvider(objectID: UUID?, rootFacilityID: UUID?, objectType: PolisObjectType) async throws -> PolisObjectPersisting
-
+    func pathToLocalPolisFile() async -> String
     func hasChanged() -> Bool
     func saveToLocalProvider() async throws
     func deleteFromLocalProvider() async throws
@@ -177,8 +174,10 @@ public struct ObjectItem: Sendable {
     }
 
     //MARK: - PolisObjectPersisting partial implementation
+    func pathToLocalPolisFile() async -> String { "" }
     func hasChanged() -> Bool { _hasChanged }
     func saveToLocalProvider() async throws { _hasChanged = true }
+    func deleteFromLocalProvider() async throws { }
 }
 
 @Observable open class IdentifiablePersistentObject: PersistentObject, @unchecked Sendable {
@@ -201,14 +200,7 @@ struct DummyPolisType: PolisObject {
 
 // Default implementation, so that the protocol could be adopted step by step
 extension PolisObjectPersisting {
-    @MainActor static func pathToLocalPolisFile() async -> String { "" } // Used only for POLIS files with fixed and predefined paths
-    @MainActor static func loadFromLocalProvider(objectID: UUID? = nil, rootFacilityID: UUID? = nil, objectType: PolisObjectType = .unknown) async throws -> PolisObjectPersisting {
-        throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath
-    }
-    @MainActor static func loadFromRemoteProvider(objectID: UUID? = nil, rootFacilityID: UUID? = nil, objectType: PolisObjectType = .unknown) async throws -> PolisObjectPersisting {
-        throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath
-    }
-
+    func pathToLocalPolisFile() async -> String { "" }
     func hasChanged() -> Bool { false }
     func saveToLocalProvider() async throws { }
     func deleteFromLocalProvider() async throws { }

@@ -8,8 +8,7 @@
 import Foundation
 
 open class ObservingFacilityDirectory: PolisObjectPersisting {
-    public var lastUpdate: Date // UTC
-    public var observingFacilities: [ObservingFacility] = []
+    var lastUpdate: Date // UTC
 
     init(_ facilityDirectory: PolisObservingFacilityDirectory) {
         self.lastUpdate = facilityDirectory.lastUpdate
@@ -17,9 +16,19 @@ open class ObservingFacilityDirectory: PolisObjectPersisting {
             let facility = ObservingFacility(identity: IdentifiableObject(identity: facility.identity),
                                              gravitationalBodyRelationship: facility.gravitationalBodyRelationship,
                                              placeInTheSolarSystem: facility.placeInTheSolarSystem)
-            observingFacilities.append(facility)
+            _observingFacilities.append(facility)
         }
     }
+
+    func addFacility(_ facility: ObservingFacility) {
+        _hasChanged = true
+        _observingFacilities.append(facility)
+    }
+    
+    //MARK: Private APIs
+    private var _observingFacilities: [ObservingFacility] = []
+    private var _hasChanged                               = false
+
 }
 
     //
@@ -28,19 +37,12 @@ open class ObservingFacilityDirectory: PolisObjectPersisting {
 
 //MARK: : - PolisObjectPersisting implementation -
 extension ObservingFacilityDirectory {
-    @MainActor static func pathToLocalPolisFile() async -> String {
+    func pathToLocalPolisFile() async -> String {
         let fileResourceFinder = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         return fileResourceFinder.observingFacilitiesDirectoryFile()
     }
 
-    //TODO: Implement me!
-    @MainActor static func loadFromLocalProvider() async throws -> PolisObjectPersisting { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
-
-    //TODO: Implement me!
-    @MainActor static func loadFromRemoteProvider() async throws -> PolisObjectPersisting { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
-
-    //TODO: Implement me!
-    func hasChanged() -> Bool { false }
+   func hasChanged() -> Bool { _hasChanged }
 }
 
 

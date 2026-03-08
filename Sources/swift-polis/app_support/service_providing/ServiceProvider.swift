@@ -52,16 +52,11 @@ import Foundation
                                                    contactEmail: contactEmail)
     }
 
-    @MainActor static func pathToLocalPolisFile() async -> String {
+    //TODO: Implement me!
+    override func pathToLocalPolisFile() async -> String {
         let fileResourceFinder = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         return fileResourceFinder.configurationFile()
     }
-
-    //TODO: Implement me!
-    @MainActor static func loadFromLocalProvider() async throws -> PolisObjectPersisting { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
-
-    //TODO: Implement me!
-    @MainActor static func loadFromRemoteProvider() async throws -> PolisObjectPersisting { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
 
     //TODO: Implement me!
     override func hasChanged() -> Bool { false }
@@ -76,7 +71,7 @@ import Foundation
     }
 
     //TODO: Implement me!
-    func deleteFromLocalProvider() async throws { }
+    override func deleteFromLocalProvider() async throws { }
 
 }
 

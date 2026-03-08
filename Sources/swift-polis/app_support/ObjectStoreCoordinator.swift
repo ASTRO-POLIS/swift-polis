@@ -116,11 +116,6 @@ public actor ObjectStoreCoordinator {
 }
 
 
-//
-// =====================================================================================================================
-//
-
-
 //MARK: - Global Object Store Functionality -
 extension ObjectStoreCoordinator {
     @discardableResult public func objectStoreStatus() throws-> ObjectStoreDescription {
@@ -233,7 +228,7 @@ extension ObjectStoreCoordinator {
             _serviceProvider                   = ServiceProvider(polisDirectoryEntry)
 
             let data = try  PrettyJSONEncoder().encode(polisDirectoryEntry)
-            let path = await ServiceProvider.pathToLocalPolisFile()
+            let path = await _serviceProvider!.pathToLocalPolisFile()
 
             if !_fm.createFile(atPath: path, contents: data)  {
                 _logger.error("Cannot save POLIS Directory Entry file to: \(path)")
@@ -276,7 +271,7 @@ extension ObjectStoreCoordinator {
 
         do {
             let data = try  PrettyJSONEncoder().encode(polisFacilityDirectory)
-            let path = await ObservingFacilityDirectory.pathToLocalPolisFile()
+            let path = await observingFacilitiesDirectory.pathToLocalPolisFile()
 
             if !_fm.createFile(atPath: path, contents: data)  {
                 _logger.error("Cannot save POLIS Observing Facilities Directory file to: \(path)")
@@ -297,12 +292,13 @@ extension ObjectStoreCoordinator {
     public func createObservingFacility(identity: IdentifiableObject,
                                         gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
                                         placeInTheSolarSystem: PolisPlaceInTheSolarSystem = .earth) -> ObservingFacility {
-        //TODO: Implement me!
-        .init(identity: identity,
+        let newFacility = ObservingFacility.init(identity: identity,
               gravitationalBodyRelationship: gravitationalBodyRelationship,
               placeInTheSolarSystem: placeInTheSolarSystem)
-    }
 
+        _observingFacilityDirectory?.addFacility(newFacility)
+        return newFacility
+    }
 }
 
 //MARK: - Polis Service Providing -
