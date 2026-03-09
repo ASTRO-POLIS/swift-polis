@@ -98,10 +98,8 @@ public actor ObjectStoreCoordinator {
     private var _observingFacilityDirectory: ObservingFacilityDirectory?
 
     @MainActor private init() {
-        //FIXME: This will crash on iOS!
-        let logFileURL = URL(fileURLWithPath: _logFile!)
+        let logFileURL = _logFile.map { URL(fileURLWithPath: $0) }
 
-        //TODO: Log File might be undefined ($$$AK, please fix)
         // Initialising the Log to channel to console and file
         PolisLogger.setup(subsystem: "test.polis.observer",
                           level: Logging.Logger.Level.trace,
