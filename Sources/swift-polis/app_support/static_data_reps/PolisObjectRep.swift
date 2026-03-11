@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import Logging
+import SoftwareEtudesLogging
 
 /// Used to identify the type of the Polis Object to be wrapped for file and sync operations)
 public enum PolisObjectType {
@@ -167,7 +169,9 @@ public struct ObjectItem: Sendable {
 @Observable open class PersistentObject: @unchecked Sendable, PolisObjectPersisting {
 
     var polisRep: PolisObjectRep<PolisObject>
-    var _hasChanged = false
+    var _hasChanged     = false
+    let fm: FileManager = .default
+    var isDir: ObjCBool = false
 
     init(polisRep: PolisObjectRep<PolisObject>) {
         self.polisRep = polisRep

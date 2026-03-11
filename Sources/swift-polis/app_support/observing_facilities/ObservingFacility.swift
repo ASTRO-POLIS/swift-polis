@@ -26,12 +26,17 @@ import Foundation
 
     init(identity: IdentifiableObject,
          gravitationalBodyRelationship: PolisObservingFacilityLocationType,
-         placeInTheSolarSystem: PolisPlaceInTheSolarSystem) {
+         placeInTheSolarSystem: PolisPlaceInTheSolarSystem,
+         isNewFacility: Bool = false) {
         self.gravitationalBodyRelationship = gravitationalBodyRelationship
         self.placeInTheSolarSystem         = placeInTheSolarSystem
 
         super.init(identity: identity)
+        self._hasChanged = isNewFacility
     }
+
+    //MARK: Private APIs
+
 
     //MARK: PolisObjectPersisting
     override func pathToLocalPolisFile() async -> String {
@@ -41,7 +46,18 @@ import Foundation
     }
 
     override func hasChanged() -> Bool { false }
-    override func saveToLocalProvider() async throws { }
+
+    /// The basic data for this facility are stored into the facility directory. Therefore no file needs to be saved. But
+    /// if `_hasChanges == true` the method should guarantee, that at least the facility folder exists.
+    override func saveToLocalProvider() async throws {
+        let path = await pathToLocalPolisFile()
+
+        if !(fm.fileExists(atPath: path, isDirectory: &isDir) && (isDir.boolValue)) {
+            do    { try fm.createDirectory(atPath: path, withIntermediateDirectories: true) }
+            catch { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.fileIO }
+        }
+    }
+
     override func deleteFromLocalProvider() async throws { }
 
 }

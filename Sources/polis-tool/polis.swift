@@ -160,6 +160,12 @@ struct PolisTool {
                 await exitDescribingErrors(code: .cannotCreateLocalProvider)
             }
         }
+
+        // Create some facility examples
+        if isTesting {
+            let iO = IdentifiableObject(name: "A Facility")
+            let newFacility = try await storeCoordinator.createObservingFacility(identity: iO)
+        }
     }
 }
 

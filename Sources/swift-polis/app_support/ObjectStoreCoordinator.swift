@@ -29,6 +29,7 @@ public actor ObjectStoreCoordinator {
         case rootPathNotSet
         case cannotCreatePolisObjectFromStringExample
         case missingServiceProvider
+        case fileIO
 
         case unknownError
     }
@@ -291,12 +292,15 @@ extension ObjectStoreCoordinator {
 extension ObjectStoreCoordinator {
     public func createObservingFacility(identity: IdentifiableObject,
                                         gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
-                                        placeInTheSolarSystem: PolisPlaceInTheSolarSystem = .earth) -> ObservingFacility {
+                                        placeInTheSolarSystem: PolisPlaceInTheSolarSystem = .earth) async throws-> ObservingFacility {
         let newFacility = ObservingFacility.init(identity: identity,
-              gravitationalBodyRelationship: gravitationalBodyRelationship,
-              placeInTheSolarSystem: placeInTheSolarSystem)
+                                                 gravitationalBodyRelationship: gravitationalBodyRelationship,
+                                                 placeInTheSolarSystem: placeInTheSolarSystem,
+                                                 isNewFacility: true)
 
         _observingFacilityDirectory?.addFacility(newFacility)
+        try await newFacility.saveToLocalProvider()
+
         return newFacility
     }
 }
