@@ -268,21 +268,25 @@ extension ObjectStoreCoordinator {
         let polisFacilityDirectory       = PolisObservingFacilityDirectory(lastUpdate: Date.now, observingFacilityReferences: [])
         let observingFacilitiesDirectory = ObservingFacilityDirectory(polisFacilityDirectory)
 
+        try await saveObservingFacilityDirectoryFileToDisk(polisFacilityDirectory)
+        _observingFacilityDirectory = observingFacilitiesDirectory
+        //TODO: Send Notification!
+    }
+
+    private func saveObservingFacilityDirectoryFileToDisk(_ facilityDirectory: PolisObservingFacilityDirectory) async throws {
+        let path = (fileResourceFinder()?.observingFacilitiesDirectoryFile())!
         do {
-            let data = try  PrettyJSONEncoder().encode(polisFacilityDirectory)
-            let path = await observingFacilitiesDirectory.pathToLocalPolisFile()
+            let data = try  PrettyJSONEncoder().encode(facilityDirectory)
 
             if !_fm.createFile(atPath: path, contents: data)  {
                 _logger.error("Cannot save POLIS Observing Facilities Directory file to: \(path)")
                 throw ObjectStoreCoordinatorError.cannotWriteFileToLocalStore
             }
-            _observingFacilityDirectory = observingFacilitiesDirectory
         }
         catch {
             _logger.error("Error: Cannot create empty POLIS Observing Facility Directory")
             throw ObjectStoreCoordinatorError.unknownError
         }
-        //TODO: Send Notification!
     }
 }
 
@@ -296,8 +300,11 @@ extension ObjectStoreCoordinator {
                                                  placeInTheSolarSystem: placeInTheSolarSystem,
                                                  isNewFacility: true)
 
+
         _observingFacilityDirectory?.addFacility(newFacility)
         try await newFacility.saveToLocalProvider()
+        let polisFacilityDirectory = _observingFacilityDirectory?.observingFacilityDirectory
+        try await saveObservingFacilityDirectoryFileToDisk(polisFacilityDirectory!)
 
         return newFacility
     }
@@ -416,3 +423,4 @@ extension ObjectStoreCoordinator {
         }
     }
 }
+

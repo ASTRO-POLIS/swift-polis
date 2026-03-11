@@ -10,6 +10,18 @@ import Foundation
 open class ObservingFacilityDirectory: PolisObjectPersisting {
     var lastUpdate: Date // UTC
 
+    var observingFacilityDirectory: PolisObservingFacilityDirectory {
+        var references: [PolisObservingFacilityDirectory.ObservingFacilityReference] = []
+
+        for facility in _observingFacilities {
+            let ref = facility.facilityReference
+
+            references.append(ref)
+        }
+
+        return PolisObservingFacilityDirectory(lastUpdate: lastUpdate, observingFacilityReferences: references)
+    }
+
     init(_ facilityDirectory: PolisObservingFacilityDirectory) {
         self.lastUpdate = facilityDirectory.lastUpdate
         for facility in facilityDirectory.observingFacilityReferences {

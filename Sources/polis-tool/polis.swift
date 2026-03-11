@@ -153,6 +153,10 @@ struct PolisTool {
             do {
                 try await storeCoordinator.createLocalStore()
                 logger.info( "A local object store has been successfully created and configured.")
+
+                // Create some facility examples
+                if isTesting { try await createTestEnvironment() }
+
                 await exitDescribingErrors(code: .noError)
             }
             catch {
@@ -161,11 +165,12 @@ struct PolisTool {
             }
         }
 
-        // Create some facility examples
-        if isTesting {
-            let iO = IdentifiableObject(name: "A Facility")
-            let newFacility = try await storeCoordinator.createObservingFacility(identity: iO)
-        }
+    }
+
+    @MainActor static func createTestEnvironment() async throws {
+        let iO = IdentifiableObject(name: "A Facility")
+        let newFacility = try await storeCoordinator.createObservingFacility(identity: iO)
+        //TODO: Implement me!
     }
 }
 
