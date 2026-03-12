@@ -7,7 +7,7 @@
 
 import Foundation
 
-open class ObservingFacilityDirectory: PolisObjectPersisting {
+open class ObservingFacilityDirectory: PersistentObject, @unchecked Sendable {
     var lastUpdate: Date // UTC
 
     var observingFacilityDirectory: PolisObservingFacilityDirectory {
@@ -23,6 +23,10 @@ open class ObservingFacilityDirectory: PolisObjectPersisting {
     }
 
     init(_ facilityDirectory: PolisObservingFacilityDirectory) {
+        let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(originalPolisObject: facilityDirectory as any PolisObject,
+                                                                 localPath: "",
+                                                                 objectType: .serviceProvider)
+
         self.lastUpdate = facilityDirectory.lastUpdate
         for facility in facilityDirectory.observingFacilityReferences {
             let facility = ObservingFacility(identity: IdentifiableObject(identity: facility.identity),
@@ -30,6 +34,7 @@ open class ObservingFacilityDirectory: PolisObjectPersisting {
                                              placeInTheSolarSystem: facility.placeInTheSolarSystem)
             _observingFacilities.append(facility)
         }
+        super.init(polisRep: sP)
     }
 
     func addFacility(_ facility: ObservingFacility) {
@@ -39,22 +44,22 @@ open class ObservingFacilityDirectory: PolisObjectPersisting {
     
     //MARK: Private APIs
     private var _observingFacilities: [ObservingFacility] = []
-    private var _hasChanged                               = false
 
-}
 
-    //
-    //=====================================================================================================================
-    //
-
-//MARK: : - PolisObjectPersisting implementation -
-extension ObservingFacilityDirectory {
-    func pathToLocalPolisFile() async -> String {
+    //MARK: : - PolisObjectPersisting implementation -
+    override func pathToLocalPolisFile() async -> String {
         let fileResourceFinder = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         return fileResourceFinder.observingFacilitiesDirectoryFile()
     }
 
-   func hasChanged() -> Bool { _hasChanged }
-}
+    override func hasChanged() -> Bool { _hasChanged }
+    override func setDidChange()       { _hasChanged = true }
 
+    override func saveToLocalProvider() async throws {
+        if _hasChanged {
+            //TODO: Implement me!
+        }
+    }
+
+}
 

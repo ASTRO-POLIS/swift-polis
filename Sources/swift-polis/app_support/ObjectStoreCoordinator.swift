@@ -302,7 +302,9 @@ extension ObjectStoreCoordinator {
 
 
         _observingFacilityDirectory?.addFacility(newFacility)
-        try await newFacility.saveToLocalProvider()
+        updateTimeAndChangeStatusOfAllConfigurationFiles()
+
+        try await newFacility.saveToLocalProvider()   // If facility's folder does not exist - creates it. No other actions!
         let polisFacilityDirectory = _observingFacilityDirectory?.observingFacilityDirectory
         try await saveObservingFacilityDirectoryFileToDisk(polisFacilityDirectory!)
 
@@ -384,6 +386,17 @@ extension ObjectStoreCoordinator {
 
     private func ensurePolisFoldersExistence() -> Bool { tryToEnsureFoldersExistence(paths: polisDirectoryPaths()) }
 
+    private func updateTimeAndChangeStatusOfAllConfigurationFiles() {
+        let time = Date.now
+
+        _observingFacilityDirectory?.lastUpdate   = time
+        _serviceProviderDirectory?.lastUpdateTime = time
+        _serviceProvider?.lastUpdateTime          = time
+
+        _observingFacilityDirectory?.setDidChange()
+        _serviceProviderDirectory?.setDidChange()
+        _serviceProvider?.setDidChange()
+    }
 }
 
 //MARK: Object change notifications

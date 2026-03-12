@@ -17,6 +17,8 @@ protocol PolisObject: Codable {
 public enum PolisDataType: Codable, Equatable, Hashable, Sendable {
     case providerDirectory
     case providerDirectoryEntry
+    case observingFacilityReference
+    case observingFacilityDirectory
     case identity
     case item
     case observingFacility

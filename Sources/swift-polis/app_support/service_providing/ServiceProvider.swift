@@ -22,7 +22,7 @@ import Foundation
 
     //MARK: Internal APIs
     init(_ directoryEntry: PolisDirectory.ProviderDirectoryEntry) {
-        let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(originalPolisObject: directoryEntry as! any PolisObject as any PolisObject,
+        let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(originalPolisObject: directoryEntry as any PolisObject as any PolisObject,
                                                                  localPath: "",
                                                                  objectType: .serviceProvider)
         id                       = directoryEntry.id
@@ -59,7 +59,8 @@ import Foundation
     }
 
     //TODO: Implement me!
-    override func hasChanged() -> Bool { false }
+    override func hasChanged() -> Bool { _hasChanged }
+    override func setDidChange()       { _hasChanged = true }
 
     override func saveToLocalProvider() async throws {
         if _hasChanged {

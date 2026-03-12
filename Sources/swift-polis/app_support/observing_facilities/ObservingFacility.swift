@@ -52,8 +52,8 @@ import Foundation
     override func saveToLocalProvider() async throws {
         let path = await pathToLocalPolisFile()
 
-        if !(fm.fileExists(atPath: path, isDirectory: &isDir) && (isDir.boolValue)) {
-            do    { try fm.createDirectory(atPath: path, withIntermediateDirectories: true) }
+        if !(_fm.fileExists(atPath: path, isDirectory: &_isDir) && (_isDir.boolValue)) {
+            do    { try _fm.createDirectory(atPath: path, withIntermediateDirectories: true) }
             catch { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.fileIO }
         }
     }

@@ -195,7 +195,7 @@ public struct PolisDirectory: Sendable, PolisObject {
 //MARK: - Observing Facility Directory -
 
 /// A compact list of all known Observing Facilities
-public struct PolisObservingFacilityDirectory: Codable, Sendable {
+public struct PolisObservingFacilityDirectory: Codable, Sendable, PolisObject {
 
     /// It is expected that the list of observatory facilities is long and each facility's data could be way over 1MB. Therefore a
     /// compact list of facilities references is maintained separately containing only facility's `identity`  It is
@@ -219,6 +219,8 @@ public struct PolisObservingFacilityDirectory: Codable, Sendable {
             self.placeInTheSolarSystem         = placeInTheSolarSystem
         }
 
+        func polisDataType() -> PolisDataType { .observingFacilityReference }
+
     }
 
     public var lastUpdate: Date // UTC
@@ -236,7 +238,7 @@ public struct PolisObservingFacilityDirectory: Codable, Sendable {
         return nil
     }
 
-    func polisDataType() -> PolisDataType { .observingFacility }
+    func polisDataType() -> PolisDataType { .observingFacilityDirectory }
 }
 
 //MARK: - Making types Codable -

@@ -40,6 +40,7 @@ struct PolisObjectRep<PolisObject> {
 protocol PolisObjectPersisting {
     func pathToLocalPolisFile() async -> String
     func hasChanged() -> Bool
+    func setDidChange()
     func saveToLocalProvider() async throws
     func deleteFromLocalProvider() async throws
 }
@@ -168,19 +169,21 @@ public struct ObjectItem: Sendable {
 
 @Observable open class PersistentObject: @unchecked Sendable, PolisObjectPersisting {
 
-    var polisRep: PolisObjectRep<PolisObject>
-    var _hasChanged     = false
-    let fm: FileManager = .default
-    var isDir: ObjCBool = false
+    // These should be used as private properties. Therefore they have "_" prefix!
+    var _polisRep: PolisObjectRep<PolisObject>
+    var _hasChanged      = false
+    let _fm: FileManager = .default
+    var _isDir: ObjCBool = false
 
     init(polisRep: PolisObjectRep<PolisObject>) {
-        self.polisRep = polisRep
+        self._polisRep = polisRep
     }
 
     //MARK: - PolisObjectPersisting partial implementation
     func pathToLocalPolisFile() async -> String { "" }
     func hasChanged() -> Bool { _hasChanged }
-    func saveToLocalProvider() async throws { _hasChanged = true }
+    func setDidChange()       { _hasChanged = true }
+    func saveToLocalProvider() async throws { _hasChanged = false }
     func deleteFromLocalProvider() async throws { }
 }
 
@@ -206,6 +209,7 @@ struct DummyPolisType: PolisObject {
 extension PolisObjectPersisting {
     func pathToLocalPolisFile() async -> String { "" }
     func hasChanged() -> Bool { false }
+    func setDidChange() { }
     func saveToLocalProvider() async throws { }
     func deleteFromLocalProvider() async throws { }
 }
