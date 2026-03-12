@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SoftwareEtudesUtilities
 
 @Observable public final class ServiceProvider: PersistentObject, @unchecked Sendable {
 
@@ -20,10 +21,15 @@ import Foundation
     public var providerType = PolisDirectory.ProviderDirectoryEntry.ProviderType.experimental
     public var contactEmail: String!
 
+    private static func initialLocalPolisFilePath() async -> String {
+        let fileResourceFinder = await ObjectStoreCoordinator.shared.fileResourceFinder()!
+        return fileResourceFinder.configurationFile()
+    }
+
     //MARK: Internal APIs
-    init(_ directoryEntry: PolisDirectory.ProviderDirectoryEntry) {
+    init(_ directoryEntry: PolisDirectory.ProviderDirectoryEntry) async {
         let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(originalPolisObject: directoryEntry as any PolisObject as any PolisObject,
-                                                                 localPath: "",
+                                                                 localPath: await ServiceProvider.initialLocalPolisFilePath(),
                                                                  objectType: .serviceProvider)
         id                       = directoryEntry.id
         mirrorID                 = directoryEntry.mirrorID
@@ -36,7 +42,7 @@ import Foundation
         providerType             = directoryEntry.providerType
         contactEmail             = directoryEntry.contactEmail
 
-        super.init(polisRep: sP)
+        await super.init(polisRep: sP)
     }
 
     var directoryEntry : PolisDirectory.ProviderDirectoryEntry? {
@@ -60,13 +66,28 @@ import Foundation
 
     //TODO: Implement me!
     override func hasChanged() -> Bool { _hasChanged }
-    override func setDidChange()       { _hasChanged = true }
+
+    override func setDidChange() async {
+        _hasChanged = true
+        let payload = PolisNotificationPayload(entity: .serviceProvider, actionType: .update, id: id)
+        await MainActor.run {
+            NotificationCenter.default.post(PolisObjectDidChange(payload))
+        }
+    }
 
     override func saveToLocalProvider() async throws {
         if _hasChanged {
-            let payload = PolisNotificationPayload(entity: .serviceProvider, actionType: .update, id: id)
-            await MainActor.run {
-                NotificationCenter.default.post(PolisObjectDidChange(payload))
+            do {
+                let data = try PrettyJSONEncoder().encode(_polisRep.originalPolisObject)
+
+                if !_fm.createFile(atPath: _polisRep.localPath, contents: data)  {
+                    _logger.error("Cannot save POLIS Directory Entry file to: \(_polisRep.localPath)")
+                    throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.cannotWriteFileToLocalStore
+                }
+            }
+            catch {
+                _logger.error("Error: create POLIS object out of example string")
+                throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.cannotCreatePolisObjectFromStringExample
             }
         }
     }

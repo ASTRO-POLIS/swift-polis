@@ -22,19 +22,19 @@ open class ObservingFacilityDirectory: PersistentObject, @unchecked Sendable {
         return PolisObservingFacilityDirectory(lastUpdate: lastUpdate, observingFacilityReferences: references)
     }
 
-    init(_ facilityDirectory: PolisObservingFacilityDirectory) {
+    init(_ facilityDirectory: PolisObservingFacilityDirectory) async {
         let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(originalPolisObject: facilityDirectory as any PolisObject,
                                                                  localPath: "",
                                                                  objectType: .serviceProvider)
 
         self.lastUpdate = facilityDirectory.lastUpdate
         for facility in facilityDirectory.observingFacilityReferences {
-            let facility = ObservingFacility(identity: IdentifiableObject(identity: facility.identity),
-                                             gravitationalBodyRelationship: facility.gravitationalBodyRelationship,
-                                             placeInTheSolarSystem: facility.placeInTheSolarSystem)
+            let facility = await ObservingFacility(identity: IdentifiableObject(identity: facility.identity),
+                                                   gravitationalBodyRelationship: facility.gravitationalBodyRelationship,
+                                                   placeInTheSolarSystem: facility.placeInTheSolarSystem)
             _observingFacilities.append(facility)
         }
-        super.init(polisRep: sP)
+        await super.init(polisRep: sP)
     }
 
     func addFacility(_ facility: ObservingFacility) {
@@ -53,7 +53,7 @@ open class ObservingFacilityDirectory: PersistentObject, @unchecked Sendable {
     }
 
     override func hasChanged() -> Bool { _hasChanged }
-    override func setDidChange()       { _hasChanged = true }
+    override func setDidChange() async { _hasChanged = true }
 
     override func saveToLocalProvider() async throws {
         if _hasChanged {

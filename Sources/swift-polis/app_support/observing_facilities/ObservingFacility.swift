@@ -27,11 +27,11 @@ import Foundation
     init(identity: IdentifiableObject,
          gravitationalBodyRelationship: PolisObservingFacilityLocationType,
          placeInTheSolarSystem: PolisPlaceInTheSolarSystem,
-         isNewFacility: Bool = false) {
+         isNewFacility: Bool = false) async {
         self.gravitationalBodyRelationship = gravitationalBodyRelationship
         self.placeInTheSolarSystem         = placeInTheSolarSystem
 
-        super.init(identity: identity)
+        await super.init(identity: identity)
         self._hasChanged = isNewFacility
     }
 

@@ -224,23 +224,16 @@ extension ObjectStoreCoordinator {
             if await ObjectStoreCoordinator.isBigBangServiceProvider { polisDirectoryEntry = try ServiceProviderDataSource.bigBangPolisDirectoryEntryExample() }
             else                                                     { polisDirectoryEntry = try ServiceProviderDataSource.defaultPolisDirectoryEntryExample() }
             polisDirectoryEntry.lastUpdateTime = Date.now
-            _serviceProvider                   = ServiceProvider(polisDirectoryEntry)
+            _serviceProvider                   = await ServiceProvider(polisDirectoryEntry)
 
-            let data = try  PrettyJSONEncoder().encode(polisDirectoryEntry)
-            let path = await _serviceProvider!.pathToLocalPolisFile()
-
-            if !_fm.createFile(atPath: path, contents: data)  {
-                _logger.error("Cannot save POLIS Directory Entry file to: \(path)")
-                throw ObjectStoreCoordinatorError.cannotWriteFileToLocalStore
-            }
+            await _serviceProvider?.setDidChange()
+            try await _serviceProvider?.saveToLocalProvider()
         }
         catch {
             _logger.error("Error: create POLIS object out of example string")
             throw ObjectStoreCoordinatorError.cannotCreatePolisObjectFromStringExample
         }
         _os.setServiceProvider(_serviceProvider)
-
-        //TODO: Send Notification!
     }
 
     private func createPolisDirectoryFile() async throws {
@@ -266,7 +259,7 @@ extension ObjectStoreCoordinator {
 
     private func createObservingFacilitiesDirectoryFile() async throws {
         let polisFacilityDirectory       = PolisObservingFacilityDirectory(lastUpdate: Date.now, observingFacilityReferences: [])
-        let observingFacilitiesDirectory = ObservingFacilityDirectory(polisFacilityDirectory)
+        let observingFacilitiesDirectory = await ObservingFacilityDirectory(polisFacilityDirectory)
 
         try await saveObservingFacilityDirectoryFileToDisk(polisFacilityDirectory)
         _observingFacilityDirectory = observingFacilitiesDirectory
@@ -295,10 +288,10 @@ extension ObjectStoreCoordinator {
     public func createObservingFacility(identity: IdentifiableObject,
                                         gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
                                         placeInTheSolarSystem: PolisPlaceInTheSolarSystem = .earth) async throws-> ObservingFacility {
-        let newFacility = ObservingFacility.init(identity: identity,
-                                                 gravitationalBodyRelationship: gravitationalBodyRelationship,
-                                                 placeInTheSolarSystem: placeInTheSolarSystem,
-                                                 isNewFacility: true)
+        let newFacility = await ObservingFacility.init(identity: identity,
+                                                       gravitationalBodyRelationship: gravitationalBodyRelationship,
+                                                       placeInTheSolarSystem: placeInTheSolarSystem,
+                                                       isNewFacility: true)
 
 
         _observingFacilityDirectory?.addFacility(newFacility)
@@ -362,10 +355,6 @@ extension ObjectStoreCoordinator {
         }
 
         return true
-    }
-
-    private func makeSureServiceProviderConfigurationFileExists() throws {
-        //TODO: Implement me!
     }
 
     //TODO: Move these methods to SoftwareEtudes

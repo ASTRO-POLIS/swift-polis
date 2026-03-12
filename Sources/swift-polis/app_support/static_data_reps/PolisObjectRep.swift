@@ -40,7 +40,7 @@ struct PolisObjectRep<PolisObject> {
 protocol PolisObjectPersisting {
     func pathToLocalPolisFile() async -> String
     func hasChanged() -> Bool
-    func setDidChange()
+    func setDidChange() async
     func saveToLocalProvider() async throws
     func deleteFromLocalProvider() async throws
 }
@@ -174,15 +174,17 @@ public struct ObjectItem: Sendable {
     var _hasChanged      = false
     let _fm: FileManager = .default
     var _isDir: ObjCBool = false
+    let _logger: Logging.Logger
 
-    init(polisRep: PolisObjectRep<PolisObject>) {
+    init(polisRep: PolisObjectRep<PolisObject>) async {
         self._polisRep = polisRep
+        self._logger = await ObjectStoreCoordinator.shared.logger()
     }
 
     //MARK: - PolisObjectPersisting partial implementation
     func pathToLocalPolisFile() async -> String { "" }
     func hasChanged() -> Bool { _hasChanged }
-    func setDidChange()       { _hasChanged = true }
+    func setDidChange() async { _hasChanged = true }
     func saveToLocalProvider() async throws { _hasChanged = false }
     func deleteFromLocalProvider() async throws { }
 }
@@ -191,11 +193,11 @@ public struct ObjectItem: Sendable {
 
     var identity: IdentifiableObject
 
-    init(identity: IdentifiableObject) {
+    init(identity: IdentifiableObject) async {
         self.identity = identity
         // Provide a placeholder PolisObjectRep since this subclass doesn't yet manage a concrete PolisObject.
         let placeholderRep = PolisObjectRep<PolisObject>(originalPolisObject: DummyPolisType(), localPath: "", objectType: .unknown)
-        super.init(polisRep: placeholderRep)
+        await super.init(polisRep: placeholderRep)
     }
 }
 
