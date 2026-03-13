@@ -254,28 +254,19 @@ extension ObjectStoreCoordinator {
     }
 
     private func createObservingFacilitiesDirectoryFile() async throws {
-        let polisFacilityDirectory       = PolisObservingFacilityDirectory(lastUpdate: Date.now, observingFacilityReferences: [])
+        let polisFacilityDirectory       = PolisObservingFacilityDirectory(lastUpdateTime: Date.now, observingFacilityReferences: [])
         let observingFacilitiesDirectory = await ObservingFacilityDirectory(polisFacilityDirectory)
 
-        try await saveObservingFacilityDirectoryFileToDisk(polisFacilityDirectory)
-        _observingFacilityDirectory = observingFacilitiesDirectory
-        //TODO: Send Notification!
-    }
-
-    private func saveObservingFacilityDirectoryFileToDisk(_ facilityDirectory: PolisObservingFacilityDirectory) async throws {
-        let path = (fileResourceFinder()?.observingFacilitiesDirectoryFile())!
         do {
-            let data = try  PrettyJSONEncoder().encode(facilityDirectory)
-
-            if !_fm.createFile(atPath: path, contents: data)  {
-                _logger.error("Cannot save POLIS Observing Facilities Directory file to: \(path)")
-                throw ObjectStoreCoordinatorError.cannotWriteFileToLocalStore
-            }
-        }
+            _observingFacilityDirectory = observingFacilitiesDirectory
+            await _observingFacilityDirectory?.setDidChange()
+            try await _observingFacilityDirectory?.saveToLocalProvider()
+       }
         catch {
-            _logger.error("Error: Cannot create empty POLIS Observing Facility Directory")
+            _logger.error("Error: Cannot create POLIS Observing Facility Directory out of existing POLIS Observing Facility Directory Entry")
             throw ObjectStoreCoordinatorError.unknownError
         }
+        //TODO: Send Notification!
     }
 }
 
@@ -290,12 +281,10 @@ extension ObjectStoreCoordinator {
                                                        isNewFacility: true)
 
 
-        _observingFacilityDirectory?.addFacility(newFacility)
-        updateTimeAndChangeStatusOfAllConfigurationFiles()
-
         try await newFacility.saveToLocalProvider()   // If facility's folder does not exist - creates it. No other actions!
-        let polisFacilityDirectory = _observingFacilityDirectory?.observingFacilityDirectory
-        try await saveObservingFacilityDirectoryFileToDisk(polisFacilityDirectory!)
+
+        await _observingFacilityDirectory?.addFacility(newFacility)
+        try await _observingFacilityDirectory?.saveToLocalProvider()
 
         return newFacility
     }
@@ -374,18 +363,6 @@ extension ObjectStoreCoordinator {
     }
 
     private func ensurePolisFoldersExistence() -> Bool { tryToEnsureFoldersExistence(paths: polisDirectoryPaths()) }
-
-    private func updateTimeAndChangeStatusOfAllConfigurationFiles() {
-        let time = Date.now
-
-        _observingFacilityDirectory?.lastUpdate   = time
-        _serviceProviderDirectory?.lastUpdateTime = time
-        _serviceProvider?.lastUpdateTime          = time
-
-        _observingFacilityDirectory?.setDidChange()
-        _serviceProviderDirectory?.setDidChange()
-        _serviceProvider?.setDidChange()
-    }
 }
 
 //MARK: Object change notifications
@@ -402,7 +379,7 @@ extension ObjectStoreCoordinator {
     @MainActor private func startObservingRepObjectChangeNotifications() {
         _didChangeToken = _nc.addObserver(for: RepObjectDidChange.self) { message in
             //TODO: Implement me! (main-actor safe work goes here if needed)
-            print(">>> Change Message Object id: \(message.payload.id)")
+            print(">>> Change Message Object id: \(message.payload.id, default: "unknown ID")")
         }
     }
 

@@ -24,7 +24,7 @@ import SoftwareEtudesUtilities
     //MARK: Internal APIs
     init(_ directoryEntry: PolisDirectory.ProviderDirectoryEntry) async {
         let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!
-        let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(originalPolisObject: directoryEntry as any PolisObject as any PolisObject,
+        let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(polisObject: directoryEntry as any PolisObject as any PolisObject,
                                                                  localPath: fileResourceFinder.configurationFile(),
                                                                  objectType: .serviceProvider)
 
@@ -65,8 +65,9 @@ import SoftwareEtudesUtilities
         let payload   = PolisNotificationPayload(entity: .serviceProvider, actionType: .update, id: id)
         let directory = await ObjectStoreCoordinator.shared.serviceProviderDirectory()
 
-        _hasChanged                  = true
-        _polisRep.currentPolisObject = directoryEntry
+        lastUpdateTime        = Date.now
+        _hasChanged           = true
+        _polisRep.polisObject = directoryEntry!
 
         if directory != nil {
             directory!.addOrReplace(directoryEntry!)

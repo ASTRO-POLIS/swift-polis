@@ -7,8 +7,25 @@
 
 import Foundation
 
-open class ObservingFacilityDirectory: PersistentObject, @unchecked Sendable {
-    var lastUpdate: Date // UTC
+@Observable public final class ObservingFacilityDirectory: PersistentObject, @unchecked Sendable {
+    var lastUpdateTime: Date // UTC
+
+    init(_ facilityDirectory: PolisObservingFacilityDirectory) async {
+        let fileResourceFinder                   = await ObjectStoreCoordinator.shared.fileResourceFinder()!
+        let sP: PolisObjectRep<any PolisObject>  = PolisObjectRep(polisObject: facilityDirectory as any PolisObject,
+                                                                  localPath: fileResourceFinder.observingFacilitiesDirectoryFile(),
+                                                                  objectType: .observingFacilityDirectory)
+
+        self.lastUpdateTime = facilityDirectory.lastUpdateTime
+        await super.init(polisRep: sP)
+
+        for facility in facilityDirectory.observingFacilityReferences {
+            let facility = await ObservingFacility(identity: IdentifiableObject(identity: facility.identity),
+                                                   gravitationalBodyRelationship: facility.gravitationalBodyRelationship,
+                                                   placeInTheSolarSystem: facility.placeInTheSolarSystem)
+            _observingFacilities.append(facility)
+        }
+    }
 
     var observingFacilityDirectory: PolisObservingFacilityDirectory {
         var references: [PolisObservingFacilityDirectory.ObservingFacilityReference] = []
@@ -19,31 +36,13 @@ open class ObservingFacilityDirectory: PersistentObject, @unchecked Sendable {
             references.append(ref)
         }
 
-        return PolisObservingFacilityDirectory(lastUpdate: lastUpdate, observingFacilityReferences: references)
+        return PolisObservingFacilityDirectory(lastUpdateTime: lastUpdateTime, observingFacilityReferences: references)
     }
 
-    init(_ facilityDirectory: PolisObservingFacilityDirectory) async {
-        let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(originalPolisObject: facilityDirectory as any PolisObject,
-                                                                 localPath: "",
-                                                                 objectType: .serviceProvider)
-
-        self.lastUpdate = facilityDirectory.lastUpdate
-        for facility in facilityDirectory.observingFacilityReferences {
-            let facility = await ObservingFacility(identity: IdentifiableObject(identity: facility.identity),
-                                                   gravitationalBodyRelationship: facility.gravitationalBodyRelationship,
-                                                   placeInTheSolarSystem: facility.placeInTheSolarSystem)
-            _observingFacilities.append(facility)
-        }
-        await super.init(polisRep: sP)
-    }
-
-    func addFacility(_ facility: ObservingFacility) {
-        _hasChanged = true
+    func addFacility(_ facility: ObservingFacility) async {
         _observingFacilities.append(facility)
+        await setDidChange()
     }
-    
-    //MARK: Private APIs
-    private var _observingFacilities: [ObservingFacility] = []
 
 
     //MARK: : - PolisObjectPersisting implementation -
@@ -52,14 +51,18 @@ open class ObservingFacilityDirectory: PersistentObject, @unchecked Sendable {
         return fileResourceFinder.observingFacilitiesDirectoryFile()
     }
 
-    override func hasChanged() -> Bool { _hasChanged }
-    override func setDidChange() async { _hasChanged = true }
+    override func setDidChange() async {
+        let payload = PolisNotificationPayload(entity: .observingFacilityDirectory, actionType: .update)
 
-    override func saveToLocalProvider() async throws {
-        if _hasChanged {
-            //TODO: Implement me!
-        }
+        lastUpdateTime = Date.now
+        _hasChanged    = true
+        _polisRep.updateCurrentPolisObject(observingFacilityDirectory)
+
+        await MainActor.run { NotificationCenter.default.post(PolisObjectDidChange(payload)) }
+        _hasChanged = true
     }
 
+    //MARK: Private APIs
+    private var _observingFacilities: [ObservingFacility] = []
 }
 

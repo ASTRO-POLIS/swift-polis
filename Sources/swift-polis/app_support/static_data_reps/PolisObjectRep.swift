@@ -13,8 +13,9 @@ import SoftwareEtudesUtilities
 /// Used to identify the type of the Polis Object to be wrapped for file and sync operations). The String representation
 /// us used to customise error messages and reports.
 public enum PolisObjectType: String {
-    case serviceProvider  = "POLIS Directory Entry"
-    case serviceDirectory = "POLIS Directory "
+    case serviceProvider            = "POLIS Directory Entry"
+    case serviceDirectory           = "POLIS Directory"
+    case observingFacilityDirectory = "POLIS Observing Facility Directory"
     case observingFacility
     case observingFacilityDetail
     case artifact
@@ -27,17 +28,17 @@ public enum PolisObjectType: String {
 
 /// Represents any POLIS Data Structure
 struct PolisObjectRep<PolisObject> {
-    let originalPolisObject: PolisObject
-    var currentPolisObject: PolisObject? = nil
+    var polisObject: PolisObject
     let localPath: String
     let objectType: PolisObjectType
 
-    init(originalPolisObject: PolisObject, currentPolisObject: PolisObject? = nil, localPath: String, objectType: PolisObjectType) {
-        self.originalPolisObject = originalPolisObject
-        self.currentPolisObject  = currentPolisObject
-        self.localPath           = localPath
-        self.objectType          = objectType
+    init(polisObject: PolisObject, localPath: String, objectType: PolisObjectType) {
+        self.polisObject = polisObject
+        self.localPath   = localPath
+        self.objectType  = objectType
     }
+
+    mutating func updateCurrentPolisObject(_ newObject: PolisObject) { polisObject = newObject }
 }
 
 protocol PolisObjectPersisting {
@@ -194,7 +195,7 @@ public struct ObjectItem: Sendable {
             let objectDescription = _polisRep.objectType.rawValue
 
             do {
-                let data = try PrettyJSONEncoder().encode(_polisRep.originalPolisObject)
+                let data = try PrettyJSONEncoder().encode(_polisRep.polisObject)
 
                 if !_fm.createFile(atPath: _polisRep.localPath, contents: data)  {
                     _logger.error("Error: cannot save \(objectDescription) file to: \(_polisRep.localPath)")
@@ -218,7 +219,7 @@ public struct ObjectItem: Sendable {
     init(identity: IdentifiableObject) async {
         self.identity = identity
         // Provide a placeholder PolisObjectRep since this subclass doesn't yet manage a concrete PolisObject.
-        let placeholderRep = PolisObjectRep<PolisObject>(originalPolisObject: DummyPolisType(), localPath: "", objectType: .unknown)
+        let placeholderRep = PolisObjectRep<PolisObject>(polisObject: DummyPolisType(), localPath: "", objectType: .unknown)
         await super.init(polisRep: placeholderRep)
     }
 }
@@ -226,15 +227,3 @@ public struct ObjectItem: Sendable {
 struct DummyPolisType: PolisObject {
     var polisDataType = PolisDataType.unknown
 }
-
-//MARK: - Extensions -
-
-// Default implementation, so that the protocol could be adopted step by step
-extension PolisObjectPersisting {
-    func pathToLocalPolisFile() async -> String { "" }
-    func hasChanged() -> Bool { false }
-    func setDidChange() { }
-    func saveToLocalProvider() async throws { }
-    func deleteFromLocalProvider() async throws { }
-}
-

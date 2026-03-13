@@ -16,7 +16,7 @@ import Foundation
     //MARK: Internal APIs
     init(_ providerDirectory: PolisDirectory) async {
         let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!
-        let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(originalPolisObject: providerDirectory as any PolisObject as any PolisObject,
+        let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(polisObject: providerDirectory as any PolisObject as any PolisObject,
                                                                  localPath: fileResourceFinder.polisProviderDirectoryFile(),
                                                                  objectType: .serviceProvider)
 
@@ -46,8 +46,9 @@ import Foundation
     override func setDidChange() async {
         let payload = PolisNotificationPayload(entity: .serviceDirectory, actionType: .update)
 
-        _hasChanged                  = true
-        _polisRep.currentPolisObject = directory
+        lastUpdateTime        = Date.now
+        _hasChanged           = true
+        _polisRep.polisObject = directory
 
         await MainActor.run { NotificationCenter.default.post(PolisObjectDidChange(payload)) }
     }

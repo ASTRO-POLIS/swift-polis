@@ -223,11 +223,11 @@ public struct PolisObservingFacilityDirectory: Codable, Sendable, PolisObject {
 
     }
 
-    public var lastUpdate: Date // UTC
+    public var lastUpdateTime: Date // UTC
     public var observingFacilityReferences: [ObservingFacilityReference]
 
-    public init(lastUpdate: Date, observingFacilityReferences: [ObservingFacilityReference]) {
-        self.lastUpdate                  = lastUpdate
+    public init(lastUpdateTime: Date, observingFacilityReferences: [ObservingFacilityReference]) {
+        self.lastUpdateTime              = lastUpdateTime
         self.observingFacilityReferences = observingFacilityReferences
     }
 
@@ -275,7 +275,7 @@ extension PolisObservingFacilityDirectory.ObservingFacilityReference {
 
 extension PolisObservingFacilityDirectory {
     public enum CodingKeys: String, CodingKey {
-        case lastUpdate                  = "last_updated"
+        case lastUpdateTime              = "last_updated_time"
         case observingFacilityReferences = "observing_facility_references"
     }
 }
