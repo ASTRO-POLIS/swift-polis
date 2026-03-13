@@ -272,14 +272,24 @@ extension ObjectStoreCoordinator {
 
 //MARK: - Managing Observing Facilities -
 extension ObjectStoreCoordinator {
-    public func createObservingFacility(identity: IdentifiableObject,
+    public func createObservingFacility(id: UUID = UUID(),
+                                        observingFacilityCode: String?                                    = nil,
+                                        placeInTheSolarSystem: PolisPlaceInTheSolarSystem                 = .earth,
                                         gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
-                                        placeInTheSolarSystem: PolisPlaceInTheSolarSystem = .earth) async throws-> ObservingFacility {
-        let newFacility = await ObservingFacility.init(identity: identity,
-                                                       gravitationalBodyRelationship: gravitationalBodyRelationship,
-                                                       placeInTheSolarSystem: placeInTheSolarSystem,
-                                                       isNewFacility: true)
+                                        orbitingAroundPlaceInTheSolarSystem: PolisPlaceInTheSolarSystem?  = nil,
+                                        astronomicalCode: String?                                         = nil,
+                                        facilityLocationID: UUID?                                         = nil) async throws-> ObservingFacility {
 
+
+        let newFacilityEntry = PolisObservingFacilityDirectory.ObservingFacilityReference(id: id,
+                                                                                          observingFacilityCode: observingFacilityCode,
+                                                                                          placeInTheSolarSystem: placeInTheSolarSystem,
+                                                                                          gravitationalBodyRelationship: gravitationalBodyRelationship,
+                                                                                          orbitingAroundPlaceInTheSolarSystem: orbitingAroundPlaceInTheSolarSystem,
+                                                                                          astronomicalCode: astronomicalCode,
+                                                                                          facilityLocationID: facilityLocationID)
+        let newFacility      = await ObservingFacility.init(newFacilityEntry)
+        
 
         try await newFacility.saveToLocalProvider()   // If facility's folder does not exist - creates it. No other actions!
 

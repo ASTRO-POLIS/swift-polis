@@ -204,19 +204,41 @@ public struct PolisObservingFacilityDirectory: Codable, Sendable, PolisObject {
     ///
     ///  **Note:** Only root facility (e.g. without a parent facility) should be listed!
     public struct ObservingFacilityReference: Codable, Identifiable, Equatable, Sendable, PolisObject {
-        
-        public var identity: PolisIdentity
+
+        // Identification
+        public var id: UUID
+        public var observingFacilityCode: String?
+
+        // Where in the Solar system
+        public var placeInTheSolarSystem = PolisPlaceInTheSolarSystem.earth
         public var gravitationalBodyRelationship: PolisObservingFacilityLocationType
-        public var placeInTheSolarSystem : PolisPlaceInTheSolarSystem
+        public var orbitingAroundPlaceInTheSolarSystem: PolisPlaceInTheSolarSystem?
+        public var astronomicalCode: String?                                   // Minor planet codes, etc.
+        public var facilityLocationID: UUID?
 
-        public var id: UUID { identity.id }
+        // Facility details
+        public var facilityDetailsID: UUID?
 
-        public init(identity: PolisIdentity,
+        //FIXME: Should be a method in a Rep Object -- public var solarSystemBodyName: String?
+        //FIXME: Should be a method in a Rep Object -- public var orbitingAroundPlaceInTheSolarSystemNamed: String?
+
+
+        public init(id: UUID,
+                    observingFacilityCode: String?                                    = nil,
+                    placeInTheSolarSystem: PolisPlaceInTheSolarSystem                 = .earth,
                     gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
-                    placeInTheSolarSystem : PolisPlaceInTheSolarSystem                = .earth) {
-            self.identity = identity
-            self.gravitationalBodyRelationship = gravitationalBodyRelationship
-            self.placeInTheSolarSystem         = placeInTheSolarSystem
+                    orbitingAroundPlaceInTheSolarSystem: PolisPlaceInTheSolarSystem?  = nil,
+                    astronomicalCode: String?                                         = nil,
+                    facilityLocationID: UUID?                                         = nil,
+                    facilityDetailsID: UUID?                                          = nil) {
+            self.id                                  = id
+            self.observingFacilityCode               = observingFacilityCode
+            self.placeInTheSolarSystem               = placeInTheSolarSystem
+            self.gravitationalBodyRelationship       = gravitationalBodyRelationship
+            self.orbitingAroundPlaceInTheSolarSystem = orbitingAroundPlaceInTheSolarSystem
+            self.astronomicalCode                    = astronomicalCode
+            self.facilityLocationID                  = facilityLocationID
+            self.facilityDetailsID                   = facilityDetailsID
         }
 
         func polisDataType() -> PolisDataType { .observingFacilityReference }
@@ -267,9 +289,14 @@ extension PolisDirectory: Codable {
 
 extension PolisObservingFacilityDirectory.ObservingFacilityReference {
     public enum CodingKeys: String, CodingKey {
-        case identity
-        case gravitationalBodyRelationship = "gravitational_body_relationship"
-        case placeInTheSolarSystem         = "place_in_the_solar_system"
+        case id
+        case observingFacilityCode               = "observing_facility_code"
+        case placeInTheSolarSystem               = "place_in_the_solar_system"
+        case gravitationalBodyRelationship       = "gravitational_body_relationship"
+        case orbitingAroundPlaceInTheSolarSystem = "orbiting_around_place_in_the_solar_system"
+        case astronomicalCode                    = "astronomical_code"
+        case facilityLocationID                  = "facility_location_id"
+        case facilityDetailsID                   = "facility_details_id"
     }
 }
 

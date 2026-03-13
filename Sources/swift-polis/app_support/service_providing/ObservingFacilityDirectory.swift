@@ -20,9 +20,7 @@ import Foundation
         await super.init(polisRep: sP)
 
         for facility in facilityDirectory.observingFacilityReferences {
-            let facility = await ObservingFacility(identity: IdentifiableObject(identity: facility.identity),
-                                                   gravitationalBodyRelationship: facility.gravitationalBodyRelationship,
-                                                   placeInTheSolarSystem: facility.placeInTheSolarSystem)
+            let facility = await ObservingFacility(facility)
             _observingFacilities.append(facility)
         }
     }

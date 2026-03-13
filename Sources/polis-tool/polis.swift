@@ -168,8 +168,10 @@ struct PolisTool {
     }
 
     @MainActor static func createTestEnvironment() async throws {
-        let iO = IdentifiableObject(name: "A Facility")
-        let newFacility = try await storeCoordinator.createObservingFacility(identity: iO)
+        let newFacility = try await storeCoordinator.createObservingFacility(id: UUID(),
+                                                                             observingFacilityCode: "1234",
+                                                                             placeInTheSolarSystem: .earth,
+                                                                             gravitationalBodyRelationship: .surfaceFixed)
         //TODO: Implement me!
     }
 }

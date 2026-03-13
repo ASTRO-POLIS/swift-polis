@@ -11,14 +11,7 @@ public struct PolisObservingFacilityDetails: Identifiable, Codable, Equatable, S
 
     // Identification and type
     public var item: PolisItem
-    public var observingFacilityCode: String?
 
-    // Where in the Solar system
-    public var placeInTheSolarSystem = PolisPlaceInTheSolarSystem.earth
-    public var solarSystemBodyName: String?
-    public var orbitingAroundPlaceInTheSolarSystemNamed: String?
-    public var facilityLocationID: UUID?                                   // Points to dictionary with some predefined (standard) keys
-    public var astronomicalCode: String?                                   // Minor planet codes, etc.
 
     // Relationship to other facilities
     //TODO: We do not need a parent facility! Item has a parent!
@@ -48,12 +41,6 @@ public struct PolisObservingFacilityDetails: Identifiable, Codable, Equatable, S
 
 
     public init(item: PolisItem,
-                observingFacilityCode: String?                    = nil,
-                placeInTheSolarSystem: PolisPlaceInTheSolarSystem = .earth,
-                solarSystemBodyName: String?                      = nil,
-                orbitingAroundPlaceInTheSolarSystemNamed: String? = nil,
-                facilityLocationID: UUID?                         = nil,
-                astronomicalCode: String?                         = nil,
                 parentObservingFacilityID: UUID?                  = nil,
                 observatoryIDs: Set<UUID>?                        = nil,
                 deviceIDs: Set<UUID>?                             = nil,
@@ -65,12 +52,6 @@ public struct PolisObservingFacilityDetails: Identifiable, Codable, Equatable, S
                 airborneEarthBaseDetailsID: UUID?                 = nil,
                 artifactIDs: Set<UUID>?                           = nil) {
         self.item                                     = item
-        self.observingFacilityCode                    = observingFacilityCode
-        self.placeInTheSolarSystem                    = placeInTheSolarSystem
-        self.solarSystemBodyName                      = solarSystemBodyName
-        self.orbitingAroundPlaceInTheSolarSystemNamed = orbitingAroundPlaceInTheSolarSystemNamed
-        self.facilityLocationID                       = facilityLocationID
-        self.astronomicalCode                         = astronomicalCode
         self.parentObservingFacilityID                = parentObservingFacilityID
         self.observatoryIDs                           = observatoryIDs
         self.deviceIDs                                = deviceIDs
@@ -87,12 +68,6 @@ public struct PolisObservingFacilityDetails: Identifiable, Codable, Equatable, S
 public extension PolisObservingFacilityDetails {
     enum CodingKeys: String, CodingKey {
         case item
-        case observingFacilityCode                    = "observing_facility_code"
-        case placeInTheSolarSystem                    = "place_in_the_solar_system"
-        case solarSystemBodyName                      = "solar_system_body_name"
-        case orbitingAroundPlaceInTheSolarSystemNamed = "orbiting_around_place_in_the_solar_system_named"
-        case facilityLocationID                       = "facility_location_id"
-        case astronomicalCode                         = "astronomical_code"
         case parentObservingFacilityID                = "parent_observing_facility_id"
         case observatoryIDs                           = "observatory_ids"
         case deviceIDs                                = "device_ids"
