@@ -105,12 +105,7 @@ final class PolisServiceProviderTests: XCTestCase {
 
     func test_ObservingFacilityReference_codingSupport_shouldSucceed() throws {
         // Given
-        let identity = PolisIdentity(externalReferences: ["1234", "6539"],
-                                     lastUpdateTime: Date(),
-                                     name: "TestAttributes",
-                                     abbreviation: "abc",
-                                     shortDescription: "Testing attributes")
-        let sut      = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: identity)
+        let sut      = PolisObservingFacilityDirectory.ObservingFacilityReference(id: UUID())
 
         // When
         data   = try? jsonEncoder.encode(sut)
@@ -122,19 +117,12 @@ final class PolisServiceProviderTests: XCTestCase {
 
     func test_PolisObservingFacilityDirectory_codingSupport_shouldSucceed() throws {
         // Given
-        let i1   = PolisIdentity(externalReferences: ["1234", "6539"],
-                                 lastUpdateTime: Date(),
-                                 name: "TestAttributes",
-                                 abbreviation: "abc",
-                                 shortDescription: "Testing attributes")
-        let i2   = PolisIdentity(externalReferences: ["1234"],
-                                 lastUpdateTime: Date(),
-                                 name: "OldStuff",
-                                 abbreviation: "old",
-                                 shortDescription: "Very old junk")
-        let osd1 = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: i1)
-        let osd2 = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: i2)
-        let sut  = PolisObservingFacilityDirectory(lastUpdate: Date(), observingFacilityReferences: [osd1, osd2])
+        let id1 = UUID()
+        let id2 = UUID()
+
+        let osd1 = PolisObservingFacilityDirectory.ObservingFacilityReference(id: id1)
+        let osd2 = PolisObservingFacilityDirectory.ObservingFacilityReference(id: id2)
+        let sut  = PolisObservingFacilityDirectory(lastUpdateTime: Date(), observingFacilityReferences: [osd1, osd2])
 
         // When
         data   = try? jsonEncoder.encode(sut)

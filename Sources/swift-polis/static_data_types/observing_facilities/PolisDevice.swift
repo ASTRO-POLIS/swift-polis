@@ -9,7 +9,7 @@ import Foundation
 
 public struct PolisDevice: Codable, Identifiable, Equatable, Sendable {
 
-    public var item: PolisItem
+    public var identity: PolisIdentity
 
     public var deviceType: String
     public var deviceSpecificPropertiesID: UUID?
@@ -27,9 +27,9 @@ public struct PolisDevice: Codable, Identifiable, Equatable, Sendable {
     public var scientificObjectives: String?
     public var notes: String?
 
-    public var id: UUID { item.identity.id }
+    public var id: UUID { identity.id }
 
-    public init(item: PolisItem,
+    public init(identity: PolisIdentity,
                 deviceType: String,
                 deviceSpecificPropertiesID: UUID? = nil,
                 manufacturer: UUID?               = nil,
@@ -38,7 +38,7 @@ public struct PolisDevice: Codable, Identifiable, Equatable, Sendable {
                 automationLabel: String?          = nil,
                 scientificObjectives: String?     = nil,
                 notes: String?                    = nil) {
-        self.item                       = item
+        self.identity                   = identity
         self.deviceType                 = deviceType
         self.deviceSpecificPropertiesID = deviceSpecificPropertiesID
         self.manufacturer               = manufacturer
@@ -52,7 +52,7 @@ public struct PolisDevice: Codable, Identifiable, Equatable, Sendable {
 
 public extension PolisDevice {
     enum CodingKeys: String, CodingKey {
-        case item
+        case identity
         case deviceType                 = "device_type"
         case deviceSpecificPropertiesID = "device_specific_properties_id"
         case manufacturer

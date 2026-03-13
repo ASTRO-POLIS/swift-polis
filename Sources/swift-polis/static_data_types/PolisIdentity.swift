@@ -101,6 +101,9 @@ public struct PolisIdentity: Codable, Identifiable, Equatable, Sendable, PolisOb
     /// It is recommended that English is used.
     public var shortDescription: String?
 
+    /// Format: language_code (e.g. en, de, ...) : description in local language)
+    public var localisedShortDescriptions: [String: String]?
+
     /// The time when the POLIS objects began their existence, such as the first light of a telescope.
     public var startTime: Date?
 

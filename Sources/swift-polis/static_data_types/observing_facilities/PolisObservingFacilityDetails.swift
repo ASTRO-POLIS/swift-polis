@@ -9,15 +9,12 @@ import Foundation
 
 public struct PolisObservingFacilityDetails: Identifiable, Codable, Equatable, Sendable {
 
-    // Identification and type
-    public var item: PolisItem
-
-
-    // Relationship to other facilities
-    //TODO: We do not need a parent facility! Item has a parent!
+    // Identification & relationship to other facilities
+    public var identity: PolisIdentity
     public var parentObservingFacilityID: UUID?
 
     // Contains
+    public var locationID: UUID?
     public var observatoryIDs: Set<UUID>?
     public var deviceIDs: Set<UUID>?
 
@@ -34,14 +31,13 @@ public struct PolisObservingFacilityDetails: Identifiable, Codable, Equatable, S
     // Arifacts of interest could be also on other solar system bodies (e.g. Apollo landing site)
     public var artifactIDs: Set<UUID>?
 
-    //TODO: ... and satellites, rovers, ... to be added
-
     // Identifiable protocol compliance
-    public var id: UUID { item.identity.id }
+    public var id: UUID { identity.id }
 
 
-    public init(item: PolisItem,
+    public init(identity: PolisIdentity,
                 parentObservingFacilityID: UUID?                  = nil,
+                locationID: UUID?                                 = nil,
                 observatoryIDs: Set<UUID>?                        = nil,
                 deviceIDs: Set<UUID>?                             = nil,
                 website: URL?                                     = nil,
@@ -51,8 +47,9 @@ public struct PolisObservingFacilityDetails: Identifiable, Codable, Equatable, S
                 mobileSurfaceEarthBaseDetailsID: UUID?            = nil,
                 airborneEarthBaseDetailsID: UUID?                 = nil,
                 artifactIDs: Set<UUID>?                           = nil) {
-        self.item                                     = item
+        self.identity                                 = identity
         self.parentObservingFacilityID                = parentObservingFacilityID
+        self.locationID                               = locationID
         self.observatoryIDs                           = observatoryIDs
         self.deviceIDs                                = deviceIDs
         self.website                                  = website
@@ -67,8 +64,9 @@ public struct PolisObservingFacilityDetails: Identifiable, Codable, Equatable, S
 
 public extension PolisObservingFacilityDetails {
     enum CodingKeys: String, CodingKey {
-        case item
+        case identity
         case parentObservingFacilityID                = "parent_observing_facility_id"
+        case locationID                               = "location_id"
         case observatoryIDs                           = "observatory_ids"
         case deviceIDs                                = "device_ids"
         case website

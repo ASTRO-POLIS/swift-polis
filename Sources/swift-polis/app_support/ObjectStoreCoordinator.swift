@@ -274,6 +274,7 @@ extension ObjectStoreCoordinator {
 extension ObjectStoreCoordinator {
     public func createObservingFacility(id: UUID = UUID(),
                                         observingFacilityCode: String?                                    = nil,
+                                        lifecycleStatus: PolisLifecycleStatus                             = .active,
                                         placeInTheSolarSystem: PolisPlaceInTheSolarSystem                 = .earth,
                                         gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
                                         orbitingAroundPlaceInTheSolarSystem: PolisPlaceInTheSolarSystem?  = nil,
@@ -283,6 +284,7 @@ extension ObjectStoreCoordinator {
 
         let newFacilityEntry = PolisObservingFacilityDirectory.ObservingFacilityReference(id: id,
                                                                                           observingFacilityCode: observingFacilityCode,
+                                                                                          lifecycleStatus: lifecycleStatus,
                                                                                           placeInTheSolarSystem: placeInTheSolarSystem,
                                                                                           gravitationalBodyRelationship: gravitationalBodyRelationship,
                                                                                           orbitingAroundPlaceInTheSolarSystem: orbitingAroundPlaceInTheSolarSystem,

@@ -132,42 +132,42 @@ public struct IdentifiableObject: Sendable {
 }
 
 //MARK: - ObjectItem -
-public struct ObjectItem: Sendable {
-    public var identifiableObject: IdentifiableObject
-    public var owner             : PolisOwner?
-    public var parentID          : UUID?
-    public var automationLabel   : String?
-    public var mediaSourceID     : UUID?
-
-    public init(identifiableObject: IdentifiableObject,
-                owner             : PolisOwner? = nil,
-                parentID          : UUID?       = nil,
-                automationLabel   : String?     = nil,
-                mediaSourceID     : UUID?       = nil) {
-        self.identifiableObject = identifiableObject
-        self.owner              = owner
-        self.parentID           = parentID
-        self.automationLabel    = automationLabel
-        self.mediaSourceID      = mediaSourceID
-    }
-
-    var item: PolisItem {
-        get {
-            PolisItem(identity       : identifiableObject.identity,
-                      owner          : owner,
-                      parentID       : parentID,
-                      automationLabel: automationLabel,
-                      mediaSourceID  : mediaSourceID)
-        }
-        set {
-            identifiableObject.identity = newValue.identity
-            owner                       = newValue.owner
-            parentID                    = newValue.parentID
-            automationLabel             = newValue.automationLabel
-            mediaSourceID               = newValue.mediaSourceID
-        }
-    }
-}
+//public struct ObjectItem: Sendable {
+//    public var identifiableObject: IdentifiableObject
+//    public var owner             : PolisOwner?
+//    public var parentID          : UUID?
+//    public var automationLabel   : String?
+//    public var mediaSourceID     : UUID?
+//
+//    public init(identifiableObject: IdentifiableObject,
+//                owner             : PolisOwner? = nil,
+//                parentID          : UUID?       = nil,
+//                automationLabel   : String?     = nil,
+//                mediaSourceID     : UUID?       = nil) {
+//        self.identifiableObject = identifiableObject
+//        self.owner              = owner
+//        self.parentID           = parentID
+//        self.automationLabel    = automationLabel
+//        self.mediaSourceID      = mediaSourceID
+//    }
+//
+//    var item: PolisItem {
+//        get {
+//            PolisItem(identity       : identifiableObject.identity,
+//                      owner          : owner,
+//                      parentID       : parentID,
+//                      automationLabel: automationLabel,
+//                      mediaSourceID  : mediaSourceID)
+//        }
+//        set {
+//            identifiableObject.identity = newValue.identity
+//            owner                       = newValue.owner
+//            parentID                    = newValue.parentID
+//            automationLabel             = newValue.automationLabel
+//            mediaSourceID               = newValue.mediaSourceID
+//        }
+//    }
+//}
 
 //MARK: - Persistent Object Hierarchy Roots -
 

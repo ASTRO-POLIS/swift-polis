@@ -67,7 +67,7 @@ public enum PolisOwnershipType: String, Codable, Equatable, Sendable {
     case consortium
     case cooperative
     case collaboration
-    case `private`
+    case personal
     case other
     case unknown
 }

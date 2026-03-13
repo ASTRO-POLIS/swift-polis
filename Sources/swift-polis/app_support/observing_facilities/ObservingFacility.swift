@@ -12,6 +12,8 @@ import Foundation
     // Identification
     public var id: UUID
     public var observingFacilityCode: String?
+    public var lifecycleStatus: PolisLifecycleStatus = .unknown
+    public var lastUpdateTime: Date = Date.now
 
     // Where in the Solar system
     public var placeInTheSolarSystem: PolisPlaceInTheSolarSystem = .earth
@@ -31,6 +33,8 @@ import Foundation
 
         self.id                                  = facility.id
         self.observingFacilityCode               = facility.observingFacilityCode
+        self.lifecycleStatus                     = facility.lifecycleStatus
+        self.lastUpdateTime                      = facility.lastUpdateTime
         self.placeInTheSolarSystem               = facility.placeInTheSolarSystem
         self.gravitationalBodyRelationship       = facility.gravitationalBodyRelationship
         self.orbitingAroundPlaceInTheSolarSystem = facility.orbitingAroundPlaceInTheSolarSystem
@@ -44,6 +48,8 @@ import Foundation
     var facilityReference: PolisObservingFacilityDirectory.ObservingFacilityReference {
         PolisObservingFacilityDirectory.ObservingFacilityReference(id: id,
                                                                    observingFacilityCode: observingFacilityCode,
+                                                                   lifecycleStatus: lifecycleStatus,
+                                                                   lastUpdateTime: lastUpdateTime,
                                                                    placeInTheSolarSystem: placeInTheSolarSystem,
                                                                    gravitationalBodyRelationship: gravitationalBodyRelationship,
                                                                    orbitingAroundPlaceInTheSolarSystem: orbitingAroundPlaceInTheSolarSystem,
@@ -59,6 +65,11 @@ import Foundation
         let rF = await ObjectStoreCoordinator.shared.fileResourceFinder()
 
         return rF!.observingFacilityFolder(observingFacilityID: id)
+    }
+
+    override func setDidChange() async {
+        lastUpdateTime = Date.now
+        _hasChanged = true
     }
 
     /// The basic data for this facility are stored into the facility directory. Therefore no file needs to be saved. But

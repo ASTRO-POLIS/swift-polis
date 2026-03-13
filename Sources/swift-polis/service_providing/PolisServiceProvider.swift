@@ -208,6 +208,8 @@ public struct PolisObservingFacilityDirectory: Codable, Sendable, PolisObject {
         // Identification
         public var id: UUID
         public var observingFacilityCode: String?
+        public var lifecycleStatus: PolisLifecycleStatus = .unknown
+        public var lastUpdateTime: Date = Date.now
 
         // Where in the Solar system
         public var placeInTheSolarSystem = PolisPlaceInTheSolarSystem.earth
@@ -225,6 +227,8 @@ public struct PolisObservingFacilityDirectory: Codable, Sendable, PolisObject {
 
         public init(id: UUID,
                     observingFacilityCode: String?                                    = nil,
+                    lifecycleStatus: PolisLifecycleStatus                             = .unknown,
+                    lastUpdateTime: Date                                                = Date.now,
                     placeInTheSolarSystem: PolisPlaceInTheSolarSystem                 = .earth,
                     gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
                     orbitingAroundPlaceInTheSolarSystem: PolisPlaceInTheSolarSystem?  = nil,
@@ -233,6 +237,8 @@ public struct PolisObservingFacilityDirectory: Codable, Sendable, PolisObject {
                     facilityDetailsID: UUID?                                          = nil) {
             self.id                                  = id
             self.observingFacilityCode               = observingFacilityCode
+            self.lifecycleStatus                     = lifecycleStatus
+            self.lastUpdateTime                      = lastUpdateTime
             self.placeInTheSolarSystem               = placeInTheSolarSystem
             self.gravitationalBodyRelationship       = gravitationalBodyRelationship
             self.orbitingAroundPlaceInTheSolarSystem = orbitingAroundPlaceInTheSolarSystem
@@ -291,6 +297,8 @@ extension PolisObservingFacilityDirectory.ObservingFacilityReference {
     public enum CodingKeys: String, CodingKey {
         case id
         case observingFacilityCode               = "observing_facility_code"
+        case lifecycleStatus                     = "lifecycle_status"
+        case lastUpdateTime                      = "last_updated_time"
         case placeInTheSolarSystem               = "place_in_the_solar_system"
         case gravitationalBodyRelationship       = "gravitational_body_relationship"
         case orbitingAroundPlaceInTheSolarSystem = "orbiting_around_place_in_the_solar_system"
