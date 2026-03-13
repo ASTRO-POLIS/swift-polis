@@ -85,10 +85,7 @@ public struct PolisIdentity: Codable, Identifiable, Equatable, Sendable, PolisOb
     ///
     /// It is recommended to assign a unique English name describing the
     /// object as close as possible (e.g. "Alta-123_CCD").
-    public var name: String?
-
-    /// Provides a human-readable name for the object in the local script and language.
-    public var localName: String?
+    public var name: [String: String]?
 
     /// Abbreviations are widely used for searching items, as well as device, instrument, and  project names.
     ///
@@ -99,10 +96,7 @@ public struct PolisIdentity: Codable, Identifiable, Equatable, Sendable, PolisOb
     /// Short optional object (object) description.
     ///
     /// It is recommended that English is used.
-    public var shortDescription: String?
-
-    /// Format: language_code (e.g. en, de, ...) : description in local language)
-    public var localisedShortDescriptions: [String: String]?
+    public var shortDescription: [String: String]?
 
     /// The time when the POLIS objects began their existence, such as the first light of a telescope.
     public var startTime: Date?
@@ -119,10 +113,10 @@ public struct PolisIdentity: Codable, Identifiable, Equatable, Sendable, PolisOb
                 externalReferences: [String]?         = nil,
                 lastUpdateTime: Date                  = Date.now,
                 lifecycleStatus: PolisLifecycleStatus = .unknown,
-                name: String?                         = nil,
+                name: [String: String]?               = nil,
                 localName: String?                    = nil,
                 abbreviation: String?                 = nil,
-                shortDescription: String?             = nil,
+                shortDescription: [String: String]?   = nil,
                 startTime: Date?                      = nil,
                 endTime: Date?                        = nil,
                 polisRegistrationTime: Date?          = nil) {
@@ -131,7 +125,6 @@ public struct PolisIdentity: Codable, Identifiable, Equatable, Sendable, PolisOb
         self.lastUpdateTime        = lastUpdateTime
         self.lifecycleStatus       = lifecycleStatus
         self.name                  = name
-        self.localName             = localName
         self.abbreviation          = abbreviation
         self.shortDescription      = shortDescription
         self.startTime             = startTime
@@ -149,7 +142,6 @@ extension PolisIdentity {
         case lastUpdateTime        = "last_update_time"
         case lifecycleStatus       = "lifecycle_status"
         case name
-        case localName             = "local_name"
         case abbreviation
         case shortDescription      = "short_description"
         case startTime             = "start_time"

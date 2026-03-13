@@ -9,72 +9,73 @@ import Foundation
 
 public struct PolisObservingFacilityDetails: Identifiable, Codable, Equatable, Sendable {
 
-    // Identification & relationship to other facilities
+    //MARK: Identification & relationship to other facilities
     public var identity: PolisIdentity
     public var parentObservingFacilityID: UUID?
 
-    // Contains
+    //MARK: Contains
     public var locationID: UUID?
     public var observatoryIDs: Set<UUID>?
     public var deviceIDs: Set<UUID>?
+    public var visitingHoursID: UUID?
+    public var ownerID: UUID?          // Who are the owners of the POLIS Item?
+    public var mediaSourceID: UUID?    // Defines a set of media sources (images, audio etc) attached to the POLIS Item
+    public var artifactIDs: Set<UUID>? // Arifacts of interest could be also on other solar system bodies (e.g. Apollo landing site)
 
-    // Info
+    //MARK: Info
     public var website: URL?
-    public var scientificObjectives: String?
-    public var history: String?
+    public var scientificObjectives: [String : String]?
+    public var history: [String : String]?
 
-    // Facility details UUIDs - one and only one type could be assigned!
-    public var fixedSurfaceEarthBaseDetailsID: UUID?
-    public var mobileSurfaceEarthBaseDetailsID: UUID?
-    public var airborneEarthBaseDetailsID: UUID?
-
-    // Arifacts of interest could be also on other solar system bodies (e.g. Apollo landing site)
-    public var artifactIDs: Set<UUID>?
-
-    // Identifiable protocol compliance
+    //MARK: Identifiable protocol compliance
     public var id: UUID { identity.id }
 
-
     public init(identity: PolisIdentity,
-                parentObservingFacilityID: UUID?                  = nil,
-                locationID: UUID?                                 = nil,
-                observatoryIDs: Set<UUID>?                        = nil,
-                deviceIDs: Set<UUID>?                             = nil,
-                website: URL?                                     = nil,
-                scientificObjectives: String?                     = nil,
-                history: String?                                  = nil,
-                fixedSurfaceEarthBaseDetailsID: UUID?             = nil,
-                mobileSurfaceEarthBaseDetailsID: UUID?            = nil,
-                airborneEarthBaseDetailsID: UUID?                 = nil,
-                artifactIDs: Set<UUID>?                           = nil) {
-        self.identity                                 = identity
-        self.parentObservingFacilityID                = parentObservingFacilityID
-        self.locationID                               = locationID
-        self.observatoryIDs                           = observatoryIDs
-        self.deviceIDs                                = deviceIDs
-        self.website                                  = website
-        self.scientificObjectives                     = scientificObjectives
-        self.history                                  = history
-        self.fixedSurfaceEarthBaseDetailsID           = fixedSurfaceEarthBaseDetailsID
-        self.mobileSurfaceEarthBaseDetailsID          = mobileSurfaceEarthBaseDetailsID
-        self.airborneEarthBaseDetailsID               = airborneEarthBaseDetailsID
-        self.artifactIDs                              = artifactIDs
+                parentObservingFacilityID: UUID?         = nil,
+
+                locationID: UUID?                        = nil,
+                observatoryIDs: Set<UUID>?               = nil,
+                deviceIDs: Set<UUID>?                    = nil,
+                visitingHoursID: UUID?                   = nil,
+                ownerID: UUID?                           = nil,
+                mediaSourceID: UUID?                     = nil,
+                artifactIDs: Set<UUID>?                  = nil,
+
+                website: URL?                            = nil,
+                scientificObjectives: [String : String]? = nil,
+                history: [String : String]?              = nil) {
+        self.identity                  = identity
+        self.parentObservingFacilityID = parentObservingFacilityID
+
+        self.locationID                = locationID
+        self.observatoryIDs            = observatoryIDs
+        self.deviceIDs                 = deviceIDs
+        self.visitingHoursID           = visitingHoursID
+        self.ownerID                   = ownerID
+        self.mediaSourceID             = mediaSourceID
+        self.artifactIDs               = artifactIDs
+
+        self.website                   = website
+        self.scientificObjectives      = scientificObjectives
+        self.history                   = history
     }
 }
 
 public extension PolisObservingFacilityDetails {
     enum CodingKeys: String, CodingKey {
         case identity
-        case parentObservingFacilityID                = "parent_observing_facility_id"
-        case locationID                               = "location_id"
-        case observatoryIDs                           = "observatory_ids"
-        case deviceIDs                                = "device_ids"
+        case parentObservingFacilityID = "parent_observing_facility_id"
+
+        case locationID                = "location_id"
+        case observatoryIDs            = "observatory_ids"
+        case deviceIDs                 = "device_ids"
+        case visitingHoursID           = "visiting_hours_id"
+        case ownerID                   = "owner_id"
+        case mediaSourceID             = "media_source_id"
+        case artifactIDs               = "artifact_ids"
+
         case website
-        case scientificObjectives                     = "scientific_objectives"
+        case scientificObjectives      = "scientific_objectives"
         case history
-        case fixedSurfaceEarthBaseDetailsID           = "fixed_surface_earth_base_details_id"
-        case mobileSurfaceEarthBaseDetailsID          = "mobile_surface_earth_base_details_id"
-        case airborneEarthBaseDetailsID               = "airborne_earth_base_details_id"
-        case artifactIDs                              = "artifact_ids"
     }
 }

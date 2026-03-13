@@ -78,7 +78,7 @@ final class PolisIdentityTests: XCTestCase {
         var sut2 = sut1
 
         // When
-        sut2.name = "New name"
+        sut2.name = ["en" : "New name"]
 
         // Then
         XCTAssertEqual(sut1, sut1)

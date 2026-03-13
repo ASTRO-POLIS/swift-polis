@@ -56,10 +56,9 @@ public struct IdentifiableObject: Sendable {
     public var lastUpdateTime: Date
     public var lifecycleStatus: PolisLifecycleStatus
     
-    public var name: String
-    public var localName: String?
+    public var name: [String : String]?
     public var abbreviation: String?
-    public var shortDescription: String?
+    public var shortDescription: [String : String]?
     public var startTime: Date?
     public var endTime: Date?
     public var polisRegistrationTime: Date?
@@ -68,11 +67,11 @@ public struct IdentifiableObject: Sendable {
     public init(id: UUID                              = UUID(),
                 lastUpdateTime: Date                  = Date(),
                 lifecycleStatus: PolisLifecycleStatus = .unknown,
-                name: String,
+                name: [String : String]?              = nil,
                 externalReferences: [String]?         = nil,
                 localName: String?                    = nil,
                 abbreviation: String?                 = nil,
-                shortDescription: String?             = nil,
+                shortDescription: [String : String]?  = nil,
                 startTime: Date?                      = nil,
                 endTime: Date?                        = nil,
                 polisRegistrationTime: Date?          = nil) {
@@ -81,7 +80,6 @@ public struct IdentifiableObject: Sendable {
         self.lifecycleStatus       = lifecycleStatus
         self.name                  = name
         self.externalReferences    = externalReferences
-        self.localName             = localName
         self.abbreviation          = abbreviation
         self.shortDescription      = shortDescription
         self.startTime             = startTime
@@ -93,9 +91,8 @@ public struct IdentifiableObject: Sendable {
         self.id                    = identity.id
         self.lastUpdateTime        = identity.lastUpdateTime
         self.lifecycleStatus       = identity.lifecycleStatus
-        self.name                  = identity.name ?? "<unnamed>"
+        self.name                  = identity.name ?? ["en" : "<unnamed>"]
         self.externalReferences    = identity.externalReferences
-        self.localName             = identity.localName
         self.abbreviation          = identity.abbreviation
         self.shortDescription      = identity.shortDescription
         self.startTime             = identity.startTime
@@ -110,7 +107,6 @@ public struct IdentifiableObject: Sendable {
                           lastUpdateTime       : lastUpdateTime,
                           lifecycleStatus      : lifecycleStatus,
                           name                 : name,
-                          localName            : localName,
                           abbreviation         : abbreviation,
                           shortDescription     : shortDescription,
                           startTime            : startTime,
@@ -119,8 +115,7 @@ public struct IdentifiableObject: Sendable {
         }
         set {
             externalReferences                = newValue.externalReferences
-            name                              = newValue.name ?? "<unnamed>"
-            localName                         = newValue.localName
+            name                              = newValue.name ?? ["en" : "<unnamed>"]
             abbreviation                      = newValue.abbreviation
             shortDescription                  = newValue.shortDescription
             startTime                         = newValue.startTime

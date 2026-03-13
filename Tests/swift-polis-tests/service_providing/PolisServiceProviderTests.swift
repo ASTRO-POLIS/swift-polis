@@ -135,9 +135,9 @@ final class PolisServiceProviderTests: XCTestCase {
     func test_PolisResourceDirectory_codingSupport_shouldSucceed() throws {
         // Given
         let identity  = PolisIdentity(lastUpdateTime: Date(),
-                                      name: "AstroSystemeAustria",
+                                      name: ["en" : "AstroSystemeAustria"],
                                       abbreviation: "ASA",
-                                      shortDescription: "Austrian major telescope producer")
+                                      shortDescription: ["en" : "Austrian major telescope producer"])
         //TODO: Reimplement!
 //        let reference = PolisResourceDirectory.ResourceReference(identity: identity, uniqueName: "ASA")
 //        let sut       = PolisResourceDirectory(lastUpdate: Date(), resourceReferences: [reference])

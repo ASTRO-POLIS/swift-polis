@@ -29,10 +29,10 @@ struct StaticDataTypeTestingSupport {
     static func examplePolisIdentityBAO() -> PolisIdentity {
         PolisIdentity(externalReferences:    ["https://bao.am/device?id=1234", "https://bao.am/rtml?dump-1234"],
                       lastUpdateTime:        Date.now,
-                      name:                  "Byurakan Astronomical Observatory",
-                      localName:             "ՀՀ ԳԱԱ Վ․Հ․ ՀԱՄԲԱՐՁՈՒՄՅԱՆԻ ԱՆՎԱՆ ԲՅՈՒՐԱԿԱՆԻ ԱՍՏՂԱԴԻՏԱՐԱՆ (ԱԶԳԱՅԻՆ ԱՐԺԵՔ)",
+                      name:                  ["en" : "Byurakan Astronomical Observatory",
+                                              "hy" : "ՀՀ ԳԱԱ Վ․Հ․ ՀԱՄԲԱՐՁՈՒՄՅԱՆԻ ԱՆՎԱՆ ԲՅՈՒՐԱԿԱՆԻ ԱՍՏՂԱԴԻՏԱՐԱՆ (ԱԶԳԱՅԻՆ ԱՐԺԵՔ)"],
                       abbreviation:          "bao",
-                      shortDescription:      "Testing BAO site",
+                      shortDescription:      ["en" : "Testing BAO site"],
                       startTime:             Date.now,
                       endTime:               Date.now,
                       polisRegistrationTime: Date.now)
@@ -41,10 +41,9 @@ struct StaticDataTypeTestingSupport {
     static func examplePolisIdentityASA() -> PolisIdentity {
         PolisIdentity(externalReferences:    ["https://www.astrosysteme.com?id=1234", "https://www.astrosysteme.com/dump-1234"],
                       lastUpdateTime:        Date.now,
-                      name:                  "Astro Systeme Austria",
-                      localName:             "Astro Systeme Osterreich",
+                      name:                  ["en" : "Astro Systeme Austria"],
                       abbreviation:          "asa",
-                      shortDescription:      "Testing ASA site",
+                      shortDescription:      ["en" : "Testing ASA site"],
                       startTime:             Date.now,
                       endTime:               Date.now,
                       polisRegistrationTime: Date.now)
