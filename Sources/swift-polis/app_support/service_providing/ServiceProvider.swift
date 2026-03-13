@@ -12,25 +12,22 @@ import SoftwareEtudesUtilities
 
     public private(set) var id: UUID!
     public var mirrorID: UUID?
-    public var reachabilityStatus = PolisDirectory.ProviderDirectoryEntry.ServiceReachability.localUseOnly
-    public var name = "<unnamed>"
+    public var reachabilityStatus                              = PolisDirectory.ProviderDirectoryEntry.ServiceReachability.localUseOnly
+    public var name                                            = "<unnamed>"
     public var shortDescription: String?
-    public var lastUpdateTime = Date.now
+    public var lastUpdateTime                                  = Date.now
     public var url: String?
     public var supportedImplementations: [PolisImplementation] = []
-    public var providerType = PolisDirectory.ProviderDirectoryEntry.ProviderType.experimental
+    public var providerType                                    = PolisDirectory.ProviderDirectoryEntry.ProviderType.experimental
     public var contactEmail: String!
-
-    private static func initialLocalPolisFilePath() async -> String {
-        let fileResourceFinder = await ObjectStoreCoordinator.shared.fileResourceFinder()!
-        return fileResourceFinder.configurationFile()
-    }
 
     //MARK: Internal APIs
     init(_ directoryEntry: PolisDirectory.ProviderDirectoryEntry) async {
+        let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(originalPolisObject: directoryEntry as any PolisObject as any PolisObject,
-                                                                 localPath: await ServiceProvider.initialLocalPolisFilePath(),
+                                                                 localPath: fileResourceFinder.configurationFile(),
                                                                  objectType: .serviceProvider)
+
         id                       = directoryEntry.id
         mirrorID                 = directoryEntry.mirrorID
         reachabilityStatus       = directoryEntry.reachabilityStatus
@@ -58,42 +55,25 @@ import SoftwareEtudesUtilities
                                                    contactEmail: contactEmail)
     }
 
-    //TODO: Implement me!
+    //MARK: Implementing PolisObjectPersisting
     override func pathToLocalPolisFile() async -> String {
         let fileResourceFinder = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         return fileResourceFinder.configurationFile()
     }
 
-    //TODO: Implement me!
-    override func hasChanged() -> Bool { _hasChanged }
-
     override func setDidChange() async {
-        _hasChanged = true
-        let payload = PolisNotificationPayload(entity: .serviceProvider, actionType: .update, id: id)
-        await MainActor.run {
-            NotificationCenter.default.post(PolisObjectDidChange(payload))
+        let payload   = PolisNotificationPayload(entity: .serviceProvider, actionType: .update, id: id)
+        let directory = await ObjectStoreCoordinator.shared.serviceProviderDirectory()
+
+        _hasChanged                  = true
+        _polisRep.currentPolisObject = directoryEntry
+
+        if directory != nil {
+            directory!.addOrReplace(directoryEntry!)
+            await directory!.setDidChange()
         }
+
+        await MainActor.run { NotificationCenter.default.post(PolisObjectDidChange(payload)) }
     }
-
-    override func saveToLocalProvider() async throws {
-        if _hasChanged {
-            do {
-                let data = try PrettyJSONEncoder().encode(_polisRep.originalPolisObject)
-
-                if !_fm.createFile(atPath: _polisRep.localPath, contents: data)  {
-                    _logger.error("Cannot save POLIS Directory Entry file to: \(_polisRep.localPath)")
-                    throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.cannotWriteFileToLocalStore
-                }
-            }
-            catch {
-                _logger.error("Error: create POLIS object out of example string")
-                throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.cannotCreatePolisObjectFromStringExample
-            }
-        }
-    }
-
-    //TODO: Implement me!
-    override func deleteFromLocalProvider() async throws { }
-
 }
 

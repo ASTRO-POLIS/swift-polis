@@ -22,10 +22,10 @@ struct PolisNotificationPayload {
 
     let entity: PolisObjectType
     let actionType: ActionType
-    let id: UUID
+    let id: UUID?
     let polisObject: (any PolisObject)?
 
-    init(entity: PolisObjectType, actionType: ActionType, id: UUID, polisObject: (any PolisObject)? = nil) {
+    init(entity: PolisObjectType, actionType: ActionType, id: UUID? = nil, polisObject: (any PolisObject)? = nil) {
         self.entity      = entity
         self.actionType  = actionType
         self.id          = id

@@ -8,42 +8,48 @@
 import Foundation
 
 
-open class ServiceProviderDirectory: PolisObjectPersisting {
+@Observable public final class ServiceProviderDirectory: PersistentObject, @unchecked Sendable {
 
     public var lastUpdateTime = Date.now
-
     public var providerDirectoryEntries: [PolisDirectory.ProviderDirectoryEntry] = []
 
-    init(_ providerDirectory: PolisDirectory) {
-        self.lastUpdateTime = providerDirectory.lastUpdateTime
+    //MARK: Internal APIs
+    init(_ providerDirectory: PolisDirectory) async {
+        let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!
+        let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(originalPolisObject: providerDirectory as any PolisObject as any PolisObject,
+                                                                 localPath: fileResourceFinder.polisProviderDirectoryFile(),
+                                                                 objectType: .serviceProvider)
+
+        self.lastUpdateTime           = providerDirectory.lastUpdateTime
         self.providerDirectoryEntries = providerDirectory.providerDirectoryEntries
 
-        self._originalPolisRecord = providerDirectory
-        self._currentPolisRecord  = providerDirectory
+        await super.init(polisRep: sP)
     }
 
-    //MARK: Private APIs
-    private var _originalPolisRecord: PolisDirectory?
-    private var _currentPolisRecord: PolisDirectory?
-}
+    var directory: PolisDirectory {
+        PolisDirectory(lastUpdateTime: lastUpdateTime, providerDirectoryEntries: providerDirectoryEntries)!
+    }
 
-//
-//=====================================================================================================================
-//
+    func addOrReplace(_ entry: PolisDirectory.ProviderDirectoryEntry) {
+        let index = providerDirectoryEntries.firstIndex(of: entry)
 
-//MARK: : - PolisObjectPersisting implementation -
-extension ServiceProviderDirectory {
-    @MainActor static func pathToLocalPolisFile() async -> String {
+        if index != nil { providerDirectoryEntries.remove(at: index!) }
+        providerDirectoryEntries.append(entry)
+    }
+    
+    //MARK: Implementing PolisObjectPersisting
+    override func pathToLocalPolisFile() async -> String {
         let fileResourceFinder = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         return fileResourceFinder.polisProviderDirectoryFile()
     }
 
-    //TODO: Implement me!
-    @MainActor static func loadFromLocalProvider() async throws -> PolisObjectPersisting { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
+    override func setDidChange() async {
+        let payload = PolisNotificationPayload(entity: .serviceDirectory, actionType: .update)
 
-    //TODO: Implement me!
-    @MainActor static func loadFromRemoteProvider() async throws -> PolisObjectPersisting { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
+        _hasChanged                  = true
+        _polisRep.currentPolisObject = directory
 
-    //TODO: Implement me!
-    func hasChanged() -> Bool { false }
+        await MainActor.run { NotificationCenter.default.post(PolisObjectDidChange(payload)) }
+    }
+
 }

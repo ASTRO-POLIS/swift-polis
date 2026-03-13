@@ -223,6 +223,7 @@ extension ObjectStoreCoordinator {
         do {
             if await ObjectStoreCoordinator.isBigBangServiceProvider { polisDirectoryEntry = try ServiceProviderDataSource.bigBangPolisDirectoryEntryExample() }
             else                                                     { polisDirectoryEntry = try ServiceProviderDataSource.defaultPolisDirectoryEntryExample() }
+
             polisDirectoryEntry.lastUpdateTime = Date.now
             _serviceProvider                   = await ServiceProvider(polisDirectoryEntry)
 
@@ -237,19 +238,14 @@ extension ObjectStoreCoordinator {
     }
 
     private func createPolisDirectoryFile() async throws {
-        guard let polisDirectoryEntry = _serviceProvider?.directoryEntry else { throw ObjectStoreCoordinatorError.missingServiceProvider }
-        guard let polisDirectory = PolisDirectory(lastUpdateTime: Date.now, providerDirectoryEntries: [polisDirectoryEntry])
-        else { throw ObjectStoreCoordinatorError.missingServiceProvider }
+        guard let polisDirectoryEntry = _serviceProvider?.directoryEntry                                                          else { throw ObjectStoreCoordinatorError.missingServiceProvider }
+        guard let polisDirectory      = PolisDirectory(lastUpdateTime: Date.now, providerDirectoryEntries: [polisDirectoryEntry]) else { throw ObjectStoreCoordinatorError.missingServiceProvider }
 
         do {
-            let data = try  PrettyJSONEncoder().encode(polisDirectory)
-            let path = await ServiceProviderDirectory.pathToLocalPolisFile()
+            _serviceProviderDirectory = await ServiceProviderDirectory(polisDirectory)
 
-            if !_fm.createFile(atPath: path, contents: data)  {
-                _logger.error("Cannot save POLIS Directory file to: \(path)")
-                throw ObjectStoreCoordinatorError.cannotWriteFileToLocalStore
-            }
-            _serviceProviderDirectory = ServiceProviderDirectory(polisDirectory)
+            await _serviceProviderDirectory?.setDidChange()
+            try await _serviceProviderDirectory?.saveToLocalProvider()
         }
         catch {
             _logger.error("Error: Cannot create POLIS Directory out of existing POLIS Directory Entry")
@@ -307,6 +303,10 @@ extension ObjectStoreCoordinator {
 
 //MARK: - Polis Service Providing -
 extension ObjectStoreCoordinator {
+
+    func serviceProvider()              -> ServiceProvider?            { _serviceProvider }
+    func serviceProviderDirectory()     -> ServiceProviderDirectory?   { _serviceProviderDirectory }
+    func observingFacilitiesDirectory() -> ObservingFacilityDirectory? { _observingFacilityDirectory }
 
     private func moveLocalDataToTemporaryFolder() throws {
         //TODO: Implement me!

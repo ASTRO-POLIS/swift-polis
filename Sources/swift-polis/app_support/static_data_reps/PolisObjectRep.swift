@@ -8,10 +8,13 @@
 import Foundation
 import Logging
 import SoftwareEtudesLogging
+import SoftwareEtudesUtilities
 
-/// Used to identify the type of the Polis Object to be wrapped for file and sync operations)
-public enum PolisObjectType {
-    case serviceProvider
+/// Used to identify the type of the Polis Object to be wrapped for file and sync operations). The String representation
+/// us used to customise error messages and reports.
+public enum PolisObjectType: String {
+    case serviceProvider  = "POLIS Directory Entry"
+    case serviceDirectory = "POLIS Directory "
     case observingFacility
     case observingFacilityDetail
     case artifact
@@ -185,7 +188,26 @@ public struct ObjectItem: Sendable {
     func pathToLocalPolisFile() async -> String { "" }
     func hasChanged() -> Bool { _hasChanged }
     func setDidChange() async { _hasChanged = true }
-    func saveToLocalProvider() async throws { _hasChanged = false }
+
+    func saveToLocalProvider() async throws {
+        if _hasChanged {
+            let objectDescription = _polisRep.objectType.rawValue
+
+            do {
+                let data = try PrettyJSONEncoder().encode(_polisRep.originalPolisObject)
+
+                if !_fm.createFile(atPath: _polisRep.localPath, contents: data)  {
+                    _logger.error("Error: cannot save \(objectDescription) file to: \(_polisRep.localPath)")
+                    throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.cannotWriteFileToLocalStore
+                }
+            }
+            catch {
+                _logger.error("Error: create \(objectDescription) out of example string")
+                throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.cannotCreatePolisObjectFromStringExample
+            }
+        }
+    }
+
     func deleteFromLocalProvider() async throws { }
 }
 
