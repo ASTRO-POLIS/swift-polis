@@ -7,14 +7,14 @@
 
 import Foundation
 
-public struct PolisObservingFacilityDetails: Identifiable, Codable, Equatable, Sendable {
+public struct PolisObservingFacilityDetails: Identifiable, Codable, Equatable, Sendable, PolisObject {
 
     //MARK: Identification & relationship to other facilities
     public var identity: PolisIdentity
     public var parentObservingFacilityID: UUID?
 
     //MARK: Contains
-    public var locationID: UUID?
+    public var locationID: UUID?       // This should be modelled as an protocol, because multiple location types are thinkable
     public var observatoryIDs: Set<UUID>?
     public var deviceIDs: Set<UUID>?
     public var visitingHoursID: UUID?
@@ -59,6 +59,8 @@ public struct PolisObservingFacilityDetails: Identifiable, Codable, Equatable, S
         self.scientificObjectives      = scientificObjectives
         self.history                   = history
     }
+
+    func polisDataType() -> PolisDataType { .observingFacilityDetail }
 }
 
 public extension PolisObservingFacilityDetails {

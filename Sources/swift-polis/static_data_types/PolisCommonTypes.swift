@@ -22,7 +22,8 @@ public enum PolisDataType: Codable, Equatable, Hashable, Sendable {
     case identity
     case item
     case observingFacility
-    
+    case observingFacilityDetail
+
     case unknown
 }
 

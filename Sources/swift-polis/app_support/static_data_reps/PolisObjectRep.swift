@@ -17,7 +17,7 @@ public enum PolisObjectType: String {
     case serviceDirectory           = "POLIS Directory"
     case observingFacilityDirectory = "POLIS Observing Facility Directory"
     case observingFacility
-    case observingFacilityDetail
+    case observingFacilityDetail    = "POLIS Observing Facility Detail"
     case artifact
     case observatory
     case device
@@ -50,36 +50,35 @@ protocol PolisObjectPersisting {
 }
 
 public struct IdentifiableObject: Sendable {
-    // Polis Identity defined
-    public var id: UUID
+    public let id: UUID
     public var externalReferences: [String]?
-    public var lastUpdateTime: Date
+    public internal(set) var lastUpdateTime: Date
     public var lifecycleStatus: PolisLifecycleStatus
-    
-    public var name: [String : String]?
+    public var name: [String: String]?
     public var abbreviation: String?
-    public var shortDescription: [String : String]?
+    public var shortDescription: [String: String]?
     public var startTime: Date?
     public var endTime: Date?
-    public var polisRegistrationTime: Date?
+    public internal(set) var polisRegistrationTime: Date?
+
+    //MARK: Internal APIs
 
     /// Designated initialiser
-    public init(id: UUID                              = UUID(),
+     init(id: UUID                                    = UUID(),
+                externalReferences: [String]?         = nil,
                 lastUpdateTime: Date                  = Date(),
                 lifecycleStatus: PolisLifecycleStatus = .unknown,
                 name: [String : String]?              = nil,
-                externalReferences: [String]?         = nil,
-                localName: String?                    = nil,
                 abbreviation: String?                 = nil,
                 shortDescription: [String : String]?  = nil,
                 startTime: Date?                      = nil,
                 endTime: Date?                        = nil,
                 polisRegistrationTime: Date?          = nil) {
         self.id                    = id
+        self.externalReferences    = externalReferences
         self.lastUpdateTime        = lastUpdateTime
         self.lifecycleStatus       = lifecycleStatus
         self.name                  = name
-        self.externalReferences    = externalReferences
         self.abbreviation          = abbreviation
         self.shortDescription      = shortDescription
         self.startTime             = startTime
@@ -87,12 +86,12 @@ public struct IdentifiableObject: Sendable {
         self.polisRegistrationTime = polisRegistrationTime
     }
 
-    public init(identity: PolisIdentity)  {
+    init(identity: PolisIdentity)  {
         self.id                    = identity.id
+        self.externalReferences    = identity.externalReferences
         self.lastUpdateTime        = identity.lastUpdateTime
         self.lifecycleStatus       = identity.lifecycleStatus
         self.name                  = identity.name ?? ["en" : "<unnamed>"]
-        self.externalReferences    = identity.externalReferences
         self.abbreviation          = identity.abbreviation
         self.shortDescription      = identity.shortDescription
         self.startTime             = identity.startTime
@@ -115,6 +114,8 @@ public struct IdentifiableObject: Sendable {
         }
         set {
             externalReferences                = newValue.externalReferences
+            lastUpdateTime                    = newValue.lastUpdateTime
+            lifecycleStatus                   = newValue.lifecycleStatus
             name                              = newValue.name ?? ["en" : "<unnamed>"]
             abbreviation                      = newValue.abbreviation
             shortDescription                  = newValue.shortDescription
@@ -123,46 +124,7 @@ public struct IdentifiableObject: Sendable {
             polisRegistrationTime             = newValue.polisRegistrationTime
         }
     }
-
 }
-
-//MARK: - ObjectItem -
-//public struct ObjectItem: Sendable {
-//    public var identifiableObject: IdentifiableObject
-//    public var owner             : PolisOwner?
-//    public var parentID          : UUID?
-//    public var automationLabel   : String?
-//    public var mediaSourceID     : UUID?
-//
-//    public init(identifiableObject: IdentifiableObject,
-//                owner             : PolisOwner? = nil,
-//                parentID          : UUID?       = nil,
-//                automationLabel   : String?     = nil,
-//                mediaSourceID     : UUID?       = nil) {
-//        self.identifiableObject = identifiableObject
-//        self.owner              = owner
-//        self.parentID           = parentID
-//        self.automationLabel    = automationLabel
-//        self.mediaSourceID      = mediaSourceID
-//    }
-//
-//    var item: PolisItem {
-//        get {
-//            PolisItem(identity       : identifiableObject.identity,
-//                      owner          : owner,
-//                      parentID       : parentID,
-//                      automationLabel: automationLabel,
-//                      mediaSourceID  : mediaSourceID)
-//        }
-//        set {
-//            identifiableObject.identity = newValue.identity
-//            owner                       = newValue.owner
-//            parentID                    = newValue.parentID
-//            automationLabel             = newValue.automationLabel
-//            mediaSourceID               = newValue.mediaSourceID
-//        }
-//    }
-//}
 
 //MARK: - Persistent Object Hierarchy Roots -
 

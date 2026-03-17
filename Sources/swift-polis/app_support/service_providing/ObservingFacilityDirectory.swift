@@ -57,7 +57,6 @@ import Foundation
         _polisRep.updateCurrentPolisObject(observingFacilityDirectory)
 
         await MainActor.run { NotificationCenter.default.post(PolisObjectDidChange(payload)) }
-        _hasChanged = true
     }
 
     //MARK: Private APIs
