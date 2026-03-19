@@ -29,6 +29,7 @@ let package = Package(
                 .product(name: "SoftwareEtudesCoreMessageDispatching", package: "SoftwareEtudes"),
                 .product(name: "UnitsAndMeasurements",                 package: "ScienceEtudes"),
             ],
+            path: "Sources/SwiftPolis"
         ),
         .executableTarget(
             name: "polis",
@@ -40,7 +41,7 @@ let package = Package(
             path: "Sources/polis-tool"
         ),
         .testTarget(
-            name: "swift-polis-tests",
+            name: "SwiftPolisTests",
             dependencies: ["SwiftPolis"]),
     ]
 )
