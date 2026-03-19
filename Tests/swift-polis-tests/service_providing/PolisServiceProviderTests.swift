@@ -17,7 +17,7 @@
 import XCTest
 import SoftwareEtudesUtilities
 
-@testable import swift_polis
+@testable import SwiftPolis
 
 final class PolisServiceProviderTests: XCTestCase {
 

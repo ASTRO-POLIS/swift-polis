@@ -24,7 +24,7 @@ import Logging
 import SoftwareEtudesLogging
 import SoftwareEtudesCoreMessageDispatching
 
-@testable import swift_polis
+@testable import SwiftPolis
 
 //MARK: - Console Tests Suite
 

@@ -21,7 +21,7 @@ import XCTest
 
 import XCTest
 
-@testable import swift_polis
+@testable import SwiftPolis
 
 final class PolisStaticResourceFinderTests: XCTestCase {
 

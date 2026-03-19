@@ -20,7 +20,7 @@ import SoftwareEtudesUtilities
 
 import XCTest
 
-@testable import swift_polis
+@testable import SwiftPolis
 
 final class PolisIdentityTests: XCTestCase {
 

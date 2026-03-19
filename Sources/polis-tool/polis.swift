@@ -10,7 +10,7 @@ import Logging
 import SoftwareEtudesUtilities
 @preconcurrency import SoftwareEtudesExecutableConfiguration
 import SoftwareEtudesLogging
-import swift_polis
+import SwiftPolis
 
 
     let helpPrompt = """

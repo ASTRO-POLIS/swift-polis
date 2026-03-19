@@ -20,7 +20,7 @@
 //
 
 import Foundation
-import swift_polis
+import SwiftPolis
 import SoftwareEtudesUtilities
 
 struct StaticDataTypeTestingSupport {
