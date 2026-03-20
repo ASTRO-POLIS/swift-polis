@@ -172,6 +172,11 @@ struct PolisTool {
                                                                              observingFacilityCode: "1234",
                                                                              placeInTheSolarSystem: .earth,
                                                                              gravitationalBodyRelationship: .surfaceFixed)
+        let newDetails  = try await newFacility.observingFacilityDetails()
+
+        newDetails.website = URL(string:"https://example.com")
+
+        //TODO: Post AppWillTerminate!
         //TODO: Implement me!
     }
 }

@@ -23,7 +23,10 @@ import SoftwareEtudesUtilities
 /// **Note:** some of these constants are NOT part of the POLIS standard. They are used only within
 /// this framework.
 public struct PolisConstants: Sendable {
-    
+
+    /// This is used for all localised texts
+    public static let defaultLanguageCode = "en"
+
     /// Used when we need a required name for an object, but the name is unknown at the time of creation
     public static let unknownObject = "<unknown>"
 

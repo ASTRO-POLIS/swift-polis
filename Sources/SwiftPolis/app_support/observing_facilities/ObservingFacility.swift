@@ -86,6 +86,32 @@ import Foundation
     //MARK: Private APIs
     // Facility details
     private var _facilityDetailsID: UUID?
-
 }
 
+//MARK: - Working with child types -
+extension ObservingFacility {
+
+    /// Returns Observer Facility's Details. If they do not exist yet, a new instance will be create and saved locally
+    public func observingFacilityDetails() async throws -> ObservingFacilityDetails {
+        //TODO: What if details do exist, but they are available only remotely?
+
+        if _facilityDetailsID == nil {
+            //TODO: Create new Details instance and store it.
+            let detailsID    = UUID()
+            let identity     = PolisIdentity(id: detailsID, name: [PolisConstants.defaultLanguageCode : PolisConstants.unknownObject])
+            let polisDetails = PolisObservingFacilityDetails(identity: identity, parentObservingFacilityID: id)
+            let details      = await ObservingFacilityDetails(polisDetails)
+
+            _facilityDetailsID = detailsID
+            await details.setDidChange()
+            try await self.saveToLocalProvider()
+            await setDidChange()
+
+            return details
+        }
+        else {
+            //TODO: Read the locally stored Polis object and create Details instance out of it
+            fatalError("Not implemented")
+        }
+    }
+}

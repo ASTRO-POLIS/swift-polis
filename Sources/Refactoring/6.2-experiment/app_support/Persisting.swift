@@ -155,7 +155,7 @@ public struct PersistentObject: Persisting, Sendable, Identifiable {
          lastUpdateTime: Date                                       = Date.now,
          lifecycleStatus: PolisLifecycleStatus                      = .unknown,
          facilityID: UUID?                                          = nil,
-         representingStoredObjectType: RepresentingStoredObjectType = .observingFacilityDetails,
+         representingStoredObjectType: RepresentingStoredObjectType = .unknown,
          fileType: PolisImplementation.DataFormat                   = .json,
          polisFileResourceFinder: PolisFileResourceFinder           = PolisEnvironment.shared.polisFileResourceFinder,
          polisRemoteResourceFinder: PolisRemoteResourceFinder       = PolisEnvironment.shared.polisRemoteResourceFinder
@@ -168,21 +168,21 @@ public struct PersistentObject: Persisting, Sendable, Identifiable {
         self.lifecycleStatus = lifecycleStatus
 
         switch representingStoredObjectType {
-        case .observingFacilityDetails:
-            let fileName     = "\(facilityIDString!)/\(polisIdString).\(fileType)"
+            case .observingFacilityDetails:
+                let fileName     = "\(facilityIDString!)/\(polisIdString).\(fileType)"
 
-            facilityIDString = id.uuidString
-            localPath        = "\(polisFileResourceFinder.observingFacilitiesFolder())\(fileName)"
-            remoteReadPath   = "\(polisRemoteResourceFinder.polisProviderDirectoryURL())\(fileName)"
-        case .artifact, .place:
-            if let facilityID = facilityID {
-                let fileName   = "\(polisIdString).\(fileType)"
+                facilityIDString = id.uuidString
+                localPath        = "\(polisFileResourceFinder.observingFacilitiesFolder())\(fileName)"
+                remoteReadPath   = "\(polisRemoteResourceFinder.polisProviderDirectoryURL())\(fileName)"
+            case .artifact, .place:
+                if let facilityID = facilityID {
+                    let fileName   = "\(polisIdString).\(fileType)"
 
-                localPath      = "\(polisFileResourceFinder.observingFacilityFolder(observingFacilityID: facilityID))\(fileName)"
-                remoteReadPath = "\(polisRemoteResourceFinder.observingFacilityURL(observingFacilityID: facilityID))\(fileName)"
-            }
-            else { throw PersistentObjectError.missingFacilityID }
-        default: throw PersistentObjectError.referenceTypeNotImplemented
+                    localPath      = "\(polisFileResourceFinder.observingFacilityFolder(observingFacilityID: facilityID))\(fileName)"
+                    remoteReadPath = "\(polisRemoteResourceFinder.observingFacilityURL(observingFacilityID: facilityID))\(fileName)"
+                }
+                else { throw PersistentObjectError.missingFacilityID }
+            default: throw PersistentObjectError.referenceTypeNotImplemented
         }
 
         self.representingStoredObjectType = representingStoredObjectType

@@ -114,12 +114,11 @@ public struct PolisIdentity: Codable, Identifiable, Equatable, Sendable, PolisOb
                 lastUpdateTime: Date                  = Date.now,
                 lifecycleStatus: PolisLifecycleStatus = .unknown,
                 name: [String: String]?               = nil,
-                localName: String?                    = nil,
                 abbreviation: String?                 = nil,
                 shortDescription: [String: String]?   = nil,
                 startTime: Date?                      = nil,
                 endTime: Date?                        = nil,
-                polisRegistrationTime: Date?          = nil) {
+                polisRegistrationTime: Date?          = Date.now) {
         self.id                    = id
         self.externalReferences    = externalReferences
         self.lastUpdateTime        = lastUpdateTime
