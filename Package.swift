@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "swift-polis",
     defaultLocalization: "en",
-    platforms: [.macOS(.v26), .iOS(.v16), .tvOS(.v16), .watchOS(.v9), .visionOS(.v1)],
+    platforms: [.macOS(.v26), .iOS(.v26), .tvOS(.v16), .watchOS(.v9), .visionOS(.v1)],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(name: "SwiftPolis", targets: ["SwiftPolis"]),
@@ -36,7 +36,7 @@ let package = Package(
             dependencies: [
                 .product(name: "SoftwareEtudesUtilities",               package: "SoftwareEtudes"),
                 .product(name: "SoftwareEtudesExecutableConfiguration", package: "SoftwareEtudes"),
-                "SwiftPolis"
+                "SwiftPolis",
             ],
             path: "Sources/polis-tool"
         ),
@@ -45,3 +45,4 @@ let package = Package(
             dependencies: ["SwiftPolis"]),
     ]
 )
+
