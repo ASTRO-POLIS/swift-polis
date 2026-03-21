@@ -297,7 +297,8 @@ extension ObjectStoreCoordinator {
 
         await _observingFacilityDirectory?.addFacility(newFacility)
         try await _observingFacilityDirectory?.saveToLocalProvider()
-
+        _os.add(observingFacility: newFacility)
+        
         return newFacility
     }
 }

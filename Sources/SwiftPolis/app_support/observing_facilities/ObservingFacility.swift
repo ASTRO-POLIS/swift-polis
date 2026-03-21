@@ -98,7 +98,7 @@ extension ObservingFacility {
         if _facilityDetailsID == nil {
             //TODO: Create new Details instance and store it.
             let detailsID    = UUID()
-            let identity     = PolisIdentity(id: detailsID, name: [PolisConstants.defaultLanguageCode : PolisConstants.unknownObject])
+            let identity     = PolisIdentity(id: detailsID, lifecycleStatus: .active, name: [PolisConstants.defaultLanguageCode : PolisConstants.unknownObject])
             let polisDetails = PolisObservingFacilityDetails(identity: identity, parentObservingFacilityID: id)
             let details      = await ObservingFacilityDetails(polisDetails)
 
