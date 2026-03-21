@@ -143,7 +143,7 @@ public struct IdentifiableObject: Sendable {
     }
 
     //MARK: - PolisObjectPersisting partial implementation
-    func pathToLocalPolisFile() async -> String { "" }
+    func pathToLocalPolisFile() async -> String { "<no path defined>" }
     func hasChanged() -> Bool { _hasChanged }
     func setDidChange() async { _hasChanged = true }
 

@@ -105,6 +105,7 @@ extension ObservingFacility {
             _facilityDetailsID = detailsID
             await details.setDidChange()
             try await self.saveToLocalProvider()
+            try await details.saveToLocalProvider()
             await setDidChange()
 
             return details

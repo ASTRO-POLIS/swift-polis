@@ -15,37 +15,37 @@ The current architecture in `swift-polis/app_support` has **several significant 
 ## Current Architecture Overview
 
 ```
-┌─────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────┐
 │                    ObservingFacility                         │
 │  (Domain Model - @Observable, PersistentObject)              │
 │  - Creates itself via factory method                         │
 │  - Posts NotificationCenter events                           │
-└──────────────────────┬──────────────────────────────────────┘
+└──────────────────────┬───────────────────────────────────────┘
                        │
                        │ NotificationCenter
                        │ (Loose Coupling)
                        ▼
 ┌─────────────────────────────────────────────────────────────┐
-│              ObjetChangeDispatcher                           │
-│  (Notification Handler)                                      │
-│  - Listens to ObjectChange notifications                     │
+│              ObjetChangeDispatcher                          │
+│  (Notification Handler)                                     │
+│  - Listens to ObjectChange notifications                    │
 │  - Forwards to ObjectStoreCoordinator                       │
 └──────────────────────┬──────────────────────────────────────┘
                        │
                        │ async call
                        ▼
 ┌─────────────────────────────────────────────────────────────┐
-│           ObjectStoreCoordinator (Actor)                     │
-│  - Thin wrapper around ObjectStore                           │
+│           ObjectStoreCoordinator (Actor)                    │
+│  - Thin wrapper around ObjectStore                          │
 │  - @MainActor static (redundant)                            │
 └──────────────────────┬──────────────────────────────────────┘
                        │
                        │ Direct call (thread-unsafe)
                        ▼
 ┌─────────────────────────────────────────────────────────────┐
-│              ObjectStore (@Observable)                       │
-│  - nonisolated(unsafe) shared instance                       │
-│  - Stores observingFacilities array                           │
+│              ObjectStore (@Observable)                      │
+│  - nonisolated(unsafe) shared instance                      │
+│  - Stores observingFacilities array                         │
 └─────────────────────────────────────────────────────────────┘
 ```
 
