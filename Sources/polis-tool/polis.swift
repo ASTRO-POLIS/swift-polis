@@ -172,9 +172,9 @@ struct PolisTool {
                                                                              observingFacilityCode: "1234",
                                                                              placeInTheSolarSystem: .earth,
                                                                              gravitationalBodyRelationship: .surfaceFixed)
-        let newDetails  = try await newFacility.observingFacilityDetails()
+        let newDetails  = try await newFacility.observingFacilityDetails(createIfDoesNotExist: true)
 
-        newDetails.website = URL(string:"https://example.com")
+        newDetails!.website = URL(string:"https://example.com")
 
         //TODO: Post AppWillTerminate!
         //TODO: Implement me!

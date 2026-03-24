@@ -158,6 +158,7 @@ public struct IdentifiableObject: Sendable {
                     _logger.error("Error: cannot save \(objectDescription) file to: \(_polisRep.localPath)")
                     throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.cannotWriteFileToLocalStore
                 }
+                _hasChanged = false
             }
             catch {
                 _logger.error("Error: create \(objectDescription) out of example string")

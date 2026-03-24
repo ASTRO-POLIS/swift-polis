@@ -90,13 +90,16 @@ import Foundation
 
 //MARK: - Working with child types -
 extension ObservingFacility {
-
-    /// Returns Observer Facility's Details. If they do not exist yet, a new instance will be create and saved locally
-    public func observingFacilityDetails() async throws -> ObservingFacilityDetails {
+    
+    /// If the Facility details do exist, or should be created, the method returns the details
+    ///
+    /// **Note:** What should we do if the facility data are not synced?
+    /// - Parameter createIfDoesNotExist: Default value is `false`
+    /// - Returns: The Facility details or `nil`
+    public func observingFacilityDetails(createIfDoesNotExist: Bool = false) async throws -> ObservingFacilityDetails? {
         //TODO: What if details do exist, but they are available only remotely?
 
-        if _facilityDetailsID == nil {
-            //TODO: Create new Details instance and store it.
+        if (_facilityDetailsID == nil) && createIfDoesNotExist {
             let detailsID    = UUID()
             let identity     = PolisIdentity(id: detailsID, lifecycleStatus: .active, name: [PolisConstants.defaultLanguageCode : PolisConstants.unknownObject])
             let polisDetails = PolisObservingFacilityDetails(identity: identity, parentObservingFacilityID: id)
