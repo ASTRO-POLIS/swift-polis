@@ -55,6 +55,15 @@ import SoftwareEtudesUtilities
                                                    contactEmail: contactEmail)
     }
 
+    //MARK: Public APIs
+
+    /// Returns `lastUpdateTime` as an ISO 8601 formatted string (UTC).
+    public func getLastUpdate() -> String {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
+        return formatter.string(from: lastUpdateTime)
+    }
+
     //MARK: Implementing PolisObjectPersisting
     override func pathToLocalPolisFile() async -> String {
         let fileResourceFinder = await ObjectStoreCoordinator.shared.fileResourceFinder()!
