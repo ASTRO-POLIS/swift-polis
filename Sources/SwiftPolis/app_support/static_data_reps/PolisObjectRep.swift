@@ -42,6 +42,7 @@ struct PolisObjectRep<PolisObject> {
 }
 
 protocol PolisObjectPersisting {
+    static func fromLocalData(polisType: PolisObjectType, facilityID: UUID?, objectIS: UUID?) async throws -> PolisObjectRep<Any>
     func pathToLocalPolisFile() async -> String
     func hasChanged() -> Bool
     func setDidChange() async
@@ -113,15 +114,15 @@ public struct IdentifiableObject: Sendable {
                           polisRegistrationTime: polisRegistrationTime)
         }
         set {
-            externalReferences                = newValue.externalReferences
-            lastUpdateTime                    = newValue.lastUpdateTime
-            lifecycleStatus                   = newValue.lifecycleStatus
-            name                              = newValue.name ?? ["en" : "<unnamed>"]
-            abbreviation                      = newValue.abbreviation
-            shortDescription                  = newValue.shortDescription
-            startTime                         = newValue.startTime
-            endTime                           = newValue.endTime
-            polisRegistrationTime             = newValue.polisRegistrationTime
+            externalReferences    = newValue.externalReferences
+            lastUpdateTime        = newValue.lastUpdateTime
+            lifecycleStatus       = newValue.lifecycleStatus
+            name                  = newValue.name ?? ["en" : "<unnamed>"]
+            abbreviation          = newValue.abbreviation
+            shortDescription      = newValue.shortDescription
+            startTime             = newValue.startTime
+            endTime               = newValue.endTime
+            polisRegistrationTime = newValue.polisRegistrationTime
         }
     }
 }
@@ -143,6 +144,33 @@ public struct IdentifiableObject: Sendable {
     }
 
     //MARK: - PolisObjectPersisting partial implementation
+    static func fromLocalData(polisType: PolisObjectType, facilityID: UUID?, objectIS: UUID?) async throws -> PolisObjectRep<Any> {
+        var polisObject: PolisObject?
+        var localPath: String?
+        let objectType = polisType
+        let osc        = await ObjectStoreCoordinator.shared.fileResourceFinder()!
+
+        switch polisType {
+            case .serviceProvider: localPath = osc.configurationFile()
+            case .serviceDirectory: break
+            case .observingFacilityDirectory: break
+            case .observingFacility: break
+            case .observingFacilityDetail: break
+            case .artifact: break
+            case .observatory: break
+            case .device: break
+            case .locationObEarth: break
+            case .unknown: break
+        }
+
+        polisObject = try await loadPolisObjectOf(type: objectType, atPath: localPath)
+        if let polisObject = polisObject {
+            return PolisObjectRep(polisObject: polisObject, localPath: localPath!, objectType: polisType)
+        }
+
+        throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unknownError
+    }
+
     func pathToLocalPolisFile() async -> String { "<no path defined>" }
     func hasChanged() -> Bool { _hasChanged }
     func setDidChange() async { _hasChanged = true }
@@ -168,6 +196,39 @@ public struct IdentifiableObject: Sendable {
     }
 
     func deleteFromLocalProvider() async throws { }
+
+    //MARK: Private APIs
+    private static func loadPolisObjectOf(type: PolisObjectType, atPath: String?) async throws -> PolisObject {
+        let fm: FileManager = .default
+        var polisObject: PolisObject!
+
+        if let path = atPath {
+            let jsonDecoder = PrettyJSONDecoder()
+
+            if !fm.isReadableFile(atPath: path) { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.unaccessiblePath }
+            if let data = fm.contents(atPath: path) {
+                do {
+                    switch type {
+                        case .serviceProvider: polisObject = try jsonDecoder.decode(PolisDirectory.self, from: data)
+                        case .serviceDirectory: break
+                        case .observingFacilityDirectory: break
+                        case .observingFacility: break
+                        case .observingFacilityDetail: break
+                        case .artifact: break
+                        case .observatory: break
+                        case .device: break
+                        case .locationObEarth: break
+                        case .unknown: break
+                    }
+                }
+                catch { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.cannotAccessOrCreateStandardPolisFolders }
+
+                return polisObject
+            }
+            else { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.cannotReadFileFromLocalStore }
+        }
+        else { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.cannotAccessOrCreateStandardPolisFolders }
+    }
 }
 
 @Observable open class IdentifiablePersistentObject: PersistentObject, @unchecked Sendable {
@@ -185,3 +246,4 @@ public struct IdentifiableObject: Sendable {
 struct DummyPolisType: PolisObject {
     var polisDataType = PolisDataType.unknown
 }
+

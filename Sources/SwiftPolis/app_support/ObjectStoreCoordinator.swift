@@ -24,6 +24,7 @@ public actor ObjectStoreCoordinator {
         case unaccessiblePath
         case unaccessibleRemoteHost
         case cannotWriteFileToLocalStore
+        case cannotReadFileFromLocalStore
         case objectStoreNotConfigured
         case cannotAccessOrCreateStandardPolisFolders
         case rootPathNotSet
