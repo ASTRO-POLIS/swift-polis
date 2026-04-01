@@ -42,7 +42,7 @@ struct PolisObjectRep<PolisObject> {
 }
 
 protocol PolisObjectPersisting {
-    static func fromLocalData(polisType: PolisObjectType, facilityID: UUID?, objectIS: UUID?) async throws -> PolisObjectRep<Any>
+    static func fromLocalData(polisType: PolisObjectType, facilityID: UUID?, objectID: UUID?) async throws -> PolisObjectRep<Any>
     func pathToLocalPolisFile() async -> String
     func hasChanged() -> Bool
     func setDidChange() async
@@ -144,16 +144,16 @@ public struct IdentifiableObject: Sendable {
     }
 
     //MARK: - PolisObjectPersisting partial implementation
-    static func fromLocalData(polisType: PolisObjectType, facilityID: UUID?, objectIS: UUID?) async throws -> PolisObjectRep<Any> {
+    static func fromLocalData(polisType: PolisObjectType, facilityID: UUID? = nil, objectID: UUID? = nil) async throws -> PolisObjectRep<Any> {
         var polisObject: PolisObject?
         var localPath: String?
         let objectType = polisType
         let osc        = await ObjectStoreCoordinator.shared.fileResourceFinder()!
 
         switch polisType {
-            case .serviceProvider: localPath = osc.configurationFile()
-            case .serviceDirectory: break
-            case .observingFacilityDirectory: break
+            case .serviceProvider:            localPath = osc.configurationFile()
+            case .serviceDirectory:           localPath = osc.polisProviderDirectoryFile()
+            case .observingFacilityDirectory: localPath = osc.observingFacilitiesDirectoryFile()
             case .observingFacility: break
             case .observingFacilityDetail: break
             case .artifact: break

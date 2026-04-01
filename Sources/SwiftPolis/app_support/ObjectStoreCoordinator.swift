@@ -31,6 +31,7 @@ public actor ObjectStoreCoordinator {
         case cannotCreatePolisObjectFromStringExample
         case missingServiceProvider
         case fileIO
+        case cannotUseLocalProvider
 
         case unknownError
     }
@@ -118,7 +119,7 @@ public actor ObjectStoreCoordinator {
 
 //MARK: - Global Object Store Functionality -
 extension ObjectStoreCoordinator {
-    @discardableResult public func objectStoreStatus() throws-> ObjectStoreDescription {
+    @discardableResult public func objectStoreStatus() throws -> ObjectStoreDescription {
         if _isConfigured { return objectStoreDescription() }
 
         _objectStoreDescription.setRootPath(_pathToPolisFolder)
@@ -149,7 +150,7 @@ extension ObjectStoreCoordinator {
         // Check if all essential files exist
         if checkPolisFilesExistence(paths: essentialPolisFiles()) {
             _objectStoreDescription.setPolisFilesAccessibilityStatus(.accessible)
-            _isConfigured = true //TODO: When finished, should be true
+            _isConfigured = true // When finished, should be true
         }
 
         return objectStoreDescription()
@@ -190,13 +191,32 @@ extension ObjectStoreCoordinator {
         try await createPolisDirectoryFile()
         try await createObservingFacilitiesDirectoryFile()
 
-        // 3. Set the status as fully configured
-        _objectStoreDescription.status = .fullyConfigured
+        //TODO: 3. Configure the ObjectStore!
 
-        //TODO: 4. Configure the ObjectStore!
-        //TODO: 5. If there is a remote provider, start the initial syncing.
+        // 4. Set the status as fully configured
+        _objectStoreDescription.status = .fullyConfigured
    }
 
+    public func loadLocalStore() async throws {
+        try objectStoreStatus()
+        if !_isConfigured { throw ObjectStoreCoordinatorError.cannotUseLocalProvider }
+
+        let serviceProviderRep          = try await PersistentObject.fromLocalData(polisType: .serviceProvider)
+        let serviceProviderDirectoryRep = try await PersistentObject.fromLocalData(polisType: .serviceDirectory)
+        let facilityDirectoryRep        = try await PersistentObject.fromLocalData(polisType: .observingFacilityDirectory)
+
+        _serviceProvider            = await ServiceProvider(serviceProviderRep.polisObject as! PolisDirectory.ProviderDirectoryEntry)
+        _serviceProviderDirectory   = await ServiceProviderDirectory(serviceProviderDirectoryRep.polisObject as! PolisDirectory)
+        _observingFacilityDirectory = await ObservingFacilityDirectory(facilityDirectoryRep.polisObject as! PolisObservingFacilityDirectory)
+
+        if (_serviceProvider != nil) && (_serviceProviderDirectory != nil) && (_observingFacilityDirectory != nil) {
+            //TODO: Configure the ObjectStore and basic objets in it
+            //TODO: Create a list of minimally configured ObservingFacilities
+            //TODO: Start loading facilities in the background
+            //TODO: If there is a remote provider, start the initial syncing.
+        }
+        else { throw ObjectStoreCoordinatorError.cannotUseLocalProvider }
+    }
 
     /// Describes the status of the local POLIS provider
     public func objectStoreDescription() -> ObjectStoreDescription { _objectStoreDescription }

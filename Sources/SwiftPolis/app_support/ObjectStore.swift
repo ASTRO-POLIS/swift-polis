@@ -13,8 +13,9 @@ import Synchronization
    public static let shared = ObjectStore()
 
     init() {
-
+        //TODO: Implement me!
     }
+
     //MARK: - Internal APIs
     func reset() {
         _serviceProvider.withLock { $0 = nil }
@@ -22,29 +23,23 @@ import Synchronization
     }
 
     //MARK: - Private APIs
-    private let _serviceProvider     = Mutex<ServiceProvider?>(nil)
-    private let _observingFacilities = Mutex<[ObservingFacility]>([])
+    private let _serviceProvider           = Mutex<ServiceProvider?>(nil)
+    private let _serviceProvidersDirectory = Mutex<ServiceProviderDirectory?>(nil)
+    private let _observingFacilities       = Mutex<[ObservingFacility]>([])
 }
 
 //MARK: - Service Provider -
 extension ObjectStore {
-    public func serviceProvider() -> ServiceProvider? {
-        _serviceProvider.withLock { return $0 }
-    }
+    public func serviceProvider() -> ServiceProvider? { _serviceProvider.withLock { return $0 } }
+    func setServiceProvider(_ serviceProvider: ServiceProvider?) { _serviceProvider.withLock { $0 = serviceProvider } }
 
-    func setServiceProvider(_ serviceProvider: ServiceProvider?) {
-        _serviceProvider.withLock { $0 = serviceProvider }
-    }
+    public func serviceProviderDirectory() -> ServiceProviderDirectory? { _serviceProvidersDirectory.withLock { return $0 } }
+    func setServiceProvider(_ serviceProviderDirectory: ServiceProviderDirectory?) { _serviceProvidersDirectory.withLock { $0 = serviceProviderDirectory } }
 }
 
 //MARK: - Observing Facilities -
 extension ObjectStore {
-    public func observingFacilities() -> [ObservingFacility] {
-        _observingFacilities.withLock{ return $0 }
-    }
-
-    public func add(observingFacility: ObservingFacility) {
-        _observingFacilities.withLock{ $0.append(observingFacility) }
-    }
+    public func observingFacilities() -> [ObservingFacility] { _observingFacilities.withLock{ return $0 } }
+    public func add(observingFacility: ObservingFacility) { _observingFacilities.withLock{ $0.append(observingFacility) } }
 }
 
