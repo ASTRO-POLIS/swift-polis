@@ -147,7 +147,6 @@ public struct IdentifiableObject: Sendable {
     static func fromLocalData(polisType: PolisObjectType, facilityID: UUID? = nil, objectID: UUID? = nil) async throws -> PolisObjectRep<Any> {
         var polisObject: PolisObject?
         var localPath: String?
-        let objectType = polisType
         let osc        = await ObjectStoreCoordinator.shared.fileResourceFinder()!
 
         switch polisType {
@@ -163,7 +162,7 @@ public struct IdentifiableObject: Sendable {
             case .unknown: break
         }
 
-        polisObject = try await loadPolisObjectOf(type: objectType, atPath: localPath)
+        polisObject = try await loadPolisObjectOf(type: polisType, atPath: localPath)
         if let polisObject = polisObject {
             return PolisObjectRep(polisObject: polisObject, localPath: localPath!, objectType: polisType)
         }
@@ -209,9 +208,9 @@ public struct IdentifiableObject: Sendable {
             if let data = fm.contents(atPath: path) {
                 do {
                     switch type {
-                        case .serviceProvider: polisObject = try jsonDecoder.decode(PolisDirectory.self, from: data)
-                        case .serviceDirectory: break
-                        case .observingFacilityDirectory: break
+                        case .serviceProvider:            polisObject = try jsonDecoder.decode(PolisDirectory.ProviderDirectoryEntry.self, from: data)
+                        case .serviceDirectory:           polisObject = try jsonDecoder.decode(PolisDirectory.self, from: data)
+                        case .observingFacilityDirectory: polisObject = try jsonDecoder.decode(PolisObservingFacilityDirectory.self, from: data)
                         case .observingFacility: break
                         case .observingFacilityDetail: break
                         case .artifact: break

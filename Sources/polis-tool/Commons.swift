@@ -15,6 +15,7 @@ enum ModeOfOperation: String {
     case status
     case create
     case sync
+    case list
 }
 
 enum ExitCodes: Int32 {

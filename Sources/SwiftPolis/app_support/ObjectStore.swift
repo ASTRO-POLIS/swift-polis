@@ -23,9 +23,10 @@ import Synchronization
     }
 
     //MARK: - Private APIs
-    private let _serviceProvider           = Mutex<ServiceProvider?>(nil)
-    private let _serviceProvidersDirectory = Mutex<ServiceProviderDirectory?>(nil)
-    private let _observingFacilities       = Mutex<[ObservingFacility]>([])
+    private let _serviceProvider            = Mutex<ServiceProvider?>(nil)
+    private let _serviceProvidersDirectory  = Mutex<ServiceProviderDirectory?>(nil)
+    private let _observingFacilityDirectory = Mutex<ObservingFacilityDirectory?>(nil)
+    private let _observingFacilities        = Mutex<[ObservingFacility]>([])
 }
 
 //MARK: - Service Provider -
@@ -35,6 +36,9 @@ extension ObjectStore {
 
     public func serviceProviderDirectory() -> ServiceProviderDirectory? { _serviceProvidersDirectory.withLock { return $0 } }
     func setServiceProvider(_ serviceProviderDirectory: ServiceProviderDirectory?) { _serviceProvidersDirectory.withLock { $0 = serviceProviderDirectory } }
+
+    public func observingFacilityDirectory() -> ObservingFacilityDirectory? { _observingFacilityDirectory.withLock { return $0 } }
+    func setObservingFacilities(_ observingFacilityDirectory: ObservingFacilityDirectory?) { _observingFacilityDirectory.withLock { $0 = observingFacilityDirectory } }
 }
 
 //MARK: - Observing Facilities -

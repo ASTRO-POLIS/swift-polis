@@ -27,10 +27,12 @@ DESCRIPTION
 ARGUMENTS
    -c path_to_local_polis_folder         -- The path to the local copy of the POLIS provider static data [optional in test mode]
    -r url_to_remote_polis_provider       -- The fURL to the remote POLIS provider used for syncing [required]
-   --mode status | create | sync         -- Defines one of the three execution modi [optional]
+   --mode status | create | sync | list
+                                         -- Defines one of the three execution modi [optional]
                                          -- - status: returns the status of the local and the remote service provider (default)
                                          -- - create: creates a new local service provider
                                          -- - sync: bidirectional sync between the local and the remote service providers
+                                         -- - list: list all observing facilities
    --log                                 -- Path to the log file. If absent, the tool prints only to the console. [optional]
    --log_level [DEBUG | WARNING | ERROR] -- Defines the logging level. Default is WARNING [optional]
    -t | --test                           -- Executes the utility in test mode. Can use build-in configuration. Could be used ONLY 
@@ -108,6 +110,7 @@ struct PolisTool {
             case .status: try await requestLocalProviderStatus()
             case .create: try await createNewLocalObjectStore() 
             case .sync:   logger.info("Object Store sync not implemented")
+            case .list:   try await listFacilities()
         }
         
         // Prepare the app to terminate
@@ -178,6 +181,29 @@ struct PolisTool {
 
         //TODO: Post AppWillTerminate!
         //TODO: Implement me!
+    }
+
+    @MainActor static func listFacilities() async throws {
+        print("LOCAL POLIS SERVICE PROVIDER - LIST FACILITIES")
+
+        let objectStoreDescription = try await storeCoordinator.objectStoreStatus()
+        let objectStoreStatus      = objectStoreDescription.status
+
+        if objectStoreStatus.rawValue >= ObjectStoreStatusType.fullyConfigured.rawValue {
+            print("---> Local Service Provider is ready to be loaded ...")
+            do {
+                try await storeCoordinator.loadLocalStore()
+
+                let os = ObjectStore.shared
+                print("   ---> Latest change time: \(os.serviceProvider()?.lastUpdateTime, default: "not available")")
+                print("   ---> Number of facilities: \(os.observingFacilities().count, default: "0")")
+                //TODO: To be continued!
+           }
+            catch {
+                print("---> ERROR: Local Service Provider failed to load. Aborting.")
+            }
+        }
+        else { print("---> ERROR: Local Service Provider is not yet ready to be loaded (status: \(objectStoreStatus.rawValue).") }
     }
 }
 

@@ -150,6 +150,7 @@ extension ObjectStoreCoordinator {
         // Check if all essential files exist
         if checkPolisFilesExistence(paths: essentialPolisFiles()) {
             _objectStoreDescription.setPolisFilesAccessibilityStatus(.accessible)
+            _objectStoreDescription.setStatus(.fullyConfigured)
             _isConfigured = true // When finished, should be true
         }
 
@@ -191,7 +192,8 @@ extension ObjectStoreCoordinator {
         try await createPolisDirectoryFile()
         try await createObservingFacilitiesDirectoryFile()
 
-        //TODO: 3. Configure the ObjectStore!
+        // 3. Configure the ObjectStore!
+        prepareObjectStore()
 
         // 4. Set the status as fully configured
         _objectStoreDescription.status = .fullyConfigured
@@ -210,7 +212,9 @@ extension ObjectStoreCoordinator {
         _observingFacilityDirectory = await ObservingFacilityDirectory(facilityDirectoryRep.polisObject as! PolisObservingFacilityDirectory)
 
         if (_serviceProvider != nil) && (_serviceProviderDirectory != nil) && (_observingFacilityDirectory != nil) {
-            //TODO: Configure the ObjectStore and basic objets in it
+            // Configure the ObjectStore and basic objets in it
+            prepareObjectStore()
+
             //TODO: Create a list of minimally configured ObservingFacilities
             //TODO: Start loading facilities in the background
             //TODO: If there is a remote provider, start the initial syncing.
@@ -220,6 +224,18 @@ extension ObjectStoreCoordinator {
 
     /// Describes the status of the local POLIS provider
     public func objectStoreDescription() -> ObjectStoreDescription { _objectStoreDescription }
+
+    /// After all required configuration files are read or created, implement basic ``ObjectStore`` settings after
+    /// reseting it. This does not include creating the entire observing facility hierarchy.
+    private func prepareObjectStore() {
+        let os = ObjectStore.shared
+
+        os.reset()
+        os.setServiceProvider(_serviceProvider)
+        os.setServiceProvider(_serviceProviderDirectory)
+        os.setObservingFacilities(_observingFacilityDirectory)
+        //TODO: Implement me!
+    }
 
     /// Performs complete reset to:
     /// - `ObjectStoreCoordinator`
