@@ -114,6 +114,7 @@ struct PolisTool {
         }
         
         // Prepare the app to terminate
+        try await storeCoordinator.startTerminating()
         await exitDescribingErrors(code: exitCode)
     }
 

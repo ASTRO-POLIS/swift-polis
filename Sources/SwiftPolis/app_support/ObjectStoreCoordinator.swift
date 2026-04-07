@@ -113,6 +113,7 @@ public actor ObjectStoreCoordinator {
 
         // Observing various notifications
         startObservingRepObjectChangeNotifications()
+        startObservingServiceProviderReadyToTerminate()
     }
 }
 
@@ -215,7 +216,12 @@ extension ObjectStoreCoordinator {
             // Configure the ObjectStore and basic objets in it
             prepareObjectStore()
 
-            //TODO: Create a list of minimally configured ObservingFacilities
+            // Create a list of minimally configured ObservingFacilities
+            for facility in _observingFacilityDirectory!.observingFacilityDirectory.observingFacilityReferences {
+                let newFacility = await ObservingFacility(facility)
+                _os.add(observingFacility: newFacility)
+            }
+
             //TODO: Start loading facilities in the background
             //TODO: If there is a remote provider, start the initial syncing.
         }
@@ -333,6 +339,9 @@ extension ObjectStoreCoordinator {
         try await newFacility.saveToLocalProvider()   // If facility's folder does not exist - creates it. No other actions!
 
         await _observingFacilityDirectory?.addFacility(newFacility)
+        await _serviceProviderDirectory?.setDidChange()
+        await _serviceProvider?.setDidChange()
+
         try await _observingFacilityDirectory?.saveToLocalProvider()
         _os.add(observingFacility: newFacility)
 
@@ -422,6 +431,10 @@ extension ObjectStoreCoordinator {
 //MARK: Object change notifications
 extension ObjectStoreCoordinator {
 
+    @MainActor public func startTerminating() async throws {
+        try await handleReadyToTerminate()
+    }
+
     // These are methods that register `ObjectStoreCoordinator` to observe various global and change notifications and
     // to post notifications, related to the persistency of the local data provider or updates by the remote service
     // provider.
@@ -444,16 +457,36 @@ extension ObjectStoreCoordinator {
 
 
     //MARK: Global notifications
-
-    //TODO: Move this to PersistentObject!
     @MainActor func postReadyToTerminate() {
         NotificationCenter.default.post(PolisServiceProviderReadyToTerminate(), subject: self)
     }
 
     @MainActor private func startObservingServiceProviderReadyToTerminate() {
         _didChangeToken = _nc.addObserver(for: PolisServiceProviderReadyToTerminate.self) { _ in
-            print(">>> Polis service provider ready to terminate.")
+            Task { [weak self] in
+                guard let self = self else { return } //TODO: Throw exception?
+                try await self.handleReadyToTerminate()
+            }
         }
+    }
+
+    private func handleReadyToTerminate() async throws {
+        // Start from Facility's sub-data, the facility, the facility directory, and finish with the service provider
+        for facility in _os.observingFacilities() {
+            // TODO: Implement facility-specific termination preparation if needed
+            _ = facility // placeholder to silence unused variable warnings until implemented
+        }
+        try await _observingFacilityDirectory?.saveToLocalProvider()
+        try await _serviceProviderDirectory?.saveToLocalProvider()
+        try await _serviceProvider?.saveToLocalProvider()
+
+        print(">>> Polis service provider ready to terminate.")
+//FIXME:        await postReadyToTerminateOnMain()
+// We get here a recursion! 
+    }
+
+    @MainActor private func postReadyToTerminateOnMain() {
+        self.postReadyToTerminate()
     }
 }
 
