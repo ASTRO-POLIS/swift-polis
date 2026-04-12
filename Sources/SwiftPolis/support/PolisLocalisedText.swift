@@ -1,5 +1,5 @@
 //
-//  PolisLocalizedText.swift
+//  PolisLocalisedText.swift
 //  swift-polis
 //
 //  Created by Hasmik Mirzakhanyan on 20.03.26.
@@ -13,9 +13,9 @@ public func preferredBaseLanguageCodes() -> [String] {
     var result: [String] = []
 
     for language in Locale.preferredLanguages {
-        let normalized = normalizedBaseLanguageCode(language)
-        if seen.insert(normalized).inserted {
-            result.append(normalized)
+        let normalised = normalisedBaseLanguageCode(language)
+        if seen.insert(normalised).inserted {
+            result.append(normalised)
         }
     }
 
@@ -26,7 +26,7 @@ public func preferredBaseLanguageCodes() -> [String] {
     return result
 }
 
-public func normalizedBaseLanguageCode(_ code: String) -> String {
+public func normalisedBaseLanguageCode(_ code: String) -> String {
     code
         .replacingOccurrences(of: "_", with: "-")
         .split(separator: "-")
@@ -42,26 +42,24 @@ public struct PolisLocalizedText {
     public init(_ values: [String: String] = [:]) {
         self.storage = Dictionary(
             uniqueKeysWithValues: values.map { key, value in
-                (normalizedBaseLanguageCode(key), value)
+                (normalisedBaseLanguageCode(key), value)
             }
         )
     }
 
     public init(text: String, languageCode: String) {
-        self.storage = [normalizedBaseLanguageCode(languageCode): text]
+        self.storage = [normalisedBaseLanguageCode(languageCode): text]
     }
 
-    public var rawValues: [String: String] {
-        storage
-    }
+    public var rawValues: [String: String] { storage }
 
     public subscript(_ code: String) -> String? {
-        get { storage[normalizedBaseLanguageCode(code)] }
-        set { storage[normalizedBaseLanguageCode(code)] = newValue }
+        get { storage[normalisedBaseLanguageCode(code)] }
+        set { storage[normalisedBaseLanguageCode(code)] = newValue }
     }
 
     public mutating func set(_ text: String, for languageCode: String) {
-        storage[normalizedBaseLanguageCode(languageCode)] = text
+        storage[normalisedBaseLanguageCode(languageCode)] = text
     }
 
     public func resolve() -> String? {
@@ -74,7 +72,5 @@ public struct PolisLocalizedText {
         return storage["en"] ?? storage.values.first
     }
 
-    public var resolved: String {
-        resolve() ?? ""
-    }
+    public var resolved: String { resolve() ?? "" }
 }
