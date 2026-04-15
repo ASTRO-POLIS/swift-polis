@@ -8,17 +8,44 @@
 import Foundation
 
 /// Singleton responsible for language-code normalisation and preference resolution.
-public final class PolisLocalisationPreferences: Sendable {
+public final class PolisLocalisationPreferences: @unchecked Sendable {
     
     /// Shared singleton instance.
     public static let shared = PolisLocalisationPreferences()
 
-    /// Cached preferred base language codes for the current process.
-    public let preferredLanguages: [String]
+    /// Preferred base language codes currently used for resolution.
+    ///
+    /// By default this is derived from the current process locale. It can be
+    /// overridden with ``setPreferredLanguages(_:)`` (useful for CLI tools).
+    public var preferredLanguages: [String] {
+        _lock.lock()
+        defer { _lock.unlock() }
+        return _overriddenPreferredLanguages ?? _systemPreferredLanguages
+    }
 
     //MARK: Private APIs
     private init() {
-        self.preferredLanguages = Self.computePreferredBaseLanguageCodes()
+        self._systemPreferredLanguages = Self.computePreferredBaseLanguageCodes()
+    }
+
+    /// Overrides preferred languages used for text resolution.
+    ///
+    /// The provided codes are normalised to base language codes, de-duplicated,
+    /// and guaranteed to include `"en"` as a fallback.
+    ///
+    /// - Parameter languageCodes: Preferred language codes in priority order.
+    public func setPreferredLanguages(_ languageCodes: [String]) {
+        let normalised = Self.normalisePreferredLanguageCodes(languageCodes)
+        _lock.lock()
+        _overriddenPreferredLanguages = normalised
+        _lock.unlock()
+    }
+
+    /// Clears runtime overrides and falls back to system preferred languages.
+    public func resetPreferredLanguagesOverride() {
+        _lock.lock()
+        _overriddenPreferredLanguages = nil
+        _lock.unlock()
     }
 
     /// Returns the device preferred language list normalised to base language codes.
@@ -37,10 +64,14 @@ public final class PolisLocalisationPreferences: Sendable {
     }
 
     private static func computePreferredBaseLanguageCodes() -> [String] {
+        normalisePreferredLanguageCodes(Locale.preferredLanguages)
+    }
+
+    private static func normalisePreferredLanguageCodes(_ languageCodes: [String]) -> [String] {
         var seen             = Set<String>()
         var result: [String] = []
 
-        for language in Locale.preferredLanguages {
+        for language in languageCodes {
             let normalised = language
                 .replacingOccurrences(of: "_", with: "-")
                 .split(separator: "-")
@@ -54,6 +85,10 @@ public final class PolisLocalisationPreferences: Sendable {
 
         return result
     }
+
+    private let _lock = NSLock()
+    private let _systemPreferredLanguages: [String]
+    private var _overriddenPreferredLanguages: [String]?
 }
 
 /// Localised text storage keyed by normalised base language code.
@@ -61,12 +96,40 @@ public final class PolisLocalisationPreferences: Sendable {
 /// Keys are normalised via ``PolisLocalisationPreferences/normalisedBaseLanguageCode(_:)`` (for example,
 /// `"en-US"` and `"en_US"` are stored as `"en"`). Use ``resolved`` to get the
 /// best match for current user language preferences.
+///
+/// **Examples**
+/// ```swift
+/// var title = PolisLocalisedText([
+///     "en": "Observatory",
+///     "bg-BG": "Обсерватория"
+/// ])
+///
+/// // Reads with language normalisation:
+/// let english = title["en-US"]   // "Observatory"
+///
+/// // Writes with language normalisation:
+/// title["fr-FR"] = "Observatoire"
+///
+/// // Value resolved against preferred device languages:
+/// let displayTitle = title.resolved
+/// ```
 public struct PolisLocalisedText {
 
     /// Creates localised text from a dictionary of language-code/value pairs.
     ///
     /// - Parameter values: Dictionary where keys are language codes (e.g. `"en"`,
     ///   `"bg-BG"`). Keys are normalised to base language codes during storage.
+    ///
+    /// Example:
+    /// ```swift
+    /// let text = PolisLocalisedText([
+    ///     "en-US": "Telescope",
+    ///     "de-DE": "Teleskop"
+    /// ])
+    ///
+    /// text.rawValues
+    /// // ["en": "Telescope", "de": "Teleskop"]
+    /// ```
     public init(_ values: [String: String] = [:]) {
         self.storage = Dictionary(
             uniqueKeysWithValues: values.map { key, value in
@@ -81,6 +144,12 @@ public struct PolisLocalisedText {
     ///   - text: Localised text value.
     ///   - languageCode: Language code for the provided text. The code is
     ///     normalised to a base language code before storage.
+    ///
+    /// Example:
+    /// ```swift
+    /// let text = PolisLocalisedText(text: "Observatory", languageCode: "en-GB")
+    /// print(text.rawValues) // ["en": "Observatory"]
+    /// ```
     public init(text: String, languageCode: String) {
         self.storage = [PolisLocalisationPreferences.shared.normalisedBaseLanguageCode(languageCode): text]
     }
@@ -115,6 +184,12 @@ public struct PolisLocalisedText {
     /// 2. English (`"en"`), if available.
     /// 3. Any first available value in storage.
     /// 4. Empty string when storage is empty.
+    ///
+    /// Example:
+    /// ```swift
+    /// let text = PolisLocalisedText(["en": "Sky", "es": "Cielo"])
+    /// let valueForUI = text.resolved
+    /// ```
     public var resolved: String { resolve() ?? "" }
 
     //MARK: Private APIs
