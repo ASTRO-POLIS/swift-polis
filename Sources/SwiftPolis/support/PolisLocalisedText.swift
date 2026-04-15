@@ -7,14 +7,16 @@
 
 import Foundation
 
-/// Singleton responsible for language-code normalization and preference resolution.
+/// Singleton responsible for language-code normalisation and preference resolution.
 public final class PolisLocalisationPreferences: Sendable {
+    
     /// Shared singleton instance.
     public static let shared = PolisLocalisationPreferences()
 
     /// Cached preferred base language codes for the current process.
     public let preferredLanguages: [String]
 
+    //MARK: Private APIs
     private init() {
         self.preferredLanguages = Self.computePreferredBaseLanguageCodes()
     }
@@ -23,9 +25,7 @@ public final class PolisLocalisationPreferences: Sendable {
     ///
     /// The resulting array is de-duplicated and always includes `"en"` as a final
     /// fallback language if it is not already present.
-    fileprivate func preferredBaseLanguageCodes() -> [String] {
-        preferredLanguages
-    }
+    fileprivate func preferredBaseLanguageCodes() -> [String] { preferredLanguages }
 
     /// Normalises any language code (e.g. `en-US`, `en_US`) to base form (`en`).
     fileprivate func normalisedBaseLanguageCode(_ code: String) -> String {
@@ -37,7 +37,7 @@ public final class PolisLocalisationPreferences: Sendable {
     }
 
     private static func computePreferredBaseLanguageCodes() -> [String] {
-        var seen = Set<String>()
+        var seen             = Set<String>()
         var result: [String] = []
 
         for language in Locale.preferredLanguages {
@@ -46,28 +46,24 @@ public final class PolisLocalisationPreferences: Sendable {
                 .split(separator: "-")
                 .first
                 .map { String($0).lowercased() } ?? language.lowercased()
-            if seen.insert(normalised).inserted {
-                result.append(normalised)
-            }
+
+            if seen.insert(normalised).inserted { result.append(normalised) }
         }
 
-        if seen.insert("en").inserted {
-            result.append("en")
-        }
+        if seen.insert("en").inserted { result.append("en") }
 
         return result
     }
 }
 
-/// Localized text storage keyed by normalised base language code.
+/// Localised text storage keyed by normalised base language code.
 ///
 /// Keys are normalised via ``PolisLocalisationPreferences/normalisedBaseLanguageCode(_:)`` (for example,
 /// `"en-US"` and `"en_US"` are stored as `"en"`). Use ``resolved`` to get the
 /// best match for current user language preferences.
 public struct PolisLocalisedText {
-    private var storage: [String: String]
 
-    /// Creates localized text from a dictionary of language-code/value pairs.
+    /// Creates localised text from a dictionary of language-code/value pairs.
     ///
     /// - Parameter values: Dictionary where keys are language codes (e.g. `"en"`,
     ///   `"bg-BG"`). Keys are normalised to base language codes during storage.
@@ -79,10 +75,10 @@ public struct PolisLocalisedText {
         )
     }
 
-    /// Creates localized text with a single language entry.
+    /// Creates localised text with a single language entry.
     ///
     /// - Parameters:
-    ///   - text: Localized text value.
+    ///   - text: Localised text value.
     ///   - languageCode: Language code for the provided text. The code is
     ///     normalised to a base language code before storage.
     public init(text: String, languageCode: String) {
@@ -103,7 +99,7 @@ public struct PolisLocalisedText {
         set { storage[PolisLocalisationPreferences.shared.normalisedBaseLanguageCode(code)] = newValue }
     }
 
-    /// Sets localized text for a specific language code.
+    /// Sets localised text for a specific language code.
     ///
     /// - Parameters:
     ///   - text: Text to store.
@@ -111,6 +107,18 @@ public struct PolisLocalisedText {
     public mutating func set(_ text: String, for languageCode: String) {
         storage[PolisLocalisationPreferences.shared.normalisedBaseLanguageCode(languageCode)] = text
     }
+
+    /// Resolves the best localised value for current user preferences.
+    ///
+    /// Resolution order:
+    /// 1. Preferred languages from ``PolisLocalisationPreferences/preferredBaseLanguageCodes()``.
+    /// 2. English (`"en"`), if available.
+    /// 3. Any first available value in storage.
+    /// 4. Empty string when storage is empty.
+    public var resolved: String { resolve() ?? "" }
+
+    //MARK: Private APIs
+    private var storage: [String: String]
 
     private func resolve() -> String? {
         for preferred in PolisLocalisationPreferences.shared.preferredBaseLanguageCodes() {
@@ -121,13 +129,4 @@ public struct PolisLocalisedText {
 
         return storage["en"] ?? storage.values.first
     }
-
-    /// Resolves the best localized value for current user preferences.
-    ///
-    /// Resolution order:
-    /// 1. Preferred languages from ``PolisLocalisationPreferences/preferredBaseLanguageCodes()``.
-    /// 2. English (`"en"`), if available.
-    /// 3. Any first available value in storage.
-    /// 4. Empty string when storage is empty.
-    public var resolved: String { resolve() ?? "" }
 }
