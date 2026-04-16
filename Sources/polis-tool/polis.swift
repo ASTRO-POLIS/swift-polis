@@ -176,7 +176,7 @@ struct PolisTool {
                                                                              observingFacilityCode: "1234",
                                                                              placeInTheSolarSystem: .earth,
                                                                              gravitationalBodyRelationship: .surfaceFixed)
-        let newDetails  = try await newFacility.observingFacilityDetails(createIfDoesNotExist: true)
+        let newDetails  = try await newFacility.observingFacilityDetails()
 
         newDetails!.website = URL(string:"https://example.com")
 
@@ -198,6 +198,17 @@ struct PolisTool {
                 let os = ObjectStore.shared
                 print("   ---> Latest change time: \(os.serviceProvider()?.lastUpdateTime, default: "not available")")
                 print("   ---> Number of facilities: \(os.observingFacilities().count, default: "0")")
+
+                for facility in os.observingFacilities() {
+                    print("      ---> Observing facility code: \(String(describing: facility.observingFacilityCode))")
+                    let details = try await facility.observingFacilityDetails()
+
+                    if let details = details {
+                        //TODO: Continue here!
+                    }
+                    else { print("      ---> NO DETAILS") }
+
+                }
                 //TODO: To be continued!
            }
             catch {

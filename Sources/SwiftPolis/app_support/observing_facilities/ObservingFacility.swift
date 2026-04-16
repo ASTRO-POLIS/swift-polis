@@ -40,8 +40,7 @@ import Foundation
         self.orbitingAroundPlaceInTheSolarSystem = facility.orbitingAroundPlaceInTheSolarSystem
         self.astronomicalCode                    = facility.astronomicalCode
         self.facilityLocationID                  = facility.facilityLocationID
-        self._facilityDetailsID                  = facility.facilityDetailsID
-        
+
         await super.init(polisRep: sP)
     }
 
@@ -54,8 +53,7 @@ import Foundation
                                                                    gravitationalBodyRelationship: gravitationalBodyRelationship,
                                                                    orbitingAroundPlaceInTheSolarSystem: orbitingAroundPlaceInTheSolarSystem,
                                                                    astronomicalCode: astronomicalCode,
-                                                                   facilityLocationID: facilityLocationID,
-                                                                   facilityDetailsID: _facilityDetailsID)
+                                                                   facilityLocationID: facilityLocationID)
     }
 
     //MARK: PolisObjectPersisting
@@ -84,38 +82,40 @@ import Foundation
     }
 
     //MARK: Private APIs
-    // Facility details
-    private var _facilityDetailsID: UUID?
+
 }
 
 //MARK: - Working with child types -
 extension ObservingFacility {
     
-    /// If the Facility details do exist, or should be created, the method returns the details
+    /// Reads an existing ``ObservingFacilityDetails`` or generates one if there is no locally stored data.
     ///
-    /// **Note:** What should we do if the facility data are not synced?
-    /// - Parameter createIfDoesNotExist: Default value is `false`
-    /// - Returns: The Facility details or `nil`
-    public func observingFacilityDetails(createIfDoesNotExist: Bool = false) async throws -> ObservingFacilityDetails? {
-        //TODO: What if details do exist, but they are available only remotely?
+    /// Current implementation does not check if there is an existing remote details file.
+    /// - Returns: ``ObservingFacilityDetails`` instance or `nil` if cannot be read or generated.
+    public func observingFacilityDetails() async throws -> ObservingFacilityDetails? {
+        do {
+            let polisObjectRep = try await Self.fromLocalData(polisType: .observingFacilityDetail, facilityID: id)
 
-        if (_facilityDetailsID == nil) && createIfDoesNotExist {
-            let detailsID    = UUID()
-            let identity     = PolisIdentity(id: detailsID, lifecycleStatus: .active, name: [PolisConstants.defaultLanguageCode : PolisConstants.unknownObject])
+            // Safely unwrap the expected PolisObservingFacilityDetails from the loaded polisObject
+            guard let polisDetails = polisObjectRep.polisObject as? PolisObservingFacilityDetails else {
+                throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.cannotReadFileFromLocalStore
+            }
+
+            let details = await ObservingFacilityDetails(polisDetails)
+            return details
+        }
+        catch {
+            // We assume, that the file does not exist, so we need to create it
+            let identity     = PolisIdentity(id: id, lifecycleStatus: .active, name: [PolisConstants.defaultLanguageCode : PolisConstants.unknownObject])
             let polisDetails = PolisObservingFacilityDetails(identity: identity, parentObservingFacilityID: id)
             let details      = await ObservingFacilityDetails(polisDetails)
 
-            _facilityDetailsID = detailsID
             await details.setDidChange()
             try await self.saveToLocalProvider()
             try await details.saveToLocalProvider()
             await setDidChange()
 
             return details
-        }
-        else {
-            //TODO: Read the locally stored Polis object and create Details instance out of it
-            fatalError("Not implemented")
         }
     }
 }

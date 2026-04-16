@@ -147,22 +147,24 @@ public struct IdentifiableObject: Sendable {
     static func fromLocalData(polisType: PolisObjectType, facilityID: UUID? = nil, objectID: UUID? = nil) async throws -> PolisObjectRep<Any> {
         var polisObject: PolisObject?
         var localPath: String?
-        let osc        = await ObjectStoreCoordinator.shared.fileResourceFinder()!
+        let osc = await ObjectStoreCoordinator.shared.fileResourceFinder()!
 
         switch polisType {
             case .serviceProvider:            localPath = osc.configurationFile()
             case .serviceDirectory:           localPath = osc.polisProviderDirectoryFile()
             case .observingFacilityDirectory: localPath = osc.observingFacilitiesDirectoryFile()
-            case .observingFacility: break
-            case .observingFacilityDetail: break
-            case .artifact: break
-            case .observatory: break
-            case .device: break
-            case .locationObEarth: break
-            case .unknown: break
+            case .observingFacility:          localPath = osc.observingFacilitiesDirectoryFile() // This is the directory, where we need to find the entry
+            case .observingFacilityDetail:
+                if let fID = facilityID { localPath = osc.observingFacilityFile(observingFacilityID: fID) }
+                else                    { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.missingRequiredID }
+            case .artifact: break         //TODO: Implement me!
+            case .observatory: break      //TODO: Implement me!
+            case .device: break           //TODO: Implement me!
+            case .locationObEarth: break  //TODO: Implement me!
+            case .unknown: break          //TODO: Implement me!
         }
 
-        polisObject = try await loadPolisObjectOf(type: polisType, atPath: localPath)
+        polisObject = try await loadPolisObjectOf(type: polisType, atPath: localPath, facilityID: facilityID)
         if let polisObject = polisObject {
             return PolisObjectRep(polisObject: polisObject, localPath: localPath!, objectType: polisType)
         }
@@ -197,7 +199,7 @@ public struct IdentifiableObject: Sendable {
     func deleteFromLocalProvider() async throws { }
 
     //MARK: Private APIs
-    private static func loadPolisObjectOf(type: PolisObjectType, atPath: String?) async throws -> PolisObject {
+    private static func loadPolisObjectOf(type: PolisObjectType, atPath: String?, facilityID: UUID? = nil, objectID: UUID? = nil) async throws -> PolisObject {
         let fm: FileManager = .default
         var polisObject: PolisObject!
 
@@ -211,13 +213,18 @@ public struct IdentifiableObject: Sendable {
                         case .serviceProvider:            polisObject = try jsonDecoder.decode(PolisDirectory.ProviderDirectoryEntry.self, from: data)
                         case .serviceDirectory:           polisObject = try jsonDecoder.decode(PolisDirectory.self, from: data)
                         case .observingFacilityDirectory: polisObject = try jsonDecoder.decode(PolisObservingFacilityDirectory.self, from: data)
-                        case .observingFacility: break
-                        case .observingFacilityDetail: break
-                        case .artifact: break
-                        case .observatory: break
-                        case .device: break
-                        case .locationObEarth: break
-                        case .unknown: break
+                        case .observingFacility:
+                            if let fID = facilityID {
+                                let facilityDir = try jsonDecoder.decode(PolisObservingFacilityDirectory.self, from: data)
+                                polisObject     = facilityDir.facilityReferenceWith(id: fID)
+                            }
+                            else { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.missingRequiredID }
+                        case .observingFacilityDetail:    polisObject = try jsonDecoder.decode(PolisObservingFacilityDetails.self, from: data)
+                        case .artifact: break          //TODO: Implement me!
+                        case .observatory: break       //TODO: Implement me!
+                        case .device: break            //TODO: Implement me!
+                        case .locationObEarth: break   //TODO: Implement me!
+                        case .unknown: break           //TODO: Implement me!
                     }
                 }
                 catch { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.cannotAccessOrCreateStandardPolisFolders }

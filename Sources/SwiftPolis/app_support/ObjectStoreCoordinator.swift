@@ -32,7 +32,8 @@ public actor ObjectStoreCoordinator {
         case missingServiceProvider
         case fileIO
         case cannotUseLocalProvider
-
+        case missingRequiredID
+        
         case unknownError
     }
 
