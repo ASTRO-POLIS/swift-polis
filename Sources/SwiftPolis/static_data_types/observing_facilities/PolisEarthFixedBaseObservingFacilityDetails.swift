@@ -16,13 +16,13 @@ public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable
 
     // For visitors
     public var visitingHoursID: UUID?
-    public var accessRestrictions: String?
+    public var accessRestrictions: LocalisableString?
 
     public var averageClearNightsPerYear: UInt?
     public var averageSeeingConditions: PolisPropertyValue? // [arcsec]
     public var averageSkyQuality: PolisPropertyValue?       // [magnitude / arcsec^2]
 
-    public var traditionalLandOwners: String?
+    public var traditionalLandOwners: LocalisableString?
 
     public var dominantWindDirection: PolisDirection.RoughDirection?
     public var surfaceSize: PolisPropertyValue?             // [m^2]
@@ -33,11 +33,11 @@ public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable
                 lastUpdateTime: Date                                  = Date.now,
                 facilityID: UUID,
                 visitingHoursID: UUID?                                = nil,
-                accessRestrictions: String?                           = nil,
+                accessRestrictions: LocalisableString?                = nil,
                 averageClearNightsPerYear: UInt?                      = nil,
                 averageSeeingConditions: PolisPropertyValue?          = nil,
                 averageSkyQuality: PolisPropertyValue?                = nil,
-                traditionalLandOwners: String?                        = nil,
+                traditionalLandOwners: LocalisableString?             = nil,
                 dominantWindDirection: PolisDirection.RoughDirection? = nil,
                 surfaceSize: PolisPropertyValue?                      = nil,
                 placeID: UUID?                                        = nil) {

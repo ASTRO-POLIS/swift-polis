@@ -13,8 +13,8 @@ import Foundation
 
     //MARK: Info
     public var website: URL?
-    public var scientificObjectives: [String : String]?
-    public var history: [String : String]?
+    public var scientificObjectives: LocalisableString?
+    public var history: LocalisableString?
 
     //MARK: Internal APIs
     init(_ facilityDetail: PolisObservingFacilityDetails) async {

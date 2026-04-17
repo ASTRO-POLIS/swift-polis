@@ -69,9 +69,9 @@ public struct IdentifiableObject: Sendable {
                 externalReferences: [String]?         = nil,
                 lastUpdateTime: Date                  = Date(),
                 lifecycleStatus: PolisLifecycleStatus = .unknown,
-                name: [String : String]?              = nil,
+                name: LocalisableString?              = nil,
                 abbreviation: String?                 = nil,
-                shortDescription: [String : String]?  = nil,
+                shortDescription: LocalisableString?  = nil,
                 startTime: Date?                      = nil,
                 endTime: Date?                        = nil,
                 polisRegistrationTime: Date?          = nil) {

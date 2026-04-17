@@ -24,8 +24,8 @@ public struct PolisObservingFacilityDetails: Identifiable, Codable, Equatable, S
 
     //MARK: Info
     public var website: URL?
-    public var scientificObjectives: [String : String]?
-    public var history: [String : String]?
+    public var scientificObjectives: LocalisableString?
+    public var history: LocalisableString?
 
     //MARK: Identifiable protocol compliance
     public var id: UUID { identity.id }
@@ -42,8 +42,8 @@ public struct PolisObservingFacilityDetails: Identifiable, Codable, Equatable, S
                 artifactIDs: Set<UUID>?                  = nil,
 
                 website: URL?                            = nil,
-                scientificObjectives: [String : String]? = nil,
-                history: [String : String]?              = nil) {
+                scientificObjectives: LocalisableString? = nil,
+                history: LocalisableString?              = nil) {
         self.identity                  = identity
         self.parentObservingFacilityID = parentObservingFacilityID
 

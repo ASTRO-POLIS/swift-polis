@@ -7,6 +7,11 @@
 
 import Foundation
 
+/// All strings that might appear in multiple languages are represented by a ``Sting``dictionary, where:
+/// - The key is the language code (e.g. `en`, `en-uk`, `de`, etc
+/// - The value is the string in the corresponding language
+public typealias LocalisableString = [String : String]
+
 /// Marks an object as POLIS objet
 ///
 /// This allows the system to save, sync, update, and delete objects, change their status, and notify observers about the changes

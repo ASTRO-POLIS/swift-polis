@@ -130,7 +130,7 @@ public struct PolisLocalisedText {
     /// text.rawValues
     /// // ["en": "Telescope", "de": "Teleskop"]
     /// ```
-    public init(_ values: [String: String] = [:]) {
+    public init(_ values: LocalisableString = [:]) {
         self.storage = Dictionary(
             uniqueKeysWithValues: values.map { key, value in
                 (PolisLocalisationPreferences.shared.normalisedBaseLanguageCode(key), value)
@@ -157,7 +157,7 @@ public struct PolisLocalisedText {
     /// The underlying language-code/value dictionary.
     ///
     /// Language keys are returned in their normalised base form.
-    public var rawValues: [String: String] { storage }
+    public var rawValues: LocalisableString { storage }
 
     /// Reads or updates the value for the given language code.
     ///
