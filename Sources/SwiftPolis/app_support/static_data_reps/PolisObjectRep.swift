@@ -13,11 +13,14 @@ import SoftwareEtudesUtilities
 /// Used to identify the type of the Polis Object to be wrapped for file and sync operations). The String representation
 /// us used to customise error messages and reports.
 public enum PolisObjectType: String {
-    case serviceProvider            = "POLIS Directory Entry"
-    case serviceDirectory           = "POLIS Directory"
-    case observingFacilityDirectory = "POLIS Observing Facility Directory"
-    case observingFacility
-    case observingFacilityDetail    = "POLIS Observing Facility Detail"
+    case serviceProvider                         = "POLIS Directory Entry"
+    case serviceDirectory                        = "POLIS Directory"
+    case observingFacilityDirectory              = "POLIS Observing Facility Directory"
+
+    case observingFacility                       = "POLIS Observing Facility"
+    case observingFacilityDetail                 = "POLIS Observing Facility Detail"
+    case observingFacilityEarthFixedBasedDetails = "POLIS Observing Facility Earth Fixed Based Details"
+
     case artifact
     case observatory
     case device
@@ -157,6 +160,9 @@ public struct IdentifiableObject: Sendable {
             case .observingFacilityDetail:
                 if let fID = facilityID { localPath = osc.observingFacilityFile(observingFacilityID: fID) }
                 else                    { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.missingRequiredID }
+            case .observingFacilityEarthFixedBasedDetails:
+                if let fID = facilityID,  let objectID = objectID { localPath = osc.observingDataFile(withID: objectID, observingFacilityID: fID) }
+                else                                              { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.missingRequiredID }
             case .artifact: break         //TODO: Implement me!
             case .observatory: break      //TODO: Implement me!
             case .device: break           //TODO: Implement me!
@@ -219,7 +225,8 @@ public struct IdentifiableObject: Sendable {
                                 polisObject     = facilityDir.facilityReferenceWith(id: fID)
                             }
                             else { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.missingRequiredID }
-                        case .observingFacilityDetail:    polisObject = try jsonDecoder.decode(PolisObservingFacilityDetails.self, from: data)
+                        case .observingFacilityDetail:                 polisObject = try jsonDecoder.decode(PolisObservingFacilityDetails.self, from: data)
+                        case .observingFacilityEarthFixedBasedDetails: polisObject = try jsonDecoder.decode(PolisEarthFixedBaseObservingFacilityDetails.self, from: data)
                         case .artifact: break          //TODO: Implement me!
                         case .observatory: break       //TODO: Implement me!
                         case .device: break            //TODO: Implement me!

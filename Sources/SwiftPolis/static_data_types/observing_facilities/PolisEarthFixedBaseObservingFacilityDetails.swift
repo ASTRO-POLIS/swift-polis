@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable, Equatable, Sendable {
+public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable, Equatable, Sendable, PolisObject {
 
     // General info
     public var id: UUID
@@ -54,6 +54,9 @@ public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable
         self.surfaceSize               = surfaceSize
         self.placeID                   = placeID
     }
+
+    func polisDataType() -> PolisDataType { .observingFacilityEarthFixedBasedDetails }
+
 }
 
 public extension PolisEarthFixedBaseObservingFacilityDetails {

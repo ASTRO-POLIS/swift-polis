@@ -24,10 +24,15 @@ public enum PolisDataType: Codable, Equatable, Hashable, Sendable {
     case providerDirectoryEntry
     case observingFacilityReference
     case observingFacilityDirectory
+
     case identity
     case item
+
+    case place
+    
     case observingFacility
     case observingFacilityDetail
+    case observingFacilityEarthFixedBasedDetails
 
     case unknown
 }
