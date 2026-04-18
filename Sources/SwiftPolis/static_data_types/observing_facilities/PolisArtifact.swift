@@ -39,7 +39,7 @@ public struct PolisArtifact: Codable, Identifiable, Equatable, Sendable {
     ///  Describes the attractiveness of the artifact and how to visit it
     ///
     ///  **Note:** Visiting hours should be defined by the observing site
-    public var visitingOpportunities: String?
+    public var visitingOpportunities: LocalisableString?
 
     /// Mostly images (photos)
     public var mediaID: UUID?
@@ -51,10 +51,10 @@ public struct PolisArtifact: Codable, Identifiable, Equatable, Sendable {
 
     public init(identity: PolisIdentity,
                 facilityID: UUID,
-                artifactType: ArtifactType     = .unknown,
-                visitingOpportunities: String? = nil,
-                mediaID: UUID?                 = nil,
-                website: URL?                  = nil) {
+                artifactType: ArtifactType                 = .unknown,
+                visitingOpportunities: LocalisableString?  = nil,
+                mediaID: UUID?                             = nil,
+                website: URL?                              = nil) {
         self.identity              = identity
         self.facilityID            = facilityID
         self.artifactType          = artifactType

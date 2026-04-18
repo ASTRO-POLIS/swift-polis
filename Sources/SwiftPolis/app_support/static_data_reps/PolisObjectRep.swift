@@ -55,9 +55,9 @@ public struct IdentifiableObject: Sendable {
     public var externalReferences: [String]?
     public internal(set) var lastUpdateTime: Date
     public var lifecycleStatus: PolisLifecycleStatus
-    public var name: [String: String]?
+    public var name: LocalisableString?
     public var abbreviation: String?
-    public var shortDescription: [String: String]?
+    public var shortDescription: LocalisableString?
     public var startTime: Date?
     public var endTime: Date?
     public internal(set) var polisRegistrationTime: Date?
@@ -74,7 +74,7 @@ public struct IdentifiableObject: Sendable {
                 shortDescription: LocalisableString?  = nil,
                 startTime: Date?                      = nil,
                 endTime: Date?                        = nil,
-                polisRegistrationTime: Date?          = nil) {
+                polisRegistrationTime: Date?          = nil) { // No default value on purpose, to require explicit setting if needed.
         self.id                    = id
         self.externalReferences    = externalReferences
         self.lastUpdateTime        = lastUpdateTime

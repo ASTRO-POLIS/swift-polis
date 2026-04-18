@@ -7,6 +7,36 @@
 
 import Foundation
 
+/// Usage pattern
+///
+/// **The goal:** To make human readable / meaningful Strings (e.g. names, descriptions, ...) localisable and accessed
+/// easily and updatable by clients
+///
+/// **Steps:**
+/// 1. Setup the localisation environment globally
+/// ```swift
+/// let plp = PolisLocalisationPreferences.shared
+/// plp.setPreferredLanguages(["en", "de", "de-at", "am", "bg"])
+/// ```
+///
+/// 2. In Rep-type classes, to extract the proper string:
+/// 2.1. During the initialisation:
+/// ```swift
+/// var name = PolisLocalisedText(polisObject.name)
+/// ```
+/// 2.2. Extract the proper String
+/// ```swift
+/// let string = name.resolved
+/// ```
+///
+/// 3. Set new values and prepare them to be persistent:
+/// ```swift
+/// var name = PolisLocalisedText(polisObject.name)
+/// name["bg"] = "Рожен"
+/// polisObject = name.rawValues
+/// ```
+
+
 /// Singleton responsible for language-code normalisation and preference resolution.
 public final class PolisLocalisationPreferences: @unchecked Sendable {
     
