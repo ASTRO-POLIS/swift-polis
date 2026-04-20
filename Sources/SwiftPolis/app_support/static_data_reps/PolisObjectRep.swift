@@ -24,7 +24,8 @@ public enum PolisObjectType: String {
     case artifact
     case observatory
     case device
-    case locationObEarth
+
+    case placeOnEarth                            = "POLIS Place on Earth"
 
     case unknown
 }
@@ -166,7 +167,9 @@ public struct IdentifiableObject: Sendable {
             case .artifact: break         //TODO: Implement me!
             case .observatory: break      //TODO: Implement me!
             case .device: break           //TODO: Implement me!
-            case .locationObEarth: break  //TODO: Implement me!
+            case .placeOnEarth:
+                if let fID = facilityID,  let objectID = objectID { localPath = osc.observingDataFile(withID: objectID, observingFacilityID: fID) }
+                else                                              { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.missingRequiredID }
             case .unknown: break          //TODO: Implement me!
         }
 
@@ -230,7 +233,7 @@ public struct IdentifiableObject: Sendable {
                         case .artifact: break          //TODO: Implement me!
                         case .observatory: break       //TODO: Implement me!
                         case .device: break            //TODO: Implement me!
-                        case .locationObEarth: break   //TODO: Implement me!
+                        case .placeOnEarth: break      //TODO: Implement me!
                         case .unknown: break           //TODO: Implement me!
                     }
                 }

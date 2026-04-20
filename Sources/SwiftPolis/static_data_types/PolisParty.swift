@@ -96,7 +96,7 @@ public struct PolisOwner: Codable, Equatable, Sendable {
 }
 
 //MARK: - PolisPlace -
-public struct PolisPlaceOnEarth: Codable, Equatable, Identifiable, Sendable {
+public struct PolisPlaceOnEarth: Codable, Equatable, Identifiable, Sendable, PolisObject {
 
     public enum EarthContinent: String, Codable, Equatable, Sendable {
         case europe       = "Europe"
@@ -221,6 +221,9 @@ public struct PolisPlaceOnEarth: Codable, Equatable, Identifiable, Sendable {
         self.note               = note
         self.timeZoneIdentifier = timeZoneIdentifier
     }
+
+    func polisDataType() -> PolisDataType { .placeOnEarth }
+
 }
 
 //MARK: - PolisPerson -

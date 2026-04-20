@@ -8,7 +8,7 @@
 import Foundation
 
 //open class PlaceOnEarth: PolisObjectPersisting {
-open class PlaceOnEarth {
+@Observable open class PlaceOnEarth: PersistentObject, @unchecked Sendable {
 
     public private(set) var id: UUID!
     public var lastUpdateTime = Date.now
@@ -56,15 +56,13 @@ open class PlaceOnEarth {
 
     //MARK: Internal APIs
 
-    init(_ place: PolisPlaceOnEarth) {
-        self._originalPolisRecord = place
-        updateFromPolisPlace(place)
-     }
-
-    //MARK: Private APIs
-    private var _originalPolisRecord: PolisPlaceOnEarth?
-
-    private func updateFromPolisPlace(_ place: PolisPlaceOnEarth) {
+    init(_ place: PolisPlaceOnEarth) async {
+        let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!
+        let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(polisObject: place as any PolisObject,
+                                                                 localPath: fileResourceFinder.observingDataFile(withID: place.id,
+                                                                                                                 observingFacilityID: place.id) ,
+                                                                 objectType: .observingFacilityEarthFixedBasedDetails)
+        
         id                 = place.id
         lastUpdateTime     = place.lastUpdateTime
         facilityID         = place.facilityID
@@ -98,7 +96,11 @@ open class PlaceOnEarth {
         streetLine6        = place.streetLine6
         note               = place.note
         timeZoneIdentifier = place.timeZoneIdentifier
-    }
+
+        await super.init(polisRep: sP)
+     }
+
+    //MARK: Private APIs
 
     //MARK: - Implementing PolisObjectPersisting protocol -
 

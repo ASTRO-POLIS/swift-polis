@@ -9,9 +9,6 @@ import Foundation
 
 @Observable open class FixedBaseObservingFacilityDetails: PersistentObject, @unchecked Sendable {
 
-//TODO: These are the POLIS properties, that need all to reflect in one way or other here
-//
-
     public internal(set) var id: UUID
     public internal(set)var lastUpdateTime: Date
     public var accessRestrictions: PolisLocalisedText?
