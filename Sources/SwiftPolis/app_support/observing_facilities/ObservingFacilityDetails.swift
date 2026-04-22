@@ -13,8 +13,8 @@ import Foundation
 
     //MARK: Info
     public var website: URL?
-    public var scientificObjectives: LocalisableString?
-    public var history: LocalisableString?
+    public var scientificObjectives: PolisLocalisedText?
+    public var history: PolisLocalisedText?
 
     //MARK: Internal APIs
     init(_ facilityDetail: PolisObservingFacilityDetails) async {
@@ -44,8 +44,8 @@ import Foundation
         self.mediaSourceID             = facilityDetail.mediaSourceID
         self.artifactIDs               = facilityDetail.artifactIDs
         self.website                   = facilityDetail.website
-        self.scientificObjectives      = facilityDetail.scientificObjectives
-        self.history                   = facilityDetail.history
+        self.scientificObjectives      = PolisLocalisedText(facilityDetail.scientificObjectives)
+        self.history                   = PolisLocalisedText(facilityDetail.history)
 
         await super.init(polisRep: sP)
     }
@@ -70,8 +70,8 @@ import Foundation
                                       mediaSourceID: mediaSourceID,
                                       artifactIDs: artifactIDs,
                                       website: website,
-                                      scientificObjectives: scientificObjectives,
-                                      history: history)
+                                      scientificObjectives: scientificObjectives?.rawValues,
+                                      history: history?.rawValues)
     }
 
     var artifactIDs: Set<UUID>? // Arifacts of interest could be also on other solar system bodies (e.g. Apollo landing site)

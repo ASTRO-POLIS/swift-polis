@@ -160,9 +160,10 @@ public struct PolisLocalisedText {
     /// text.rawValues
     /// // ["en": "Telescope", "de": "Teleskop"]
     /// ```
-    public init(_ values: LocalisableString = [:]) {
+    public init(_ values: LocalisableString? = [:]) {
+        let valueDictionary = values != nil ? values! : [:]
         self.storage = Dictionary(
-            uniqueKeysWithValues: values.map { key, value in
+            uniqueKeysWithValues: valueDictionary.map { key, value in
                 (PolisLocalisationPreferences.shared.normalisedBaseLanguageCode(key), value)
             }
         )
