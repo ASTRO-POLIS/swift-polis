@@ -26,7 +26,6 @@ public enum PolisDataType: Codable, Equatable, Hashable, Sendable {
     case observingFacilityDirectory
 
     case identity
-    case item
 
     case placeOnEarth
     

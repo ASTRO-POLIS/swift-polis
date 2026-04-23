@@ -9,8 +9,9 @@ import Foundation
 
 @Observable open class FixedBaseObservingFacilityDetails: PersistentObject, @unchecked Sendable {
 
-    public internal(set) var id: UUID
-    public internal(set)var lastUpdateTime: Date
+    // Identity
+    public internal(set) var identity: PolisIdentity
+
     public var accessRestrictions: PolisLocalisedText?
     public var averageClearNightsPerYear: UInt?
     public var averageSeeingConditions: PolisPropertyValue? // [arcsec]
@@ -30,15 +31,16 @@ import Foundation
 
     /// Create a new instance with known Facility
     init(facility: ObservingFacility) async {
-        let fileResourceFinder                   = await ObjectStoreCoordinator.shared.fileResourceFinder()!
-        let polisObject                          = PolisEarthFixedBaseObservingFacilityDetails(facilityID: facility.id)
-        let sP: PolisObjectRep<any PolisObject>  = PolisObjectRep(polisObject: polisObject as any PolisObject,
-                                                                  localPath: fileResourceFinder.observingDataFile(withID: polisObject.id,
-                                                                                                                  observingFacilityID: facility.id) ,
-                                                                  objectType: .observingFacilityEarthFixedBasedDetails)
+        let newIdentity                         = PolisIdentity(id: facility.id, lastUpdateTime: facility.lastUpdateTime)
+        let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!
+        let polisObject                         = PolisEarthFixedBaseObservingFacilityDetails(identity: newIdentity, facilityID: facility.id)
+        let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(polisObject: polisObject as any PolisObject,
+                                                                 localPath: fileResourceFinder.observingDataFile(withID: polisObject.id,
+                                                                                                                 observingFacilityID: facility.id) ,
+                                                                 objectType: .observingFacilityEarthFixedBasedDetails)
 
-        self.id                   = polisObject.id
-        self.lastUpdateTime       = Date.now
+
+        self.identity             = newIdentity
         self._facilityID          = facility.id
         self._visitingHoursID     = nil
         self._placeID             = nil            //TODO: This need to be changed. We need automatically to create a place
@@ -61,8 +63,7 @@ import Foundation
                                                                   localPath: fileResourceFinder.observingDataFile(withID: fixedBaseObservingFacilityDetails.id,
                                                                                                                   observingFacilityID: fixedBaseObservingFacilityDetails.facilityID) ,
                                                                   objectType: .observingFacilityEarthFixedBasedDetails)
-        self.id                   = fixedBaseObservingFacilityDetails.id
-        self.lastUpdateTime       = fixedBaseObservingFacilityDetails.lastUpdateTime
+        self.identity             = fixedBaseObservingFacilityDetails.identity
         self._facilityID          = fixedBaseObservingFacilityDetails.facilityID
         self._visitingHoursID     = fixedBaseObservingFacilityDetails.visitingHoursID
         self._placeID             = fixedBaseObservingFacilityDetails.placeID

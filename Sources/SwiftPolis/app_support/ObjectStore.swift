@@ -44,6 +44,16 @@ extension ObjectStore {
 //MARK: - Observing Facilities -
 extension ObjectStore {
     public func observingFacilities() -> [ObservingFacility] { _observingFacilities.withLock{ return $0 } }
-    public func add(observingFacility: ObservingFacility) { _observingFacilities.withLock{ $0.append(observingFacility) } }
+
+    public func add(observingFacility: ObservingFacility)    { _observingFacilities.withLock{ $0.append(observingFacility) } }
+
+    //TODO: func for deleting of a site (very complex implementation)
+    
+    public func observingFacilityWith(id: UUID) -> ObservingFacility? {
+        for facility in observingFacilities() {
+            if facility.id == id { return facility }
+        }
+        return nil
+    }
 }
 

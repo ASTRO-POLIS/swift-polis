@@ -10,26 +10,6 @@ import Logging
 import SoftwareEtudesLogging
 import SoftwareEtudesUtilities
 
-/// Used to identify the type of the Polis Object to be wrapped for file and sync operations). The String representation
-/// us used to customise error messages and reports.
-public enum PolisObjectType: String {
-    case serviceProvider                         = "POLIS Directory Entry"
-    case serviceDirectory                        = "POLIS Directory"
-    case observingFacilityDirectory              = "POLIS Observing Facility Directory"
-
-    case observingFacility                       = "POLIS Observing Facility"
-    case observingFacilityDetail                 = "POLIS Observing Facility Detail"
-    case observingFacilityEarthFixedBasedDetails = "POLIS Observing Facility Earth Fixed Based Details"
-
-    case artifact
-    case observatory
-    case device
-
-    case placeOnEarth                            = "POLIS Place on Earth"
-
-    case unknown
-}
-
 /// Represents any POLIS Data Structure
 struct PolisObjectRep<PolisObject> {
     var polisObject: PolisObject

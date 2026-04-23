@@ -9,9 +9,8 @@ import Foundation
 
 public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable, Equatable, Sendable, PolisObject {
 
-    // General info
-    public var id: UUID
-    public var lastUpdateTime: Date
+    // Identity
+    public var identity: PolisIdentity
     public var facilityID: UUID
 
     // For visitors
@@ -29,8 +28,9 @@ public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable
 
     public var placeID: UUID?
 
-    public init(id: UUID                                              = UUID(),
-                lastUpdateTime: Date                                  = Date.now,
+    public var id: UUID { identity.id }
+
+    public init(identity: PolisIdentity,
                 facilityID: UUID,
                 visitingHoursID: UUID?                                = nil,
                 accessRestrictions: LocalisableString?                = nil,
@@ -41,8 +41,7 @@ public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable
                 dominantWindDirection: PolisDirection.RoughDirection? = nil,
                 surfaceSize: PolisPropertyValue?                      = nil,
                 placeID: UUID?                                        = nil) {
-        self.id                        = id
-        self.lastUpdateTime            = lastUpdateTime
+        self.identity                  = identity
         self.facilityID                = facilityID
         self.visitingHoursID           = visitingHoursID
         self.accessRestrictions        = accessRestrictions
@@ -61,8 +60,7 @@ public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable
 
 public extension PolisEarthFixedBaseObservingFacilityDetails {
     enum CodingKeys: String, CodingKey {
-        case id
-        case lastUpdateTime            = "last_update_time"
+        case identity
         case facilityID                = "facility_id"
         case visitingHoursID           = "visiting_hours_id"
         case accessRestrictions        = "access_restrictions"

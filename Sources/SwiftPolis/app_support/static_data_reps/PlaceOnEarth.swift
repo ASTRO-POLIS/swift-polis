@@ -11,8 +11,8 @@ import Foundation
 @Observable open class PlaceOnEarth: PersistentObject, @unchecked Sendable {
 
     public private(set) var id: UUID!
-    public var lastUpdateTime = Date.now
-    public var facilityID: UUID? // We need this because we need to know where to store the JSON file
+    public internal(set) var lastUpdateTime = Date.now
+    public internal(set) var facilityID: UUID? // We need this because we need to know where to store the JSON file
 
     public var attentionOff: String?
     public var houseName: String?
@@ -56,13 +56,14 @@ import Foundation
 
     //MARK: Internal APIs
 
+    /// Instantiating a PlaceOnEarth object from a Police instance
     init(_ place: PolisPlaceOnEarth) async {
         let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(polisObject: place as any PolisObject,
                                                                  localPath: fileResourceFinder.observingDataFile(withID: place.id,
-                                                                                                                 observingFacilityID: place.id) ,
+                                                                                                                 observingFacilityID: place.facilityID!),
                                                                  objectType: .observingFacilityEarthFixedBasedDetails)
-        
+
         id                 = place.id
         lastUpdateTime     = place.lastUpdateTime
         facilityID         = place.facilityID
@@ -100,6 +101,18 @@ import Foundation
         await super.init(polisRep: sP)
      }
 
+    /// Instantiating a new PlaceOnEarth instance
+    init(facilityID: UUID) async {
+        let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!
+        let polisObject                         = PolisPlaceOnEarth(facilityID: facilityID)
+        let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(polisObject: polisObject as any PolisObject,
+                                                                 localPath: fileResourceFinder.observingDataFile(withID: polisObject.id,
+                                                                                                                 observingFacilityID: facilityID),
+                                                                 objectType: .observingFacilityEarthFixedBasedDetails)
+
+        await super.init(polisRep: sP)
+    }
+    
     //MARK: Private APIs
 
     //MARK: - Implementing PolisObjectPersisting protocol -

@@ -37,3 +37,31 @@ public enum ObjectStoreStatusType: Int, Sendable {
     /// The local store is synced with the remote service provider. The sync might be in progress
     case fullyConfiguredAndSynced             = 5
 }
+
+/// Used to identify the type of the Polis Object to be wrapped for file and sync operations). The String representation
+/// us used to customise error messages and reports.
+public enum PolisObjectType: String {
+    case serviceProvider                         = "POLIS Directory Entry"
+    case serviceDirectory                        = "POLIS Directory"
+    case observingFacilityDirectory              = "POLIS Observing Facility Directory"
+
+    case observingFacility                       = "POLIS Observing Facility"
+    case observingFacilityDetail                 = "POLIS Observing Facility Detail"
+    case observingFacilityEarthFixedBasedDetails = "POLIS Observing Facility Earth Fixed Based Details"
+
+    case artifact
+    case observatory
+    case device
+
+    case placeOnEarth                            = "POLIS Place on Earth"
+
+    case unknown
+}
+
+
+protocol PolisTypeTransformable {
+    func polisObject() -> PolisObject
+    func polisType() -> PolisObjectType
+
+    init (polisObject: PolisObject)
+}

@@ -118,7 +118,7 @@ public struct PolisIdentity: Codable, Identifiable, Equatable, Sendable, PolisOb
                 shortDescription: [String: String]?   = nil,
                 startTime: Date?                      = nil,
                 endTime: Date?                        = nil,
-                polisRegistrationTime: Date?          = Date.now) {
+                polisRegistrationTime: Date?          = nil) {
         self.id                    = id
         self.externalReferences    = externalReferences
         self.lastUpdateTime        = lastUpdateTime

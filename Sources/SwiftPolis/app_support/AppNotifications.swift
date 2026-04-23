@@ -57,9 +57,9 @@ struct PolisObjectDidChange: NotificationCenter.MainActorMessage {
 struct RepObjectDidChange: NotificationCenter.MainActorMessage {
     typealias Subject = PersistentObject
 
-    let payload: PolisNotificationPayload
+    let payload: IdentifiableObject
 
-    init(_ payload: PolisNotificationPayload) { self.payload = payload }
+    init(_ payload: IdentifiableObject) { self.payload = payload }
 }
 
 /// This Notification Message is posted when a client (UI or Server app) is about to terminate. In order to prevent loss
