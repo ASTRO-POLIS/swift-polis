@@ -143,7 +143,7 @@ public final class PolisLocalisationPreferences: @unchecked Sendable {
 /// // Value resolved against preferred device languages:
 /// let displayTitle = title.resolved
 /// ```
-public struct PolisLocalisedText {
+public struct PolisLocalisedText: Sendable {
 
     /// Creates localised text from a dictionary of language-code/value pairs.
     ///

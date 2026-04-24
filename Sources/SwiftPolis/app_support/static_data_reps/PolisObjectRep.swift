@@ -39,9 +39,9 @@ public struct IdentifiableObject: Sendable {
     public var externalReferences: [String]?
     public internal(set) var lastUpdateTime: Date
     public var lifecycleStatus: PolisLifecycleStatus
-    public var name: LocalisableString?
+    public var name: PolisLocalisedText?
     public var abbreviation: String?
-    public var shortDescription: LocalisableString?
+    public var shortDescription: PolisLocalisedText?
     public var startTime: Date?
     public var endTime: Date?
     public internal(set) var polisRegistrationTime: Date?
@@ -53,9 +53,9 @@ public struct IdentifiableObject: Sendable {
                 externalReferences: [String]?         = nil,
                 lastUpdateTime: Date                  = Date(),
                 lifecycleStatus: PolisLifecycleStatus = .unknown,
-                name: LocalisableString?              = nil,
+                name: PolisLocalisedText?             = nil,
                 abbreviation: String?                 = nil,
-                shortDescription: LocalisableString?  = nil,
+                shortDescription: PolisLocalisedText? = nil,
                 startTime: Date?                      = nil,
                 endTime: Date?                        = nil,
                 polisRegistrationTime: Date?          = nil) { // No default value on purpose, to require explicit setting if needed.
@@ -76,9 +76,9 @@ public struct IdentifiableObject: Sendable {
         self.externalReferences    = identity.externalReferences
         self.lastUpdateTime        = identity.lastUpdateTime
         self.lifecycleStatus       = identity.lifecycleStatus
-        self.name                  = identity.name ?? ["en" : "<unnamed>"]
+        self.name                  = PolisLocalisedText(identity.name)
         self.abbreviation          = identity.abbreviation
-        self.shortDescription      = identity.shortDescription
+        self.shortDescription      = PolisLocalisedText(identity.shortDescription)
         self.startTime             = identity.startTime
         self.endTime               = identity.endTime
         self.polisRegistrationTime = identity.polisRegistrationTime
@@ -90,9 +90,9 @@ public struct IdentifiableObject: Sendable {
                           externalReferences   : externalReferences,
                           lastUpdateTime       : lastUpdateTime,
                           lifecycleStatus      : lifecycleStatus,
-                          name                 : name,
+                          name                 : name?.rawValues,
                           abbreviation         : abbreviation,
-                          shortDescription     : shortDescription,
+                          shortDescription     : shortDescription?.rawValues,
                           startTime            : startTime,
                           endTime              : endTime,
                           polisRegistrationTime: polisRegistrationTime)
@@ -101,9 +101,9 @@ public struct IdentifiableObject: Sendable {
             externalReferences    = newValue.externalReferences
             lastUpdateTime        = newValue.lastUpdateTime
             lifecycleStatus       = newValue.lifecycleStatus
-            name                  = newValue.name ?? ["en" : "<unnamed>"]
+            name                  = PolisLocalisedText(newValue.name)
             abbreviation          = newValue.abbreviation
-            shortDescription      = newValue.shortDescription
+            shortDescription      = PolisLocalisedText(newValue.shortDescription)
             startTime             = newValue.startTime
             endTime               = newValue.endTime
             polisRegistrationTime = newValue.polisRegistrationTime
@@ -227,6 +227,7 @@ public struct IdentifiableObject: Sendable {
     }
 }
 
+//@Observable open class IdentifiablePersistentObject: PersistentObject, PolisTypeTransformable, @unchecked Sendable {
 @Observable open class IdentifiablePersistentObject: PersistentObject, @unchecked Sendable {
 
     var identity: IdentifiableObject
@@ -237,6 +238,21 @@ public struct IdentifiableObject: Sendable {
         let placeholderRep = PolisObjectRep<PolisObject>(polisObject: DummyPolisType(), localPath: "", objectType: .unknown)
         await super.init(polisRep: placeholderRep)
     }
+
+//    func polisObject() -> any PolisObject {
+//        return DummyPolisType()
+//    }
+//
+//    func polisType() -> PolisObjectType {
+//        return .unknown
+//    }
+//
+//    required init(polisObject: any PolisObject) async {
+//        let placeholderRep = PolisObjectRep<PolisObject>(polisObject: DummyPolisType(), localPath: "", objectType: .unknown)
+//        await super.init(polisRep: placeholderRep)
+//    }
+
+
 }
 
 struct DummyPolisType: PolisObject {
