@@ -8,10 +8,8 @@
 import Foundation
 
 //open class PlaceOnEarth: PolisObjectPersisting {
-@Observable open class PlaceOnEarth: PersistentObject, @unchecked Sendable {
+@Observable open class PlaceOnEarth: IdentifiablePersistentObject, @unchecked Sendable {
 
-    public private(set) var id: UUID!
-    public internal(set) var lastUpdateTime = Date.now
     public internal(set) var facilityID: UUID? // We need this because we need to know where to store the JSON file
 
     public var attentionOff: String?
@@ -64,8 +62,6 @@ import Foundation
                                                                                                                  observingFacilityID: place.facilityID!),
                                                                  objectType: .observingFacilityEarthFixedBasedDetails)
 
-        id                 = place.id
-        lastUpdateTime     = place.lastUpdateTime
         facilityID         = place.facilityID
         attentionOff       = place.attentionOff
         houseName          = place.houseName

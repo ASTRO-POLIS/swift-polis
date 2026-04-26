@@ -8,7 +8,7 @@
 import Foundation
 import SoftwareEtudesUtilities
 
-@Observable public final class ServiceProvider: PersistentObject, @unchecked Sendable {
+@Observable public final class ServiceProvider: IdentifiablePersistentObject, @unchecked Sendable {
 
     public private(set) var id: UUID!
     public var mirrorID: UUID?

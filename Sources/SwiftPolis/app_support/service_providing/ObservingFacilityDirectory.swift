@@ -7,7 +7,7 @@
 
 import Foundation
 
-@Observable public final class ObservingFacilityDirectory: PersistentObject, @unchecked Sendable {
+@Observable public final class ObservingFacilityDirectory: IdentifiablePersistentObject, @unchecked Sendable {
     var lastUpdateTime: Date // UTC
 
     init(_ facilityDirectory: PolisObservingFacilityDirectory) async {

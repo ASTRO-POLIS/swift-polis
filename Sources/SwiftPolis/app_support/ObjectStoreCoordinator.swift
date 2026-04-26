@@ -205,9 +205,9 @@ extension ObjectStoreCoordinator {
         try objectStoreStatus()
         if !_isConfigured { throw ObjectStoreCoordinatorError.cannotUseLocalProvider }
 
-        let serviceProviderRep          = try await PersistentObject.fromLocalData(polisType: .serviceProvider)
-        let serviceProviderDirectoryRep = try await PersistentObject.fromLocalData(polisType: .serviceDirectory)
-        let facilityDirectoryRep        = try await PersistentObject.fromLocalData(polisType: .observingFacilityDirectory)
+        let serviceProviderRep          = try await IdentifiablePersistentObject.fromLocalData(polisType: .serviceProvider)
+        let serviceProviderDirectoryRep = try await IdentifiablePersistentObject.fromLocalData(polisType: .serviceDirectory)
+        let facilityDirectoryRep        = try await IdentifiablePersistentObject.fromLocalData(polisType: .observingFacilityDirectory)
 
         _serviceProvider            = await ServiceProvider(serviceProviderRep.polisObject as! PolisDirectory.ProviderDirectoryEntry)
         _serviceProviderDirectory   = await ServiceProviderDirectory(serviceProviderDirectoryRep.polisObject as! PolisDirectory)
@@ -325,10 +325,10 @@ extension ObjectStoreCoordinator {
                                         astronomicalCode: String?                                         = nil,
                                         facilityLocationID: UUID?                                         = nil) async throws-> ObservingFacility {
 
+        let identity = PolisIdentity(lifecycleStatus: lifecycleStatus)
 
-        let newFacilityEntry = PolisObservingFacilityDirectory.ObservingFacilityReference(id: id,
+        let newFacilityEntry = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: identity,
                                                                                           observingFacilityCode: observingFacilityCode,
-                                                                                          lifecycleStatus: lifecycleStatus,
                                                                                           placeInTheSolarSystem: placeInTheSolarSystem,
                                                                                           gravitationalBodyRelationship: gravitationalBodyRelationship,
                                                                                           orbitingAroundPlaceInTheSolarSystem: orbitingAroundPlaceInTheSolarSystem,

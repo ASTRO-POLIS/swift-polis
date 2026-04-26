@@ -55,7 +55,7 @@ struct PolisObjectDidChange: NotificationCenter.MainActorMessage {
 /// time to time and after multiple changed notifications are handled, the changes will also be synced to the remote
 /// POLIS Service Providers.
 struct RepObjectDidChange: NotificationCenter.MainActorMessage {
-    typealias Subject = PersistentObject
+    typealias Subject = IdentifiablePersistentObject
 
     let payload: IdentifiableObject
 
@@ -66,7 +66,7 @@ struct RepObjectDidChange: NotificationCenter.MainActorMessage {
 /// of data, the corresponding client application should wait until it receives `PolisServiceProviderReadyToTerminate`
 /// message.
 struct PolisClientWillTerminate: NotificationCenter.MainActorMessage {
-    typealias Subject = PersistentObject
+    typealias Subject = IdentifiablePersistentObject
 }
 
 /// This Notification Message is posted when all persistent data are stored locally and all syncing processes are finished.

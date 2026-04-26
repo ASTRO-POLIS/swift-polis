@@ -7,10 +7,7 @@
 
 import Foundation
 
-@Observable open class FixedBaseObservingFacilityDetails: PersistentObject, @unchecked Sendable {
-
-    // Identity
-    public internal(set) var identity: PolisIdentity
+@Observable open class FixedBaseObservingFacilityDetails: IdentifiablePersistentObject, @unchecked Sendable {
 
     public var accessRestrictions: PolisLocalisedText?
     public var averageClearNightsPerYear: UInt?
@@ -30,40 +27,41 @@ import Foundation
     //MARK: Internal APIs
 
     /// Create a new instance with known Facility
-    init(facility: ObservingFacility) async {
-        let newIdentity                         = PolisIdentity(id: facility.id, lastUpdateTime: facility.lastUpdateTime)
-        let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!
-        let polisObject                         = PolisEarthFixedBaseObservingFacilityDetails(identity: newIdentity, facilityID: facility.id)
-        let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(polisObject: polisObject as any PolisObject,
-                                                                 localPath: fileResourceFinder.observingDataFile(withID: polisObject.id,
-                                                                                                                 observingFacilityID: facility.id) ,
-                                                                 objectType: .observingFacilityEarthFixedBasedDetails)
-
-
-        self.identity             = newIdentity
-        self._facilityID          = facility.id
-        self._visitingHoursID     = nil
-        self._placeID             = nil            //TODO: This need to be changed. We need automatically to create a place
-
-        accessRestrictions        = nil
-        averageClearNightsPerYear = nil
-        averageSeeingConditions   = nil // [arcsec]
-        averageSkyQuality         = nil // [magnitude / arcsec^2]
-        traditionalLandOwners     = nil
-        dominantWindDirection     = nil
-        surfaceSize               = nil
-
-        await super.init(polisRep: sP)
-    }
+    //TODO: Should be created by the facility detail
+//    init(facility: ObservingFacility) async {
+//        let newIdentity                         = IdentifiableObject(id: facility.id, lastUpdateTime: facility.lastUpdateTime)
+//        let polisIdentity                       = PolisIdentity(id: facility.id, lastUpdateTime: facility.lastUpdateTime)
+//        let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!
+//        let polisObject                         = PolisEarthFixedBaseObservingFacilityDetails(identity: polisIdentity, facilityID: facility.id)
+//        let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(polisObject: polisObject as any PolisObject,
+//                                                                 localPath: fileResourceFinder.observingDataFile(withID: polisObject.id,
+//                                                                                                                 observingFacilityID: facility.id),
+//                                                                 objectType: .observingFacilityEarthFixedBasedDetails)
+//
+//        self._facilityID          = facility.id
+//        self._visitingHoursID     = nil
+//        self._placeID             = nil            //TODO: This need to be changed. We need automatically to create a place
+//
+//        accessRestrictions        = nil
+//        averageClearNightsPerYear = nil
+//        averageSeeingConditions   = nil // [arcsec]
+//        averageSkyQuality         = nil // [magnitude / arcsec^2]
+//        traditionalLandOwners     = nil
+//        dominantWindDirection     = nil
+//        surfaceSize               = nil
+//
+//        await super.init(polisRep: sP, identity: newIdentity)
+//    }
 
     /// Create the instance from an existing POLIS data
     init(_ fixedBaseObservingFacilityDetails: PolisEarthFixedBaseObservingFacilityDetails) async {
-        let fileResourceFinder                   = await ObjectStoreCoordinator.shared.fileResourceFinder()!
-        let sP: PolisObjectRep<any PolisObject>  = PolisObjectRep(polisObject: fixedBaseObservingFacilityDetails as any PolisObject,
-                                                                  localPath: fileResourceFinder.observingDataFile(withID: fixedBaseObservingFacilityDetails.id,
-                                                                                                                  observingFacilityID: fixedBaseObservingFacilityDetails.facilityID) ,
+        let newIdentity                         = IdentifiableObject(id: fixedBaseObservingFacilityDetails.id, lastUpdateTime: fixedBaseObservingFacilityDetails.identity.lastUpdateTime)
+        let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!
+        let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(polisObject: fixedBaseObservingFacilityDetails as any PolisObject,
+                                                                 localPath: fileResourceFinder.observingDataFile(withID: fixedBaseObservingFacilityDetails.id,
+                                                                                                                  observingFacilityID: fixedBaseObservingFacilityDetails.facilityID),
                                                                   objectType: .observingFacilityEarthFixedBasedDetails)
-        self.identity             = fixedBaseObservingFacilityDetails.identity
+        
         self._facilityID          = fixedBaseObservingFacilityDetails.facilityID
         self._visitingHoursID     = fixedBaseObservingFacilityDetails.visitingHoursID
         self._placeID             = fixedBaseObservingFacilityDetails.placeID
@@ -76,7 +74,7 @@ import Foundation
         dominantWindDirection     = fixedBaseObservingFacilityDetails.dominantWindDirection
         surfaceSize               = fixedBaseObservingFacilityDetails.surfaceSize
         
-        await super.init(polisRep: sP)
+        await super.init(polisRep: sP, identity: newIdentity)
     }
     
     //MARK: Private APIs

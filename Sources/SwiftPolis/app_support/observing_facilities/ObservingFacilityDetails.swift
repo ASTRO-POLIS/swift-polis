@@ -7,9 +7,7 @@
 
 import Foundation
 
-@Observable open class ObservingFacilityDetails: PersistentObject, @unchecked Sendable {
-    //MARK: Identification & relationship to other facilities
-    public var identity: IdentifiableObject
+@Observable open class ObservingFacilityDetails: IdentifiablePersistentObject, @unchecked Sendable {
 
     //MARK: Info
     public var website: URL?
@@ -27,14 +25,13 @@ import Foundation
                                                                       externalReferences: facilityDetail.identity.externalReferences,
                                                                       lastUpdateTime: facilityDetail.identity.lastUpdateTime,
                                                                       lifecycleStatus: facilityDetail.identity.lifecycleStatus,
-                                                                      name: facilityDetail.identity.name,
+                                                                      name: PolisLocalisedText(facilityDetail.identity.name),
                                                                       abbreviation:facilityDetail.identity.abbreviation,
-                                                                      shortDescription: facilityDetail.identity.shortDescription,
+                                                                      shortDescription: PolisLocalisedText(facilityDetail.identity.shortDescription),
                                                                       startTime: facilityDetail.identity.startTime,
                                                                       endTime: facilityDetail.identity.endTime,
                                                                       polisRegistrationTime: facilityDetail.identity.polisRegistrationTime)
 
-        self.identity                  = newIdentity
         self.parentObservingFacilityID = facilityDetail.parentObservingFacilityID
         self.locationID                = facilityDetail.locationID
         self.observatoryIDs            = facilityDetail.observatoryIDs
@@ -47,7 +44,7 @@ import Foundation
         self.scientificObjectives      = PolisLocalisedText(facilityDetail.scientificObjectives)
         self.history                   = PolisLocalisedText(facilityDetail.history)
 
-        await super.init(polisRep: sP)
+        await super.init(polisRep: sP, identity: newIdentity)
     }
 
     //MARK: Below properties should be used only internally for bookkeeping

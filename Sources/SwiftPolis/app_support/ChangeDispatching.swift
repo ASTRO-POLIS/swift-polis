@@ -21,7 +21,7 @@ enum ChangeType {
 struct ObjectChange {
     let changeType: ChangeType
     let changeSource: ChangeInitiationSource
-    let object: PersistentObject
+    let object: IdentifiablePersistentObject
 }
 
 public class ObjetChangeDispatcher {

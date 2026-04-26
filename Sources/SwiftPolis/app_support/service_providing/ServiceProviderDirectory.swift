@@ -8,7 +8,7 @@
 import Foundation
 
 
-@Observable public final class ServiceProviderDirectory: PersistentObject, @unchecked Sendable {
+@Observable public final class ServiceProviderDirectory: IdentifiablePersistentObject, @unchecked Sendable {
 
     public var lastUpdateTime = Date.now
     public var providerDirectoryEntries: [PolisDirectory.ProviderDirectoryEntry] = []

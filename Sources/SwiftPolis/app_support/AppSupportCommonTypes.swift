@@ -62,6 +62,4 @@ public enum PolisObjectType: String {
 protocol PolisTypeTransformable {
     func polisObject() -> PolisObject
     func polisType() -> PolisObjectType
-
-    init (polisObject: PolisObject)
 }

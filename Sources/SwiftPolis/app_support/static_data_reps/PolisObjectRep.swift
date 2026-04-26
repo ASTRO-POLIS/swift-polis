@@ -113,7 +113,10 @@ public struct IdentifiableObject: Sendable {
 
 //MARK: - Persistent Object Hierarchy Roots -
 
-@Observable open class PersistentObject: @unchecked Sendable, PolisObjectPersisting {
+//@Observable open class PersistentObject: @unchecked Sendable, PolisObjectPersisting {
+@Observable open class IdentifiablePersistentObject: PolisTypeTransformable, @unchecked Sendable {
+
+    var identity: IdentifiableObject!
 
     // These should be used as private properties. Therefore they have "_" prefix!
     var _polisRep: PolisObjectRep<PolisObject>
@@ -122,10 +125,17 @@ public struct IdentifiableObject: Sendable {
     var _isDir: ObjCBool = false
     let _logger: Logging.Logger
 
-    init(polisRep: PolisObjectRep<PolisObject>) async {
+    init(polisRep: PolisObjectRep<PolisObject>, identity: IdentifiableObject? = nil) async {
         self._polisRep = polisRep
+        self.identity  = identity
+
         self._logger = await ObjectStoreCoordinator.shared.logger()
     }
+
+    // These  methods MUST be overridden!
+    func polisObject() -> any PolisObject { fatalError("IdentifiablePersistentObject : polisObject not implemented!") }
+    func polisType() -> PolisObjectType   { fatalError("IdentifiablePersistentObject : polisType not implemented!") }
+
 
     //MARK: - PolisObjectPersisting partial implementation
     static func fromLocalData(polisType: PolisObjectType, facilityID: UUID? = nil, objectID: UUID? = nil) async throws -> PolisObjectRep<Any> {
@@ -226,36 +236,3 @@ public struct IdentifiableObject: Sendable {
         else { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.cannotAccessOrCreateStandardPolisFolders }
     }
 }
-
-//@Observable open class IdentifiablePersistentObject: PersistentObject, PolisTypeTransformable, @unchecked Sendable {
-@Observable open class IdentifiablePersistentObject: PersistentObject, @unchecked Sendable {
-
-    var identity: IdentifiableObject
-
-    init(identity: IdentifiableObject) async {
-        self.identity = identity
-        // Provide a placeholder PolisObjectRep since this subclass doesn't yet manage a concrete PolisObject.
-        let placeholderRep = PolisObjectRep<PolisObject>(polisObject: DummyPolisType(), localPath: "", objectType: .unknown)
-        await super.init(polisRep: placeholderRep)
-    }
-
-//    func polisObject() -> any PolisObject {
-//        return DummyPolisType()
-//    }
-//
-//    func polisType() -> PolisObjectType {
-//        return .unknown
-//    }
-//
-//    required init(polisObject: any PolisObject) async {
-//        let placeholderRep = PolisObjectRep<PolisObject>(polisObject: DummyPolisType(), localPath: "", objectType: .unknown)
-//        await super.init(polisRep: placeholderRep)
-//    }
-
-
-}
-
-struct DummyPolisType: PolisObject {
-    var polisDataType = PolisDataType.unknown
-}
-

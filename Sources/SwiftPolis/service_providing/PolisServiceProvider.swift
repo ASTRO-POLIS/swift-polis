@@ -196,6 +196,7 @@ public struct PolisDirectory: Sendable, PolisObject {
 
 /// A compact list of all known Observing Facilities
 public struct PolisObservingFacilityDirectory: Codable, Sendable, PolisObject {
+    
 
     /// It is expected that the list of observatory facilities is long and each facility's data could be way over 1MB. Therefore a
     /// compact list of facilities references is maintained separately containing only facility's `identity`  It is
@@ -206,10 +207,8 @@ public struct PolisObservingFacilityDirectory: Codable, Sendable, PolisObject {
     public struct ObservingFacilityReference: Codable, Identifiable, Equatable, Sendable, PolisObject {
 
         // Identification
-        public var id: UUID
+        public var identity: PolisIdentity
         public var observingFacilityCode: String?
-        public var lifecycleStatus: PolisLifecycleStatus = .unknown
-        public var lastUpdateTime: Date = Date.now
 
         // Where in the Solar system
         public var placeInTheSolarSystem = PolisPlaceInTheSolarSystem.earth
@@ -221,24 +220,22 @@ public struct PolisObservingFacilityDirectory: Codable, Sendable, PolisObject {
         // Facility details
         public var facilityDetailsID: UUID?
 
+        public var id: UUID { identity.id }
+        
         //FIXME: Should be a method in a Rep Object -- public var solarSystemBodyName: String?
         //FIXME: Should be a method in a Rep Object -- public var orbitingAroundPlaceInTheSolarSystemNamed: String?
 
 
-        public init(id: UUID,
+        public init(identity: PolisIdentity,
                     observingFacilityCode: String?                                    = nil,
-                    lifecycleStatus: PolisLifecycleStatus                             = .unknown,
-                    lastUpdateTime: Date                                                = Date.now,
                     placeInTheSolarSystem: PolisPlaceInTheSolarSystem                 = .earth,
                     gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
                     orbitingAroundPlaceInTheSolarSystem: PolisPlaceInTheSolarSystem?  = nil,
                     astronomicalCode: String?                                         = nil,
                     facilityLocationID: UUID?                                         = nil,
                     facilityDetailsID: UUID?                                          = nil) {
-            self.id                                  = id
+            self.identity                            = identity
             self.observingFacilityCode               = observingFacilityCode
-            self.lifecycleStatus                     = lifecycleStatus
-            self.lastUpdateTime                      = lastUpdateTime
             self.placeInTheSolarSystem               = placeInTheSolarSystem
             self.gravitationalBodyRelationship       = gravitationalBodyRelationship
             self.orbitingAroundPlaceInTheSolarSystem = orbitingAroundPlaceInTheSolarSystem
@@ -261,7 +258,7 @@ public struct PolisObservingFacilityDirectory: Codable, Sendable, PolisObject {
 
     public func facilityReferenceWith(id: UUID) -> ObservingFacilityReference? {
         for reference in observingFacilityReferences {
-            if id == reference.id { return reference }
+            if id == reference.identity.id { return reference }
         }
         return nil
     }
@@ -295,10 +292,8 @@ extension PolisDirectory: Codable {
 
 extension PolisObservingFacilityDirectory.ObservingFacilityReference {
     public enum CodingKeys: String, CodingKey {
-        case id
+        case identity
         case observingFacilityCode               = "observing_facility_code"
-        case lifecycleStatus                     = "lifecycle_status"
-        case lastUpdateTime                      = "last_updated_time"
         case placeInTheSolarSystem               = "place_in_the_solar_system"
         case gravitationalBodyRelationship       = "gravitational_body_relationship"
         case orbitingAroundPlaceInTheSolarSystem = "orbiting_around_place_in_the_solar_system"

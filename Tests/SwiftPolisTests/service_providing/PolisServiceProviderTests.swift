@@ -105,7 +105,8 @@ final class PolisServiceProviderTests: XCTestCase {
 
     func test_ObservingFacilityReference_codingSupport_shouldSucceed() throws {
         // Given
-        let sut      = PolisObservingFacilityDirectory.ObservingFacilityReference(id: UUID())
+        let identity = PolisIdentity(lifecycleStatus: .active)
+        let sut      = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: identity)
 
         // When
         data   = try? jsonEncoder.encode(sut)
@@ -117,11 +118,11 @@ final class PolisServiceProviderTests: XCTestCase {
 
     func test_PolisObservingFacilityDirectory_codingSupport_shouldSucceed() throws {
         // Given
-        let id1 = UUID()
-        let id2 = UUID()
+        let identity1 = PolisIdentity(lifecycleStatus: .active)
+        let identity2 = PolisIdentity(lifecycleStatus: .active)
 
-        let osd1 = PolisObservingFacilityDirectory.ObservingFacilityReference(id: id1)
-        let osd2 = PolisObservingFacilityDirectory.ObservingFacilityReference(id: id2)
+        let osd1 = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: identity1)
+        let osd2 = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: identity2)
         let sut  = PolisObservingFacilityDirectory(lastUpdateTime: Date(), observingFacilityReferences: [osd1, osd2])
 
         // When
