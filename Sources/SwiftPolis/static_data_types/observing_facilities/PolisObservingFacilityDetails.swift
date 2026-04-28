@@ -10,14 +10,15 @@ import Foundation
 public struct PolisObservingFacilityDetails: Identifiable, Codable, Equatable, Sendable, PolisObject {
 
     //MARK: Identification & relationship to other facilities
-    public var identity: PolisIdentity
-    public var parentObservingFacilityID: UUID?
+    public var id: UUID
+    public var lastUpdateTime: Date
+
+    public var facilityID: UUID
 
     //MARK: Contains
-    public var locationID: UUID?       // This should be modelled as an protocol, because multiple location types are thinkable
+    public var typeSpecificDetailsID: UUID?  // e.g.PolisEarthFixedBaseObservingFacilityDetails, satellites, ...
     public var observatoryIDs: Set<UUID>?
     public var deviceIDs: Set<UUID>?
-    public var visitingHoursID: UUID?
     public var ownerID: UUID?          // Who are the owners of the POLIS Item?
     public var mediaSourceID: UUID?    // Defines a set of media sources (images, audio etc) attached to the POLIS Item
     public var artifactIDs: Set<UUID>? // Arifacts of interest could be also on other solar system bodies (e.g. Apollo landing site)
@@ -27,16 +28,13 @@ public struct PolisObservingFacilityDetails: Identifiable, Codable, Equatable, S
     public var scientificObjectives: LocalisableString?
     public var history: LocalisableString?
 
-    //MARK: Identifiable protocol compliance
-    public var id: UUID { identity.id }
+    public init(id: UUID,
+                lastUpdateTime: Date                     = Date.now,
+                facilityID: UUID,
 
-    public init(identity: PolisIdentity,
-                parentObservingFacilityID: UUID?         = nil,
-
-                locationID: UUID?                        = nil,
+                typeSpecificDetailsID: UUID?             = nil,
                 observatoryIDs: Set<UUID>?               = nil,
                 deviceIDs: Set<UUID>?                    = nil,
-                visitingHoursID: UUID?                   = nil,
                 ownerID: UUID?                           = nil,
                 mediaSourceID: UUID?                     = nil,
                 artifactIDs: Set<UUID>?                  = nil,
@@ -44,13 +42,13 @@ public struct PolisObservingFacilityDetails: Identifiable, Codable, Equatable, S
                 website: URL?                            = nil,
                 scientificObjectives: LocalisableString? = nil,
                 history: LocalisableString?              = nil) {
-        self.identity                  = identity
-        self.parentObservingFacilityID = parentObservingFacilityID
+        self.id                        = id
+        self.lastUpdateTime            = lastUpdateTime
+        self.facilityID                = facilityID
 
-        self.locationID                = locationID
+        self.typeSpecificDetailsID     = typeSpecificDetailsID
         self.observatoryIDs            = observatoryIDs
         self.deviceIDs                 = deviceIDs
-        self.visitingHoursID           = visitingHoursID
         self.ownerID                   = ownerID
         self.mediaSourceID             = mediaSourceID
         self.artifactIDs               = artifactIDs
@@ -65,13 +63,13 @@ public struct PolisObservingFacilityDetails: Identifiable, Codable, Equatable, S
 
 public extension PolisObservingFacilityDetails {
     enum CodingKeys: String, CodingKey {
-        case identity
-        case parentObservingFacilityID = "parent_observing_facility_id"
+        case id
+        case lastUpdateTime            = "last_update_time"
+        case facilityID                = "facility_id"
 
-        case locationID                = "location_id"
+        case typeSpecificDetailsID     = "type_specific_details_id"
         case observatoryIDs            = "observatory_ids"
         case deviceIDs                 = "device_ids"
-        case visitingHoursID           = "visiting_hours_id"
         case ownerID                   = "owner_id"
         case mediaSourceID             = "media_source_id"
         case artifactIDs               = "artifact_ids"

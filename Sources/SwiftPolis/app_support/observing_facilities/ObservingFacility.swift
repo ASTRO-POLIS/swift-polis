@@ -19,9 +19,6 @@ import Foundation
     public var astronomicalCode: String?                                   // Minor planet codes, etc.
     public var facilityLocationID: UUID?
 
-    //TODO: Here we need to list additional objects like Details, Artifacts, Locations, SubFacilities, Observatories, and Devices. All of them should be optional
-
-
     //MARK: Internal APIs
     init(_ facility: PolisObservingFacilityDirectory.ObservingFacilityReference) async {
         let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(polisObject: facility as any PolisObject as any PolisObject,
@@ -99,7 +96,7 @@ extension ObservingFacility {
         catch {
             // We assume, that the file does not exist, so we need to create it
             let identity     = PolisIdentity(id: _identity.id, lifecycleStatus: .active, name: [PolisConstants.defaultLanguageCode : PolisConstants.unknownObject])
-            let polisDetails = PolisObservingFacilityDetails(identity: identity, parentObservingFacilityID: identity.id)
+            let polisDetails = PolisObservingFacilityDetails(id: id, facilityID: identity.id)
             let details      = await ObservingFacilityDetails(polisDetails)
 
             await details.setDidChange()

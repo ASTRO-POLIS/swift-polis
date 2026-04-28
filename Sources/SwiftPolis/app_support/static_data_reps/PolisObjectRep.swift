@@ -290,7 +290,7 @@ struct IdentifiableObject: Sendable {
         set { _identity.polisRegistrationTime = newValue }
     }
 
-    //MARK: Better think of these properties as pribate
+    //MARK: Better think of these properties as private
     var _identity: IdentifiableObject!
 
     init(polisRep: PolisObjectRep<PolisObject>, identity: IdentifiableObject? = nil) async {

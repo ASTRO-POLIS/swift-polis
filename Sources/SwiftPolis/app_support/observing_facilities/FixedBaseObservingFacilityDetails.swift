@@ -7,7 +7,10 @@
 
 import Foundation
 
-@Observable open class FixedBaseObservingFacilityDetails: IdentifiablePersistentObject, @unchecked Sendable {
+@Observable open class FixedBaseObservingFacilityDetails: PersistentObject, ObservingFacilityDetailsImplementing, @unchecked Sendable {
+
+    public internal(set) var observingFacilityDetailsType: ObservingFacilityDetailsType = .earthFixed
+    public internal(set) var facilityID: UUID
 
     public var accessRestrictions: PolisLocalisedText?
     public var averageClearNightsPerYear: UInt?
@@ -54,14 +57,13 @@ import Foundation
 //    }
 
     /// Create the instance from an existing POLIS data
-    init(_ fixedBaseObservingFacilityDetails: PolisEarthFixedBaseObservingFacilityDetails) async {
-        let newIdentity                         = IdentifiableObject(id: fixedBaseObservingFacilityDetails.id, lastUpdateTime: fixedBaseObservingFacilityDetails.identity.lastUpdateTime)
+    init(_ fixedBaseObservingFacilityDetails: PolisEarthFixedBaseObservingFacilityDetails, mainFacilityDetails: ObservingFacilityDetails) async {
         let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(polisObject: fixedBaseObservingFacilityDetails as any PolisObject,
                                                                  localPath: fileResourceFinder.observingDataFile(withID: fixedBaseObservingFacilityDetails.id,
                                                                                                                   observingFacilityID: fixedBaseObservingFacilityDetails.facilityID),
                                                                   objectType: .observingFacilityEarthFixedBasedDetails)
-        
+
         self._facilityID          = fixedBaseObservingFacilityDetails.facilityID
         self._visitingHoursID     = fixedBaseObservingFacilityDetails.visitingHoursID
         self._placeID             = fixedBaseObservingFacilityDetails.placeID
@@ -74,11 +76,11 @@ import Foundation
         dominantWindDirection     = fixedBaseObservingFacilityDetails.dominantWindDirection
         surfaceSize               = fixedBaseObservingFacilityDetails.surfaceSize
         
-        await super.init(polisRep: sP, identity: newIdentity)
+        await super.init(polisRep: sP)
+        self.observingFacilityDetailsType = .earthFixed
     }
     
     //MARK: Private APIs
-    private var _facilityID: UUID
     private var _visitingHoursID: UUID?
     private var _placeID: UUID?
 
