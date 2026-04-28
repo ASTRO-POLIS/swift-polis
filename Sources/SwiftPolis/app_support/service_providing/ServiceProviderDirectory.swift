@@ -8,7 +8,7 @@
 import Foundation
 
 
-@Observable public final class ServiceProviderDirectory: IdentifiablePersistentObject, @unchecked Sendable {
+@Observable public final class ServiceProviderDirectory: PersistentObject, @unchecked Sendable {
 
     public var lastUpdateTime = Date.now
     public var providerDirectoryEntries: [PolisDirectory.ProviderDirectoryEntry] = []
@@ -42,6 +42,10 @@ import Foundation
         let fileResourceFinder = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         return fileResourceFinder.polisProviderDirectoryFile()
     }
+
+    //TODO: Implement me!
+    //    func polisObject() -> any PolisObject { fatalError("IdentifiablePersistentObject : polisObject not implemented!") }
+    //    func polisType() -> PolisObjectType   { fatalError("IdentifiablePersistentObject : polisType not implemented!") }
 
     override func setDidChange() async {
         let payload = PolisNotificationPayload(entity: .serviceDirectory, actionType: .update)

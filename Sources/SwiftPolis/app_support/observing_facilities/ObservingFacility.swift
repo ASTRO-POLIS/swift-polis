@@ -27,19 +27,19 @@ import Foundation
         let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(polisObject: facility as any PolisObject as any PolisObject,
                                                                  localPath: "",    // We do not need a path. Data is stored into the Facility Directory!
                                                                  objectType: .observingFacility)
-        
+
         self.observingFacilityCode               = facility.observingFacilityCode
         self.placeInTheSolarSystem               = facility.placeInTheSolarSystem
         self.gravitationalBodyRelationship       = facility.gravitationalBodyRelationship
         self.orbitingAroundPlaceInTheSolarSystem = facility.orbitingAroundPlaceInTheSolarSystem
         self.astronomicalCode                    = facility.astronomicalCode
         self.facilityLocationID                  = facility.facilityLocationID
-        
+
         await super.init(polisRep: sP, identity: IdentifiableObject(identity: facility.identity))
     }
 
     var facilityReference: PolisObservingFacilityDirectory.ObservingFacilityReference {
-        PolisObservingFacilityDirectory.ObservingFacilityReference(identity: identity.identity,
+        PolisObservingFacilityDirectory.ObservingFacilityReference(identity: _identity.identity,
                                                                    observingFacilityCode: observingFacilityCode,
                                                                    placeInTheSolarSystem: placeInTheSolarSystem,
                                                                    gravitationalBodyRelationship: gravitationalBodyRelationship,
@@ -54,11 +54,11 @@ import Foundation
     override func pathToLocalPolisFile() async -> String {
         let rF = await ObjectStoreCoordinator.shared.fileResourceFinder()
 
-        return rF!.observingFacilityFolder(observingFacilityID: identity.id)
+        return rF!.observingFacilityFolder(observingFacilityID: _identity.id)
     }
 
     override func setDidChange() async {
-        identity.lastUpdateTime = Date.now
+        _identity.lastUpdateTime = Date.now
         _hasChanged             = true
     }
 
@@ -86,7 +86,7 @@ extension ObservingFacility {
     /// - Returns: ``ObservingFacilityDetails`` instance or `nil` if cannot be read or generated.
     public func observingFacilityDetails() async throws -> ObservingFacilityDetails? {
         do {
-            let polisObjectRep = try await Self.fromLocalData(polisType: .observingFacilityDetail, facilityID: identity.id)
+            let polisObjectRep = try await Self.fromLocalData(polisType: .observingFacilityDetail, facilityID: _identity.id)
 
             // Safely unwrap the expected PolisObservingFacilityDetails from the loaded polisObject
             guard let polisDetails = polisObjectRep.polisObject as? PolisObservingFacilityDetails else {
@@ -98,7 +98,7 @@ extension ObservingFacility {
         }
         catch {
             // We assume, that the file does not exist, so we need to create it
-            let identity     = PolisIdentity(id: identity.id, lifecycleStatus: .active, name: [PolisConstants.defaultLanguageCode : PolisConstants.unknownObject])
+            let identity     = PolisIdentity(id: _identity.id, lifecycleStatus: .active, name: [PolisConstants.defaultLanguageCode : PolisConstants.unknownObject])
             let polisDetails = PolisObservingFacilityDetails(identity: identity, parentObservingFacilityID: identity.id)
             let details      = await ObservingFacilityDetails(polisDetails)
 

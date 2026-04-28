@@ -57,7 +57,7 @@ import Foundation
     var mediaSourceID: UUID?    // Defines a set of media sources (images, audio etc) attached to the POLIS Item
 
     var facilityDetail: PolisObservingFacilityDetails {
-        PolisObservingFacilityDetails(identity: identity.identity,
+        PolisObservingFacilityDetails(identity: _identity.identity,
                                       parentObservingFacilityID: parentObservingFacilityID,
                                       locationID: locationID,
                                       observatoryIDs: observatoryIDs,
@@ -76,13 +76,13 @@ import Foundation
     //MARK: : - PolisObjectPersisting implementation -
     override func pathToLocalPolisFile() async -> String {
         let fileResourceFinder = await ObjectStoreCoordinator.shared.fileResourceFinder()!
-        return fileResourceFinder.observingDataFile(withID: identity.id, observingFacilityID: _parentObservingFacilityID!)
+        return fileResourceFinder.observingDataFile(withID: _identity.id, observingFacilityID: _parentObservingFacilityID!)
     }
 
     override func setDidChange() async {
         let payload = PolisNotificationPayload(entity: .observingFacilityDetail, actionType: .update)
 
-        identity.lastUpdateTime = Date.now
+        _identity.lastUpdateTime = Date.now
         _hasChanged             = true
        _polisRep.updateCurrentPolisObject(facilityDetail)
 

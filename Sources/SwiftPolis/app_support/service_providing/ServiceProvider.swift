@@ -8,7 +8,7 @@
 import Foundation
 import SoftwareEtudesUtilities
 
-@Observable public final class ServiceProvider: IdentifiablePersistentObject, @unchecked Sendable {
+@Observable public final class ServiceProvider: PersistentObject, @unchecked Sendable {
 
     public private(set) var id: UUID!
     public var mirrorID: UUID?
@@ -28,16 +28,16 @@ import SoftwareEtudesUtilities
                                                                  localPath: fileResourceFinder.configurationFile(),
                                                                  objectType: .serviceProvider)
 
-        id                       = directoryEntry.id
-        mirrorID                 = directoryEntry.mirrorID
-        reachabilityStatus       = directoryEntry.reachabilityStatus
-        name                     = directoryEntry.name
-        shortDescription         = directoryEntry.shortDescription
-        lastUpdateTime           = directoryEntry.lastUpdateTime
-        url                      = directoryEntry.url
-        supportedImplementations = directoryEntry.supportedImplementations
-        providerType             = directoryEntry.providerType
-        contactEmail             = directoryEntry.contactEmail
+        self.id                       = directoryEntry.id
+        self.mirrorID                 = directoryEntry.mirrorID
+        self.reachabilityStatus       = directoryEntry.reachabilityStatus
+        self.name                     = directoryEntry.name
+        self.shortDescription         = directoryEntry.shortDescription
+        self.lastUpdateTime           = directoryEntry.lastUpdateTime
+        self.url                      = directoryEntry.url
+        self.supportedImplementations = directoryEntry.supportedImplementations
+        self.providerType             = directoryEntry.providerType
+        self.contactEmail             = directoryEntry.contactEmail
 
         await super.init(polisRep: sP)
     }
@@ -56,7 +56,6 @@ import SoftwareEtudesUtilities
     }
 
     //MARK: Public APIs
-
     /// Returns `lastUpdateTime` as an ISO 8601 formatted string (UTC).
     public func getLastUpdate() -> String {
         let formatter = ISO8601DateFormatter()
@@ -69,6 +68,10 @@ import SoftwareEtudesUtilities
         let fileResourceFinder = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         return fileResourceFinder.configurationFile()
     }
+
+    //TODO: Implement me!
+//    func polisObject() -> any PolisObject { fatalError("IdentifiablePersistentObject : polisObject not implemented!") }
+//    func polisType() -> PolisObjectType   { fatalError("IdentifiablePersistentObject : polisType not implemented!") }
 
     override func setDidChange() async {
         let payload   = PolisNotificationPayload(entity: .serviceProvider, actionType: .update, id: id)

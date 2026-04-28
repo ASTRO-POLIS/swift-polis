@@ -7,7 +7,7 @@
 
 import Foundation
 
-@Observable public final class ObservingFacilityDirectory: IdentifiablePersistentObject, @unchecked Sendable {
+@Observable public final class ObservingFacilityDirectory: PersistentObject, @unchecked Sendable {
     var lastUpdateTime: Date // UTC
 
     init(_ facilityDirectory: PolisObservingFacilityDirectory) async {
@@ -21,7 +21,7 @@ import Foundation
 
         for facility in facilityDirectory.observingFacilityReferences {
             let facility = await ObservingFacility(facility)
-            _observingFacilities.append(facility)
+            self._observingFacilities.append(facility)
         }
     }
 
@@ -48,6 +48,11 @@ import Foundation
         let fileResourceFinder = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         return fileResourceFinder.observingFacilitiesDirectoryFile()
     }
+
+    //TODO: Implement me!
+    //    func polisObject() -> any PolisObject { fatalError("IdentifiablePersistentObject : polisObject not implemented!") }
+    //    func polisType() -> PolisObjectType   { fatalError("IdentifiablePersistentObject : polisType not implemented!") }
+
 
     override func setDidChange() async {
         let payload = PolisNotificationPayload(entity: .observingFacilityDirectory, actionType: .update)

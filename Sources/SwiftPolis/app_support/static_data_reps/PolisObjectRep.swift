@@ -34,17 +34,20 @@ protocol PolisObjectPersisting {
     func deleteFromLocalProvider() async throws
 }
 
-public struct IdentifiableObject: Sendable {
-    public let id: UUID
-    public var externalReferences: [String]?
-    public internal(set) var lastUpdateTime: Date
-    public var lifecycleStatus: PolisLifecycleStatus
-    public var name: PolisLocalisedText?
-    public var abbreviation: String?
-    public var shortDescription: PolisLocalisedText?
-    public var startTime: Date?
-    public var endTime: Date?
-    public internal(set) var polisRegistrationTime: Date?
+//
+//MARK: - IdentifiableObject -
+//
+struct IdentifiableObject: Sendable {
+    let id: UUID
+    var externalReferences: [String]?
+    var lastUpdateTime: Date
+    var lifecycleStatus: PolisLifecycleStatus
+    var name: PolisLocalisedText?
+    var abbreviation: String?
+    var shortDescription: PolisLocalisedText?
+    var startTime: Date?
+    var endTime: Date?
+    var polisRegistrationTime: Date?
 
     //MARK: Internal APIs
 
@@ -113,11 +116,10 @@ public struct IdentifiableObject: Sendable {
 
 //MARK: - Persistent Object Hierarchy Roots -
 
-//@Observable open class PersistentObject: @unchecked Sendable, PolisObjectPersisting {
-@Observable open class IdentifiablePersistentObject: PolisTypeTransformable, @unchecked Sendable {
-
-    var identity: IdentifiableObject!
-
+//
+//MARK: - PersistentObject -
+//
+@Observable open class PersistentObject: @unchecked Sendable, PolisObjectPersisting {
     // These should be used as private properties. Therefore they have "_" prefix!
     var _polisRep: PolisObjectRep<PolisObject>
     var _hasChanged      = false
@@ -125,17 +127,10 @@ public struct IdentifiableObject: Sendable {
     var _isDir: ObjCBool = false
     let _logger: Logging.Logger
 
-    init(polisRep: PolisObjectRep<PolisObject>, identity: IdentifiableObject? = nil) async {
-        self._polisRep = polisRep
-        self.identity  = identity
-
+    init(polisRep: PolisObjectRep<PolisObject>) async {
         self._logger = await ObjectStoreCoordinator.shared.logger()
+        self._polisRep = polisRep
     }
-
-    // These  methods MUST be overridden!
-    func polisObject() -> any PolisObject { fatalError("IdentifiablePersistentObject : polisObject not implemented!") }
-    func polisType() -> PolisObjectType   { fatalError("IdentifiablePersistentObject : polisType not implemented!") }
-
 
     //MARK: - PolisObjectPersisting partial implementation
     static func fromLocalData(polisType: PolisObjectType, facilityID: UUID? = nil, objectID: UUID? = nil) async throws -> PolisObjectRep<Any> {
@@ -234,5 +229,73 @@ public struct IdentifiableObject: Sendable {
             else { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.cannotReadFileFromLocalStore }
         }
         else { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.cannotAccessOrCreateStandardPolisFolders }
+    }
+
+
+    // These  methods MUST be overridden!
+    func polisObject() -> any PolisObject { fatalError("IdentifiablePersistentObject : polisObject not implemented!") }
+    func polisType() -> PolisObjectType   { fatalError("IdentifiablePersistentObject : polisType not implemented!") }
+}
+
+//
+//MARK: - IdentifiablePersistentObject -
+//
+@Observable open class IdentifiablePersistentObject: PersistentObject, PolisTypeTransformable, Identifiable, @unchecked Sendable {
+
+    //MARK: Public and convenience APIs
+    public var id: UUID { _identity.id }
+
+    public var externalReferences: [String]? {
+        get { _identity.externalReferences }
+        set { _identity.externalReferences = newValue }
+    }
+
+    public var lastUpdateTime: Date {
+        get { _identity.lastUpdateTime }
+        set { _identity.lastUpdateTime = newValue }
+    }
+
+    public var lifecycleStatus: PolisLifecycleStatus {
+        get { _identity.lifecycleStatus }
+        set { _identity.lifecycleStatus = newValue }
+    }
+
+    public var name: PolisLocalisedText? {
+        get { _identity.name }
+        set { _identity.name = newValue }
+    }
+
+    public var abbreviation: String? {
+        get { _identity.abbreviation }
+        set { _identity.abbreviation = newValue }
+    }
+
+    public var shortDescription: PolisLocalisedText? {
+        get { _identity.shortDescription }
+        set { _identity.shortDescription = newValue }
+    }
+
+    public var startTime: Date? {
+        get { _identity.startTime }
+        set { _identity.startTime = newValue }
+    }
+
+    public var endTime: Date? {
+        get { _identity.endTime }
+        set { _identity.endTime = newValue }
+    }
+
+    public var polisRegistrationTime: Date? {
+        get { _identity.polisRegistrationTime }
+        set { _identity.polisRegistrationTime = newValue }
+    }
+
+    //MARK: Better think of these properties as pribate
+    var _identity: IdentifiableObject!
+
+    init(polisRep: PolisObjectRep<PolisObject>, identity: IdentifiableObject? = nil) async {
+        self._identity  = identity
+
+        await super.init(polisRep: polisRep)
     }
 }

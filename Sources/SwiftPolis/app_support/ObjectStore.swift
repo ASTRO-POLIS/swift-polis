@@ -51,7 +51,7 @@ extension ObjectStore {
 
     public func observingFacilityWith(id: UUID) -> ObservingFacility? {
         for facility in observingFacilities() {
-            if facility.identity.id == id { return facility }
+            if facility._identity.id == id { return facility }
         }
         return nil
     }

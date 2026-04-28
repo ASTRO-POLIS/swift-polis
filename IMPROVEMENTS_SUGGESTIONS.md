@@ -202,7 +202,7 @@ public struct PolisObjectRep<PolisObject: PolisObjectProtocol>: Sendable {
     let objectType: PolisObjectType
 }
 
-// Fix PersistentObject initialization
+// Fix PersistentObject initialisation
 open class PersistentObject: @unchecked Sendable {
     var polisRep: PolisObjectRep<any PolisObjectProtocol>
     
