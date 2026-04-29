@@ -120,6 +120,12 @@ struct IdentifiableObject: Sendable {
 //MARK: - PersistentObject -
 //
 @Observable open class PersistentObject: @unchecked Sendable, PolisObjectPersisting {
+
+    //MARK: - Public APIs -
+    public func markAsChanged() async{ fatalError("IdentifiablePersistentObject : polisObject not implemented!") }
+
+
+    //MARK: - Internal APIs -
     // These should be used as private properties. Therefore they have "_" prefix!
     var _polisRep: PolisObjectRep<PolisObject>
     var _hasChanged      = false
@@ -288,6 +294,11 @@ struct IdentifiableObject: Sendable {
     public var polisRegistrationTime: Date? {
         get { _identity.polisRegistrationTime }
         set { _identity.polisRegistrationTime = newValue }
+    }
+
+    public override func markAsChanged() async {
+        //TODO: We need proper implementation!
+        await setDidChange()
     }
 
     //MARK: Better think of these properties as private
