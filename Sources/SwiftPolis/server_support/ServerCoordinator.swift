@@ -12,9 +12,18 @@ import Logging
 // and all dates are set way in the past (e.g. 01.01.2000 00:00h).q
 
 public final class ServerCoordinator {
+    
+    // MARK: - Singleton
+    @MainActor public static let shared = ServerCoordinator()
+    
     // Similar to the ObjectStoreCoordinator we need to set stuff like root path, is it test mode
     public static let testingPath = "/Users/Shared/Work/polis_tests"
     @MainActor public static var isTestMode  = false
+    
+    public enum ServerCoordinatorError: Error {
+        case notConfigured
+        case dataNotLoaded
+    }
     
     private var logger: Logger?
     private init() {}
@@ -23,8 +32,8 @@ public final class ServerCoordinator {
 // MARK: - Setup
 extension ServerCoordinator {
     
-    @MainActor
-    public func configure(testMode: Bool = false) async throws {
+    
+    @MainActor public func configure(testMode: Bool = false) async throws {
         ServerCoordinator.isTestMode = testMode
         PolisLogger.setup(
             subsystem:      "com.polis.provider",
@@ -49,11 +58,16 @@ extension ServerCoordinator {
 extension ServerCoordinator {
 
     public func polisServiceProvider() async throws -> PolisDirectory.ProviderDirectoryEntry {
-        //TODO: Implement me!
-        fatalError("ServerCoordinator : polisServiceProvider not implemented!")
+        guard let entry = ObjectStore.shared.serviceProvider()?.directoryEntry else {
+            throw ServerCoordinatorError.dataNotLoaded
+        }
+        return entry
     }
 
     public func polisServiceProviderDirectory() async throws -> PolisDirectory {
-        fatalError("ServerCoordinator : polisServiceProviderDirectory not implemented!")
+        guard let directory = ObjectStore.shared.serviceProviderDirectory()?.directory else {
+            throw ServerCoordinatorError.dataNotLoaded
+        }
+        return directory
     }
 }
