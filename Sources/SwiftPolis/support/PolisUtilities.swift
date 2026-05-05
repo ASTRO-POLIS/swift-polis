@@ -17,3 +17,8 @@ public func uuidFromPolis(reference: String) -> String? {
     if UUID(uuidString: candidate) == nil { return nil }
     return candidate
 }
+
+/// Returns a Date as an ISO 8601 formatted UTC string.
+@MainActor public func polisDateString(from date: Date) -> String {
+    PolisConstants.iso8601Formatter.string(from: date)
+}

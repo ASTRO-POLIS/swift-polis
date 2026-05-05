@@ -71,5 +71,10 @@ public struct PolisConstants: Sendable {
     public func latestPolisFrameworkSupportedImplementation() -> PolisImplementation {
         PolisConstants.polisFrameworkSupportedImplementations.max(by: { $0.version < $1.version })!
     }
+    
+    @MainActor static let iso8601Formatter: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
+        return formatter
+    }()
 }
-
