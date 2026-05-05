@@ -71,3 +71,22 @@ extension ServerCoordinator {
         return directory
     }
 }
+
+
+extension ServerCoordinator {
+    public func updateServiceProvider(_ entry: PolisDirectory.ProviderDirectoryEntry) async throws {
+        guard let serviceProvider = ObjectStore.shared.serviceProvider() else {
+            throw ServerCoordinatorError.dataNotLoaded
+        }
+        serviceProvider.name                     = entry.name
+        serviceProvider.shortDescription         = entry.shortDescription
+        serviceProvider.url                      = entry.url
+        serviceProvider.reachabilityStatus       = entry.reachabilityStatus
+        serviceProvider.providerType             = entry.providerType
+        serviceProvider.contactEmail             = entry.contactEmail
+        serviceProvider.supportedImplementations = entry.supportedImplementations
+        await serviceProvider.setDidChange()
+        try await serviceProvider.saveToLocalProvider()
+    }
+}
+
