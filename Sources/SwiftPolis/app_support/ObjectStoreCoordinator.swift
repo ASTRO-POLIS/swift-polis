@@ -101,6 +101,10 @@ public actor ObjectStoreCoordinator {
     private var _serviceProviderDirectory: ServiceProviderDirectory?
     private var _observingFacilityDirectory: ObservingFacilityDirectory?
 
+    // Update caches
+    private var _facilityDetailsCache: Set<ObservingFacilityDetails> = []
+    private var _fixedBaseObservingFacilityDetails: Set<FixedBaseObservingFacilityDetails> = []
+
     @MainActor private init() {
         let logFileURL = _logFile.map { URL(fileURLWithPath: $0) }
 
@@ -316,6 +320,7 @@ extension ObjectStoreCoordinator {
 
 //MARK: - Managing Observing Facilities -
 extension ObjectStoreCoordinator {
+
     public func createObservingFacility(id: UUID = UUID(),
                                         observingFacilityCode: String?                                    = nil,
                                         lifecycleStatus: PolisLifecycleStatus                             = .active,
@@ -429,12 +434,54 @@ extension ObjectStoreCoordinator {
     private func ensurePolisFoldersExistence() -> Bool { tryToEnsureFoldersExistence(paths: polisDirectoryPaths()) }
 }
 
-//MARK: Object change notifications
+//MARK: - Local data persistence management -
 extension ObjectStoreCoordinator {
 
-    @MainActor public func startTerminating() async throws {
-        try await handleReadyToTerminate()
+    public func startTerminating() async throws {
+        let successfullyTerminated = try await handleReadyToTerminate()
+
+        if successfullyTerminated {
+            _logger.info("Successfully terminated")
+            //TODO: Sent proper notifications!
+        }
     }
+
+    private func handleReadyToTerminate() async throws -> Bool {
+        // Start from Facility's sub-data, the facility, the facility directory, and finish with the service provider
+        let numberOfChanges = _facilityDetailsCache.count + _fixedBaseObservingFacilityDetails.count
+
+        do {
+            if numberOfChanges > 0 {
+                for facilityDetails in _facilityDetailsCache {
+                    try await facilityDetails.saveToLocalProvider()
+                }
+                for facilityDetails in _fixedBaseObservingFacilityDetails {
+                    try await facilityDetails.saveToLocalProvider()
+                }
+            }
+
+            try await saveRequiredLocalData()
+        }
+        catch {
+            _logger.error("Failed to save local data: \(error)")
+            return false
+        }
+        //TODO: Implement me!
+
+        _logger.info("Polis service provider ready to terminate.")
+
+        return true
+    }
+
+    private func saveRequiredLocalData() async throws {
+        if ((_observingFacilityDirectory?.hasChanged()) != nil) { try await _observingFacilityDirectory?.saveToLocalProvider() }
+        if ((_serviceProviderDirectory?.hasChanged() != nil))   { try await _serviceProviderDirectory?.saveToLocalProvider() }
+        if ((_serviceProvider?.hasChanged()) != nil)            { try await _serviceProvider?.saveToLocalProvider() }
+    }
+}
+
+//MARK: - Object change notifications -
+extension ObjectStoreCoordinator {
 
     // These are methods that register `ObjectStoreCoordinator` to observe various global and change notifications and
     // to post notifications, related to the persistency of the local data provider or updates by the remote service
@@ -445,9 +492,18 @@ extension ObjectStoreCoordinator {
     /// Depending on the framework version, data load, data format, and provider type (static or dynamic), this method
     /// might group multiple change notifications for performance reasons and process them on a background task.
     @MainActor private func startObservingRepObjectChangeNotifications() {
-        _didChangeToken = _nc.addObserver(for: RepObjectDidChange.self) { message in
+        _didChangeToken = _nc.addObserver(for: RepObjectDidChange.self) { [weak self] message in
+            guard let self = self else { return }
             //TODO: Implement me! (main-actor safe work goes here if needed)
             print(">>> Change Message Object id: \(message.payload.id, default: "unknown ID")")
+            Task { [weak self] in
+                guard let self = self else { return }
+                //FIXME: What should we do here?
+//                await self._localPersistenceCoordinator.addInstanceToBeSavedWith(
+//                    id: message.payload.id,
+//                    type: LocalServiceProviderPersistenceCoordinator.TypeIterating.artifact
+//                )
+            }
         }
     }
 
@@ -471,23 +527,7 @@ extension ObjectStoreCoordinator {
         }
     }
 
-    private func handleReadyToTerminate() async throws {
-        // Start from Facility's sub-data, the facility, the facility directory, and finish with the service provider
-        for facility in _os.observingFacilities() {
-            // TODO: Implement facility-specific termination preparation if needed
-            _ = facility // placeholder to silence unused variable warnings until implemented
-        }
-        try await _observingFacilityDirectory?.saveToLocalProvider()
-        try await _serviceProviderDirectory?.saveToLocalProvider()
-        try await _serviceProvider?.saveToLocalProvider()
-
-        print(">>> Polis service provider ready to terminate.")
-//FIXME:        await postReadyToTerminateOnMain()
-// We get here a recursion! 
-    }
-
     @MainActor private func postReadyToTerminateOnMain() {
         self.postReadyToTerminate()
     }
 }
-

@@ -296,10 +296,7 @@ struct IdentifiableObject: Sendable {
         set { _identity.polisRegistrationTime = newValue }
     }
 
-    public override func markAsChanged() async {
-        //TODO: We need proper implementation!
-        await setDidChange()
-    }
+    public override func markAsChanged() async { await setDidChange() }
 
     //MARK: Better think of these properties as private
     var _identity: IdentifiableObject!

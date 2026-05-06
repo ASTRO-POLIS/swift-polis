@@ -101,9 +101,9 @@ public struct PolisDirection: Codable, Equatable, Sendable {
     ///
     /// See ``DirectionError`` for possible errors during creation
     public init(roughDirection: RoughDirection? = nil, exactDirection: Double? = nil) throws {
-        if (roughDirection == nil) && (exactDirection == nil)                                   { throw DirectionError.bothPropertiesCannotBeNilError }
-        if (roughDirection != nil) && (exactDirection != nil)                                   { throw DirectionError.bothPropertiesCannotBeNotNilError }
-        if ((exactDirection != nil) && ((exactDirection! < 0.0) || (exactDirection! > 360.0)))  { throw DirectionError.directionMustBeBetween0and360Degree }
+        if (roughDirection == nil) && (exactDirection == nil)                                  { throw DirectionError.bothPropertiesCannotBeNilError }
+        if (roughDirection != nil) && (exactDirection != nil)                                  { throw DirectionError.bothPropertiesCannotBeNotNilError }
+        if ((exactDirection != nil) && ((exactDirection! < 0.0) || (exactDirection! > 360.0))) { throw DirectionError.directionMustBeBetween0and360Degree }
 
         if roughDirection != nil { self.roughDirection = roughDirection }
         else                     { self.roughDirection = PolisDirection.roughDirection(from: exactDirection!) }

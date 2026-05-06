@@ -8,28 +8,33 @@
 import Foundation
 
 public enum ObservingFacilityDetailsType {
-    case abstract
+    case main
     case earthFixed
     case planetaryRover
     // ...
 }
 
+// It is expected that all Observing Facility Details types do confirm to this protocol
 public protocol ObservingFacilityDetailsImplementing {
     var observingFacilityDetailsType: ObservingFacilityDetailsType { get }
     var facilityID: UUID                                           { get }
 
 }
-/// This is an abstract `ObservingFacilityDetails` class that needs to be subclasses to add concrete functionality
-@Observable open class ObservingFacilityDetails: PersistentObject, ObservingFacilityDetailsImplementing, @unchecked Sendable {
+
+@Observable open class ObservingFacilityDetails: PersistentObject, ObservingFacilityDetailsImplementing, Hashable, @unchecked Sendable {
 
     //MARK: Info
     public internal(set) var id: UUID
     public internal(set) var lastUpdateTime: Date
-    public internal(set) var observingFacilityDetailsType: ObservingFacilityDetailsType = .abstract
-    
+    public internal(set) var observingFacilityDetailsType: ObservingFacilityDetailsType = .main
+
     public var website: URL?
     public var scientificObjectives: PolisLocalisedText?
     public var history: PolisLocalisedText?
+
+    //MARK: Make the class Hashable
+    public static func == (lhs: ObservingFacilityDetails, rhs: ObservingFacilityDetails) -> Bool {  lhs.id == rhs.id }
+    public func hash(into hasher: inout Hasher) { hasher.combine(id) }
 
     //MARK: Internal APIs
     init(_ facilityDetail: PolisObservingFacilityDetails) async {
@@ -89,9 +94,10 @@ public protocol ObservingFacilityDetailsImplementing {
         let payload = PolisNotificationPayload(entity: .observingFacilityDetail, actionType: .update)
 
         lastUpdateTime = Date.now
-        _hasChanged             = true
-       _polisRep.updateCurrentPolisObject(facilityDetail)
+        _hasChanged    = true
+        _polisRep.updateCurrentPolisObject(facilityDetail)
 
         await MainActor.run { NotificationCenter.default.post(PolisObjectDidChange(payload)) }
     }
 }
+

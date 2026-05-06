@@ -56,7 +56,7 @@ import Foundation
 
     override func setDidChange() async {
         _identity.lastUpdateTime = Date.now
-        _hasChanged             = true
+        _hasChanged              = true
     }
 
     /// The basic data for this facility are stored into the facility directory. Therefore no file needs to be saved. But
