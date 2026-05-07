@@ -21,6 +21,8 @@ import SoftwareEtudesUtilities
     public var providerType                                    = PolisDirectory.ProviderDirectoryEntry.ProviderType.experimental
     public var contactEmail: String!
 
+    public override func markAsChanged() async { await setDidChange() }
+    
     //MARK: Internal APIs
     init(_ directoryEntry: PolisDirectory.ProviderDirectoryEntry) async {
         let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!

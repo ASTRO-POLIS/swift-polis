@@ -122,7 +122,7 @@ struct IdentifiableObject: Sendable {
 @Observable open class PersistentObject: @unchecked Sendable, PolisObjectPersisting {
 
     //MARK: - Public APIs -
-    public func markAsChanged() async{ fatalError("IdentifiablePersistentObject : polisObject not implemented!") }
+    public func markAsChanged() async { fatalError("IdentifiablePersistentObject : polisObject not implemented!") }
 
 
     //MARK: - Internal APIs -

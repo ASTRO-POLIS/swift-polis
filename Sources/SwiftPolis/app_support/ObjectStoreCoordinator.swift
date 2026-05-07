@@ -358,10 +358,6 @@ extension ObjectStoreCoordinator {
 //MARK: - Polis Service Providing -
 extension ObjectStoreCoordinator {
 
-    public func prepareToTerminate() {
-        //TODO: Implement me!
-    }
-    
     func serviceProvider()              -> ServiceProvider?            { _serviceProvider }
     func serviceProviderDirectory()     -> ServiceProviderDirectory?   { _serviceProviderDirectory }
     func observingFacilitiesDirectory() -> ObservingFacilityDirectory? { _observingFacilityDirectory }

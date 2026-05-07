@@ -199,6 +199,14 @@ struct PolisTool {
                 print("   ---> Latest change time: \(os.serviceProvider()?.lastUpdateTime, default: "not available")")
                 print("   ---> Number of facilities: \(os.observingFacilities().count, default: "0")")
 
+                if isTesting {
+                    print("   ---> Provider name: \(os.serviceProvider()?.name, default: "nil name")")
+                    os.serviceProvider()?.name = UUID().uuidString
+                    await os.serviceProvider()?.markAsChanged()
+                    print("   ---> Provider new name: \(os.serviceProvider()?.name, default: "nil name")")
+                    try await storeCoordinator.startTerminating()
+                }
+
                 for facility in os.observingFacilities() {
                     print("      ---> Observing facility code: \(String(describing: facility.observingFacilityCode))")
                     let details = try await facility.observingFacilityDetails()
