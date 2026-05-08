@@ -18,7 +18,6 @@ public enum ObservingFacilityDetailsType {
 public protocol ObservingFacilityDetailsImplementing {
     var observingFacilityDetailsType: ObservingFacilityDetailsType { get }
     var facilityID: UUID                                           { get }
-
 }
 
 @Observable open class ObservingFacilityDetails: PersistentObject, ObservingFacilityDetailsImplementing, Hashable, @unchecked Sendable {

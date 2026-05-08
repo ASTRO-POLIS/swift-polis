@@ -204,6 +204,12 @@ struct PolisTool {
                     os.serviceProvider()?.name = UUID().uuidString
                     try await os.serviceProvider()?.markAsChanged()
                     print("   ---> Provider new name: \(os.serviceProvider()?.name, default: "nil name")")
+
+                    // Now edit a facility
+                    let facility = os.observingFacilities().first!
+                    facility.name = PolisLocalisedText(text: UUID().uuidString, languageCode: "en")
+                    try await facility.markAsChanged()
+
                     try await storeCoordinator.startTerminating()
                 }
 

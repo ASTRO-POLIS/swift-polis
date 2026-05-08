@@ -345,7 +345,7 @@ extension ObjectStoreCoordinator {
 
         try await newFacility.saveToLocalProvider()   // If facility's folder does not exist - creates it. No other actions!
 
-        await _observingFacilityDirectory?.addFacility(newFacility)
+        await _observingFacilityDirectory?.addOrUpdateFacility(newFacility)
         try await _serviceProviderDirectory?.setDidChange()
         try await _serviceProvider?.setDidChange()
 
@@ -443,6 +443,12 @@ extension ObjectStoreCoordinator {
         }
     }
 
+    func didChange(object: PolisObjectPersisting, ofType: PolisObjectType) {
+        switch ofType {
+            default : break
+        }
+    }
+
     private func handleReadyToTerminate() async throws -> Bool {
         // Start from Facility's sub-data, the facility, the facility directory, and finish with the service provider
         let numberOfChanges = _facilityDetailsCache.count + _fixedBaseObservingFacilityDetails.count
@@ -452,6 +458,7 @@ extension ObjectStoreCoordinator {
                 for facilityDetails in _facilityDetailsCache {
                     try await facilityDetails.saveToLocalProvider()
                 }
+
                 for facilityDetails in _fixedBaseObservingFacilityDetails {
                     try await facilityDetails.saveToLocalProvider()
                 }

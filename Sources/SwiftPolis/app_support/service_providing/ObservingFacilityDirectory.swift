@@ -37,7 +37,8 @@ import Foundation
         return PolisObservingFacilityDirectory(lastUpdateTime: lastUpdateTime, observingFacilityReferences: references)
     }
 
-    func addFacility(_ facility: ObservingFacility) async {
+    func addOrUpdateFacility(_ facility: ObservingFacility) async {
+        _observingFacilities.removeAll(where: { $0.id == facility.id })
         _observingFacilities.append(facility)
         await setDidChange()
     }
@@ -60,8 +61,6 @@ import Foundation
         lastUpdateTime = Date.now
         _hasChanged    = true
         _polisRep.updateCurrentPolisObject(observingFacilityDirectory)
-
-        await MainActor.run { NotificationCenter.default.post(PolisObjectDidChange(payload)) }
     }
 
     //MARK: Private APIs

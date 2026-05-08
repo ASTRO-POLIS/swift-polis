@@ -19,6 +19,14 @@ import Foundation
     public var astronomicalCode: String?                                   // Minor planet codes, etc.
     public var facilityLocationID: UUID?
 
+    public override func markAsChanged() async throws {
+        let facilityDirectory = ObjectStore.shared.observingFacilityDirectory()
+
+        await facilityDirectory?.addOrUpdateFacility(self)
+        await ObjectStoreCoordinator.shared.didChange(object: self, ofType: .observingFacility)
+        try await setDidChange()
+    }
+
     //MARK: Internal APIs
     init(_ facility: PolisObservingFacilityDirectory.ObservingFacilityReference) async {
         let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(polisObject: facility as any PolisObject as any PolisObject,
@@ -54,7 +62,7 @@ import Foundation
         return rF!.observingFacilityFolder(observingFacilityID: _identity.id)
     }
 
-    override func setDidChange() async {
+    override func setDidChange() async throws {
         _identity.lastUpdateTime = Date.now
         _hasChanged              = true
     }
@@ -102,7 +110,7 @@ extension ObservingFacility {
             await details.setDidChange()
             try await self.saveToLocalProvider()
             try await details.saveToLocalProvider()
-            await setDidChange()
+            try await setDidChange()
 
             return details
         }
