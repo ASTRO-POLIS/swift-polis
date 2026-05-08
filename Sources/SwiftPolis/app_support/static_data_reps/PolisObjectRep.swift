@@ -29,7 +29,7 @@ protocol PolisObjectPersisting {
     static func fromLocalData(polisType: PolisObjectType, facilityID: UUID?, objectID: UUID?) async throws -> PolisObjectRep<Any>
     func pathToLocalPolisFile() async -> String
     func hasChanged() -> Bool
-    func setDidChange() async
+    func setDidChange() async throws
     func saveToLocalProvider() async throws
     func deleteFromLocalProvider() async throws
 }
@@ -122,7 +122,7 @@ struct IdentifiableObject: Sendable {
 @Observable open class PersistentObject: @unchecked Sendable, PolisObjectPersisting {
 
     //MARK: - Public APIs -
-    public func markAsChanged() async { fatalError("IdentifiablePersistentObject : polisObject not implemented!") }
+    public func markAsChanged() async throws { fatalError("IdentifiablePersistentObject : polisObject not implemented!") }
 
 
     //MARK: - Internal APIs -
@@ -174,7 +174,7 @@ struct IdentifiableObject: Sendable {
 
     func pathToLocalPolisFile() async -> String { "<no path defined>" }
     func hasChanged() -> Bool { _hasChanged }
-    func setDidChange() async { _hasChanged = true }
+    func setDidChange() async throws { _hasChanged = true }
 
     func saveToLocalProvider() async throws {
         if _hasChanged {
@@ -296,7 +296,7 @@ struct IdentifiableObject: Sendable {
         set { _identity.polisRegistrationTime = newValue }
     }
 
-    public override func markAsChanged() async { await setDidChange() }
+    public override func markAsChanged() async throws { try await setDidChange() }
 
     //MARK: Better think of these properties as private
     var _identity: IdentifiableObject!

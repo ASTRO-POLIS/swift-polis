@@ -85,7 +85,7 @@ extension ServerCoordinator {
         serviceProvider.providerType             = entry.providerType
         serviceProvider.contactEmail             = entry.contactEmail
         serviceProvider.supportedImplementations = entry.supportedImplementations
-        await serviceProvider.setDidChange()
+        try await serviceProvider.setDidChange()
         try await serviceProvider.saveToLocalProvider()
     }
 }

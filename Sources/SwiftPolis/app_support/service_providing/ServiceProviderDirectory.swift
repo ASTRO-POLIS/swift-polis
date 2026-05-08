@@ -13,6 +13,15 @@ import Foundation
     public var lastUpdateTime = Date.now
     public var providerDirectoryEntries: [PolisDirectory.ProviderDirectoryEntry] = []
 
+    public func addOrUpdateEntry(_ entry: PolisDirectory.ProviderDirectoryEntry) async throws {
+        providerDirectoryEntries.removeAll(where: { $0.id == entry.id })
+        providerDirectoryEntries.append(entry)
+
+        try await setDidChange()
+    }
+
+    public override func markAsChanged() async throws { try await setDidChange() }
+
     //MARK: Internal APIs
     init(_ providerDirectory: PolisDirectory) async {
         let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!
@@ -30,13 +39,6 @@ import Foundation
         PolisDirectory(lastUpdateTime: lastUpdateTime, providerDirectoryEntries: providerDirectoryEntries)!
     }
 
-    func addOrReplace(_ entry: PolisDirectory.ProviderDirectoryEntry) {
-        let index = providerDirectoryEntries.firstIndex(of: entry)
-
-        if index != nil { providerDirectoryEntries.remove(at: index!) }
-        providerDirectoryEntries.append(entry)
-    }
-    
     //MARK: Implementing PolisObjectPersisting
     override func pathToLocalPolisFile() async -> String {
         let fileResourceFinder = await ObjectStoreCoordinator.shared.fileResourceFinder()!
@@ -47,14 +49,12 @@ import Foundation
     //    func polisObject() -> any PolisObject { fatalError("IdentifiablePersistentObject : polisObject not implemented!") }
     //    func polisType() -> PolisObjectType   { fatalError("IdentifiablePersistentObject : polisType not implemented!") }
 
-    override func setDidChange() async {
-        let payload = PolisNotificationPayload(entity: .serviceDirectory, actionType: .update)
-
+    override func setDidChange() async throws {
         lastUpdateTime        = Date.now
         _hasChanged           = true
         _polisRep.polisObject = directory
 
-        await MainActor.run { NotificationCenter.default.post(PolisObjectDidChange(payload)) }
+        try await ObjectStore.shared.serviceProvider()?.setDidChange()
     }
 
 }

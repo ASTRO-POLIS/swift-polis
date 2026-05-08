@@ -33,7 +33,8 @@ public actor ObjectStoreCoordinator {
         case fileIO
         case cannotUseLocalProvider
         case missingRequiredID
-        
+        case objectStoreInconsistency
+
         case unknownError
     }
 
@@ -275,7 +276,7 @@ extension ObjectStoreCoordinator {
             polisDirectoryEntry.lastUpdateTime = Date.now
             _serviceProvider                   = await ServiceProvider(polisDirectoryEntry)
 
-            await _serviceProvider?.setDidChange()
+            try await _serviceProvider?.setDidChange()
             try await _serviceProvider?.saveToLocalProvider()
         }
         catch {
@@ -292,7 +293,7 @@ extension ObjectStoreCoordinator {
         do {
             _serviceProviderDirectory = await ServiceProviderDirectory(polisDirectory)
 
-            await _serviceProviderDirectory?.setDidChange()
+            try await _serviceProviderDirectory?.setDidChange()
             try await _serviceProviderDirectory?.saveToLocalProvider()
         }
         catch {
@@ -345,8 +346,8 @@ extension ObjectStoreCoordinator {
         try await newFacility.saveToLocalProvider()   // If facility's folder does not exist - creates it. No other actions!
 
         await _observingFacilityDirectory?.addFacility(newFacility)
-        await _serviceProviderDirectory?.setDidChange()
-        await _serviceProvider?.setDidChange()
+        try await _serviceProviderDirectory?.setDidChange()
+        try await _serviceProvider?.setDidChange()
 
         try await _observingFacilityDirectory?.saveToLocalProvider()
         _os.add(observingFacility: newFacility)
@@ -470,6 +471,7 @@ extension ObjectStoreCoordinator {
     }
 
     private func saveRequiredLocalData() async throws {
+        // Note the reverse order compared to the loading
         if ((_observingFacilityDirectory?.hasChanged()) != nil) { try await _observingFacilityDirectory?.saveToLocalProvider() }
         if ((_serviceProviderDirectory?.hasChanged() != nil))   { try await _serviceProviderDirectory?.saveToLocalProvider() }
         if ((_serviceProvider?.hasChanged()) != nil)            { try await _serviceProvider?.saveToLocalProvider() }
@@ -488,19 +490,18 @@ extension ObjectStoreCoordinator {
     /// Depending on the framework version, data load, data format, and provider type (static or dynamic), this method
     /// might group multiple change notifications for performance reasons and process them on a background task.
     @MainActor private func startObservingRepObjectChangeNotifications() {
-        _didChangeToken = _nc.addObserver(for: RepObjectDidChange.self) { [weak self] message in
-            guard let self = self else { return }
+//        _didChangeToken = _nc.addObserver(for: RepObjectDidChange.self) { [weak self] message in
+//            guard let self = self else { return }
             //TODO: Implement me! (main-actor safe work goes here if needed)
-            print(">>> Change Message Object id: \(message.payload.id, default: "unknown ID")")
-            Task { [weak self] in
-                guard let self = self else { return }
-                //FIXME: What should we do here?
+//            print(">>> Change Message Object id: \(message.payload.id, default: "unknown ID")")
+//            Task { [weak self] in
+//                //FIXME: What should we do here?
 //                await self._localPersistenceCoordinator.addInstanceToBeSavedWith(
 //                    id: message.payload.id,
 //                    type: LocalServiceProviderPersistenceCoordinator.TypeIterating.artifact
 //                )
-            }
-        }
+//            }
+//        }
     }
 
     //TODO: We need to make this message more genera! The idea is not to calculate the payload every time depending on what object did change!
@@ -516,10 +517,10 @@ extension ObjectStoreCoordinator {
 
     @MainActor private func startObservingServiceProviderReadyToTerminate() {
         _didChangeToken = _nc.addObserver(for: PolisServiceProviderReadyToTerminate.self) { _ in
-            Task { [weak self] in
-                guard let self = self else { return } //TODO: Throw exception?
-                try await self.handleReadyToTerminate()
-            }
+//            Task { [weak self] in
+//                guard let self = self else { return } //TODO: Throw exception?
+//                try await self.handleReadyToTerminate()
+//            }
         }
     }
 

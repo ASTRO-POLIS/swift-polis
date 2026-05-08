@@ -202,7 +202,7 @@ struct PolisTool {
                 if isTesting {
                     print("   ---> Provider name: \(os.serviceProvider()?.name, default: "nil name")")
                     os.serviceProvider()?.name = UUID().uuidString
-                    await os.serviceProvider()?.markAsChanged()
+                    try await os.serviceProvider()?.markAsChanged()
                     print("   ---> Provider new name: \(os.serviceProvider()?.name, default: "nil name")")
                     try await storeCoordinator.startTerminating()
                 }

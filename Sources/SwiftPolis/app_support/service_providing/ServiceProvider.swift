@@ -21,8 +21,13 @@ import SoftwareEtudesUtilities
     public var providerType                                    = PolisDirectory.ProviderDirectoryEntry.ProviderType.experimental
     public var contactEmail: String!
 
-    public override func markAsChanged() async { await setDidChange() }
-    
+    public override func markAsChanged() async throws {
+        let directory = ObjectStore.shared.serviceProviderDirectory()
+
+        try await directory!.addOrUpdateEntry(directoryEntry!)
+        try? await setDidChange()
+    }
+
     //MARK: Internal APIs
     init(_ directoryEntry: PolisDirectory.ProviderDirectoryEntry) async {
         let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!
@@ -73,20 +78,11 @@ import SoftwareEtudesUtilities
 //    func polisObject() -> any PolisObject { fatalError("IdentifiablePersistentObject : polisObject not implemented!") }
 //    func polisType() -> PolisObjectType   { fatalError("IdentifiablePersistentObject : polisType not implemented!") }
 
-    override func setDidChange() async {
-        let payload   = PolisNotificationPayload(entity: .serviceProvider, actionType: .update, id: id)
-        let directory = await ObjectStoreCoordinator.shared.serviceProviderDirectory()
-
+    override func setDidChange() async throws {
         lastUpdateTime        = Date.now
         _hasChanged           = true
         _polisRep.polisObject = directoryEntry!
 
-        if directory != nil {
-            directory!.addOrReplace(directoryEntry!)
-            await directory!.setDidChange()
-        }
-
-        await MainActor.run { NotificationCenter.default.post(PolisObjectDidChange(payload)) }
     }
 }
 
