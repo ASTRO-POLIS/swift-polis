@@ -83,7 +83,7 @@ public protocol ObservingFacilityDetailsImplementing {
 
     var artifactIDs: Set<UUID>? // Arifacts of interest could be also on other solar system bodies (e.g. Apollo landing site)
 
-    //MARK: : - PolisObjectPersisting implementation -
+    //MARK: - PolisObjectPersisting implementation -
     override func pathToLocalPolisFile() async -> String {
         let fileResourceFinder = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         return fileResourceFinder.observingDataFile(withID: id, observingFacilityID: facilityID)
@@ -95,8 +95,6 @@ public protocol ObservingFacilityDetailsImplementing {
         lastUpdateTime = Date.now
         _hasChanged    = true
         _polisRep.updateCurrentPolisObject(facilityDetail)
-
-        await MainActor.run { NotificationCenter.default.post(PolisObjectDidChange(payload)) }
     }
 }
 
