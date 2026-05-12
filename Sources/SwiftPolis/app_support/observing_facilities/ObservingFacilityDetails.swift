@@ -40,7 +40,7 @@ public protocol ObservingFacilityDetailsImplementing {
         let fileResourceFinder                   = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         let sP: PolisObjectRep<any PolisObject>  = PolisObjectRep(polisObject: facilityDetail as any PolisObject,
                                                                   localPath: fileResourceFinder.observingDataFile(withID: facilityDetail.id,
-                                                                                                                  observingFacilityID: facilityDetail.facilityID) ,
+                                                                                                                  observingFacilityID: facilityDetail.facilityID),
                                                                   objectType: .observingFacilityDirectory)
 
         self.id                    = facilityDetail.id

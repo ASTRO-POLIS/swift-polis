@@ -26,6 +26,7 @@ public struct PolisArtifact: Codable, Identifiable, Equatable, Sendable {
         case conferenceFacility   = "conference_facility"
         case visitorCentre        = "visitor_centre"
         case starPartyHostingSite = "star_party_hosting_site"
+        case other
         case unknown
     }
 
