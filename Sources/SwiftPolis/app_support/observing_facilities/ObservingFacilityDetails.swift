@@ -101,7 +101,7 @@ public protocol ObservingFacilityDetailsImplementing {
 
 //MARK: - Working with Artifacts -
 extension ObservingFacilityDetails {
-    public func addArtifactWith(artifactType: PolisArtifact.ArtifactType) async {
+    public func addArtifactWith(artifactType: PolisArtifact.ArtifactType) async -> Artifact {
         let identity      = PolisIdentity()
         let polisArtifact = PolisArtifact(identity: identity, facilityID: self.id, artifactType: artifactType)
         let artifact      = await Artifact(polisArtifact)
@@ -111,6 +111,8 @@ extension ObservingFacilityDetails {
 
         _artifactIDs!.insert(polisArtifact.id)
         _artifacts!.append(artifact)
+
+        return artifact
     }
 
     public func artifacts() -> [Artifact]? { return _artifacts }
