@@ -116,3 +116,20 @@ extension ObservingFacility {
         }
     }
 }
+
+//MARK: - Working with child types -
+extension ObservingFacility {
+    public func addArtifactWith(name: String? = nil, artifactType: PolisArtifact.ArtifactType) {
+        //TODO: Implement me!
+    }
+
+    public func artifacts() -> [Artifact]? {
+        //TODO: Implement me!
+       return nil
+    }
+
+    public func artifactWith(id: UUID) -> Artifact? {
+        //TODO: Implement me!
+        return nil
+    }
+}

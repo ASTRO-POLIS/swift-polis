@@ -7,13 +7,18 @@
 
 import Foundation
 
-@Observable open class identity: IdentifiablePersistentObject, @unchecked Sendable {
+@Observable open class Artifact: IdentifiablePersistentObject, @unchecked Sendable {
 
     public internal(set)var facilityID: UUID
 
     public var artifactType: PolisArtifact.ArtifactType
     public var visitingOpportunities: LocalisableString?
     public var website: URL?
+
+    public override func markAsChanged() async throws {
+        //TODO: Implement me!
+        try await setDidChange()
+    }
 
     //MARK: (Private like) Internal APIs
     init(_ facility: PolisObservingFacilityDirectory.ObservingFacilityReference, identity: PolisIdentity) async {
@@ -29,6 +34,10 @@ import Foundation
 
         await super.init(polisRep: sP, identity: IdentifiableObject(identity: identity))
     }
+
+//    init(_ polisArtifact: PolisArtifact) {
+//        //TODO: Implement me!
+//    }
 
     var _mediaID: UUID?
 
