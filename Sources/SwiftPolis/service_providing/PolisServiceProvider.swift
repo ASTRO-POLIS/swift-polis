@@ -215,6 +215,10 @@ public struct PolisObservingFacilityDirectory: Codable, Sendable, PolisObject {
         public var gravitationalBodyRelationship: PolisObservingFacilityLocationType
         public var orbitingAroundPlaceInTheSolarSystem: PolisPlaceInTheSolarSystem?
         public var astronomicalCode: String?                                   // Minor planet codes, etc.
+
+        /// Depending on the type of the facility, `facilityLocationID` could point to either Earth-Based fixed
+        /// location, satellite orbital elements, current position of a Mars rover ect. Facility's details can use
+        /// `facilityLocationID` to load the proper data.
         public var facilityLocationID: UUID?
 
         // Facility details

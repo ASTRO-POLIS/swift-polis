@@ -8,9 +8,9 @@
 import Foundation
 
 @Observable open class FixedBaseObservingFacilityDetails: PersistentObject, ObservingFacilityDetailsImplementing, Identifiable, Hashable, @unchecked Sendable {
-
-    public internal(set) var observingFacilityDetailsType: ObservingFacilityDetailsType = .earthFixed
+    public internal(set) var id: UUID
     public internal(set) var facilityID: UUID
+    public internal(set) var observingFacilityDetailsType: ObservingFacilityDetailsType = .earthFixed
 
     public var accessRestrictions: PolisLocalisedText?
     public var averageClearNightsPerYear: UInt?
@@ -20,8 +20,6 @@ import Foundation
     public var dominantWindDirection: PolisDirection.RoughDirection?
     public var surfaceSize: PolisPropertyValue?             // [m^2]
 
-    public var id: UUID { facilityID }
-    
     //MARK: Make the class Hashable
     public static func == (lhs: FixedBaseObservingFacilityDetails, rhs: FixedBaseObservingFacilityDetails) -> Bool {  lhs.id == rhs.id }
     public func hash(into hasher: inout Hasher) { hasher.combine(id) }
@@ -70,6 +68,7 @@ import Foundation
                                                                                                                   observingFacilityID: fixedBaseObservingFacilityDetails.facilityID),
                                                                   objectType: .observingFacilityEarthFixedBasedDetails)
 
+        self.id                   = fixedBaseObservingFacilityDetails.id
         self._facilityID          = fixedBaseObservingFacilityDetails.facilityID
         self._visitingHoursID     = fixedBaseObservingFacilityDetails.visitingHoursID
         self._placeID             = fixedBaseObservingFacilityDetails.placeID

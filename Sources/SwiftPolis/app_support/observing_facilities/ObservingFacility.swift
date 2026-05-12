@@ -13,11 +13,10 @@ import Foundation
     public var observingFacilityCode: String?
 
     // Where in the Solar system
-    public var placeInTheSolarSystem: PolisPlaceInTheSolarSystem = .earth
-    public var gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed
-    public var orbitingAroundPlaceInTheSolarSystem: PolisPlaceInTheSolarSystem? = .sun
+    public internal(set) var placeInTheSolarSystem: PolisPlaceInTheSolarSystem = .earth
+    public internal(set) var gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed
+    public internal(set) var orbitingAroundPlaceInTheSolarSystem: PolisPlaceInTheSolarSystem? = .sun
     public var astronomicalCode: String?                                   // Minor planet codes, etc.
-    public var facilityLocationID: UUID?
 
     public override func markAsChanged() async throws {
         let facilityDirectory = ObjectStore.shared.observingFacilityDirectory()
@@ -42,6 +41,7 @@ import Foundation
 
         await super.init(polisRep: sP, identity: IdentifiableObject(identity: facility.identity))
     }
+    var facilityLocationID: UUID?
 
     var facilityReference: PolisObservingFacilityDirectory.ObservingFacilityReference {
         PolisObservingFacilityDirectory.ObservingFacilityReference(identity: _identity.identity,

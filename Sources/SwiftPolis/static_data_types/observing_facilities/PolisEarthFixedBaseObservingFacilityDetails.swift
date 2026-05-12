@@ -10,7 +10,7 @@ import Foundation
 public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable, Equatable, Sendable, PolisObject {
 
     // Identity
-    public var identity: PolisIdentity
+    public var id: UUID
     public var facilityID: UUID
 
     // For visitors
@@ -28,9 +28,7 @@ public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable
 
     public var placeID: UUID?
 
-    public var id: UUID { identity.id }
-
-    public init(identity: PolisIdentity,
+    public init(id: UUID                                              = UUID(),
                 facilityID: UUID,
                 visitingHoursID: UUID?                                = nil,
                 accessRestrictions: LocalisableString?                = nil,
@@ -41,7 +39,7 @@ public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable
                 dominantWindDirection: PolisDirection.RoughDirection? = nil,
                 surfaceSize: PolisPropertyValue?                      = nil,
                 placeID: UUID?                                        = nil) {
-        self.identity                  = identity
+        self.id                        = id
         self.facilityID                = facilityID
         self.visitingHoursID           = visitingHoursID
         self.accessRestrictions        = accessRestrictions
@@ -60,7 +58,7 @@ public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable
 
 public extension PolisEarthFixedBaseObservingFacilityDetails {
     enum CodingKeys: String, CodingKey {
-        case identity
+        case id
         case facilityID                = "facility_id"
         case visitingHoursID           = "visiting_hours_id"
         case accessRestrictions        = "access_restrictions"
