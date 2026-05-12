@@ -15,7 +15,7 @@ import Foundation
 ///
 /// **Note:** `PolisArtifact` is always part of an ``PolisObservingFacility`` and therefore inherits
 /// the visiting hours.
-public struct PolisArtifact: Codable, Identifiable, Equatable, Sendable {
+public struct PolisArtifact: Codable, Identifiable, Equatable, Sendable, PolisObject {
 
     /// The type of the artifact
     public enum ArtifactType: String, Codable, CaseIterable, Sendable {
@@ -63,6 +63,8 @@ public struct PolisArtifact: Codable, Identifiable, Equatable, Sendable {
         self.mediaID               = mediaID
         self.website               = website
     }
+
+    func polisDataType() -> PolisDataType { .artifact }
 }
 
 public extension PolisArtifact {

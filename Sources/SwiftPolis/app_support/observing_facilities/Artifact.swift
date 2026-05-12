@@ -35,9 +35,19 @@ import Foundation
         await super.init(polisRep: sP, identity: IdentifiableObject(identity: identity))
     }
 
-//    init(_ polisArtifact: PolisArtifact) {
-//        //TODO: Implement me!
-//    }
+    init(_ polisArtifact: PolisArtifact) async {
+        let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!
+        let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(polisObject: polisArtifact as any PolisObject,
+                                                                 localPath: fileResourceFinder.observingDataFile(withID: polisArtifact.identity.id,
+                                                                                                                 observingFacilityID: polisArtifact.facilityID),
+                                                                 objectType: .artifact)
+        self.facilityID            = polisArtifact.facilityID
+        self.artifactType          = polisArtifact.artifactType
+        self.visitingOpportunities = polisArtifact.visitingOpportunities
+        self.website               = polisArtifact.website
+
+        await super.init(polisRep: sP, identity: IdentifiableObject(identity: polisArtifact.identity))
+    }
 
     var _mediaID: UUID?
 

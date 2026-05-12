@@ -51,7 +51,7 @@ public protocol ObservingFacilityDetailsImplementing {
         self.deviceIDs             = facilityDetail.deviceIDs
         self.ownerID               = facilityDetail.ownerID
         self.mediaSourceID         = facilityDetail.mediaSourceID
-        self.artifactIDs           = facilityDetail.artifactIDs
+        self._artifactIDs          = facilityDetail.artifactIDs
         self.website               = facilityDetail.website
         self.scientificObjectives  = PolisLocalisedText(facilityDetail.scientificObjectives)
         self.history               = PolisLocalisedText(facilityDetail.history)
@@ -75,13 +75,14 @@ public protocol ObservingFacilityDetailsImplementing {
                                       deviceIDs: deviceIDs,
                                       ownerID: ownerID,
                                       mediaSourceID: mediaSourceID,
-                                      artifactIDs: artifactIDs,
+                                      artifactIDs: _artifactIDs,
                                       website: website,
                                       scientificObjectives: scientificObjectives?.rawValues,
                                       history: history?.rawValues)
     }
 
-    var artifactIDs: Set<UUID>? // Arifacts of interest could be also on other solar system bodies (e.g. Apollo landing site)
+    private var _artifactIDs: Set<UUID>?
+    private var _artifacts: [Artifact]?
 
     //MARK: - PolisObjectPersisting implementation -
     override func pathToLocalPolisFile() async -> String {
@@ -98,3 +99,24 @@ public protocol ObservingFacilityDetailsImplementing {
     }
 }
 
+//MARK: - Working with Artifacts -
+extension ObservingFacilityDetails {
+    public func addArtifactWith(artifactType: PolisArtifact.ArtifactType) async {
+        let identity      = PolisIdentity()
+        let polisArtifact = PolisArtifact(identity: identity, facilityID: self.id, artifactType: artifactType)
+        let artifact      = await Artifact(polisArtifact)
+
+        if _artifactIDs == nil { _artifactIDs = [] }
+        if _artifacts == nil { _artifacts = [] }
+
+        _artifactIDs!.insert(polisArtifact.id)
+        _artifacts!.append(artifact)
+    }
+
+    public func artifacts() -> [Artifact]? { return _artifacts }
+
+    public func artifactWith(id: UUID) -> Artifact? {
+        //TODO: Implement me!
+        return nil
+    }
+}
