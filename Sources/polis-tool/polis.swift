@@ -210,6 +210,13 @@ struct PolisTool {
                     facility.name = PolisLocalisedText(text: UUID().uuidString, languageCode: "en")
                     try await facility.markAsChanged()
 
+                    // Now add an Artifact and save it
+                    //TODO: If there is an existing Artifact - edit it. Otherwise create a new one
+                    let details = try await facility.observingFacilityDetails()
+                    let artifact = await details!.addArtifactWith(artifactType: .museum)
+                    artifact.name = PolisLocalisedText(text: "An Astru Museum", languageCode: "en")
+                    try await artifact.markAsChanged()
+
                     try await storeCoordinator.startTerminating()
                 }
 

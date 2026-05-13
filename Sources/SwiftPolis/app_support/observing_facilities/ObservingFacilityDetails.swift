@@ -96,6 +96,8 @@ public protocol ObservingFacilityDetailsImplementing {
         lastUpdateTime = Date.now
         _hasChanged    = true
         _polisRep.updateCurrentPolisObject(facilityDetail)
+
+        await ObjectStoreCoordinator.shared.didChange(object: self, ofType: .observingFacilityDetail)
     }
 }
 
@@ -106,11 +108,15 @@ extension ObservingFacilityDetails {
         let polisArtifact = PolisArtifact(identity: identity, facilityID: self.id, artifactType: artifactType)
         let artifact      = await Artifact(polisArtifact)
 
+        await artifact.setDidChange()
+        
         if _artifactIDs == nil { _artifactIDs = [] }
         if _artifacts == nil { _artifacts = [] }
 
         _artifactIDs!.insert(polisArtifact.id)
         _artifacts!.append(artifact)
+        await setDidChange()
+        await ObjectStoreCoordinator.shared.didChange(object: artifact, ofType: .artifact)
 
         return artifact
     }

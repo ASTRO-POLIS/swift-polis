@@ -7,7 +7,7 @@
 
 import Foundation
 
-@Observable open class Artifact: IdentifiablePersistentObject, @unchecked Sendable {
+@Observable open class Artifact: IdentifiablePersistentObject, Hashable, @unchecked Sendable {
 
     public internal(set)var facilityID: UUID
 
@@ -19,6 +19,10 @@ import Foundation
         //TODO: Implement me!
         try await setDidChange()
     }
+
+    //MARK: Make the class Hashable
+    public static func == (lhs: Artifact, rhs: Artifact) -> Bool {  lhs.id == rhs.id }
+    public func hash(into hasher: inout Hasher) { hasher.combine(id) }
 
     //MARK: (Private like) Internal APIs
     init(_ facility: PolisObservingFacilityDirectory.ObservingFacilityReference, identity: PolisIdentity) async {
@@ -41,14 +45,41 @@ import Foundation
                                                                  localPath: fileResourceFinder.observingDataFile(withID: polisArtifact.identity.id,
                                                                                                                  observingFacilityID: polisArtifact.facilityID),
                                                                  objectType: .artifact)
+
         self.facilityID            = polisArtifact.facilityID
         self.artifactType          = polisArtifact.artifactType
         self.visitingOpportunities = polisArtifact.visitingOpportunities
         self.website               = polisArtifact.website
 
         await super.init(polisRep: sP, identity: IdentifiableObject(identity: polisArtifact.identity))
+
+        self.lifecycleStatus = .active
     }
 
     var _mediaID: UUID?
+    var artifact: PolisArtifact {
+        PolisArtifact(identity: _identity.identity,
+                      facilityID: facilityID,
+                      artifactType: artifactType,
+                      visitingOpportunities: visitingOpportunities,
+                      mediaID: _mediaID,
+                      website: website)
+    }
+    //MARK: - PolisObjectPersisting implementation -
+    override func pathToLocalPolisFile() async -> String {
+        let fileResourceFinder = await ObjectStoreCoordinator.shared.fileResourceFinder()!
+        return fileResourceFinder.observingDataFile(withID: id, observingFacilityID: facilityID)
+    }
+
+    override func setDidChange() async {
+        let payload = PolisNotificationPayload(entity: .artifact, actionType: .update)
+
+        lastUpdateTime = Date.now
+        _hasChanged    = true
+        _polisRep.updateCurrentPolisObject(artifact)
+
+        await ObjectStoreCoordinator.shared.didChange(object: self, ofType: .artifact)
+    }
+
 
 }

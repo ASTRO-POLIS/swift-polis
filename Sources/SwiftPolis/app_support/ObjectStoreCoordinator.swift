@@ -103,8 +103,9 @@ public actor ObjectStoreCoordinator {
     private var _observingFacilityDirectory: ObservingFacilityDirectory?
 
     // Update caches
-    private var _facilityDetailsCache: Set<ObservingFacilityDetails> = []
-    private var _fixedBaseObservingFacilityDetails: Set<FixedBaseObservingFacilityDetails> = []
+    private var _facilityDetailsCache: Set<ObservingFacilityDetails>                             = []
+    private var _fixedBaseObservingFacilityDetailsCache: Set<FixedBaseObservingFacilityDetails>  = []
+    private var _artifactsCache: Set<Artifact>                                                   = []
 
     @MainActor private init() {
         let logFileURL = _logFile.map { URL(fileURLWithPath: $0) }
@@ -445,13 +446,15 @@ extension ObjectStoreCoordinator {
 
     func didChange(object: PolisObjectPersisting, ofType: PolisObjectType) {
         switch ofType {
-            default : break
+            case .observingFacilityDetail: _facilityDetailsCache.insert(object as! ObservingFacilityDetails)
+            case .artifact:                _artifactsCache.insert(object as! Artifact)
+            default: break
         }
     }
 
     private func handleReadyToTerminate() async throws -> Bool {
         // Start from Facility's sub-data, the facility, the facility directory, and finish with the service provider
-        let numberOfChanges = _facilityDetailsCache.count + _fixedBaseObservingFacilityDetails.count
+        let numberOfChanges = _facilityDetailsCache.count + _fixedBaseObservingFacilityDetailsCache.count
 
         do {
             if numberOfChanges > 0 {
@@ -459,8 +462,12 @@ extension ObjectStoreCoordinator {
                     try await facilityDetails.saveToLocalProvider()
                 }
 
-                for facilityDetails in _fixedBaseObservingFacilityDetails {
+                for facilityDetails in _fixedBaseObservingFacilityDetailsCache {
                     try await facilityDetails.saveToLocalProvider()
+                }
+
+                for artifact in _artifactsCache {
+                    try await artifact.saveToLocalProvider()
                 }
             }
 
