@@ -72,21 +72,46 @@ extension ServerCoordinator {
     }
 }
 
-
 extension ServerCoordinator {
     public func updateServiceProvider(_ entry: PolisDirectory.ProviderDirectoryEntry) async throws {
         guard let serviceProvider = ObjectStore.shared.serviceProvider() else {
             throw ServerCoordinatorError.dataNotLoaded
         }
-        serviceProvider.name                     = entry.name
-        serviceProvider.shortDescription         = entry.shortDescription
-        serviceProvider.url                      = entry.url
-        serviceProvider.reachabilityStatus       = entry.reachabilityStatus
-        serviceProvider.providerType             = entry.providerType
-        serviceProvider.contactEmail             = entry.contactEmail
-        serviceProvider.supportedImplementations = entry.supportedImplementations
-        try await serviceProvider.setDidChange()
-        try await serviceProvider.saveToLocalProvider()
+
+        var hasChanges = false
+
+        if serviceProvider.name != entry.name {
+            serviceProvider.name = entry.name
+            hasChanges = true
+        }
+        if serviceProvider.shortDescription != entry.shortDescription {
+            serviceProvider.shortDescription = entry.shortDescription
+            hasChanges = true
+        }
+        if serviceProvider.url != entry.url {
+            serviceProvider.url = entry.url
+            hasChanges = true
+        }
+        if serviceProvider.reachabilityStatus != entry.reachabilityStatus {
+            serviceProvider.reachabilityStatus = entry.reachabilityStatus
+            hasChanges = true
+        }
+        if serviceProvider.providerType != entry.providerType {
+            serviceProvider.providerType = entry.providerType
+            hasChanges = true
+        }
+        if serviceProvider.contactEmail != entry.contactEmail {
+            serviceProvider.contactEmail = entry.contactEmail
+            hasChanges = true
+        }
+        if serviceProvider.supportedImplementations != entry.supportedImplementations {
+            serviceProvider.supportedImplementations = entry.supportedImplementations
+            hasChanges = true
+        }
+
+        if hasChanges {
+            try await serviceProvider.setDidChange()
+        }
     }
 }
 
