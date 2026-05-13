@@ -213,9 +213,15 @@ struct PolisTool {
                     // Now add an Artifact and save it
                     //TODO: If there is an existing Artifact - edit it. Otherwise create a new one
                     let details = try await facility.observingFacilityDetails()
-                    let artifact = await details!.addArtifactWith(artifactType: .museum)
-                    artifact.name = PolisLocalisedText(text: "An Astru Museum", languageCode: "en")
-                    try await artifact.markAsChanged()
+                    let artifacts = details!.artifacts()
+
+                    if artifacts.isEmpty {
+                        print("   ---> No artifacts yet!")
+                        let artifact = await details!.addArtifactWith(artifactType: .museum)
+                        artifact.name = PolisLocalisedText(text: "An Astru Museum", languageCode: "en")
+                        try await artifact.markAsChanged()
+                    }
+                    else { print("   ---> Artifacts: \(artifacts.count)") }
 
                     try await storeCoordinator.startTerminating()
                 }

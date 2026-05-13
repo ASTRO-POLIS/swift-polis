@@ -17,7 +17,7 @@ import Foundation
 
     public override func markAsChanged() async throws {
         //TODO: Implement me!
-        try await setDidChange()
+        await setDidChange()
     }
 
     //MARK: Make the class Hashable
@@ -37,6 +37,7 @@ import Foundation
         self.artifactType          = .unknown
 
         await super.init(polisRep: sP, identity: IdentifiableObject(identity: identity))
+        self.lifecycleStatus = .active
     }
 
     init(_ polisArtifact: PolisArtifact) async {
@@ -52,8 +53,6 @@ import Foundation
         self.website               = polisArtifact.website
 
         await super.init(polisRep: sP, identity: IdentifiableObject(identity: polisArtifact.identity))
-
-        self.lifecycleStatus = .active
     }
 
     var _mediaID: UUID?
@@ -72,8 +71,6 @@ import Foundation
     }
 
     override func setDidChange() async {
-        let payload = PolisNotificationPayload(entity: .artifact, actionType: .update)
-
         lastUpdateTime = Date.now
         _hasChanged    = true
         _polisRep.updateCurrentPolisObject(artifact)

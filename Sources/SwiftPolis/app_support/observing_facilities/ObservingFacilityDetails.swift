@@ -57,6 +57,7 @@ public protocol ObservingFacilityDetailsImplementing {
         self.history               = PolisLocalisedText(facilityDetail.history)
 
         await super.init(polisRep: sP)
+        try? await loadArtifacts()
     }
 
     //MARK: Below properties should be used only internally for bookkeeping
@@ -82,7 +83,7 @@ public protocol ObservingFacilityDetailsImplementing {
     }
 
     private var _artifactIDs: Set<UUID>?
-    private var _artifacts: [Artifact]?
+    private var _artifacts: [Artifact] = []
 
     //MARK: - PolisObjectPersisting implementation -
     override func pathToLocalPolisFile() async -> String {
@@ -91,7 +92,7 @@ public protocol ObservingFacilityDetailsImplementing {
     }
 
     override func setDidChange() async {
-        let payload = PolisNotificationPayload(entity: .observingFacilityDetail, actionType: .update)
+//        let payload = PolisNotificationPayload(entity: .observingFacilityDetail, actionType: .update)
 
         lastUpdateTime = Date.now
         _hasChanged    = true
@@ -109,22 +110,33 @@ extension ObservingFacilityDetails {
         let artifact      = await Artifact(polisArtifact)
 
         await artifact.setDidChange()
-        
+
         if _artifactIDs == nil { _artifactIDs = [] }
-        if _artifacts == nil { _artifacts = [] }
 
         _artifactIDs!.insert(polisArtifact.id)
-        _artifacts!.append(artifact)
+        _artifacts.append(artifact)
         await setDidChange()
         await ObjectStoreCoordinator.shared.didChange(object: artifact, ofType: .artifact)
 
         return artifact
     }
 
-    public func artifacts() -> [Artifact]? { return _artifacts }
+    public func artifacts() -> [Artifact] { return _artifacts }
 
     public func artifactWith(id: UUID) -> Artifact? {
         //TODO: Implement me!
         return nil
+    }
+
+    private func loadArtifacts() async throws {
+        if (_artifactIDs != nil) && (_artifactIDs!.count != _artifacts.count) {
+            for artifactID in _artifactIDs! {
+                let anArtifactRep = try await Artifact.fromLocalData(polisType: .artifact, facilityID: facilityID, objectID: artifactID)
+                let anArtifact    = await Artifact(anArtifactRep.polisObject as! PolisArtifact)
+
+                _artifacts.append(anArtifact)
+            }
+
+        }
     }
 }

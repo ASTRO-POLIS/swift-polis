@@ -40,7 +40,7 @@ public struct PolisArtifact: Codable, Identifiable, Equatable, Sendable, PolisOb
     ///  Describes the attractiveness of the artifact and how to visit it
     ///
     ///  **Note:** Visiting hours should be defined by the observing site
-    public var visitingOpportunities: LocalisableString?
+    public var visitingOpportunities: [String: String]?
 
     /// Mostly images (photos)
     public var mediaID: UUID?

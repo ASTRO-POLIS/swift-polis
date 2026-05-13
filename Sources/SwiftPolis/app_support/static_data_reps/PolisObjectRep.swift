@@ -155,7 +155,9 @@ struct IdentifiableObject: Sendable {
             case .observingFacilityEarthFixedBasedDetails:
                 if let fID = facilityID,  let objectID = objectID { localPath = osc.observingDataFile(withID: objectID, observingFacilityID: fID) }
                 else                                              { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.missingRequiredID }
-            case .artifact: break         //TODO: Implement me!
+            case .artifact:
+                if let fID = facilityID,  let objectID = objectID { localPath = osc.observingDataFile(withID: objectID, observingFacilityID: fID) }
+                else                                              { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.missingRequiredID }
             case .observatory: break      //TODO: Implement me!
             case .device: break           //TODO: Implement me!
             case .placeOnEarth:
@@ -221,7 +223,7 @@ struct IdentifiableObject: Sendable {
                             else { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.missingRequiredID }
                         case .observingFacilityDetail:                 polisObject = try jsonDecoder.decode(PolisObservingFacilityDetails.self, from: data)
                         case .observingFacilityEarthFixedBasedDetails: polisObject = try jsonDecoder.decode(PolisEarthFixedBaseObservingFacilityDetails.self, from: data)
-                        case .artifact: break          //TODO: Implement me!
+                        case .artifact:                                polisObject = try jsonDecoder.decode(PolisArtifact.self, from: data)
                         case .observatory: break       //TODO: Implement me!
                         case .device: break            //TODO: Implement me!
                         case .placeOnEarth: break      //TODO: Implement me!
