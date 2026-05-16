@@ -11,6 +11,7 @@ public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable
 
     // Identity
     public var id: UUID
+    public var lastUpdateTime: Date
     public var facilityID: UUID
 
     // For visitors
@@ -29,6 +30,7 @@ public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable
     public var placeID: UUID?
 
     public init(id: UUID                                              = UUID(),
+                lastUpdateTime: Date                                  = Date.now,
                 facilityID: UUID,
                 visitingHoursID: UUID?                                = nil,
                 accessRestrictions: LocalisableString?                = nil,
@@ -40,6 +42,7 @@ public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable
                 surfaceSize: PolisPropertyValue?                      = nil,
                 placeID: UUID?                                        = nil) {
         self.id                        = id
+        self.lastUpdateTime            = lastUpdateTime
         self.facilityID                = facilityID
         self.visitingHoursID           = visitingHoursID
         self.accessRestrictions        = accessRestrictions
@@ -59,6 +62,7 @@ public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable
 public extension PolisEarthFixedBaseObservingFacilityDetails {
     enum CodingKeys: String, CodingKey {
         case id
+        case lastUpdateTime            = "last_update_time"
         case facilityID                = "facility_id"
         case visitingHoursID           = "visiting_hours_id"
         case accessRestrictions        = "access_restrictions"

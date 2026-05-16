@@ -8,9 +8,11 @@
 import Foundation
 
 //open class PlaceOnEarth: PolisObjectPersisting {
-@Observable open class PlaceOnEarth: IdentifiablePersistentObject, @unchecked Sendable {
+@Observable open class PlaceOnEarth: PersistentObject, @unchecked Sendable {
 
-    public internal(set) var facilityID: UUID? // We need this because we need to know where to store the JSON file
+    public internal(set) var id: UUID
+    public internal(set) var lastUpdateTime: Date
+    public internal(set) var facilityID: UUID // We need this because we need to know where to store the JSON file
 
     public var attentionOff: String?
     public var houseName: String?
@@ -59,43 +61,44 @@ import Foundation
         let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(polisObject: place as any PolisObject,
                                                                  localPath: fileResourceFinder.observingDataFile(withID: place.id,
-                                                                                                                 observingFacilityID: place.facilityID!),
+                                                                                                                 observingFacilityID: place.facilityID),
                                                                  objectType: .observingFacilityEarthFixedBasedDetails)
-
-        facilityID         = place.facilityID
-        attentionOff       = place.attentionOff
-        houseName          = place.houseName
-        street             = place.street
-        houseNumber        = place.houseNumber
-        houseNumberSuffix  = place.houseNumberSuffix
-        floor              = place.floor
-        apartment          = place.apartment
-        district           = place.district
-        site               = place.site
-        zipCode            = place.zipCode
-        province           = place.province
-        regionOrState      = place.regionOrState
-        regionOrStateCode  = place.regionOrStateCode
-        country            = place.country
-        countryID          = place.countryID
-        continent          = place.continent
-        poBox              = place.poBox
-        poBoxZip           = place.poBoxZip
-        posteRestante      = place.posteRestante
-        eastLongitude      = place.eastLongitude
-        latitude           = place.latitude
-        altitude           = place.altitude
-        streetLine1        = place.streetLine1
-        streetLine2        = place.streetLine2
-        streetLine3        = place.streetLine3
-        streetLine4        = place.streetLine4
-        streetLine5        = place.streetLine5
-        streetLine6        = place.streetLine6
-        note               = place.note
-        timeZoneIdentifier = place.timeZoneIdentifier
+        self.id                 = place.id
+        self.lastUpdateTime     = place.lastUpdateTime
+        self.facilityID         = place.facilityID
+        self.attentionOff       = place.attentionOff
+        self.houseName          = place.houseName
+        self.street             = place.street
+        self.houseNumber        = place.houseNumber
+        self.houseNumberSuffix  = place.houseNumberSuffix
+        self.floor              = place.floor
+        self.apartment          = place.apartment
+        self.district           = place.district
+        self.site               = place.site
+        self.zipCode            = place.zipCode
+        self.province           = place.province
+        self.regionOrState      = place.regionOrState
+        self.regionOrStateCode  = place.regionOrStateCode
+        self.country            = place.country
+        self.countryID          = place.countryID
+        self.continent          = place.continent
+        self.poBox              = place.poBox
+        self.poBoxZip           = place.poBoxZip
+        self.posteRestante      = place.posteRestante
+        self.eastLongitude      = place.eastLongitude
+        self.latitude           = place.latitude
+        self.altitude           = place.altitude
+        self.streetLine1        = place.streetLine1
+        self.streetLine2        = place.streetLine2
+        self.streetLine3        = place.streetLine3
+        self.streetLine4        = place.streetLine4
+        self.streetLine5        = place.streetLine5
+        self.streetLine6        = place.streetLine6
+        self.note               = place.note
+        self.timeZoneIdentifier = place.timeZoneIdentifier
 
         await super.init(polisRep: sP)
-     }
+    }
 
     /// Instantiating a new PlaceOnEarth instance
     init(facilityID: UUID) async {
@@ -104,14 +107,64 @@ import Foundation
         let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(polisObject: polisObject as any PolisObject,
                                                                  localPath: fileResourceFinder.observingDataFile(withID: polisObject.id,
                                                                                                                  observingFacilityID: facilityID),
-                                                                 objectType: .observingFacilityEarthFixedBasedDetails)
+                                                                 objectType: .placeOnEarth)
+
+        self.id             = UUID()
+        self.lastUpdateTime = Date.now
+        self.facilityID     = facilityID
 
         await super.init(polisRep: sP)
     }
-    
+
+    var placeOnEarth: PolisPlaceOnEarth {
+        PolisPlaceOnEarth(id: id,
+                          lastUpdateTime: lastUpdateTime,
+                          facilityID: facilityID,
+                          attentionOff: attentionOff,
+                          houseName: houseName,
+                          street: street,
+                          houseNumber: houseNumber,
+                          houseNumberSuffix: houseNumberSuffix,
+                          floor: floor,
+                          apartment: apartment,
+                          district: district,
+                          site: site,
+                          block: block,
+                          zipCode: zipCode,
+                          province: province,
+                          regionOrState: regionOrState,
+                          regionOrStateCode: regionOrStateCode,
+                          country: country,
+                          countryID: countryID,
+                          continent: continent,
+                          poBox: poBox,
+                          poBoxZip: poBoxZip,
+                          posteRestante: posteRestante,
+                          eastLongitude: eastLongitude,
+                          latitude: latitude,
+                          altitude: altitude,
+                          streetLine1: streetLine1,
+                          streetLine2: streetLine2,
+                          streetLine3: streetLine3,
+                          streetLine4: streetLine4,
+                          streetLine5: streetLine5,
+                          streetLine6: streetLine6,
+                          note: note,
+                          timeZoneIdentifier: timeZoneIdentifier)
+    }
     //MARK: Private APIs
 
-    //MARK: - Implementing PolisObjectPersisting protocol -
+    //MARK: - PolisObjectPersisting implementation -
+    override func pathToLocalPolisFile() async -> String {
+        let fileResourceFinder = await ObjectStoreCoordinator.shared.fileResourceFinder()!
+        return fileResourceFinder.observingDataFile(withID: id, observingFacilityID: facilityID)
+    }
 
+    override func setDidChange() async {
+        lastUpdateTime = Date.now
+        _hasChanged    = true
+        _polisRep.updateCurrentPolisObject(placeOnEarth)
+
+        await ObjectStoreCoordinator.shared.didChange(object: self, ofType: .placeOnEarth)
+    }
 }
-

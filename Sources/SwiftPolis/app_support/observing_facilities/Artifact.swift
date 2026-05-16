@@ -9,7 +9,7 @@ import Foundation
 
 @Observable open class Artifact: IdentifiablePersistentObject, Hashable, @unchecked Sendable {
 
-    public internal(set)var facilityID: UUID
+    public internal(set) var facilityID: UUID
 
     public var artifactType: PolisArtifact.ArtifactType
     public var visitingOpportunities: LocalisableString?

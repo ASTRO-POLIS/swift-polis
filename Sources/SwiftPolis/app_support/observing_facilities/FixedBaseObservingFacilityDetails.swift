@@ -9,6 +9,7 @@ import Foundation
 
 @Observable open class FixedBaseObservingFacilityDetails: PersistentObject, ObservingFacilityDetailsImplementing, Identifiable, Hashable, @unchecked Sendable {
     public internal(set) var id: UUID
+    public internal(set) var lastUpdateTime: Date
     public internal(set) var facilityID: UUID
     public internal(set) var observingFacilityDetailsType: ObservingFacilityDetailsType = .earthFixed
 
@@ -69,6 +70,8 @@ import Foundation
                                                                   objectType: .observingFacilityEarthFixedBasedDetails)
 
         self.id                   = fixedBaseObservingFacilityDetails.id
+        self.lastUpdateTime       = fixedBaseObservingFacilityDetails.lastUpdateTime
+        self.facilityID           = fixedBaseObservingFacilityDetails.facilityID
         self._facilityID          = fixedBaseObservingFacilityDetails.facilityID
         self._visitingHoursID     = fixedBaseObservingFacilityDetails.visitingHoursID
         self._placeID             = fixedBaseObservingFacilityDetails.placeID
@@ -84,7 +87,21 @@ import Foundation
         await super.init(polisRep: sP)
         self.observingFacilityDetailsType = .earthFixed
     }
-    
+
+    var polisEarthFixedBaseObservingFacilityDetails: PolisEarthFixedBaseObservingFacilityDetails {
+        PolisEarthFixedBaseObservingFacilityDetails(id: id,
+                                                    facilityID: facilityID,
+                                                    visitingHoursID: _visitingHoursID,
+                                                    accessRestrictions: accessRestrictions?.rawValues,
+                                                    averageClearNightsPerYear: averageClearNightsPerYear,
+                                                    averageSeeingConditions: averageSeeingConditions,
+                                                    averageSkyQuality: averageSkyQuality,
+                                                    traditionalLandOwners: traditionalLandOwners?.rawValues,
+                                                    dominantWindDirection: dominantWindDirection,
+                                                    surfaceSize: surfaceSize,
+                                                    placeID: _placeID)
+    }
+
     //MARK: Private APIs
     private var _visitingHoursID: UUID?
     private var _placeID: UUID?
