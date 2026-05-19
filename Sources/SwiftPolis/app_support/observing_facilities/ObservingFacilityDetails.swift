@@ -36,6 +36,22 @@ public protocol ObservingFacilityDetailsImplementing {
     public func hash(into hasher: inout Hasher) { hasher.combine(id) }
 
     //MARK: Internal APIs
+    init (facilityID: UUID) async {
+        let newID                                = UUID()
+        let polisObject                          = PolisObservingFacilityDetails(id: newID, facilityID: facilityID)
+        let fileResourceFinder                   = await ObjectStoreCoordinator.shared.fileResourceFinder()!
+        let sP: PolisObjectRep<any PolisObject>  = PolisObjectRep(polisObject: polisObject as any PolisObject,
+                                                                  localPath: fileResourceFinder.observingDataFile(withID: newID,
+                                                                                                                  observingFacilityID: facilityID),
+                                                                  objectType: .observingFacilityDirectory)
+
+        self.id             = newID
+        self.facilityID     = facilityID
+        self.lastUpdateTime = Date()
+
+        await super.init(polisRep: sP)
+    }
+
     init(_ facilityDetail: PolisObservingFacilityDetails) async {
         let fileResourceFinder                   = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         let sP: PolisObjectRep<any PolisObject>  = PolisObjectRep(polisObject: facilityDetail as any PolisObject,
@@ -82,8 +98,20 @@ public protocol ObservingFacilityDetailsImplementing {
                                       history: history?.rawValues)
     }
 
+    //MARK: Real private APIs
     private var _artifactIDs: Set<UUID>?
     private var _artifacts: [Artifact] = []
+
+    private static func createTypeSpecificDetailForFacilityWith(id: UUID) -> ObservingFacilityDetailsImplementing? {
+        guard let facility = ObjectStore.shared.observingFacilityWith(id: id) else { return nil }
+
+        if facility.observingFacilityTypeSpecificDetailType == .fixedBaseEarthObservingFacility {
+//            let detail = FixedBaseObservingFacilityDetails(<#T##fixedBaseObservingFacilityDetails: PolisEarthFixedBaseObservingFacilityDetails##PolisEarthFixedBaseObservingFacilityDetails#>, mainFacilityDetails: <#T##ObservingFacilityDetails#>)
+
+        }
+        //TODO: Implement me!
+        return nil
+    }
 
     //MARK: - PolisObjectPersisting implementation -
     override func pathToLocalPolisFile() async -> String {

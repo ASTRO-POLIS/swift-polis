@@ -9,6 +9,11 @@ import Foundation
 
 @Observable public class ObservingFacility: IdentifiablePersistentObject, @unchecked Sendable {
 
+    public enum ObservingFacilityTypeSpecificDetailType {
+        case fixedBaseEarthObservingFacility
+        case unowned
+    }
+
     // Identification
     public var observingFacilityCode: String?
 
@@ -17,6 +22,7 @@ import Foundation
     public internal(set) var gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed
     public internal(set) var orbitingAroundPlaceInTheSolarSystem: PolisPlaceInTheSolarSystem? = .sun
     public var astronomicalCode: String?                                   // Minor planet codes, etc.
+    public var observingFacilityTypeSpecificDetailType = ObservingFacilityTypeSpecificDetailType.unowned
 
     public override func markAsChanged() async throws {
         let facilityDirectory = ObjectStore.shared.observingFacilityDirectory()
@@ -38,6 +44,11 @@ import Foundation
         self.orbitingAroundPlaceInTheSolarSystem = facility.orbitingAroundPlaceInTheSolarSystem
         self.astronomicalCode                    = facility.astronomicalCode
         self.facilityLocationID                  = facility.facilityLocationID
+
+        //TODO: When we implement more types, this needs to be enhanced.
+        if (facility.placeInTheSolarSystem == .earth) && (facility.gravitationalBodyRelationship == .surfaceFixed) {
+            self.observingFacilityTypeSpecificDetailType = .fixedBaseEarthObservingFacility
+        }
 
         await super.init(polisRep: sP, identity: IdentifiableObject(identity: facility.identity))
     }
