@@ -87,6 +87,7 @@ public actor ObjectStoreCoordinator {
     // Notifications
     private let _nc = NotificationCenter.default
     @MainActor private var _didChangeToken: NotificationCenter.ObservationToken?
+    @MainActor private var _repObjectChangeToken: NotificationCenter.ObservationToken?
 
     private var _isConfigured    = false
     private var _pathToPolisFolder: String!
@@ -504,18 +505,41 @@ extension ObjectStoreCoordinator {
     /// Depending on the framework version, data load, data format, and provider type (static or dynamic), this method
     /// might group multiple change notifications for performance reasons and process them on a background task.
     @MainActor private func startObservingRepObjectChangeNotifications() {
-//        _didChangeToken = _nc.addObserver(for: RepObjectDidChange.self) { [weak self] message in
-//            guard let self = self else { return }
-            //TODO: Implement me! (main-actor safe work goes here if needed)
-//            print(">>> Change Message Object id: \(message.payload.id, default: "unknown ID")")
-//            Task { [weak self] in
-//                //FIXME: What should we do here?
-//                await self._localPersistenceCoordinator.addInstanceToBeSavedWith(
-//                    id: message.payload.id,
-//                    type: LocalServiceProviderPersistenceCoordinator.TypeIterating.artifact
-//                )
-//            }
-//        }
+        _repObjectChangeToken = _nc.addObserver(for: PolisObjectDidChange.self) { [weak self] message in
+            guard let self = self else { return }
+            let entity = message.payload.entity
+            let id     = message.payload.id
+            Task { [weak self] in
+                guard let self = self else { return }
+                await self.persistAfterRepChange(entity: entity, id: id)
+            }
+        }
+    }
+
+    private func persistAfterRepChange(entity: PolisObjectType, id: UUID?) async {
+        do {
+            switch entity {
+                case .serviceProvider:
+                    try await _serviceProvider?.saveToLocalProvider()
+
+                case .serviceDirectory:
+                    try await _serviceProviderDirectory?.saveToLocalProvider()
+
+                case .observingFacilityDirectory:
+                    try await _observingFacilityDirectory?.saveToLocalProvider()
+
+                case .observingFacility,
+                     .observingFacilityDetail,
+                     .observingFacilityEarthFixedBasedDetails:
+                    //TODO: Resolve the specific facility by `id` and persist it.
+                    break
+
+                default:
+                    break
+            }
+        } catch {
+            _logger.error("Persistence failed for \(entity) (id: \(String(describing: id))): \(error)")
+        }
     }
 
     //TODO: We need to make this message more genera! The idea is not to calculate the payload every time depending on what object did change!

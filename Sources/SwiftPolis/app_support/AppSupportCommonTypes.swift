@@ -40,7 +40,7 @@ public enum ObjectStoreStatusType: Int, Sendable {
 
 /// Used to identify the type of the Polis Object to be wrapped for file and sync operations). The String representation
 /// us used to customise error messages and reports.
-public enum PolisObjectType: String {
+public enum PolisObjectType: String, Sendable {
     case serviceProvider                         = "POLIS Directory Entry"
     case serviceDirectory                        = "POLIS Directory"
     case observingFacilityDirectory              = "POLIS Observing Facility Directory"
