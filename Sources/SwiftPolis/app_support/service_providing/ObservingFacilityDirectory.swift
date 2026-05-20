@@ -56,11 +56,11 @@ import Foundation
 
 
     override func setDidChange() async {
-        let payload = PolisNotificationPayload(entity: .observingFacilityDirectory, actionType: .update)
-
         lastUpdateTime = Date.now
         _hasChanged    = true
         _polisRep.updateCurrentPolisObject(observingFacilityDirectory)
+
+        await ObjectStoreCoordinator.shared.post(PolisNotificationPayload(entity: .observingFacilityDirectory, actionType: .update))
     }
 
     //MARK: Private APIs

@@ -83,6 +83,7 @@ import SoftwareEtudesUtilities
         _hasChanged           = true
         _polisRep.polisObject = directoryEntry!
 
+        await ObjectStoreCoordinator.shared.post(PolisNotificationPayload(entity: .serviceProvider, actionType: .update, id: id))
     }
 }
 

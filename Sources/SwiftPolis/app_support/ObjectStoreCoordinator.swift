@@ -528,10 +528,16 @@ extension ObjectStoreCoordinator {
                 case .observingFacilityDirectory:
                     try await _observingFacilityDirectory?.saveToLocalProvider()
 
-                case .observingFacility,
-                     .observingFacilityDetail,
+                case .observingFacility:
+                    if let facilityID = id,
+                       let facility   = ObjectStore.shared.observingFacilityWith(id: facilityID) {
+                        try await facility.saveToLocalProvider()
+                    }
+
+                case .observingFacilityDetail,
                      .observingFacilityEarthFixedBasedDetails:
-                    //TODO: Resolve the specific facility by `id` and persist it.
+                    //TODO: Leaf reps currently route through `didChange(object:ofType:)` (cache + flush at terminate).
+                    //      Once they are migrated to post `PolisObjectDidChange`, resolve by `id` and persist here.
                     break
 
                 default:

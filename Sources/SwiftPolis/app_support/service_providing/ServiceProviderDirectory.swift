@@ -55,6 +55,7 @@ import Foundation
         _polisRep.polisObject = directory
 
         try await ObjectStore.shared.serviceProvider()?.setDidChange()
+        await ObjectStoreCoordinator.shared.post(PolisNotificationPayload(entity: .serviceDirectory, actionType: .update))
     }
 
 }
