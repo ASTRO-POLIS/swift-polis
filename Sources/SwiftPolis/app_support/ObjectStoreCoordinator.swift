@@ -560,11 +560,13 @@ extension ObjectStoreCoordinator {
     }
 
     @MainActor private func startObservingServiceProviderReadyToTerminate() {
-        _didChangeToken = _nc.addObserver(for: PolisServiceProviderReadyToTerminate.self) { _ in
-//            Task { [weak self] in
-//                guard let self = self else { return } //TODO: Throw exception?
-//                try await self.handleReadyToTerminate()
-//            }
+        _didChangeToken = _nc.addObserver(for: PolisServiceProviderReadyToTerminate.self) { [weak self] _ in
+            guard let self = self else { return }
+            Task { [weak self] in
+                guard let self = self else { return }
+                do    { _ = try await self.handleReadyToTerminate() }
+                catch { await self.logger().error("handleReadyToTerminate failed: \(error)") }
+            }
         }
     }
 

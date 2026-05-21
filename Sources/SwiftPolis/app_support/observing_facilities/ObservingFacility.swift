@@ -76,6 +76,8 @@ import Foundation
     override func setDidChange() async throws {
         _identity.lastUpdateTime = Date.now
         _hasChanged              = true
+
+        await ObjectStoreCoordinator.shared.post(PolisNotificationPayload(entity: .observingFacility, actionType: .update, id: _identity.id))
     }
 
     /// The basic data for this facility are stored into the facility directory. Therefore no file needs to be saved. But

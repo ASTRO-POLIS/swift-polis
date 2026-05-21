@@ -47,21 +47,6 @@ struct PolisObjectDidChange: NotificationCenter.MainActorMessage {
     init(_ payload: PolisNotificationPayload) { self.payload = payload }
 }
 
-/// This Notification Message is posted by a subclass of a `PersistentObject` when one or multiple properties are modified
-/// either by a UI Client or a Server-side client. The `ObjectStoreCoordinator` handles the notification by first analysing
-/// if other POLIS objects need to be modified, and then making the changes persistent. The `ObjectStoreCoordinator` might
-/// decide to cache multiple notifications, and then to process them as a batch for performance reasons. If one
-/// `PersistentObject` appears multiple times in the cache queue, only the last Notification Message is considered. From
-/// time to time and after multiple changed notifications are handled, the changes will also be synced to the remote
-/// POLIS Service Providers.
-struct RepObjectDidChange: NotificationCenter.MainActorMessage {
-    typealias Subject = IdentifiablePersistentObject
-
-    let payload: IdentifiableObject
-
-    init(_ payload: IdentifiableObject) { self.payload = payload }
-}
-
 /// This Notification Message is posted when a client (UI or Server app) is about to terminate. In order to prevent loss
 /// of data, the corresponding client application should wait until it receives `PolisServiceProviderReadyToTerminate`
 /// message.
