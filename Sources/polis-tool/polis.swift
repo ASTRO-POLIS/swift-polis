@@ -180,6 +180,8 @@ struct PolisTool {
 
         newDetails!.website = URL(string:"https://example.com")
 
+        try await createFacilities()
+
         //TODO: Post AppWillTerminate!
         //TODO: Implement me!
     }
@@ -199,41 +201,17 @@ struct PolisTool {
                 print("   ---> Latest change time: \(os.serviceProvider()?.lastUpdateTime, default: "not available")")
                 print("   ---> Number of facilities: \(os.observingFacilities().count, default: "0")")
 
-                if isTesting {
-                    print("   ---> Provider name: \(os.serviceProvider()?.name, default: "nil name")")
-                    os.serviceProvider()?.name = UUID().uuidString
-                    try await os.serviceProvider()?.markAsChanged()
-                    print("   ---> Provider new name: \(os.serviceProvider()?.name, default: "nil name")")
-
-                    // Now edit a facility
-                    let facility = os.observingFacilities().first!
-                    facility.name = PolisLocalisedText(text: UUID().uuidString, languageCode: "en")
-                    try await facility.markAsChanged()
-
-                    // Now add an Artifact and save it
-                    //TODO: If there is an existing Artifact - edit it. Otherwise create a new one
-                    let details = try await facility.observingFacilityDetails()
-                    let artifacts = details!.artifacts()
-
-                    if artifacts.isEmpty {
-                        print("   ---> No artifacts yet!")
-                        let artifact = await details!.addArtifactWith(artifactType: .museum)
-                        artifact.name = PolisLocalisedText(text: "An Astru Museum", languageCode: "en")
-                        try await artifact.markAsChanged()
-                    }
-                    else { print("   ---> Artifacts: \(artifacts.count)") }
-
-                    try await storeCoordinator.startTerminating()
-                }
+                if (os.observingFacilities().isEmpty) && isTesting { try await createFacilities() }
 
                 for facility in os.observingFacilities() {
+                    print("      -----------------------------------------------------")
                     print("      ---> Observing facility code: \(String(describing: facility.observingFacilityCode))")
                     let details = try await facility.observingFacilityDetails()
 
                     if let details = details {
                         //TODO: Continue here!
                     }
-                    else { print("      ---> NO DETAILS") }
+                    else { print("      ---> ERROR: NO DETAILS!") }
 
                 }
                 //TODO: To be continued!
@@ -243,6 +221,35 @@ struct PolisTool {
             }
         }
         else { print("---> ERROR: Local Service Provider is not yet ready to be loaded (status: \(objectStoreStatus.rawValue).") }
+    }
+
+    @MainActor static func createFacilities() async throws {
+        let os = ObjectStore.shared
+
+        print("   ---> Provider name: \(os.serviceProvider()?.name, default: "nil name")")
+        os.serviceProvider()?.name = UUID().uuidString
+        try await os.serviceProvider()?.markAsChanged()
+        print("   ---> Provider new name: \(os.serviceProvider()?.name, default: "nil name")")
+
+        // Now edit a facility
+        let facility = os.observingFacilities().first!
+        facility.name = PolisLocalisedText(text: UUID().uuidString, languageCode: "en")
+        try await facility.markAsChanged()
+
+        // Now add an Artifact and save it
+        //TODO: If there is an existing Artifact - edit it. Otherwise create a new one
+        let details = try await facility.observingFacilityDetails()
+        let artifacts = details!.artifacts()
+
+        if artifacts.isEmpty {
+            print("   ---> No artifacts yet!")
+            let artifact = await details!.addArtifactWith(artifactType: .museum)
+            artifact.name = PolisLocalisedText(text: "An Astronomy museum", languageCode: "en")
+            try await artifact.markAsChanged()
+        }
+        else { print("   ---> Artifacts: \(artifacts.count)") }
+
+        try await storeCoordinator.startTerminating()
     }
 }
 
