@@ -333,8 +333,7 @@ extension ObjectStoreCoordinator {
                                         astronomicalCode: String?                                         = nil,
                                         facilityLocationID: UUID?                                         = nil) async throws-> ObservingFacility {
 
-        let identity = PolisIdentity(lifecycleStatus: lifecycleStatus)
-
+        let identity         = PolisIdentity(lifecycleStatus: lifecycleStatus)
         let newFacilityEntry = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: identity,
                                                                                           observingFacilityCode: observingFacilityCode,
                                                                                           placeInTheSolarSystem: placeInTheSolarSystem,
@@ -342,9 +341,8 @@ extension ObjectStoreCoordinator {
                                                                                           orbitingAroundPlaceInTheSolarSystem: orbitingAroundPlaceInTheSolarSystem,
                                                                                           astronomicalCode: astronomicalCode,
                                                                                           facilityLocationID: facilityLocationID)
-        let newFacility      = await ObservingFacility.init(newFacilityEntry)
+        let newFacility      = await ObservingFacility(newFacilityEntry)
         
-
         try await newFacility.saveToLocalProvider()   // If facility's folder does not exist - creates it. No other actions!
 
         await _observingFacilityDirectory?.addOrUpdateFacility(newFacility)

@@ -102,17 +102,6 @@ public protocol ObservingFacilityDetailsImplementing {
     private var _artifactIDs: Set<UUID>?
     private var _artifacts: [Artifact] = []
 
-    private static func createTypeSpecificDetailForFacilityWith(id: UUID) -> ObservingFacilityDetailsImplementing? {
-        guard let facility = ObjectStore.shared.observingFacilityWith(id: id) else { return nil }
-
-        if facility.observingFacilityTypeSpecificDetailType == .fixedBaseEarthObservingFacility {
-//            let detail = FixedBaseObservingFacilityDetails(<#T##fixedBaseObservingFacilityDetails: PolisEarthFixedBaseObservingFacilityDetails##PolisEarthFixedBaseObservingFacilityDetails#>, mainFacilityDetails: <#T##ObservingFacilityDetails#>)
-
-        }
-        //TODO: Implement me!
-        return nil
-    }
-
     //MARK: - PolisObjectPersisting implementation -
     override func pathToLocalPolisFile() async -> String {
         let fileResourceFinder = await ObjectStoreCoordinator.shared.fileResourceFinder()!

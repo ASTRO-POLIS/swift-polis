@@ -45,13 +45,20 @@ import Foundation
         self.astronomicalCode                    = facility.astronomicalCode
         self.facilityLocationID                  = facility.facilityLocationID
 
+
+        await super.init(polisRep: sP, identity: IdentifiableObject(identity: facility.identity))
+
         //TODO: When we implement more types, this needs to be enhanced.
         if (facility.placeInTheSolarSystem == .earth) && (facility.gravitationalBodyRelationship == .surfaceFixed) {
             self.observingFacilityTypeSpecificDetailType = .fixedBaseEarthObservingFacility
-        }
 
-        await super.init(polisRep: sP, identity: IdentifiableObject(identity: facility.identity))
-    }
+            let earthFacility = await FixedBaseObservingFacilityDetails(facility: self)
+
+            self.facilityLocationID = earthFacility.id
+
+            await earthFacility.setDidChange()
+        }
+ }
     var facilityLocationID: UUID?
 
     var facilityReference: PolisObservingFacilityDirectory.ObservingFacilityReference {

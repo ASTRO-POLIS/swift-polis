@@ -224,17 +224,8 @@ struct PolisTool {
     }
 
     @MainActor static func createFacilities() async throws {
-        let os = ObjectStore.shared
-
-        print("   ---> Provider name: \(os.serviceProvider()?.name, default: "nil name")")
-        os.serviceProvider()?.name = UUID().uuidString
-        try await os.serviceProvider()?.markAsChanged()
-        print("   ---> Provider new name: \(os.serviceProvider()?.name, default: "nil name")")
-
-        // Now edit a facility
+        let os       = ObjectStore.shared
         let facility = os.observingFacilities().first!
-        facility.name = PolisLocalisedText(text: UUID().uuidString, languageCode: "en")
-        try await facility.markAsChanged()
 
         // Now add an Artifact and save it
         //TODO: If there is an existing Artifact - edit it. Otherwise create a new one
@@ -250,6 +241,23 @@ struct PolisTool {
         else { print("   ---> Artifacts: \(artifacts.count)") }
 
         try await storeCoordinator.startTerminating()
+    }
+
+    @MainActor static func editFacilities() async throws {
+        let os = ObjectStore.shared
+
+        // Edit the Service Provider. This should also reflect the Service Provider Directory
+        print("   ---> Provider name: \(os.serviceProvider()?.name, default: "nil name")")
+        os.serviceProvider()?.name = UUID().uuidString
+        try await os.serviceProvider()?.markAsChanged()
+        print("   ---> Provider new name: \(os.serviceProvider()?.name, default: "nil name")")
+
+        // Now edit a facility
+        let facility = os.observingFacilities().first!
+        facility.name = PolisLocalisedText(text: UUID().uuidString, languageCode: "en")
+        try await facility.markAsChanged()
+
+
     }
 }
 
