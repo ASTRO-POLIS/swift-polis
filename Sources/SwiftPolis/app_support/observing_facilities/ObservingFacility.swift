@@ -120,10 +120,10 @@ extension ObservingFacility {
             let polisDetails = PolisObservingFacilityDetails(id: id, facilityID: identity.id)
             let details      = await ObservingFacilityDetails(polisDetails)
 
-            await details.setDidChange()
+            try? await details.markAsChanged()
             try await self.saveToLocalProvider()
             try await details.saveToLocalProvider()
-            try await setDidChange()
+            try await markAsChanged()
 
             return details
         }

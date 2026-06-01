@@ -122,6 +122,12 @@ struct IdentifiableObject: Sendable {
 @Observable open class PersistentObject: @unchecked Sendable, PolisObjectPersisting {
 
     //MARK: - Public APIs -
+
+    /// Public entry point that clients (CLI/UI) call to mark this object as modified.
+    ///
+    /// Subclasses override this to perform any cross-object bookkeeping (e.g. updating a parent directory entry) and
+    /// then call ``setDidChange()`` exactly once. Internal object-to-owned-object ripples must call ``setDidChange()``
+    /// directly, never `markAsChanged()`, otherwise a mutual call between an object and its owner causes infinite recursion.
     public func markAsChanged() async throws { fatalError("IdentifiablePersistentObject : polisObject not implemented!") }
 
 
@@ -176,6 +182,10 @@ struct IdentifiableObject: Sendable {
 
     func pathToLocalPolisFile() async -> String { "<no path defined>" }
     func hasChanged() -> Bool { _hasChanged }
+
+    /// Internal primitive that marks this single object dirty (and, in subclasses, snapshots the rep / registers with
+    /// the coordinator's in-memory change cache). Use this for internal ripples between an object and the object it
+    /// owns. Clients should call ``markAsChanged()`` instead.
     func setDidChange() async throws { _hasChanged = true }
 
     func saveToLocalProvider() async throws {

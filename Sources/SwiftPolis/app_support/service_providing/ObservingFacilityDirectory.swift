@@ -40,7 +40,7 @@ import Foundation
     func addOrUpdateFacility(_ facility: ObservingFacility) async {
         _observingFacilities.removeAll(where: { $0.id == facility.id })
         _observingFacilities.append(facility)
-        await setDidChange()
+        try? await markAsChanged()
     }
 
 
@@ -54,6 +54,8 @@ import Foundation
     //    func polisObject() -> any PolisObject { fatalError("IdentifiablePersistentObject : polisObject not implemented!") }
     //    func polisType() -> PolisObjectType   { fatalError("IdentifiablePersistentObject : polisType not implemented!") }
 
+
+    public override func markAsChanged() async throws { await setDidChange() }
 
     override func setDidChange() async {
         lastUpdateTime = Date.now

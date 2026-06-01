@@ -278,7 +278,7 @@ extension ObjectStoreCoordinator {
             polisDirectoryEntry.lastUpdateTime = Date.now
             _serviceProvider                   = await ServiceProvider(polisDirectoryEntry)
 
-            try await _serviceProvider?.setDidChange()
+            try await _serviceProvider?.markAsChanged()
             try await _serviceProvider?.saveToLocalProvider()
         }
         catch {
@@ -295,7 +295,7 @@ extension ObjectStoreCoordinator {
         do {
             _serviceProviderDirectory = await ServiceProviderDirectory(polisDirectory)
 
-            try await _serviceProviderDirectory?.setDidChange()
+            try await _serviceProviderDirectory?.markAsChanged()
             try await _serviceProviderDirectory?.saveToLocalProvider()
         }
         catch {
@@ -310,7 +310,7 @@ extension ObjectStoreCoordinator {
 
         do {
             _observingFacilityDirectory = observingFacilitiesDirectory
-            await _observingFacilityDirectory?.setDidChange()
+            try await _observingFacilityDirectory?.markAsChanged()
             try await _observingFacilityDirectory?.saveToLocalProvider()
        }
         catch {
@@ -348,8 +348,8 @@ extension ObjectStoreCoordinator {
         try await newFacility.saveToLocalProvider()   // If facility's folder does not exist - creates it. No other actions!
 
         await _observingFacilityDirectory?.addOrUpdateFacility(newFacility)
-        try await _serviceProviderDirectory?.setDidChange()
-        try await _serviceProvider?.setDidChange()
+        try await _serviceProviderDirectory?.markAsChanged()
+        try await _serviceProvider?.markAsChanged()
 
         try await _observingFacilityDirectory?.saveToLocalProvider()
         _os.add(observingFacility: newFacility)

@@ -160,6 +160,8 @@ import Foundation
         return fileResourceFinder.observingDataFile(withID: id, observingFacilityID: facilityID)
     }
 
+    public override func markAsChanged() async throws { await setDidChange() }
+
     override func setDidChange() async {
         lastUpdateTime = Date.now
         _hasChanged    = true

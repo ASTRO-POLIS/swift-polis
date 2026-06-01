@@ -17,7 +17,7 @@ import Foundation
         providerDirectoryEntries.removeAll(where: { $0.id == entry.id })
         providerDirectoryEntries.append(entry)
 
-        try await setDidChange()
+        try await markAsChanged()
     }
 
     public override func markAsChanged() async throws { try await setDidChange() }
