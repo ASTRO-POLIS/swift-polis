@@ -25,7 +25,7 @@ import SoftwareEtudesUtilities
         let directory = ObjectStore.shared.serviceProviderDirectory()
 
         try await directory!.addOrUpdateEntry(directoryEntry!)
-        try? await setDidChange()
+        try await setDidChange()
     }
 
     //MARK: Internal APIs

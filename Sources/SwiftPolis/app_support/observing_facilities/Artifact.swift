@@ -76,6 +76,7 @@ import Foundation
         _polisRep.updateCurrentPolisObject(artifact)
 
         await ObjectStoreCoordinator.shared.didChange(object: self, ofType: .artifact)
+        await ObjectStoreCoordinator.shared.post(PolisNotificationPayload(entity: .artifact, actionType: .update, id: id))
     }
 
 

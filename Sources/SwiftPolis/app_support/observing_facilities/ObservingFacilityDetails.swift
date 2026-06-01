@@ -108,6 +108,8 @@ public protocol ObservingFacilityDetailsImplementing {
         return fileResourceFinder.observingDataFile(withID: id, observingFacilityID: facilityID)
     }
 
+    public override func markAsChanged() async throws { await setDidChange() }
+
     override func setDidChange() async {
 //        let payload = PolisNotificationPayload(entity: .observingFacilityDetail, actionType: .update)
 
@@ -126,13 +128,13 @@ extension ObservingFacilityDetails {
         let polisArtifact = PolisArtifact(identity: identity, facilityID: self.id, artifactType: artifactType)
         let artifact      = await Artifact(polisArtifact)
 
-        await artifact.setDidChange()
+        try? await artifact.markAsChanged()
 
         if _artifactIDs == nil { _artifactIDs = [] }
 
         _artifactIDs!.insert(polisArtifact.id)
         _artifacts.append(artifact)
-        await setDidChange()
+        try? await markAsChanged()
         await ObjectStoreCoordinator.shared.didChange(object: artifact, ofType: .artifact)
 
         return artifact
