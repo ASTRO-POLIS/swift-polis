@@ -22,9 +22,14 @@ import SoftwareEtudesUtilities
     public var contactEmail: String!
 
     public override func markAsChanged() async throws {
-        let directory = ObjectStore.shared.serviceProviderDirectory()
+        let entry = try makeDirectoryEntry()
 
-        try await directory!.addOrUpdateEntry(directoryEntry!)
+        if let directory = ObjectStore.shared.serviceProviderDirectory() {
+            try await directory.addOrUpdateEntry(entry)
+        }
+        else {
+            _logger.error("ServiceProvider.markAsChanged: service provider directory is not configured in ObjectStore")
+        }
         try await setDidChange()
     }
 
@@ -49,17 +54,19 @@ import SoftwareEtudesUtilities
         await super.init(polisRep: sP)
     }
 
-    var directoryEntry : PolisDirectory.ProviderDirectoryEntry? {
-        try? PolisDirectory.ProviderDirectoryEntry(id: id,
-                                                   mirrorID: mirrorID,
-                                                   reachabilityStatus: reachabilityStatus,
-                                                   name: name,
-                                                   shortDescription: shortDescription,
-                                                   lastUpdateTime: lastUpdateTime,
-                                                   url: url,
-                                                   supportedImplementations: supportedImplementations,
-                                                   providerType: providerType,
-                                                   contactEmail: contactEmail)
+    var directoryEntry : PolisDirectory.ProviderDirectoryEntry? { try? makeDirectoryEntry() }
+    
+    func makeDirectoryEntry() throws -> PolisDirectory.ProviderDirectoryEntry {
+        try PolisDirectory.ProviderDirectoryEntry(id: id,
+                                                  mirrorID: mirrorID,
+                                                  reachabilityStatus: reachabilityStatus,
+                                                  name: name,
+                                                  shortDescription: shortDescription,
+                                                  lastUpdateTime: lastUpdateTime,
+                                                  url: url,
+                                                  supportedImplementations: supportedImplementations,
+                                                  providerType: providerType,
+                                                  contactEmail: contactEmail)
     }
 
     //MARK: Public APIs
@@ -81,7 +88,7 @@ import SoftwareEtudesUtilities
     override func setDidChange() async throws {
         lastUpdateTime        = Date.now
         _hasChanged           = true
-        _polisRep.polisObject = directoryEntry!
+        _polisRep.polisObject = try makeDirectoryEntry()
 
         await ObjectStoreCoordinator.shared.post(PolisNotificationPayload(entity: .serviceProvider, actionType: .update, id: id))
     }
