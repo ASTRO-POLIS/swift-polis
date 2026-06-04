@@ -63,6 +63,8 @@ public actor ObjectStoreCoordinator {
         //TODO: Implement me!
     }
 
+    public func logger() -> Logging.Logger { _logger }
+    
     public func fileResourceFinder() -> PolisFileResourceFinder? { _fileResourceFinder }
 
     /// This is the only logger used in POLIS
