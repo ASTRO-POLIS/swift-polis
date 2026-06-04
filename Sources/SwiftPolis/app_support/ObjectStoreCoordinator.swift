@@ -63,20 +63,7 @@ public actor ObjectStoreCoordinator {
         //TODO: Implement me!
     }
 
-    public func logger() -> Logging.Logger { _logger }
-    public func setLogFilePath( _ path: String) throws {
-        //TODO: If current log file exists, flush and start a new one.
-        _logFile = path
-    }
-
     public func fileResourceFinder() -> PolisFileResourceFinder? { _fileResourceFinder }
-
-    //MARK: - Private APIs
-#if os(macOS)
-    private var _logFile: String? = "/tmp/polis.log"
-#else
-    private var _logFile: String? = nil
-#endif
 
     /// This is the only logger used in POLIS
     private var _logger: Logging.Logger
@@ -109,12 +96,9 @@ public actor ObjectStoreCoordinator {
     private var _artifactsCache: Set<Artifact>                                                   = []
 
     @MainActor private init() {
-        let logFileURL = _logFile.map { URL(fileURLWithPath: $0) }
-
         // Initialising the Log to channel to console and file
         PolisLogger.setup(subsystem: "test.polis.observer",
                           level: Logging.Logger.Level.trace,
-                          logFileURL: logFileURL,
                           includeConsole: true)
         self._logger = PolisLogger.logger()
         self._logger.info("ObjectStoreCoordinator initialised")
