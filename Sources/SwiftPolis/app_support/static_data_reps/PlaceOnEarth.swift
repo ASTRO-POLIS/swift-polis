@@ -8,7 +8,7 @@
 import Foundation
 
 //open class PlaceOnEarth: PolisObjectPersisting {
-@Observable open class PlaceOnEarth: PersistentObject, @unchecked Sendable {
+@Observable open class PlaceOnEarth: PersistentObject, Identifiable, Hashable, @unchecked Sendable {
 
     public internal(set) var id: UUID
     public internal(set) var lastUpdateTime: Date
@@ -53,6 +53,10 @@ import Foundation
     public var note: String?
 
     public var timeZoneIdentifier: String?        // .. as defined with `TimeZone.knownTimeZoneIdentifiers`
+
+    //MARK: Make the class Hashable
+    public static func == (lhs: PlaceOnEarth, rhs: PlaceOnEarth) -> Bool {  lhs.id == rhs.id }
+    public func hash(into hasher: inout Hasher) { hasher.combine(id) }
 
     //MARK: Internal APIs
 

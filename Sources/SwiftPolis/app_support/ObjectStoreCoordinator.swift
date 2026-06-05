@@ -64,7 +64,7 @@ public actor ObjectStoreCoordinator {
     }
 
     public func logger() -> Logging.Logger { _logger }
-    
+
     public func fileResourceFinder() -> PolisFileResourceFinder? { _fileResourceFinder }
 
     /// This is the only logger used in POLIS
@@ -96,6 +96,8 @@ public actor ObjectStoreCoordinator {
     private var _facilityDetailsCache: Set<ObservingFacilityDetails>                             = []
     private var _fixedBaseObservingFacilityDetailsCache: Set<FixedBaseObservingFacilityDetails>  = []
     private var _artifactsCache: Set<Artifact>                                                   = []
+    private var _placesOnEarthCache: Set<PlaceOnEarth>                                           = []
+
 
     @MainActor private init() {
         // Initialising the Log to channel to console and file
@@ -431,8 +433,10 @@ extension ObjectStoreCoordinator {
 
     func didChange(object: PolisObjectPersisting, ofType: PolisObjectType) {
         switch ofType {
-            case .observingFacilityDetail: _facilityDetailsCache.insert(object as! ObservingFacilityDetails)
-            case .artifact:                _artifactsCache.insert(object as! Artifact)
+            case .observingFacilityDetail:                 _facilityDetailsCache.insert(object as! ObservingFacilityDetails)
+            case .artifact:                                _artifactsCache.insert(object as! Artifact)
+            case .observingFacilityEarthFixedBasedDetails: _fixedBaseObservingFacilityDetailsCache.insert(object as! FixedBaseObservingFacilityDetails)
+            case .placeOnEarth:                            _placesOnEarthCache.insert(object as! PlaceOnEarth)
             default: break
         }
     }
@@ -453,6 +457,14 @@ extension ObjectStoreCoordinator {
 
                 for artifact in _artifactsCache {
                     try await artifact.saveToLocalProvider()
+                }
+
+                for fixedFacilityDetails in _fixedBaseObservingFacilityDetailsCache {
+                    try await fixedFacilityDetails.saveToLocalProvider()
+                }
+                
+                for placeOnEarth in _placesOnEarthCache {
+                    try await placeOnEarth.saveToLocalProvider()
                 }
             }
 

@@ -103,7 +103,6 @@ struct PolisTool {
         }
         logger.info("Polis tool configuration complete")
 
-        //TODO: N. Setup various controllers
 
         //TODO: N. Decide what to do
         switch modeOfOperation {
@@ -159,7 +158,7 @@ struct PolisTool {
                 logger.info( "A local object store has been successfully created and configured.")
 
                 // Create some facility examples
-                if isTesting { try await createTestEnvironment() }
+                if isTesting { try await createTestFacilityData() }
 
                 await exitDescribingErrors(code: .noError)
             }
@@ -171,7 +170,7 @@ struct PolisTool {
 
     }
 
-    @MainActor static func createTestEnvironment() async throws {
+    @MainActor static func createTestFacilityData() async throws {
         let newFacility = try await storeCoordinator.createObservingFacility(id: UUID(),
                                                                              observingFacilityCode: "1234",
                                                                              placeInTheSolarSystem: .earth,
@@ -180,10 +179,9 @@ struct PolisTool {
 
         newDetails!.website = URL(string:"https://example.com")
 
-        try await createFacilities()
+        try await createFacilityTestDetailData()
 
-        //TODO: Post AppWillTerminate!
-        //TODO: Implement me!
+        try await storeCoordinator.startTerminating()
     }
 
     @MainActor static func listFacilities() async throws {
@@ -201,7 +199,7 @@ struct PolisTool {
                 print("   ---> Latest change time: \(os.serviceProvider()?.lastUpdateTime, default: "not available")")
                 print("   ---> Number of facilities: \(os.observingFacilities().count, default: "0")")
 
-                if (os.observingFacilities().isEmpty) && isTesting { try await createFacilities() }
+                if (os.observingFacilities().isEmpty) && isTesting { try await createFacilityTestDetailData() }
 
                 for facility in os.observingFacilities() {
                     print("      -----------------------------------------------------")
@@ -223,7 +221,7 @@ struct PolisTool {
         else { print("---> ERROR: Local Service Provider is not yet ready to be loaded (status: \(objectStoreStatus.rawValue).") }
     }
 
-    @MainActor static func createFacilities() async throws {
+    @MainActor static func createFacilityTestDetailData() async throws {
         let os       = ObjectStore.shared
         let facility = os.observingFacilities().first!
 
@@ -239,8 +237,6 @@ struct PolisTool {
             try await artifact.markAsChanged()
         }
         else { print("   ---> Artifacts: \(artifacts.count)") }
-
-        try await storeCoordinator.startTerminating()
     }
 
     @MainActor static func editFacilities() async throws {
