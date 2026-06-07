@@ -10,6 +10,7 @@ import Foundation
 @Observable public class ObservingFacility: IdentifiablePersistentObject, @unchecked Sendable {
 
     public enum ObservingFacilityTypeSpecificDetailType {
+        case main
         case fixedBaseEarthObservingFacility
         case unowned
     }
@@ -18,11 +19,20 @@ import Foundation
     public var observingFacilityCode: String?
 
     // Where in the Solar system
-    public internal(set) var placeInTheSolarSystem: PolisPlaceInTheSolarSystem = .earth
+    public internal(set) var placeInTheSolarSystem: PolisPlaceInTheSolarSystem? = .earth
+    public internal(set) var orbitingAroundPlaceInTheSolarSystem: PolisPlaceInTheSolarSystem?
     public internal(set) var gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed
-    public internal(set) var orbitingAroundPlaceInTheSolarSystem: PolisPlaceInTheSolarSystem? = .sun
+    public var startingPointOfFacilityInTransition: PolisPlaceInTheSolarSystem?
+    public var destinationPointOfFacilityInTransition: PolisPlaceInTheSolarSystem?
+
     public var astronomicalCode: String?                                   // Minor planet codes, etc.
-    public var observingFacilityTypeSpecificDetailType = ObservingFacilityTypeSpecificDetailType.unowned
+    public var observingFacilityTypeSpecificDetailType = ObservingFacilityTypeSpecificDetailType.main
+
+    //MARK: Convenience methods
+    public func solarSystemBodyName() -> String                     { placeInTheSolarSystem?.rawValue ?? "N/A" }
+    public func orbitingAroundPlaceInTheSolarSystemName() -> String { orbitingAroundPlaceInTheSolarSystem?.rawValue ?? "N/A" }
+    //FIXME: Should be a method in a Rep Object -- public var solarSystemBodyName: String?
+    //FIXME: Should be a method in a Rep Object -- public var orbitingAroundPlaceInTheSolarSystemNamed: String?
 
     public override func markAsChanged() async throws {
         let facilityDirectory = ObjectStore.shared.observingFacilityDirectory()
@@ -38,13 +48,18 @@ import Foundation
                                                                  localPath: "",    // We do not need a path. Data is stored into the Facility Directory!
                                                                  objectType: .observingFacility)
 
-        self.observingFacilityCode               = facility.observingFacilityCode
-        self.placeInTheSolarSystem               = facility.placeInTheSolarSystem
-        self.gravitationalBodyRelationship       = facility.gravitationalBodyRelationship
-        self.orbitingAroundPlaceInTheSolarSystem = facility.orbitingAroundPlaceInTheSolarSystem
-        self.astronomicalCode                    = facility.astronomicalCode
-        self.facilityLocationID                  = facility.facilityLocationID
+        self.observingFacilityCode                  = facility.observingFacilityCode
 
+        self.placeInTheSolarSystem                  = facility.placeInTheSolarSystem
+        self.orbitingAroundPlaceInTheSolarSystem    = facility.orbitingAroundPlaceInTheSolarSystem
+        self.gravitationalBodyRelationship          = facility.gravitationalBodyRelationship
+        self.startingPointOfFacilityInTransition    = facility.startingPointOfFacilityInTransition
+        self.destinationPointOfFacilityInTransition = facility.destinationPointOfFacilityInTransition
+
+        self.astronomicalCode                       = facility.astronomicalCode
+
+        self.facilityDetailsID                      = facility.facilityDetailsID
+        self.facilityLocationDetailsID              = facility.facilityLocationDetailsID
 
         await super.init(polisRep: sP, identity: IdentifiableObject(identity: facility.identity))
 
@@ -54,21 +69,26 @@ import Foundation
 
             let earthFacility = await FixedBaseObservingFacilityDetails(facility: self)
 
-            self.facilityLocationID = earthFacility.id
+            self.facilityDetailsID  = earthFacility.id
+            self.facilityLocationDetailsID = earthFacility.placeOnEarth().id //FIXME: This seams to be wrong?
 
             await earthFacility.setDidChange()
         }
  }
-    var facilityLocationID: UUID?
+    var facilityDetailsID: UUID?
+    var facilityLocationDetailsID: UUID?
 
     var facilityReference: PolisObservingFacilityDirectory.ObservingFacilityReference {
         PolisObservingFacilityDirectory.ObservingFacilityReference(identity: _identity.identity,
                                                                    observingFacilityCode: observingFacilityCode,
                                                                    placeInTheSolarSystem: placeInTheSolarSystem,
-                                                                   gravitationalBodyRelationship: gravitationalBodyRelationship,
                                                                    orbitingAroundPlaceInTheSolarSystem: orbitingAroundPlaceInTheSolarSystem,
+                                                                   gravitationalBodyRelationship: gravitationalBodyRelationship,
+                                                                   startingPointOfFacilityInTransition: startingPointOfFacilityInTransition,
+                                                                   destinationPointOfFacilityInTransition: destinationPointOfFacilityInTransition,
                                                                    astronomicalCode: astronomicalCode,
-                                                                   facilityLocationID: facilityLocationID)
+                                                                   facilityDetailsID: facilityDetailsID,
+                                                                   facilityLocationDetailsID: facilityLocationDetailsID)
     }
 
     //MARK: PolisObjectPersisting

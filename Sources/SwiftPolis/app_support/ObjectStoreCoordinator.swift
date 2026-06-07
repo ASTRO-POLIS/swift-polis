@@ -312,23 +312,29 @@ extension ObjectStoreCoordinator {
 //MARK: - Managing Observing Facilities -
 extension ObjectStoreCoordinator {
 
-    public func createObservingFacility(id: UUID = UUID(),
-                                        observingFacilityCode: String?                                    = nil,
-                                        lifecycleStatus: PolisLifecycleStatus                             = .active,
-                                        placeInTheSolarSystem: PolisPlaceInTheSolarSystem                 = .earth,
-                                        gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
-                                        orbitingAroundPlaceInTheSolarSystem: PolisPlaceInTheSolarSystem?  = nil,
-                                        astronomicalCode: String?                                         = nil,
-                                        facilityLocationID: UUID?                                         = nil) async throws-> ObservingFacility {
+    public func createObservingFacility(lifecycleStatus: PolisLifecycleStatus                               = .active,
+                                        name: PolisLocalisedText?                                           = nil,
+                                        abbreviation: String?                                               = nil,
+                                        shortDescription: PolisLocalisedText?                               = nil,
 
-        let identity         = PolisIdentity(lifecycleStatus: lifecycleStatus)
+                                        observingFacilityCode: String?                                      = nil,
+                                        placeInTheSolarSystem: PolisPlaceInTheSolarSystem                   = .earth,
+                                        orbitingAroundPlaceInTheSolarSystem: PolisPlaceInTheSolarSystem?    = nil,
+                                        gravitationalBodyRelationship: PolisObservingFacilityLocationType   = .surfaceFixed,
+                                        startingPointOfFacilityInTransition: PolisPlaceInTheSolarSystem?    = nil,
+                                        destinationPointOfFacilityInTransition: PolisPlaceInTheSolarSystem? = nil,
+
+                                        astronomicalCode: String?                                           = nil) async throws-> ObservingFacility {
+
+        let identity         = PolisIdentity(lifecycleStatus: lifecycleStatus, name: name?.rawValues, abbreviation: abbreviation, shortDescription: shortDescription?.rawValues)
         let newFacilityEntry = PolisObservingFacilityDirectory.ObservingFacilityReference(identity: identity,
                                                                                           observingFacilityCode: observingFacilityCode,
                                                                                           placeInTheSolarSystem: placeInTheSolarSystem,
-                                                                                          gravitationalBodyRelationship: gravitationalBodyRelationship,
                                                                                           orbitingAroundPlaceInTheSolarSystem: orbitingAroundPlaceInTheSolarSystem,
-                                                                                          astronomicalCode: astronomicalCode,
-                                                                                          facilityLocationID: facilityLocationID)
+                                                                                          gravitationalBodyRelationship: gravitationalBodyRelationship,
+                                                                                          startingPointOfFacilityInTransition: startingPointOfFacilityInTransition,
+                                                                                          destinationPointOfFacilityInTransition: destinationPointOfFacilityInTransition,
+                                                                                          astronomicalCode: astronomicalCode)
         let newFacility      = await ObservingFacility(newFacilityEntry)
         
         try await newFacility.saveToLocalProvider()   // If facility's folder does not exist - creates it. No other actions!

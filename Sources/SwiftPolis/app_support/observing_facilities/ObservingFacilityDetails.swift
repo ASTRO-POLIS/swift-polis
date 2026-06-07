@@ -36,17 +36,18 @@ public protocol ObservingFacilityDetailsImplementing {
     public func hash(into hasher: inout Hasher) { hasher.combine(id) }
 
     //MARK: Internal APIs
-    init (facilityID: UUID) async {
+    init (observingFacility: ObservingFacility) async {
+        //FIXME: newID should be from FacilityEntry->facilityDetailID! Perhaps more fixes needed! 
         let newID                                = UUID()
-        let polisObject                          = PolisObservingFacilityDetails(id: newID, facilityID: facilityID)
+        let polisObject                          = PolisObservingFacilityDetails(id: newID, facilityID: observingFacility.id)
         let fileResourceFinder                   = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         let sP: PolisObjectRep<any PolisObject>  = PolisObjectRep(polisObject: polisObject as any PolisObject,
                                                                   localPath: fileResourceFinder.observingDataFile(withID: newID,
-                                                                                                                  observingFacilityID: facilityID),
+                                                                                                                  observingFacilityID: observingFacility.id),
                                                                   objectType: .observingFacilityDirectory)
 
         self.id             = newID
-        self.facilityID     = facilityID
+        self.facilityID     = observingFacility.id
         self.lastUpdateTime = Date()
 
         await super.init(polisRep: sP)

@@ -171,8 +171,7 @@ struct PolisTool {
     }
 
     @MainActor static func createTestFacilityData() async throws {
-        let newFacility = try await storeCoordinator.createObservingFacility(id: UUID(),
-                                                                             observingFacilityCode: "1234",
+        let newFacility = try await storeCoordinator.createObservingFacility(observingFacilityCode: "1234",
                                                                              placeInTheSolarSystem: .earth,
                                                                              gravitationalBodyRelationship: .surfaceFixed)
         let newDetails  = try await newFacility.observingFacilityDetails()

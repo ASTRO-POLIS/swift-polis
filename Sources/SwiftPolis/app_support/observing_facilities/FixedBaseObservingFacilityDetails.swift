@@ -33,6 +33,8 @@ import Foundation
         await setDidChange()
     }
 
+    public func placeOnEarth() -> PlaceOnEarth { _placeOnEarth! }
+
     //TODO: Implement the method!
 //    public func observingFacility() -> ObservingFacility {
 //    }
@@ -43,7 +45,6 @@ import Foundation
     //MARK: Internal APIs
 
     /// Create a new instance with known Facility
-    //TODO: Should be created by the facility detail
     init(facility: ObservingFacility) async {
         let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         let polisObject                         = PolisEarthFixedBaseObservingFacilityDetails(facilityID: facility.id)
@@ -56,7 +57,7 @@ import Foundation
         self.lastUpdateTime            = Date.now
         self._facilityID               = facility.id
         self._visitingHoursID          = nil
-        self._placeID                  = nil            //TODO: This need to be changed. We need automatically to create a place
+        self._placeID                  = nil
         self.accessRestrictions        = nil
         self.averageClearNightsPerYear = nil
         self.averageSeeingConditions   = nil // [arcsec]
@@ -66,6 +67,10 @@ import Foundation
         self.surfaceSize               = nil
 
         await super.init(polisRep: sP)
+
+        self._placeOnEarth = await PlaceOnEarth(facilityID: _facilityID)
+        self._placeID      = _placeOnEarth.id
+        await _placeOnEarth.setDidChange()
     }
 
     /// Create the instance from an existing POLIS data
@@ -93,6 +98,8 @@ import Foundation
         surfaceSize               = fixedBaseObservingFacilityDetails.surfaceSize
         
         await super.init(polisRep: sP)
+
+        //TODO: Get the place using the _placeID
     }
 
     var polisEarthFixedBaseObservingFacilityDetails: PolisEarthFixedBaseObservingFacilityDetails {
@@ -112,6 +119,7 @@ import Foundation
     //MARK: Private APIs
     private var _visitingHoursID: UUID?
     private var _placeID: UUID?
+    private var _placeOnEarth: PlaceOnEarth!
 
     //MARK: - PolisObjectPersisting implementation -
     override func pathToLocalPolisFile() async -> String {

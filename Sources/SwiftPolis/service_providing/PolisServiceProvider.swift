@@ -211,41 +211,54 @@ public struct PolisObservingFacilityDirectory: Codable, Sendable, PolisObject {
         public var observingFacilityCode: String?
 
         // Where in the Solar system
-        public var placeInTheSolarSystem = PolisPlaceInTheSolarSystem.earth
-        public var gravitationalBodyRelationship: PolisObservingFacilityLocationType
+        /// Used if currently located on this SolarSystem Planet, Moon, Asteroid, etc.
+        public var placeInTheSolarSystem: PolisPlaceInTheSolarSystem? = .earth
+
+        /// Used if currently orbiting around  this SolarSystem Planet, Moon, Asteroid, etc.
         public var orbitingAroundPlaceInTheSolarSystem: PolisPlaceInTheSolarSystem?
+
+        /// Defines the relationship to the place in the Solar system: fixed on the surface, airborne, rover, unbound, ...
+        public var gravitationalBodyRelationship: PolisObservingFacilityLocationType
+
+        /// When the facility is in transition, `startingPointOfFacilityInTransition` defines the starting point (body)
+        public var startingPointOfFacilityInTransition: PolisPlaceInTheSolarSystem?
+
+        /// When the facility is in transition, `destinationPointOfFacilityInTransition` defines the destination point (body)
+        public var destinationPointOfFacilityInTransition: PolisPlaceInTheSolarSystem?
+
         public var astronomicalCode: String?                                   // Minor planet codes, etc.
 
-        /// Depending on the type of the facility, `facilityLocationID` could point to either Earth-Based fixed
-        /// location, satellite orbital elements, current position of a Mars rover ect. Facility's details can use
-        /// `facilityLocationID` to load the proper data.
-        public var facilityLocationID: UUID?
-
-        // Facility details
+        /// Facility main details
         public var facilityDetailsID: UUID?
+
+
+        /// Depending on the type of the facility, `facilityLocationID` could point to either Earth-Based fixed
+        /// location, satellite orbital elements, current position of a Mars rover etc. Facility's details can use
+        /// `facilityLocationID` to load the proper data.
+        public var facilityLocationDetailsID: UUID?
 
         public var id: UUID { identity.id }
         
-        //FIXME: Should be a method in a Rep Object -- public var solarSystemBodyName: String?
-        //FIXME: Should be a method in a Rep Object -- public var orbitingAroundPlaceInTheSolarSystemNamed: String?
-
-
         public init(identity: PolisIdentity,
-                    observingFacilityCode: String?                                    = nil,
-                    placeInTheSolarSystem: PolisPlaceInTheSolarSystem                 = .earth,
-                    gravitationalBodyRelationship: PolisObservingFacilityLocationType = .surfaceFixed,
-                    orbitingAroundPlaceInTheSolarSystem: PolisPlaceInTheSolarSystem?  = nil,
-                    astronomicalCode: String?                                         = nil,
-                    facilityLocationID: UUID?                                         = nil,
-                    facilityDetailsID: UUID?                                          = nil) {
-            self.identity                            = identity
-            self.observingFacilityCode               = observingFacilityCode
-            self.placeInTheSolarSystem               = placeInTheSolarSystem
-            self.gravitationalBodyRelationship       = gravitationalBodyRelationship
-            self.orbitingAroundPlaceInTheSolarSystem = orbitingAroundPlaceInTheSolarSystem
-            self.astronomicalCode                    = astronomicalCode
-            self.facilityLocationID                  = facilityLocationID
-            self.facilityDetailsID                   = facilityDetailsID
+                    observingFacilityCode: String?                                      = nil,
+                    placeInTheSolarSystem: PolisPlaceInTheSolarSystem?                  = .earth,
+                    orbitingAroundPlaceInTheSolarSystem: PolisPlaceInTheSolarSystem?    = nil,
+                    gravitationalBodyRelationship: PolisObservingFacilityLocationType   = .surfaceFixed,
+                    startingPointOfFacilityInTransition: PolisPlaceInTheSolarSystem?    = nil,
+                    destinationPointOfFacilityInTransition: PolisPlaceInTheSolarSystem? = nil,
+                    astronomicalCode: String?                                           = nil,
+                    facilityDetailsID: UUID?                                            = nil,
+                    facilityLocationDetailsID: UUID?                                    = nil) {
+            self.identity                               = identity
+            self.observingFacilityCode                  = observingFacilityCode
+            self.placeInTheSolarSystem                  = placeInTheSolarSystem
+            self.orbitingAroundPlaceInTheSolarSystem    = orbitingAroundPlaceInTheSolarSystem
+            self.gravitationalBodyRelationship          = gravitationalBodyRelationship
+            self.startingPointOfFacilityInTransition    = startingPointOfFacilityInTransition
+            self.destinationPointOfFacilityInTransition = destinationPointOfFacilityInTransition
+            self.astronomicalCode                       = astronomicalCode
+            self.facilityDetailsID                      = facilityDetailsID
+            self.facilityLocationDetailsID              = facilityLocationDetailsID
         }
 
         func polisDataType() -> PolisDataType { .observingFacilityReference }
@@ -297,13 +310,15 @@ extension PolisDirectory: Codable {
 extension PolisObservingFacilityDirectory.ObservingFacilityReference {
     public enum CodingKeys: String, CodingKey {
         case identity
-        case observingFacilityCode               = "observing_facility_code"
-        case placeInTheSolarSystem               = "place_in_the_solar_system"
-        case gravitationalBodyRelationship       = "gravitational_body_relationship"
-        case orbitingAroundPlaceInTheSolarSystem = "orbiting_around_place_in_the_solar_system"
-        case astronomicalCode                    = "astronomical_code"
-        case facilityLocationID                  = "facility_location_id"
-        case facilityDetailsID                   = "facility_details_id"
+        case observingFacilityCode                  = "observing_facility_code"
+        case placeInTheSolarSystem                  = "place_in_the_solar_system"
+        case orbitingAroundPlaceInTheSolarSystem    = "orbiting_around_place_in_the_solar_system"
+        case gravitationalBodyRelationship          = "gravitational_body_relationship"
+        case startingPointOfFacilityInTransition    = "starting_point_of_facility_in_transition"
+        case destinationPointOfFacilityInTransition = "destination_point_of_facility_in_transition"
+        case astronomicalCode                       = "astronomical_code"
+        case facilityDetailsID                      = "facility_details_id"
+        case facilityLocationDetailsID              = "facility_location_details_id"
     }
 }
 
