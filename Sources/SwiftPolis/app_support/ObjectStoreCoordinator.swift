@@ -449,7 +449,7 @@ extension ObjectStoreCoordinator {
 
     private func handleReadyToTerminate() async throws -> Bool {
         // Start from Facility's sub-data, the facility, the facility directory, and finish with the service provider
-        let numberOfChanges = _facilityDetailsCache.count + _fixedBaseObservingFacilityDetailsCache.count
+        let numberOfChanges = _facilityDetailsCache.count + _fixedBaseObservingFacilityDetailsCache.count + _artifactsCache.count + _placesOnEarthCache.count
 
         do {
             if numberOfChanges > 0 {

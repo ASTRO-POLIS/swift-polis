@@ -313,7 +313,8 @@ struct IdentifiableObject: Sendable {
     //MARK: Better think of these properties as private
     var _identity: IdentifiableObject!
 
-    init(polisRep: PolisObjectRep<PolisObject>, identity: IdentifiableObject? = nil) async {
+//    init(polisRep: PolisObjectRep<PolisObject>, identity: IdentifiableObject? = nil) async {
+    init(polisRep: PolisObjectRep<PolisObject>, identity: IdentifiableObject) async {
         self._identity  = identity
 
         await super.init(polisRep: polisRep)

@@ -25,20 +25,20 @@ import Foundation
     public func hash(into hasher: inout Hasher) { hasher.combine(id) }
 
     //MARK: (Private like) Internal APIs
-    init(_ facility: PolisObservingFacilityDirectory.ObservingFacilityReference, identity: PolisIdentity) async {
-        let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!
-        let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(polisObject: facility as any PolisObject as any PolisObject,
-                                                                 localPath: fileResourceFinder.observingDataFile(withID: identity.id,
-                                                                                                                 observingFacilityID: facility.id),
-                                                                 objectType: .artifact)
-
-
-        self.facilityID            = facility.id
-        self.artifactType          = .unknown
-
-        await super.init(polisRep: sP, identity: IdentifiableObject(identity: identity))
-        self.lifecycleStatus = .active
-    }
+//    init(_ facility: PolisObservingFacilityDirectory.ObservingFacilityReference, identity: PolisIdentity) async {
+//        let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!
+//        let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(polisObject: facility as any PolisObject as any PolisObject,
+//                                                                 localPath: fileResourceFinder.observingDataFile(withID: identity.id,
+//                                                                                                                 observingFacilityID: facility.id),
+//                                                                 objectType: .artifact)
+//
+//
+//        self.facilityID            = facility.id
+//        self.artifactType          = .unknown
+//
+//        await super.init(polisRep: sP, identity: IdentifiableObject(identity: identity))
+//        self.lifecycleStatus = .active
+//    }
 
     init(_ polisArtifact: PolisArtifact) async {
         let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!
@@ -53,6 +53,7 @@ import Foundation
         self.website               = polisArtifact.website
 
         await super.init(polisRep: sP, identity: IdentifiableObject(identity: polisArtifact.identity))
+//        await super.init(polisRep: sP, identity: polisArtifact.identity)
     }
 
     var _mediaID: UUID?

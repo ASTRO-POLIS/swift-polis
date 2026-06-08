@@ -224,14 +224,17 @@ struct PolisTool {
         let os       = ObjectStore.shared
         let facility = os.observingFacilities().first!
 
+        //TODO: Create FixedEarth details and Place
+
         // Now add an Artifact and save it
         //TODO: If there is an existing Artifact - edit it. Otherwise create a new one
-        let details = try await facility.observingFacilityDetails()
+        let details   = try await facility.observingFacilityDetails()
         let artifacts = details!.artifacts()
 
         if artifacts.isEmpty {
             print("   ---> No artifacts yet!")
             let artifact = await details!.addArtifactWith(artifactType: .museum)
+            
             artifact.name = PolisLocalisedText(text: "An Astronomy museum", languageCode: "en")
             try await artifact.markAsChanged()
         }

@@ -29,16 +29,18 @@ import Foundation
     public var observingFacilityTypeSpecificDetailType = ObservingFacilityTypeSpecificDetailType.main
 
     //MARK: Convenience methods
-    public func solarSystemBodyName() -> String                     { placeInTheSolarSystem?.rawValue ?? "N/A" }
-    public func orbitingAroundPlaceInTheSolarSystemName() -> String { orbitingAroundPlaceInTheSolarSystem?.rawValue ?? "N/A" }
-    //FIXME: Should be a method in a Rep Object -- public var solarSystemBodyName: String?
-    //FIXME: Should be a method in a Rep Object -- public var orbitingAroundPlaceInTheSolarSystemNamed: String?
+    public func solarSystemBodyName() -> String                        { placeInTheSolarSystem?.rawValue ?? "N/A" }
+    public func orbitingAroundPlaceInTheSolarSystemName() -> String    { orbitingAroundPlaceInTheSolarSystem?.rawValue ?? "N/A" }
+    public func startingPointOfFacilityInTransitionName() -> String    { startingPointOfFacilityInTransition?.rawValue ?? "N/A" }
+    public func destinationPointOfFacilityInTransitionName() -> String { destinationPointOfFacilityInTransition?.rawValue ?? "N/A" }
 
+    /// Guarantees that the facility will be saved locally and optionally also remotely
     public override func markAsChanged() async throws {
         let facilityDirectory = ObjectStore.shared.observingFacilityDirectory()
 
         await facilityDirectory?.addOrUpdateFacility(self)
-        await ObjectStoreCoordinator.shared.didChange(object: self, ofType: .observingFacility)
+        //FIXME: I think we do not need this!
+        //        await ObjectStoreCoordinator.shared.didChange(object: self, ofType: .observingFacility)
         try await setDidChange()
     }
 
@@ -63,17 +65,17 @@ import Foundation
 
         await super.init(polisRep: sP, identity: IdentifiableObject(identity: facility.identity))
 
-        //TODO: When we implement more types, this needs to be enhanced.
-        if (facility.placeInTheSolarSystem == .earth) && (facility.gravitationalBodyRelationship == .surfaceFixed) {
-            self.observingFacilityTypeSpecificDetailType = .fixedBaseEarthObservingFacility
-
-            let earthFacility = await FixedBaseObservingFacilityDetails(facility: self)
-
-            self.facilityDetailsID  = earthFacility.id
-            self.facilityLocationDetailsID = earthFacility.placeOnEarth().id //FIXME: This seams to be wrong?
-
-            await earthFacility.setDidChange()
-        }
+//        //TODO: When we implement more types, this needs to be enhanced.
+//        if (facility.placeInTheSolarSystem == .earth) && (facility.gravitationalBodyRelationship == .surfaceFixed) {
+//            self.observingFacilityTypeSpecificDetailType = .fixedBaseEarthObservingFacility
+//
+//            let earthFacility = await FixedBaseObservingFacilityDetails(facility: self)
+//
+//            self.facilityDetailsID  = earthFacility.id
+//            self.facilityLocationDetailsID = earthFacility.placeOnEarth().id //FIXME: This seams to be wrong?
+//
+//            await earthFacility.setDidChange()
+//        }
  }
     var facilityDetailsID: UUID?
     var facilityLocationDetailsID: UUID?
@@ -138,17 +140,18 @@ extension ObservingFacility {
                 throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.cannotReadFileFromLocalStore
             }
 
+            // If details do not exist yet, this will throw an exception, and in the catch part we will create the details
             let details = await ObservingFacilityDetails(polisDetails)
             return details
         }
         catch {
             // We assume, that the file does not exist, so we need to create it
-            let identity     = PolisIdentity(id: _identity.id, lifecycleStatus: .active, name: [PolisConstants.defaultLanguageCode : PolisConstants.unknownObject])
-            let polisDetails = PolisObservingFacilityDetails(id: id, facilityID: identity.id)
+            let polisDetails = PolisObservingFacilityDetails(id: UUID(), facilityID: self.id)
             let details      = await ObservingFacilityDetails(polisDetails)
 
+            self.facilityDetailsID = details.id
             try? await details.markAsChanged()
-            try await self.saveToLocalProvider()
+            try await self.saveToLocalProvider() // Make sure the folder exists
             try await details.saveToLocalProvider()
             try await markAsChanged()
 

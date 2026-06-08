@@ -37,8 +37,7 @@ public protocol ObservingFacilityDetailsImplementing {
 
     //MARK: Internal APIs
     init (observingFacility: ObservingFacility) async {
-        //FIXME: newID should be from FacilityEntry->facilityDetailID! Perhaps more fixes needed! 
-        let newID                                = UUID()
+        let newID                                = observingFacility.facilityDetailsID ?? UUID()
         let polisObject                          = PolisObservingFacilityDetails(id: newID, facilityID: observingFacility.id)
         let fileResourceFinder                   = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         let sP: PolisObjectRep<any PolisObject>  = PolisObjectRep(polisObject: polisObject as any PolisObject,
@@ -136,7 +135,7 @@ extension ObservingFacilityDetails {
         _artifactIDs!.insert(polisArtifact.id)
         _artifacts.append(artifact)
         try? await markAsChanged()
-        await ObjectStoreCoordinator.shared.didChange(object: artifact, ofType: .artifact)
+        try? await artifact.markAsChanged()
 
         return artifact
     }

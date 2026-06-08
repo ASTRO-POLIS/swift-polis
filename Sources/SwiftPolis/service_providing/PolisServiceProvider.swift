@@ -226,7 +226,8 @@ public struct PolisObservingFacilityDirectory: Codable, Sendable, PolisObject {
         /// When the facility is in transition, `destinationPointOfFacilityInTransition` defines the destination point (body)
         public var destinationPointOfFacilityInTransition: PolisPlaceInTheSolarSystem?
 
-        public var astronomicalCode: String?                                   // Minor planet codes, etc.
+        /// Many Solar system object are classified by IAU and other organisations, like minor planet codes, etc.
+        public var astronomicalCode: String?
 
         /// Facility main details
         public var facilityDetailsID: UUID?
