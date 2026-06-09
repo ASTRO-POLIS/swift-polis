@@ -11,16 +11,21 @@ import Foundation
     public internal(set) var id: UUID
     public internal(set) var lastUpdateTime: Date
     public internal(set) var facilityID: UUID
-    public internal(set) var observingFacilityDetailsType: ObservingFacilityDetailsType = .earthFixed
+    public let observingFacilityDetailsType: ObservingFacilityDetailsType = .earthFixed
 
+    // For visitors
+    //TODO: Add optional Visiting Hours Object
     public var accessRestrictions: PolisLocalisedText?
 
+    // Site observing quality
     public var averageClearNightsPerYear: UInt?
     public var averageSeeingConditions: PolisPropertyValue? // [arcsec]
     public var averageSkyQuality: PolisPropertyValue?       // [magnitude / arcsec^2]
 
+    // Are there any claims for the land?
     public var traditionalLandOwners: PolisLocalisedText?
 
+    // Miscellaneous stats
     public var dominantWindDirection: PolisDirection.RoughDirection?
     public var surfaceSize: PolisPropertyValue?             // [m^2]
 
@@ -53,28 +58,30 @@ import Foundation
                                                                                                                  observingFacilityID: facility.id),
                                                                  objectType: .observingFacilityEarthFixedBasedDetails)
 
-        self.id                        = UUID()
-        self.lastUpdateTime            = Date.now
-        self._facilityID               = facility.id
-        self._visitingHoursID          = nil
+        self.id                        = polisObject.id
+        self.lastUpdateTime            = polisObject.lastUpdateTime
+        self._facilityID               = polisObject.facilityID
+        self._visitingHoursID          = polisObject.visitingHoursID
+        self.accessRestrictions        = PolisLocalisedText(polisObject.accessRestrictions)
+        self.averageClearNightsPerYear = polisObject.averageClearNightsPerYear
+        self.averageSeeingConditions   = polisObject.averageSeeingConditions
+        self.averageSkyQuality         = polisObject.averageSkyQuality
+        self.traditionalLandOwners     = PolisLocalisedText(polisObject.traditionalLandOwners)
+        self.dominantWindDirection     = polisObject.dominantWindDirection
+        self.surfaceSize               = polisObject.surfaceSize
         self._placeID                  = nil
-        self.accessRestrictions        = nil
-        self.averageClearNightsPerYear = nil
-        self.averageSeeingConditions   = nil // [arcsec]
-        self.averageSkyQuality         = nil // [magnitude / arcsec^2]
-        self.traditionalLandOwners     = nil
-        self.dominantWindDirection     = nil
-        self.surfaceSize               = nil
 
         await super.init(polisRep: sP)
 
-        self._placeOnEarth = await PlaceOnEarth(facilityID: _facilityID)
-        self._placeID      = _placeOnEarth.id
-        await _placeOnEarth.setDidChange()
+        // Now create the place
+//        self._placeOnEarth = await PlaceOnEarth(facilityID: _facilityID)
+//        self._placeID      = _placeOnEarth.id
+//        await _placeOnEarth.setDidChange()
     }
 
     /// Create the instance from an existing POLIS data
     init(_ fixedBaseObservingFacilityDetails: PolisEarthFixedBaseObservingFacilityDetails, mainFacilityDetails: ObservingFacilityDetails) async {
+        //TODO: For the time being this is untested
         let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(polisObject: fixedBaseObservingFacilityDetails as any PolisObject,
                                                                  localPath: fileResourceFinder.observingDataFile(withID: fixedBaseObservingFacilityDetails.id,
@@ -85,7 +92,6 @@ import Foundation
         self.lastUpdateTime       = fixedBaseObservingFacilityDetails.lastUpdateTime
         self.facilityID           = fixedBaseObservingFacilityDetails.facilityID
         self._facilityID          = fixedBaseObservingFacilityDetails.facilityID
-        self.observingFacilityDetailsType = .earthFixed
         self._visitingHoursID     = fixedBaseObservingFacilityDetails.visitingHoursID
         self._placeID             = fixedBaseObservingFacilityDetails.placeID
 

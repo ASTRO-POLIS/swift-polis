@@ -65,17 +65,17 @@ import Foundation
 
         await super.init(polisRep: sP, identity: IdentifiableObject(identity: facility.identity))
 
-//        //TODO: When we implement more types, this needs to be enhanced.
-//        if (facility.placeInTheSolarSystem == .earth) && (facility.gravitationalBodyRelationship == .surfaceFixed) {
-//            self.observingFacilityTypeSpecificDetailType = .fixedBaseEarthObservingFacility
-//
-//            let earthFacility = await FixedBaseObservingFacilityDetails(facility: self)
-//
-//            self.facilityDetailsID  = earthFacility.id
-//            self.facilityLocationDetailsID = earthFacility.placeOnEarth().id //FIXME: This seams to be wrong?
-//
-//            await earthFacility.setDidChange()
-//        }
+        //TODO: When we implement more types, this needs to be enhanced.
+        if (facility.placeInTheSolarSystem == .earth) && (facility.gravitationalBodyRelationship == .surfaceFixed) {
+            self.observingFacilityTypeSpecificDetailType = .fixedBaseEarthObservingFacility
+
+            let earthFacility = await FixedBaseObservingFacilityDetails(facility: self)
+
+            // This is detail ID like the Fixed Earth Base detail
+            self.facilityLocationDetailsID = earthFacility.id
+
+            await earthFacility.setDidChange()
+        }
  }
     var facilityDetailsID: UUID?
     var facilityLocationDetailsID: UUID?
