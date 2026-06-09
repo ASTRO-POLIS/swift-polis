@@ -74,9 +74,9 @@ import Foundation
         await super.init(polisRep: sP)
 
         // Now create the place
-//        self._placeOnEarth = await PlaceOnEarth(facilityID: _facilityID)
-//        self._placeID      = _placeOnEarth.id
-//        await _placeOnEarth.setDidChange()
+        self._placeOnEarth = await PlaceOnEarth(facilityID: _facilityID)
+        self._placeID      = _placeOnEarth.id
+        await _placeOnEarth.setDidChange()
     }
 
     /// Create the instance from an existing POLIS data

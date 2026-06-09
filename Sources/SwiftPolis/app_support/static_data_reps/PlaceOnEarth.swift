@@ -113,8 +113,8 @@ import Foundation
                                                                                                                  observingFacilityID: facilityID),
                                                                  objectType: .placeOnEarth)
 
-        self.id             = UUID()
-        self.lastUpdateTime = Date.now
+        self.id             = polisObject.id
+        self.lastUpdateTime = polisObject.lastUpdateTime
         self.facilityID     = facilityID
 
         await super.init(polisRep: sP)
