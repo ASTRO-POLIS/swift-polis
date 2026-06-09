@@ -224,8 +224,6 @@ struct PolisTool {
 
         newDetails!.website = URL(string:"https://example.com")
 
-        //TODO: Create FixedEarth details and Place
-
         // Now add an Artifact and save it
         // If there is an existing Artifact - edit it. Otherwise create a new one
         let artifacts = newDetails!.artifacts()
