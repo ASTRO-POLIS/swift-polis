@@ -150,14 +150,15 @@ struct IdentifiableObject: Sendable {
         var localPath: String?
         let osc = await ObjectStoreCoordinator.shared.fileResourceFinder()!
 
+        //FIXME: Remove duplications by combining similar cases!
         switch polisType {
             case .serviceProvider:            localPath = osc.configurationFile()
             case .serviceDirectory:           localPath = osc.polisProviderDirectoryFile()
             case .observingFacilityDirectory: localPath = osc.observingFacilitiesDirectoryFile()
             case .observingFacility:          localPath = osc.observingFacilitiesDirectoryFile() // This is the directory, where we need to find the entry
             case .observingFacilityDetail:
-                if let fID = facilityID { localPath = osc.observingFacilityFile(observingFacilityID: fID) }
-                else                    { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.missingRequiredID }
+                if let fID = facilityID, let objectID = objectID  { localPath = osc.observingDataFile(withID: objectID, observingFacilityID: fID) }
+                else                                              { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.missingRequiredID }
             case .observingFacilityEarthFixedBasedDetails:
                 if let fID = facilityID,  let objectID = objectID { localPath = osc.observingDataFile(withID: objectID, observingFacilityID: fID) }
                 else                                              { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.missingRequiredID }

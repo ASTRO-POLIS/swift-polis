@@ -133,7 +133,7 @@ extension ObservingFacility {
     /// - Returns: ``ObservingFacilityDetails`` instance or `nil` if cannot be read or generated.
     public func observingFacilityDetails() async throws -> ObservingFacilityDetails? {
         do {
-            let polisObjectRep = try await Self.fromLocalData(polisType: .observingFacilityDetail, facilityID: _identity.id)
+            let polisObjectRep = try await Self.fromLocalData(polisType: .observingFacilityDetail, facilityID: _identity.id, objectID: facilityDetailsID)
 
             // Safely unwrap the expected PolisObservingFacilityDetails from the loaded polisObject
             guard let polisDetails = polisObjectRep.polisObject as? PolisObservingFacilityDetails else {

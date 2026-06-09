@@ -174,10 +174,7 @@ struct PolisTool {
         let newFacility = try await storeCoordinator.createObservingFacility(observingFacilityCode: "1234",
                                                                              placeInTheSolarSystem: .earth,
                                                                              gravitationalBodyRelationship: .surfaceFixed)
-        let newDetails  = try await newFacility.observingFacilityDetails()
-
-        newDetails!.website = URL(string:"https://example.com")
-
+        //TODO: Add come facility attributes...
         try await createFacilityTestDetailData()
 
         try await storeCoordinator.startTerminating()
@@ -221,20 +218,22 @@ struct PolisTool {
     }
 
     @MainActor static func createFacilityTestDetailData() async throws {
-        let os       = ObjectStore.shared
-        let facility = os.observingFacilities().first!
+        let os         = ObjectStore.shared
+        let facility   = os.observingFacilities().first!
+        let newDetails = try await facility.observingFacilityDetails()
+
+        newDetails!.website = URL(string:"https://example.com")
 
         //TODO: Create FixedEarth details and Place
 
         // Now add an Artifact and save it
-        //TODO: If there is an existing Artifact - edit it. Otherwise create a new one
-        let details   = try await facility.observingFacilityDetails()
-        let artifacts = details!.artifacts()
+        // If there is an existing Artifact - edit it. Otherwise create a new one
+        let artifacts = newDetails!.artifacts()
 
         if artifacts.isEmpty {
             print("   ---> No artifacts yet!")
-            let artifact = await details!.addArtifactWith(artifactType: .museum)
-            
+            let artifact = await newDetails!.addArtifactWith(artifactType: .museum)
+
             artifact.name = PolisLocalisedText(text: "An Astronomy museum", languageCode: "en")
             try await artifact.markAsChanged()
         }

@@ -53,7 +53,6 @@ import Foundation
         self.website               = polisArtifact.website
 
         await super.init(polisRep: sP, identity: IdentifiableObject(identity: polisArtifact.identity))
-//        await super.init(polisRep: sP, identity: polisArtifact.identity)
     }
 
     var _mediaID: UUID?

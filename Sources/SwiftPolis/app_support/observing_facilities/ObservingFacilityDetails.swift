@@ -125,16 +125,17 @@ public protocol ObservingFacilityDetailsImplementing {
 extension ObservingFacilityDetails {
     public func addArtifactWith(artifactType: PolisArtifact.ArtifactType) async -> Artifact {
         let identity      = PolisIdentity()
-        let polisArtifact = PolisArtifact(identity: identity, facilityID: self.id, artifactType: artifactType)
+        let polisArtifact = PolisArtifact(identity: identity, facilityID: self.facilityID, artifactType: artifactType)
         let artifact      = await Artifact(polisArtifact)
 
         try? await artifact.markAsChanged()
 
         if _artifactIDs == nil { _artifactIDs = [] }
 
-        _artifactIDs!.insert(polisArtifact.id)
+        _artifactIDs!.insert(identity.id)
         _artifacts.append(artifact)
-        try? await markAsChanged()
+        try? await artifact.saveToLocalProvider()
+        try? await self.markAsChanged()
         try? await artifact.markAsChanged()
 
         return artifact
