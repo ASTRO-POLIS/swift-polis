@@ -24,7 +24,7 @@ public enum PolisLogger {
     @MainActor public static func setup(subsystem: String = "com.polis.package", level: Logging.Logger.Level = .info,
                                         logFileURL: URL? = nil, includeConsole: Bool = false, includeOSLog: Bool = false) {
 
-        let actualLogFileURL: URL? = logFileURL == nil ? logFileURL : Self.logFileURL
+        let actualLogFileURL: URL? = logFileURL ?? Self.logFileURL
         var dispatchers: [MessageDispatching] = []
 
         if includeOSLog {
@@ -35,10 +35,15 @@ public enum PolisLogger {
             dispatchers.append(ConsoleDispatcher())
         }
 
-        //TODO: This does not work when subfolders does not exist. Perhaps somewhere (SE?) we have a method like `createSubfoldersIfNeeded()` ... if not we should add it to SE and use it here.
         if let fileURL = actualLogFileURL {
-            if let fileDispatcher = try? FileDispatcher(fileURL: fileURL) {
+            let directory = fileURL.deletingLastPathComponent()
+            do {
+                try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+                let fileDispatcher = try FileDispatcher(fileURL: fileURL)
                 dispatchers.append(fileDispatcher)
+            }
+            catch {
+                FileHandle.standardError.write(Data("PolisLogger: file logging disabled, could not set up \(fileURL.path): \(error)\n".utf8))
             }
         }
 
