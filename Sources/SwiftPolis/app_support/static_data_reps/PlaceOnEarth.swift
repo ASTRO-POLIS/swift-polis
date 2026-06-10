@@ -58,6 +58,8 @@ import Foundation
     public static func == (lhs: PlaceOnEarth, rhs: PlaceOnEarth) -> Bool {  lhs.id == rhs.id }
     public func hash(into hasher: inout Hasher) { hasher.combine(id) }
 
+    public override func markAsChanged() async throws { await setDidChange() }
+
     //MARK: Internal APIs
 
     /// Instantiating a PlaceOnEarth object from a Police instance
@@ -164,7 +166,6 @@ import Foundation
         return fileResourceFinder.observingDataFile(withID: id, observingFacilityID: facilityID)
     }
 
-    public override func markAsChanged() async throws { await setDidChange() }
 
     override func setDidChange() async {
         lastUpdateTime = Date.now

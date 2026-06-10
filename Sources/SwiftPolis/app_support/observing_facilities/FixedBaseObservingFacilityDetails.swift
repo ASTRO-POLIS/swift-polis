@@ -80,7 +80,7 @@ import Foundation
     }
 
     /// Create the instance from an existing POLIS data
-    init(_ fixedBaseObservingFacilityDetails: PolisEarthFixedBaseObservingFacilityDetails, mainFacilityDetails: ObservingFacilityDetails) async {
+    init(_ fixedBaseObservingFacilityDetails: PolisEarthFixedBaseObservingFacilityDetails) async {
         //TODO: For the time being this is untested
         let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(polisObject: fixedBaseObservingFacilityDetails as any PolisObject,
@@ -105,7 +105,7 @@ import Foundation
         
         await super.init(polisRep: sP)
 
-        //TODO: Get the place using the _placeID
+        //TODO: We need to load the Place here!
     }
 
     var polisEarthFixedBaseObservingFacilityDetails: PolisEarthFixedBaseObservingFacilityDetails {

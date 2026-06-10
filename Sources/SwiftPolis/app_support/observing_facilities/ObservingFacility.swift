@@ -52,6 +52,7 @@ public protocol ObservingFacilityDetailsImplementing {
         try await setDidChange()
     }
 
+    /// In the case of Fixed Earth-Based Observing Site this method returns ``FixedBaseObservingFacilityDetails`` instance. Later other instances will be returned.
     public func observingFacilityTypeSpecificDetail() -> ObservingFacilityDetailsImplementing? { _observingFacilityTypeSpecificDetails }
 
     //MARK: Internal APIs
