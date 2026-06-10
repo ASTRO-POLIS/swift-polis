@@ -7,13 +7,21 @@
 
 import Foundation
 
-@Observable public class ObservingFacility: IdentifiablePersistentObject, @unchecked Sendable {
+public enum ObservingFacilityDetailsType {
+    case main
+    case earthFixed
+    case planetaryRover
+    // ...
+}
 
-    public enum ObservingFacilityTypeSpecificDetailType {
-        case main
-        case fixedBaseEarthObservingFacility
-        case unowned
-    }
+// It is expected that all Observing Facility Details types do confirm to this protocol
+public protocol ObservingFacilityDetailsImplementing {
+    var observingFacilityDetailsType: ObservingFacilityDetailsType { get }
+    var facilityID: UUID                                           { get }
+}
+
+
+@Observable public class ObservingFacility: IdentifiablePersistentObject, @unchecked Sendable {
 
     // Identification
     public var observingFacilityCode: String?
@@ -26,7 +34,7 @@ import Foundation
     public var destinationPointOfFacilityInTransition: PolisPlaceInTheSolarSystem?
 
     public var astronomicalCode: String?                                   // Minor planet codes, etc.
-    public var observingFacilityTypeSpecificDetailType = ObservingFacilityTypeSpecificDetailType.main
+    public var observingFacilityTypeSpecificDetailType = ObservingFacilityDetailsType.main
 
     //MARK: Convenience methods
     public func solarSystemBodyName() -> String                        { placeInTheSolarSystem?.rawValue ?? "N/A" }
@@ -43,6 +51,8 @@ import Foundation
         //        await ObjectStoreCoordinator.shared.didChange(object: self, ofType: .observingFacility)
         try await setDidChange()
     }
+
+    public func observingFacilityTypeSpecificDetail() -> ObservingFacilityDetailsImplementing? { _observingFacilityTypeSpecificDetails }
 
     //MARK: Internal APIs
     init(_ facility: PolisObservingFacilityDirectory.ObservingFacilityReference) async {
@@ -67,7 +77,7 @@ import Foundation
 
         //TODO: When we implement more types, this needs to be enhanced.
         if (facility.placeInTheSolarSystem == .earth) && (facility.gravitationalBodyRelationship == .surfaceFixed) {
-            self.observingFacilityTypeSpecificDetailType = .fixedBaseEarthObservingFacility
+            self.observingFacilityTypeSpecificDetailType = .earthFixed
 
             let earthFacility = await FixedBaseObservingFacilityDetails(facility: self)
 
@@ -75,6 +85,7 @@ import Foundation
             self.facilityLocationDetailsID = earthFacility.id
 
             await earthFacility.setDidChange()
+            _observingFacilityTypeSpecificDetails = earthFacility
         }
  }
     var facilityDetailsID: UUID?
@@ -121,7 +132,7 @@ import Foundation
     }
 
     //MARK: Private APIs
-
+    private var _observingFacilityTypeSpecificDetails: ObservingFacilityDetailsImplementing?
 }
 
 //MARK: - Working with child types -

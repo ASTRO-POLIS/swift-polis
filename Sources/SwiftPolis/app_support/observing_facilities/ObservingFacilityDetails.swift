@@ -7,19 +7,6 @@
 
 import Foundation
 
-public enum ObservingFacilityDetailsType {
-    case main
-    case earthFixed
-    case planetaryRover
-    // ...
-}
-
-// It is expected that all Observing Facility Details types do confirm to this protocol
-public protocol ObservingFacilityDetailsImplementing {
-    var observingFacilityDetailsType: ObservingFacilityDetailsType { get }
-    var facilityID: UUID                                           { get }
-}
-
 @Observable open class ObservingFacilityDetails: PersistentObject, ObservingFacilityDetailsImplementing, Hashable, @unchecked Sendable {
 
     //MARK: Info
@@ -111,8 +98,6 @@ public protocol ObservingFacilityDetailsImplementing {
     public override func markAsChanged() async throws { await setDidChange() }
 
     override func setDidChange() async {
-//        let payload = PolisNotificationPayload(entity: .observingFacilityDetail, actionType: .update)
-
         lastUpdateTime = Date.now
         _hasChanged    = true
         _polisRep.updateCurrentPolisObject(facilityDetail)
