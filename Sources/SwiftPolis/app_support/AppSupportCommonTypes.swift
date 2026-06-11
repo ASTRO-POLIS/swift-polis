@@ -54,6 +54,7 @@ public enum PolisObjectType: String, Sendable {
     case device
 
     case placeOnEarth                            = "POLIS Place on Earth"
+    case visitingHours                           = "POLIS Visiting Hours"
 
     case unknown
 }

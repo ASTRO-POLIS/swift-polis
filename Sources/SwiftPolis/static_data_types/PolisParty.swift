@@ -223,7 +223,6 @@ public struct PolisPlaceOnEarth: Codable, Equatable, Identifiable, Sendable, Pol
     }
 
     func polisDataType() -> PolisDataType { .placeOnEarth }
-
 }
 
 //MARK: - PolisPerson -

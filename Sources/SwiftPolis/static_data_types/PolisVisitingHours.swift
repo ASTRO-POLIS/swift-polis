@@ -76,7 +76,7 @@ import Foundation
 ///}
 
 
-public struct PolisVisitingHours: Codable, Equatable, Identifiable, Sendable {
+public struct PolisVisitingHours: Codable, Equatable, Identifiable, Sendable, PolisObject {
 
     /// Simplified string that represents hours and minutes in the format `HH:mm`
     ///
@@ -153,23 +153,30 @@ public struct PolisVisitingHours: Codable, Equatable, Identifiable, Sendable {
     }
 
     public var id: UUID
+    public var lastUpdateTime: Date
+    public var facilityID: UUID
 
     public var visitingPossibilities: [VisitingPossibility]?
 
     public var note: String?
 
     public init(id: UUID                                      = UUID(),
+                lastUpdateTime: Date                          = Date.now,
+                facilityID: UUID,
                 visitingPossibilities: [VisitingPossibility]? = nil,
                 note: String?                                 = nil) {
         self.id                    = id
+        self.lastUpdateTime        = lastUpdateTime
+        self.facilityID            = facilityID
         self.visitingPossibilities = visitingPossibilities
         self.note                  = note
     }
+
+    func polisDataType() -> PolisDataType { .visitingHours }
 }
 
 
 //MARK: - Type extensions -
-
 
 
 //MARK: - VisitingPossibility
@@ -191,6 +198,8 @@ public extension PolisVisitingHours.VisitingPossibility {
 public extension PolisVisitingHours {
     enum CodingKeys: String, CodingKey {
         case id
+        case lastUpdateTime        = "last_update_time"
+        case facilityID            = "facility_id"
         case visitingPossibilities = "visiting_possibilities"
         case note
     }

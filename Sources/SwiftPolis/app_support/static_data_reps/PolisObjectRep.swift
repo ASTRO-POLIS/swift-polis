@@ -170,6 +170,7 @@ struct IdentifiableObject: Sendable {
             case .placeOnEarth:
                 if let fID = facilityID,  let objectID = objectID { localPath = osc.observingDataFile(withID: objectID, observingFacilityID: fID) }
                 else                                              { throw ObjectStoreCoordinator.ObjectStoreCoordinatorError.missingRequiredID }
+            case .visitingHours: break
             case .unknown: break          //TODO: Implement me!
         }
 
@@ -238,6 +239,7 @@ struct IdentifiableObject: Sendable {
                         case .observatory: break       //TODO: Implement me!
                         case .device: break            //TODO: Implement me!
                         case .placeOnEarth: break      //TODO: Implement me!
+                        case .visitingHours: break     //TODO: Implement me!
                         case .unknown: break           //TODO: Implement me!
                     }
                 }
@@ -314,7 +316,6 @@ struct IdentifiableObject: Sendable {
     //MARK: Better think of these properties as private
     var _identity: IdentifiableObject!
 
-//    init(polisRep: PolisObjectRep<PolisObject>, identity: IdentifiableObject? = nil) async {
     init(polisRep: PolisObjectRep<PolisObject>, identity: IdentifiableObject) async {
         self._identity  = identity
 

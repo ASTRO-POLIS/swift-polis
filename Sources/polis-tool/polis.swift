@@ -174,7 +174,13 @@ struct PolisTool {
         let newFacility = try await storeCoordinator.createObservingFacility(observingFacilityCode: "1234",
                                                                              placeInTheSolarSystem: .earth,
                                                                              gravitationalBodyRelationship: .surfaceFixed)
-        //TODO: Add come facility attributes...
+
+        // Set few attributes
+        newFacility.name = PolisLocalisedText(text: "Test Facility",languageCode: "en")
+        newFacility.shortDescription = PolisLocalisedText(text: "Описание испытательного полигона",languageCode: "ru")
+
+        try await newFacility.markAsChanged()
+
         try await createFacilityTestDetailData()
 
         try await storeCoordinator.startTerminating()

@@ -40,12 +40,7 @@ import Foundation
 
     public func placeOnEarth() -> PlaceOnEarth { _placeOnEarth! }
 
-    //TODO: Implement the method!
-//    public func observingFacility() -> ObservingFacility {
-//    }
-
     //TODO: Implement Visiting Hours func
-    //TODO: Implemented place func
 
     //MARK: Internal APIs
 
