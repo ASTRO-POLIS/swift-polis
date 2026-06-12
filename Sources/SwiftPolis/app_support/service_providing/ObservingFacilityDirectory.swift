@@ -25,7 +25,7 @@ import Foundation
         }
     }
 
-    var observingFacilityDirectory: PolisObservingFacilityDirectory {
+    public var observingFacilityDirectory: PolisObservingFacilityDirectory {
         var references: [PolisObservingFacilityDirectory.ObservingFacilityReference] = []
 
         for facility in _observingFacilities {

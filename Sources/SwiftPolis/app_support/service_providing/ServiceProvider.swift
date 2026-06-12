@@ -54,7 +54,7 @@ import SoftwareEtudesUtilities
         await super.init(polisRep: sP)
     }
 
-    var directoryEntry : PolisDirectory.ProviderDirectoryEntry? { try? makeDirectoryEntry() }
+    public var directoryEntry : PolisDirectory.ProviderDirectoryEntry? { try? makeDirectoryEntry() }
     
     func makeDirectoryEntry() throws -> PolisDirectory.ProviderDirectoryEntry {
         try PolisDirectory.ProviderDirectoryEntry(id: id,

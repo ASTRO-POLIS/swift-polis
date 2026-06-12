@@ -35,7 +35,7 @@ import Foundation
         await super.init(polisRep: sP)
     }
 
-    var directory: PolisDirectory {
+    public var directory: PolisDirectory {
         PolisDirectory(lastUpdateTime: lastUpdateTime, providerDirectoryEntries: providerDirectoryEntries)!
     }
 
