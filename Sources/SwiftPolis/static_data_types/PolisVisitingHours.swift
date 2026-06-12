@@ -17,8 +17,9 @@
 
 
 import Foundation
+import SoftwareEtudesUtilities
 
-/// The `PolisVisitingHours` struct is used to define periods of time when a 
+/// The `PolisVisitingHours` struct is used to define periods of time when a
 /// ``PolisObservingFacility``  and other objects could be visited, or the working hours of the personnel.
 ///
 /// Some facilities might only be open during part of the year (e.g. because of difficult winter conditions) or may
@@ -77,19 +78,6 @@ import Foundation
 
 
 public struct PolisVisitingHours: Codable, Equatable, Identifiable, Sendable, PolisObject {
-
-    /// Simplified string that represents hours and minutes in the format `HH:mm`
-    ///
-    /// - Hours should be in the range of 0-23
-    /// - Minutes should be in the range of 0-59
-    ///
-    /// **Note:** Later implementations may implement format checking by implementing a custom formatter.
-    ///
-    /// Examples:
-    /// - `"00:15"`- 15 min after midnight
-    /// - `"12:00"`- noon
-    /// - `"20:00"` - 8pm in the evening
-    public typealias HoursAndMinutes = String
 
     /// `VisitingPossibility` ...
     //TODO: Finish documentation!

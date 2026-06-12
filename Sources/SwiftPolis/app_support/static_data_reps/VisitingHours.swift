@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SoftwareEtudesUtilities
 
 @Observable open class VisitingHours: PersistentObject, Identifiable, @unchecked Sendable {
 
@@ -15,7 +16,20 @@ import Foundation
 
     public internal(set) var visitingPossibilities: [PolisVisitingHours.VisitingPossibility]?
 
+    //TODO: Implement these APIs
+    // public func allVisitingPossibilities() -> [PolisVisitingHours.VisitingPossibility] {}
+    // public func visitingPossibilityWith(id: UUID) -> PolisVisitingHours.VisitingPossibility? {}
+    // public func addVisitingPossibility(_ visitingPossibility: PolisVisitingHours.VisitingPossibility) async throws {}
+    // public func removeAllVisitingPossibilities() async throws {}
+    // public func removeVisitingPossibilityWith(id: UUID) async throws {}
+
     public var note: String?
+
+    //MARK: Make the class Hashable
+    public static func == (lhs: VisitingHours, rhs: VisitingHours) -> Bool {  lhs.id == rhs.id }
+    public func hash(into hasher: inout Hasher) { hasher.combine(id) }
+
+    public override func markAsChanged() async throws { await setDidChange() }
 
     //MARK: Internal APIs
 
@@ -23,7 +37,7 @@ import Foundation
     init(id: UUID = UUID(), lastUpdateTime: Date = Date.now, facilityID: UUID, visitingPossibilities: [PolisVisitingHours.VisitingPossibility]? = nil, note: String? = nil) async {
         let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         let polisObject                         = PolisVisitingHours(facilityID: facilityID)
-        let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(polisObject: polisObject as any PolisObject,
+        let sP: PolisObjectRep<any PolisObject> = PolisObjectRep(polisObject: polisObject,
                                                                  localPath: fileResourceFinder.observingDataFile(withID: polisObject.id,
                                                                                                                  observingFacilityID: polisObject.facilityID),
                                                                  objectType: .observingFacilityEarthFixedBasedDetails)
