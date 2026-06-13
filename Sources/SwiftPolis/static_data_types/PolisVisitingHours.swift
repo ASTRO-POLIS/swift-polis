@@ -107,6 +107,7 @@ public struct PolisVisitingHours: Codable, Equatable, Identifiable, Sendable, Po
             }
         }
 
+        public var id: UUID
         public var applicableYears: [Int]?
         public var applicableMonths: [Int]?
         public var applicableWeekdays: [DayOfTheWeek]?
@@ -119,7 +120,8 @@ public struct PolisVisitingHours: Codable, Equatable, Identifiable, Sendable, Po
         public var isRepeating = true
         public var note: String?
 
-        public init(applicableYears: [Int]?             = nil,
+        public init(id: UUID                            = UUID(),
+                    applicableYears: [Int]?             = nil,
                     applicableMonths: [Int]?            = nil,
                     applicableWeekdays: [DayOfTheWeek]? = nil,
                     visitingPeriod: [TimePeriod]?       = nil,
@@ -128,6 +130,7 @@ public struct PolisVisitingHours: Codable, Equatable, Identifiable, Sendable, Po
                     onlyGroupVisits: Bool               = false,
                     isRepeating: Bool                   = true,
                     note: String?                       = nil) {
+            self.id                   = id
             self.applicableYears      = applicableYears
             self.applicableMonths     = applicableMonths
             self.applicableWeekdays   = applicableWeekdays
@@ -170,6 +173,7 @@ public struct PolisVisitingHours: Codable, Equatable, Identifiable, Sendable, Po
 //MARK: - VisitingPossibility
 public extension PolisVisitingHours.VisitingPossibility {
     enum CodingKeys: String, CodingKey {
+        case id
         case applicableYears      = "applicable_years"
         case applicableMonths     = "applicable_months"
         case applicableWeekdays   = "applicable_weekdays"
