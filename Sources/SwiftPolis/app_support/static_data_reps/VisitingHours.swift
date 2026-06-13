@@ -14,14 +14,18 @@ import SoftwareEtudesUtilities
     public internal(set) var lastUpdateTime: Date
     public private(set)  var facilityID: UUID
 
-    public internal(set) var visitingPossibilities: [PolisVisitingHours.VisitingPossibility]?
+    public internal(set) var visitingPossibilities: [PolisVisitingHours.VisitingPossibility]!
 
-    //TODO: Implement these APIs
-    // public func allVisitingPossibilities() -> [PolisVisitingHours.VisitingPossibility] {}
-    // public func visitingPossibilityWith(id: UUID) -> PolisVisitingHours.VisitingPossibility? {}
-    // public func addVisitingPossibility(_ visitingPossibility: PolisVisitingHours.VisitingPossibility) async throws {}
-    // public func removeAllVisitingPossibilities() async throws {}
-    // public func removeVisitingPossibilityWith(id: UUID) async throws {}
+    public func allVisitingPossibilities() -> [PolisVisitingHours.VisitingPossibility] { visitingPossibilities ?? [] }
+    public func visitingPossibilityWith(id: UUID) -> PolisVisitingHours.VisitingPossibility? {
+        for visitingPossibility in visitingPossibilities ?? [] {
+            if visitingPossibility.id == id { return visitingPossibility }
+        }
+        return nil
+    }
+    public func addVisitingPossibility(_ visitingPossibility: PolisVisitingHours.VisitingPossibility) { visitingPossibilities.append(visitingPossibility) }
+    public func removeAllVisitingPossibilities() {visitingPossibilities.removeAll() }
+    public func removeVisitingPossibilityWith(id: UUID) { visitingPossibilities.removeAll(where: {$0.id == id }) }
 
     public var note: String?
 
@@ -64,7 +68,6 @@ import SoftwareEtudesUtilities
         let fileResourceFinder = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         return fileResourceFinder.observingDataFile(withID: id, observingFacilityID: facilityID)
     }
-
 
     override func setDidChange() async {
         lastUpdateTime = Date.now
