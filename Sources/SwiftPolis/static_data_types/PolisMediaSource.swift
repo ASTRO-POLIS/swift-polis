@@ -4,7 +4,7 @@
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
-// Copyright (c) 2021-2024 Tuparev Technologies and the ASTRO-POLIS project
+// Copyright (c) 2021-2026 Tuparev Technologies and the ASTRO-POLIS project
 // authors.
 // Licensed under MIT License Modern Variant
 //
@@ -17,19 +17,19 @@
 
 import Foundation
 
-//MARK: - Media -
 /// A source for images related to a single item, such as an observing facility, a satellite, a telescope, or a camera.
 ///
-/// A POLIS client can use an image in many different ways—as a thumbnail, a full image, a banner, etc. A `PolisImageSource` could have multiple `MediaItem`s
-/// that fulfil the needs of the client application.
+/// A POLIS client can use a media source (image, audio, movie, PDF Document, etc) in many different ways—as a thumbnail, a full image, background audio,
+/// a banner, etc. A `PolisIMediaSource`instance  could have multiple `MediaItem`s that fulfil the needs of the client application.
 ///
-/// Each image from the set defines its index within the set (used for sorting), and image attributes (source URL, description and accessibility description, as well as
-/// information about the copyright holder and copyright type).
+/// Each media item from the set defines its index within the set (used for sorting), and image attributes (source URL, description and accessibility description,
+/// as well as information about the copyright holder and copyright type).
 ///
-/// **Note:** Image, Document, and other media exact type should be determined by the filename extension, e.g. PDF, tiff, jpg,
+/// **Note:** Image, Document, and other media item's exact type should be determined by the filename extension, e.g. PDF, tiff, jpg, etc, and its `MediaType`.
 ///
-/// **Important note:** POLIS providers should only use images that are either open source or have explicitly requested and received rights of use from the copyright holder!
-public struct PolisMediaSource: Identifiable, Equatable, Sendable {
+/// **Important note:** POLIS providers should only use images that are either open source or have explicitly requested and received rights of use from the
+/// copyright holder!
+public struct PolisMediaSource: Identifiable, Equatable, Sendable, PolisObject {
 
     public enum MediaType: String, Codable, Equatable, Sendable {
         case image
@@ -42,25 +42,17 @@ public struct PolisMediaSource: Identifiable, Equatable, Sendable {
     /// A type defining the author's copyright claims on the image.
     public enum CopyrightHolderType: String, Codable, CaseIterable, Sendable {
 
-        /// The POLIS contributor took the photo
-        ///
-        /// Client applications are free to use this media
+        /// The POLIS contributor took the photo, made the recording, or the movie, etc.
        case polisContributor        = "polis_contributor"
 
         /// Most photos from Wikipedia etc.
-        ///
-        /// Client applications are free to use this media
         case creativeCommons        = "creative_commons"
 
         /// Open source image, like a photo of the observatory on the website of the facility/
-        ///
-        /// Client applications are free to use this media
       case openSource               = "open_source"
 
         /// In case the copyright holder gives an explicit permission to POLIS to use his or her image, the `copyrightHolderNote` property shall contain the
         ///  text of the message (e.g. email) that transfers the author's rights to POLIS to use the copyrighted material.
-        ///
-        /// Client applications are free to use this media
        case useWithOwnersPermission = "use_with_owners_permission"
 
         /// In case the copyright holder is still unknown or there is no explicit permission to use the media. Such image shall NOT be shown by clients or used in
@@ -71,14 +63,15 @@ public struct PolisMediaSource: Identifiable, Equatable, Sendable {
         case pendingInformation     = "pending_information"
     }
 
-    /// `ImageItem` defines one of potentially multiple images of the same item.
+    /// `MediaItem` defines one of potentially multiple media instanced related to a Polis object (e.g. Site, Observatory, etc).
     ///
-    /// In many cases a single Item may have multiple related images. For instance, the same device having images with a different zoom factor or from different
-    /// viewpoints, a panoramic image of an observatory in different seasons etc. These related images `ImageItem` are combined in an `PolisImageSource`.
+    /// In many cases a single Item may have multiple related representations. For instance, the same device having images with a different zoom factor or from
+    /// different viewpoints, a panoramic image of an observatory in different seasons etc. These related `ImageItem`'s are combined in an
+    /// `PolisMediaSource`.
     ///
-    /// It is important to note that POLIS data may be viewed by kids. Therefore, all images shall be verified before made public. The `lastUpdate` attribute
+    /// It is important to note that POLIS data may be viewed by kids. Therefore, all media items shall be verified before made public. The `lastUpdate` attribute
     /// can help the curator of the data set to verify new entries. If the POLIS service provider is used by educational applications, it is recommended, that a local
-    /// cache of verified images is maintained, or at least image hashes, that can guarantee, that the original image was unchanged.
+    /// cache of verified images is maintained..
     public struct MediaItem: Identifiable, Equatable, Sendable {
         public enum MediaItemError: Error {
             case copyrightHolderReferenceMissing
@@ -87,13 +80,14 @@ public struct PolisMediaSource: Identifiable, Equatable, Sendable {
         }
 
         public let id: UUID
+        public var lastUpdateTime: Date
+        
         public let mediaType: MediaType
         public var mediaFormat: String? // e.g. 2x2, header, full_image, 10k, ...
-        public var lastUpdateTime: Date
         public let originalSource: URL
 
-        public let shortDescription: String?
-        public let accessibilityDescription: String?
+        public let shortDescription:[String: String]?
+        public let accessibilityDescription: [String: String]?
 
         public let copyrightHolderType: CopyrightHolderType
         public let copyrightHolderReference: String?
@@ -102,21 +96,21 @@ public struct PolisMediaSource: Identifiable, Equatable, Sendable {
 
         public let hash: String? //TODO: Document for URLs
 
-        public init(id: UUID                                 = UUID(),
-                    mediaType: MediaType                     = .image,
-                    mediaFormat: String?                     = nil,
-                    lastUpdateTime: Date                     = Date.now,
+        public init(id: UUID                                   = UUID(),
+                    lastUpdateTime: Date                       = Date.now,
+                    mediaType: MediaType                       = .image,
+                    mediaFormat: String?                       = nil,
                     originalSource: URL,
-                    shortDescription: String?                = nil,
-                    accessibilityDescription: String?        = nil,
+                    shortDescription: [String: String]?        = nil,
+                    accessibilityDescription:[String: String]? = nil,
                     copyrightHolderType: CopyrightHolderType = .pendingInformation,
-                    copyrightHolderReference: String?        = nil,
-                    copyrightHolderNote: String?             = nil,
-                    author: String?                          = nil,
-                    hash: String?                            = nil) throws {
+                    copyrightHolderReference: String?          = nil,
+                    copyrightHolderNote: String?               = nil,
+                    author: String?                            = nil,
+                    hash: String?                              = nil) throws {
             self.id                       = id
-            self.mediaType                = mediaType
             self.lastUpdateTime           = lastUpdateTime
+            self.mediaType                = mediaType
             self.originalSource           = originalSource
             self.shortDescription         = shortDescription
             self.accessibilityDescription = accessibilityDescription
@@ -137,21 +131,30 @@ public struct PolisMediaSource: Identifiable, Equatable, Sendable {
         }
     }
 
-    public var identity: PolisIdentity
+    public var id: UUID
+    public var lastUpdateTime: Date
+    public var facilityID: UUID
 
     /// The metadata of the images associated with this `PolisImageSource`.
     public var mediaItems = [MediaItem]()
 
-    public var id: UUID { identity.id }
 
-    public init(identity: PolisIdentity) { self.identity = identity }
+    public init(id: UUID                 = UUID(),
+                lastUpdateTime: Date     = Date.now,
+                facilityID: UUID,
+                mediaItems: [MediaItem]? = []) {
+        self.id             = id
+        self.lastUpdateTime = lastUpdateTime
+        self.facilityID     = facilityID
+        self.mediaItems     = mediaItems!
+    }
 
     /// Add an image to this image source.
     /// - Parameter item: The `ImageItem` associated with the image to be added.
-    public mutating func addImage(_ item: MediaItem) {
-        for (index, imageItem) in mediaItems.enumerated() {
-            if imageItem.id == item.id {
-                if imageItem.lastUpdateTime < item.lastUpdateTime {
+    public mutating func addItem(_ item: MediaItem) {
+        for (index, mediaItem) in mediaItems.enumerated() {
+            if mediaItem.id == item.id {
+                if mediaItem.lastUpdateTime < item.lastUpdateTime {
                     mediaItems.remove(at: index)
                     mediaItems.append(item)
                     return
@@ -164,22 +167,24 @@ public struct PolisMediaSource: Identifiable, Equatable, Sendable {
 
     /// Remove an image item from this image source.
     /// - Parameter id: The id of the `ImageItem`.
-    public mutating func removeImageWith(id: UUID) {
-        for (index, imageItem) in mediaItems.enumerated() {
-            if imageItem.id == id {
+    public mutating func removeItemWith(id: UUID) {
+        for (index, mediaItem) in mediaItems.enumerated() {
+            if mediaItem.id == id {
                 mediaItems.remove(at: index)
                 break
             }
         }
     }
+
+    public func polisDataType() -> PolisDataType { .mediaSource }
 }
 
 extension PolisMediaSource.MediaItem: Codable {
     public enum CodingKeys: String, CodingKey {
         case id
+        case lastUpdateTime           = "last_update_time"
         case mediaType                = "media_type"
         case mediaFormat              = "media_format"
-        case lastUpdateTime           = "last_update_time"
         case originalSource           = "original_source"
         case shortDescription         = "short_description"
         case accessibilityDescription = "accessibility_description"
@@ -193,7 +198,9 @@ extension PolisMediaSource.MediaItem: Codable {
 
 extension PolisMediaSource: Codable {
     public enum CodingKeys: String, CodingKey {
-        case identity
-        case mediaItems = "media_items"
+        case id
+        case lastUpdateTime = "last_update_time"
+        case facilityID     = "facility_id"
+        case mediaItems     = "media_items"
     }
 }

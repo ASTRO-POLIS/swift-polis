@@ -35,7 +35,8 @@ public enum PolisDataType: Codable, Equatable, Hashable, Sendable {
     case observingFacilityEarthFixedBasedDetails
 
     case artifact
-    
+    case mediaSource
+
     case unknown
 }
 

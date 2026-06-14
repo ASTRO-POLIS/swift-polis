@@ -7,7 +7,6 @@
 
 import Foundation
 
-//open class PlaceOnEarth: PolisObjectPersisting {
 @Observable open class PlaceOnEarth: PersistentObject, Identifiable, Hashable, @unchecked Sendable {
 
     public internal(set) var id: UUID
