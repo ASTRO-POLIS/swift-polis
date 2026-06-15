@@ -1,10 +1,95 @@
 {
-    "identity": {
-        "mandatory_properties": [ "id", "lifecycle_status", "last_update_time", "name" ],
-        "standard_properties": [ "abbreviation", "end_time", "external_references", "local_name", "polis_registration_time", "short_description", "start_time" ]
+    "electromagnetic_spectrum_coverage": {
+        "definition_type": "PolisElectromagneticSpectrumCoverage",
+        "description": "Electromagnetic spectrum coverage of the POLIS object (observatory, Device, ...)",
+        "value_type": "string",
+        "value_set": [
+            "gamma_ray",
+            "x_ray",
+            "ultraviolet",
+            "optical",
+            "infrared",
+            "sub_millimeter",
+            "radio",
+            "gravitational",
+            "neutrino",
+            "other",
+            "unknown"
+        ]
     },
-    "implementation": {
-        "aliases": [ "supported_implementation" ],
-        "mandatory_properties": [ "api_support", "data_format", "version" ]
-    }
+
+    "gravitational_body_relationship": {
+        "definition_type": "PolisObservingFacilityLocationType",
+        "description": "Defines the relationship between the observatory and it's gravitational body",
+        "value_type": "string",
+        "value_set": [
+            "surface_fixed",
+            "surface_mobile",
+            "airborne_self_propelled",
+            "airborne_ballon",
+            "keplerian_orbital",
+            "non_keplerian_orbital",
+            "unbound_interplanetary",
+            "other"
+        ]
+    },
+
+    "lifecycle_status": {
+        "definition_type": "PolisLifecycleStatus",
+        "description": "The current status of the POLIS object (item) and its readiness to be used in different environments",
+        "value_type": "string",
+        "value_set": [
+            "inactive",
+            "active",
+            "historic",
+            "deleted",
+            "delete",
+            "suspended",
+            "unknown"
+        ]
+    },
+
+    "mode_of_operation": {
+        "definition_type": "PolisModeOfOperation",
+       "description": "Defines the mode of operation (and therefore, the level of automation) of corresponding POLIS Object (e.g. Observatory or Device)",
+        "value_type": "string",
+        "value_set": [
+            "manual",
+            "autonomous",
+            "remote",
+            "mixed",
+            "other",
+            "not_applicable",
+            "unknown"
+        ]
+    },
+
+    "place_in_the_solar_system": {
+        "definition_type": "PolisPlaceInTheSolarSystem",
+        "description": "The gravitational body the observatory is associated with.",
+        "value_type": "string",
+        "value_set": [
+            "Sun",
+            "Mercury",
+            "Venus",
+            "earth",
+            "Mars",
+            "Jupiter",
+            "Saturn",
+            "Uranus",
+            "Neptune",
+            "Pluto",
+            "Ceres",
+            "Humea",
+            "Mamemake",
+            "Eris",
+            "dwarf_planet",
+            "asteroid_belt_object",
+            "kuiper_belt_object",
+            "oort_cloud_object",
+            "moon",
+            "asteroid",
+            "comet"
+        ]
+    },
 }

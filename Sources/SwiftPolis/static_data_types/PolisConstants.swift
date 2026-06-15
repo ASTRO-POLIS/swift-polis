@@ -4,7 +4,7 @@
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
-// Copyright (c) 2021-2025 Tuparev Technologies and the ASTRO-POLIS project
+// Copyright (c) 2021-2026 Tuparev Technologies and the ASTRO-POLIS project
 // authors.
 // Licensed under MIT License Modern Variant
 //
@@ -65,8 +65,6 @@ public struct PolisConstants: Sendable {
                            ),
     ]
 
-    public init() {}
-    
     /// Returns latest supported by this framework POLIS version's implementation
     public func latestPolisFrameworkSupportedImplementation() -> PolisImplementation {
         PolisConstants.polisFrameworkSupportedImplementations.max(by: { $0.version < $1.version })!

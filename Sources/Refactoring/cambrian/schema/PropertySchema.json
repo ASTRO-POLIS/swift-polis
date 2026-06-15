@@ -87,20 +87,6 @@
         "description": "Unique ID in the formal of a standard UUID, similar to id",
         "value_type": "string"
     },
-    "mode_of_operation": {
-        "description": "Defines the mode of operation (and therefore, the level of automation) of corresponding POLIS Item.",
-        "value_type": "string",
-        "value_set": [
-            "manual",
-            "manual_with_automated_detector",
-            "manual_with_automated_detector_and_scheduling",
-            "autonomous",
-            "remote",
-            "mixed",
-            "other",
-            "unknown"
-        ]
-    },
     "note": {
         "description": "Free text string, that could be formatted with new lines, tabs. etc. and has no size limit. Nevertheless. Too long notes should be avoided.",
         "value_type": "string"
@@ -205,44 +191,6 @@
         "value_type": "string",
         "is_array": true
     },
-    "gravitational_body_relationship": {
-        "description": "Defines the relationship between the observatory and it's gravitational body.",
-        "value_type": "string",
-        "value_set": [
-            "surface_fixed",
-            "surface_mobile",
-            "airborne",
-            "keplerian_orbital",
-            "non_keplerian_orbital",
-            "unbound_interplanetary",
-            "other"
-        ]
-    },
-    "place_in_the_solar_system": {
-        "description": "The gravitational body the observatory is associated with.",
-        "value_type": "string",
-        "value_set": [
-            "Sun",
-            "Mercury",
-            "Venus",
-            "earth",
-            "Mars",
-            "Jupiter",
-            "Saturn",
-            "Uranus",
-            "Neptune",
-            "Pluto",
-            "Ceres",
-            "Humea",
-            "Mamemake",
-            "Eris",
-            "asteroid_belt_object",
-            "kuiper_belt_object",
-            "moon",
-            "comet",
-            "oort_cloud_object"
-        ]
-    },
     "observing_facility_code": {
         "description": "Commonly used codes for the observatory.",
         "value_type": "string"
@@ -304,3 +252,18 @@
         "value_type": "string"
     }
 }
+
+
+In progress
+
+{
+    "identity": {
+        "mandatory_properties": [ "id", "lifecycle_status", "last_update_time", "name" ],
+        "standard_properties": [ "abbreviation", "end_time", "external_references", "local_name", "polis_registration_time", "short_description", "start_time" ]
+    },
+    "implementation": {
+        "aliases": [ "supported_implementation" ],
+        "mandatory_properties": [ "api_support", "data_format", "version" ]
+    }
+}
+

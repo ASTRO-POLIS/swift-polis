@@ -29,3 +29,16 @@ Before using `ObjectStoreCoordinator`'s shared instance it is recommended to set
     
     logger.info("Polis tool configuration complete")
 ```
+
+
+## Finalising version 0.2-beta
+### `static_data_types`
+- `PolisCommonTypes.swift`
+- `PolisConstants.swift`
+- `PolisDirection.swift`
+- `PolisIdentity.swift`
+- `PolisManufacturer.swift`
+- `PolisMediaSource.swift`
+- `PolisParty.swift`
+- `PolisPropertyValue.swift`
+- `PolisVisitingHours.swift`
