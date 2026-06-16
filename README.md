@@ -32,7 +32,14 @@ Before using `ObjectStoreCoordinator`'s shared instance it is recommended to set
 
 
 ## Finalising version 0.2-beta
-### `static_data_types`
+### SwiftPolis
+#### app_support
+##### observing_facilities
+##### service_providing
+##### static_data_reps
+#### service_provider
+#### static_data_prototypes
+#### static_data_types
 - `PolisCommonTypes.swift`
 - `PolisConstants.swift`
 - `PolisDirection.swift`
@@ -42,3 +49,9 @@ Before using `ObjectStoreCoordinator`'s shared instance it is recommended to set
 - `PolisParty.swift`
 - `PolisPropertyValue.swift`
 - `PolisVisitingHours.swift`
+#### support
+- `PolisLocalisedText.swift`
+- `PolisLogger.swift`
+- `PolisStaticResourceFinder.swift`
+- `PolisUtilities.swift`
+- `PolisValidating.swift`
