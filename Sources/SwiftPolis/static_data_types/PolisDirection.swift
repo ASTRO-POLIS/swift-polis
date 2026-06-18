@@ -4,7 +4,7 @@
 //
 // This source file is part of the ASTRO-POLIS open source project
 //
-// Copyright (c) 2021-2024 Tuparev Technologies and the ASTRO-POLIS project
+// Copyright (c) 2021-2026 Tuparev Technologies and the ASTRO-POLIS project
 // authors.
 // Licensed under MIT License Modern Variant
 //
@@ -87,30 +87,9 @@ public struct PolisDirection: Codable, Equatable, Sendable {
         }
     }
 
-    /// Possible errors id a `PolisDirection` cannot be created.
-    ///
-    /// While creating a direction, one and only one of the `roughDirection` or `exactDirection` shall
-    /// be defined.
-    public enum DirectionError: Error {
-        case bothPropertiesCannotBeNilError
-        case bothPropertiesCannotBeNotNilError
-        case directionMustBeBetween0and360Degree
-    }
+    public init(roughDirection: RoughDirection) { self.roughDirection = roughDirection }
 
-    /// Designated initialiser.
-    ///
-    /// See ``DirectionError`` for possible errors during creation
-    public init(roughDirection: RoughDirection? = nil, exactDirection: Double? = nil) throws {
-        if (roughDirection == nil) && (exactDirection == nil)                                  { throw DirectionError.bothPropertiesCannotBeNilError }
-        if (roughDirection != nil) && (exactDirection != nil)                                  { throw DirectionError.bothPropertiesCannotBeNotNilError }
-        if ((exactDirection != nil) && ((exactDirection! < 0.0) || (exactDirection! > 360.0))) { throw DirectionError.directionMustBeBetween0and360Degree }
-
-        if roughDirection != nil { self.roughDirection = roughDirection }
-        else                     { self.roughDirection = PolisDirection.roughDirection(from: exactDirection!) }
-
-        if exactDirection != nil { self.exactDirection = exactDirection }
-        else                     { self.exactDirection = roughDirection!.direction() }
-    }
+    public init(exactDirection: Double) { self.exactDirection = exactDirection }
 
     // Clockwise e.g. 157.12
     public func direction() -> Double {

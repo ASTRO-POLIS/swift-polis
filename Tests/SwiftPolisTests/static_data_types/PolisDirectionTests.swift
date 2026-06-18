@@ -20,7 +20,7 @@ import SoftwareEtudesUtilities
 
 import XCTest
 
-@testable import swift_polis
+@testable import SwiftPolis
 
 final class PolisDirectionTests: XCTestCase {
 
@@ -97,10 +97,4 @@ final class PolisDirectionTests: XCTestCase {
         XCTAssertEqual(sut_exact.direction(), 16.63)
         XCTAssertEqual(sut_rough.direction(), 67.5)
     }
-
-    static var allTests = [
-        ("test_PolisDirection_exactCodingSupport_shouldSucceed", test_PolisDirection_exactCodingSupport_shouldSucceed),
-        ("test_PolisDirection_roughCodingSupport_shouldSucceed", test_PolisDirection_roughCodingSupport_shouldSucceed),
-        ("test_PolisDirection_calculations_shouldSucceed",       test_PolisDirection_calculations_shouldSucceed),
-    ]
 }
