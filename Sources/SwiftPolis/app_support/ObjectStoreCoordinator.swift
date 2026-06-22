@@ -97,6 +97,7 @@ public actor ObjectStoreCoordinator {
     private var _fixedBaseObservingFacilityDetailsCache: Set<FixedBaseObservingFacilityDetails>  = []
     private var _artifactsCache: Set<Artifact>                                                   = []
     private var _placesOnEarthCache: Set<PlaceOnEarth>                                           = []
+    private var _visitingHoursCache: Set<VisitingHours>                                          = []
 
 
     @MainActor private init() {
@@ -443,6 +444,7 @@ extension ObjectStoreCoordinator {
             case .artifact:                                _artifactsCache.insert(object as! Artifact)
             case .observingFacilityEarthFixedBasedDetails: _fixedBaseObservingFacilityDetailsCache.insert(object as! FixedBaseObservingFacilityDetails)
             case .placeOnEarth:                            _placesOnEarthCache.insert(object as! PlaceOnEarth)
+            case .visitingHours:                           _visitingHoursCache.insert(object as! VisitingHours)
             default: break
         }
     }
@@ -471,6 +473,10 @@ extension ObjectStoreCoordinator {
                 
                 for placeOnEarth in _placesOnEarthCache {
                     try await placeOnEarth.saveToLocalProvider()
+                }
+
+                for visitingHours in _visitingHoursCache {
+                    try await visitingHours.saveToLocalProvider()
                 }
             }
 

@@ -40,6 +40,7 @@ import Foundation
 
     public func placeOnEarth() -> PlaceOnEarth { _placeOnEarth! }
 
+    public func visitingHours() -> VisitingHours { _visitingHours! }
     //TODO: Implement Visiting Hours func
 
     //MARK: Internal APIs
@@ -72,6 +73,11 @@ import Foundation
         self._placeOnEarth = await PlaceOnEarth(facilityID: _facilityID)
         self._placeID      = _placeOnEarth.id
         await _placeOnEarth.setDidChange()
+
+        // Now create visitingHours
+        self._visitingHours   = await VisitingHours(facilityID: _facilityID)
+        self._visitingHoursID = _visitingHours.id
+        await _visitingHours.setDidChange()
     }
 
     /// Create the instance from an existing POLIS data
@@ -119,6 +125,7 @@ import Foundation
 
     //MARK: Private APIs
     private var _visitingHoursID: UUID?
+    private var _visitingHours: VisitingHours!
     private var _placeID: UUID?
     private var _placeOnEarth: PlaceOnEarth!
 

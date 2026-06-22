@@ -8,7 +8,7 @@
 import Foundation
 import SoftwareEtudesUtilities
 
-@Observable open class VisitingHours: PersistentObject, Identifiable, @unchecked Sendable {
+@Observable open class VisitingHours: PersistentObject, Hashable, @unchecked Sendable {
 
     public private(set)  var id: UUID
     public internal(set) var lastUpdateTime: Date
@@ -74,7 +74,7 @@ import SoftwareEtudesUtilities
         _hasChanged    = true
         _polisRep.updateCurrentPolisObject(visitingHours)
 
-        await ObjectStoreCoordinator.shared.didChange(object: self, ofType: .placeOnEarth)
+        await ObjectStoreCoordinator.shared.didChange(object: self, ofType: .visitingHours)
     }
 
 }
