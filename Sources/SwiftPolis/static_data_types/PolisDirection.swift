@@ -102,6 +102,8 @@ public struct PolisDirection: Codable, Equatable, Sendable {
         else                     { return roughDirection!.direction() }
     }
 
+    //TODO: $$ZH - Implement nearestRoughDirection(), specially if the init(exactDirection) was used.
+    
     public private(set) var roughDirection: RoughDirection?
     public private(set) var exactDirection: Double?
 
