@@ -89,7 +89,12 @@ public struct PolisDirection: Codable, Equatable, Sendable {
 
     public init(roughDirection: RoughDirection) { self.roughDirection = roughDirection }
 
-    public init(exactDirection: Double) { self.exactDirection = exactDirection }
+    public init(exactDirection: Double) {
+        // Normalise into [0, 360)
+        var normalised = exactDirection.truncatingRemainder(dividingBy: 360.0)
+        if normalised < 0 { normalised += 360.0 }
+        self.exactDirection = normalised
+    }
 
     // Clockwise e.g. 157.12
     public func direction() -> Double {
@@ -132,4 +137,3 @@ public extension PolisDirection {
         case exactDirection = "exact_direction"
     }
 }
-
