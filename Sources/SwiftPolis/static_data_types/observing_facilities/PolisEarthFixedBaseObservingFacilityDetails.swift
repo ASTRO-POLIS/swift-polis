@@ -24,23 +24,23 @@ public struct PolisEarthFixedBaseObservingFacilityDetails: Identifiable, Codable
 
     public var traditionalLandOwners: LocalisableString?
 
-    public var dominantWindDirection: PolisDirection.RoughDirection?
+    public var dominantWindDirection: PolisDirection?
     public var surfaceSize: PolisPropertyValue?             // [m^2]
 
     public var placeID: UUID?
 
-    public init(id: UUID                                              = UUID(),
-                lastUpdateTime: Date                                  = Date.now,
+    public init(id: UUID                                     = UUID(),
+                lastUpdateTime: Date                         = Date.now,
                 facilityID: UUID,
-                visitingHoursID: UUID?                                = nil,
-                accessRestrictions: LocalisableString?                = nil,
-                averageClearNightsPerYear: UInt?                      = nil,
-                averageSeeingConditions: PolisPropertyValue?          = nil,
-                averageSkyQuality: PolisPropertyValue?                = nil,
-                traditionalLandOwners: LocalisableString?             = nil,
-                dominantWindDirection: PolisDirection.RoughDirection? = nil,
-                surfaceSize: PolisPropertyValue?                      = nil,
-                placeID: UUID?                                        = nil) {
+                visitingHoursID: UUID?                       = nil,
+                accessRestrictions: LocalisableString?       = nil,
+                averageClearNightsPerYear: UInt?             = nil,
+                averageSeeingConditions: PolisPropertyValue? = nil,
+                averageSkyQuality: PolisPropertyValue?       = nil,
+                traditionalLandOwners: LocalisableString?    = nil,
+                dominantWindDirection: PolisDirection?       = nil,
+                surfaceSize: PolisPropertyValue?             = nil,
+                placeID: UUID?                               = nil) {
         self.id                        = id
         self.lastUpdateTime            = lastUpdateTime
         self.facilityID                = facilityID

@@ -26,7 +26,7 @@ import Foundation
     public var traditionalLandOwners: PolisLocalisedText?
 
     // Miscellaneous stats
-    public var dominantWindDirection: PolisDirection.RoughDirection?
+    public var dominantWindDirection: PolisDirection?
     public var surfaceSize: PolisPropertyValue?             // [m^2]
 
     //MARK: Make the class Hashable
