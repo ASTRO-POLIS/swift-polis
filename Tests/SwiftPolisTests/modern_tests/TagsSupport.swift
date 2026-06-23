@@ -10,4 +10,6 @@ import Testing
 extension Tag {
     @Tag static var simpleAssignmentsAndCalculations: Self
     @Tag static var jsonCodable: Self
+    @Tag static var localPersistency: Self
+    @Tag static var remotePersistency: Self
 }
