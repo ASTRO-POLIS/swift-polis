@@ -102,7 +102,11 @@ public struct PolisDirection: Codable, Equatable, Sendable {
         else                     { return roughDirection!.direction() }
     }
 
-    //TODO: $$ZH - Implement nearestRoughDirection(), specially if the init(exactDirection) was used.
+    public func nearestRoughDirection() -> RoughDirection? {
+        if      let exact = exactDirection { return PolisDirection.roughDirection(from: exact) }
+        else if let rough = roughDirection { return rough }
+        else                               { return nil }
+    }
     
     public private(set) var roughDirection: RoughDirection?
     public private(set) var exactDirection: Double?

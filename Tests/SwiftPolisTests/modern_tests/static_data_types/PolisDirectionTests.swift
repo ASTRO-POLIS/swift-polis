@@ -45,6 +45,8 @@ struct PolisDirectionTests {
         let southEast      = PolisDirection(roughDirection: .southEast)
         let south          = PolisDirection(roughDirection: .south)
         let southSouthWest = PolisDirection(roughDirection: .southSouthWest)
+        let southSouthEast = PolisDirection(exactDirection: 157)
+        let eastNorthEast  = PolisDirection(exactDirection: 45)
 
         #expect(zero.direction()           == 0.0)
         #expect(ninety.direction()         == 90.0)
@@ -57,7 +59,10 @@ struct PolisDirectionTests {
 
         #expect(southSouthWest.roughDirection?.abbreviation() == "S/SW")
 
-        //TODO: $$ZH - Implement nearestRoughDirection() tests
+        #expect(southSouthEast.nearestRoughDirection() == .southSouthEast)
+        #expect(eastNorthEast.nearestRoughDirection()  == .eastNorthEast)
+
+        #expect(ninety.nearestRoughDirection() == .east)
     }
 
     @Test("Testing JSON Codable", .tags(.jsonCodable))
