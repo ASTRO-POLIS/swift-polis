@@ -102,10 +102,9 @@ public struct PolisDirection: Codable, Equatable, Sendable {
         else                     { return roughDirection!.direction() }
     }
 
-    public func nearestRoughDirection() -> RoughDirection? {
-        if      let exact = exactDirection { return PolisDirection.roughDirection(from: exact) }
-        else if let rough = roughDirection { return rough }
-        else                               { return nil }
+    public func nearestRoughDirection() -> RoughDirection {
+        if let exact = exactDirection { return PolisDirection.roughDirection(from: exact) }
+        else                          { return roughDirection! }
     }
     
     public private(set) var roughDirection: RoughDirection?

@@ -14,7 +14,6 @@ import Foundation
     public let observingFacilityDetailsType: ObservingFacilityDetailsType = .earthFixed
 
     // For visitors
-    //TODO: Add optional Visiting Hours Object
     public var accessRestrictions: PolisLocalisedText?
 
     // Site observing quality
@@ -39,9 +38,17 @@ import Foundation
     }
 
     public func placeOnEarth() -> PlaceOnEarth { _placeOnEarth! }
-
-    public func visitingHours() -> VisitingHours { _visitingHours! }
-    //TODO: Implement Visiting Hours func
+    public func visitingHours(createIfMissing: Bool = false) async -> VisitingHours? {
+        if _visitingHours != nil { return _visitingHours! }
+        else if createIfMissing {
+            // Now create visitingHours
+            self._visitingHours   = await VisitingHours(facilityID: _facilityID)
+            self._visitingHoursID = _visitingHours!.id
+            await _visitingHours!.setDidChange()
+        }
+        
+        return _visitingHours
+    }
 
     //MARK: Internal APIs
 
@@ -73,11 +80,6 @@ import Foundation
         self._placeOnEarth = await PlaceOnEarth(facilityID: _facilityID)
         self._placeID      = _placeOnEarth.id
         await _placeOnEarth.setDidChange()
-
-        // Now create visitingHours
-        self._visitingHours   = await VisitingHours(facilityID: _facilityID)
-        self._visitingHoursID = _visitingHours.id
-        await _visitingHours.setDidChange()
     }
 
     /// Create the instance from an existing POLIS data
@@ -125,7 +127,7 @@ import Foundation
 
     //MARK: Private APIs
     private var _visitingHoursID: UUID?
-    private var _visitingHours: VisitingHours!
+    private var _visitingHours: VisitingHours?
     private var _placeID: UUID?
     private var _placeOnEarth: PlaceOnEarth!
 
