@@ -37,7 +37,7 @@ import SoftwareEtudesUtilities
 
     //MARK: Internal APIs
 
-    /// This initialiser is to me used to create a new instance of the class
+    /// This initialiser is to be used to create a new instance of the class
     init(id: UUID = UUID(), lastUpdateTime: Date = Date.now, facilityID: UUID, visitingPossibilities: [PolisVisitingHours.VisitingPossibility]? = nil, note: String? = nil) async {
         let fileResourceFinder                  = await ObjectStoreCoordinator.shared.fileResourceFinder()!
         let polisObject                         = PolisVisitingHours(facilityID: facilityID)
@@ -49,7 +49,7 @@ import SoftwareEtudesUtilities
         self.id                    = id
         self.lastUpdateTime        = lastUpdateTime
         self.facilityID            = facilityID
-        self.visitingPossibilities = visitingPossibilities
+        self.visitingPossibilities = visitingPossibilities != nil ? visitingPossibilities : []
         self.note                  = note
 
         await super.init(polisRep: sP)

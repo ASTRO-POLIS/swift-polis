@@ -238,10 +238,24 @@ struct PolisTool {
             print("   ---> No artifacts yet!")
             let artifact = await newDetails!.addArtifactWith(artifactType: .museum)
 
-            artifact.name = PolisLocalisedText(text: "An Astronomy museum", languageCode: "en")
+            artifact.name            = PolisLocalisedText(text: "An Astronomy museum", languageCode: "en")
+            artifact.lifecycleStatus = .active
+
             try await artifact.markAsChanged()
         }
         else { print("   ---> Artifacts: \(artifacts.count)") }
+
+        // Now work with the Earth-based details
+        let earthDetails = facility.observingFacilityTypeSpecificDetail() as! FixedBaseObservingFacilityDetails
+        let place        = earthDetails.placeOnEarth()
+
+        earthDetails.averageClearNightsPerYear = 100
+
+        place.country = "USA"
+        place.site    = "Texas"
+
+        try await place.markAsChanged()
+        try await earthDetails.markAsChanged()
     }
 
     @MainActor static func editFacilities() async throws {
