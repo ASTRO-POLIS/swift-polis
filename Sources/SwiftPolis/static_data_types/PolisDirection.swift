@@ -17,21 +17,69 @@
 
 import Foundation
 
-/// `PolisDirection` is used to represent either a rough direction (one of 16 possibilities) or exact direction 
-/// in degree represented as a double number (e.g. clockwise 157.12)
-///
-/// Directions are used to describe information such as dominant wind direction of observing facilities, or 
+/// Directions are used to describe information such as dominant wind direction of observing facilities, or
 /// direction of doors of different types of enclosures.
+/// A value type representing a direction either as a rough compass point or an exact bearing in degrees.
+///
+/// PolisDirection encapsulates two complementary ways of expressing a heading:
+/// - RoughDirection: a discrete 16-point compass rose (e.g., N, NE, WSW) useful when approximate direction suffices.
+/// - Exact direction: a clockwise bearing in degrees as a Double within the normalised range [0, 360).
+///
+/// Typical uses include describing environmental or mechanical orientations, such as:
+/// - Dominant wind direction at an observing site
+/// - Door or slit orientation for different enclosure types
+///
+/// Features:
+/// - Codable: Encodes/decodes using snake_case keys "rough_direction" and "exact_direction".
+/// - Equatable: Supports direct equality comparison.
+/// - Sendable: Safe for concurrent use across tasks/threads.
+///
+/// Construction:
+/// - init(roughDirection: RoughDirection): Creates an instance from a 16-point compass direction.
+/// - init(exactDirection: Double): Creates an instance from a bearing in degrees; values are normalised into [0, 360).
+///
+/// Behavior:
+/// - direction(): Returns the bearing in degrees. If an exact direction is set, it is returned; otherwise the
+///   canonical degree value for the rough direction is returned.
+/// - nearestRoughDirection(): Returns the closest RoughDirection. If an exact direction is set, it is mapped to the
+///   nearest 16-point compass direction; otherwise the stored rough direction is returned.
+///
+/// Notes:
+/// - When initialised with an exact direction, negative or >360° inputs are normalised by modulo 360 into [0, 360).
+/// - Only one of roughDirection or exactDirection is typically set at a time; accessors handle choosing the
+///   appropriate representation transparently.
 public struct PolisDirection: Codable, Equatable, Sendable {
 
-    /// `RoughDirection` - a list of 16 rough directions.
-    ///
-    /// These 16 directions are comprised of the 4 cardinal directions (north, east, south, west), the 4
-    /// ordinal (also known as inter-cardinal) directions (northeast, northwest, southeast, southwest), and
-    /// the 8 additional secondary inter cardinal directions (ex. ENE, SSW, WSW).
-    ///
     /// Rough direction could be used when it is not important to know or impossible to measure the exact
     /// direction. Examples include the wind direction, or the orientations of the doors of a clamshell enclosure.
+    /// A 16-point compass rose representing rough (approximate) directions.
+    ///
+    /// RoughDirection provides a human-friendly, discrete set of headings commonly sed in navigation and environmental
+    /// descriptions when exact precision is not required or not available.
+    /// These include:
+    /// - The 4 cardinal directions: N, E, S, W
+    /// - The 4 inter-cardinal (ordinal) directions: NE, SE, SW, NW
+    /// - The 8 secondary inter-cardinal directions: NNE, ENE, ESE, SSE, SSW, WSW, WNW, NNW
+    ///
+    /// Each case has an associated raw value string using a standard abbreviated compass notation (e.g., "N", "SW",
+    /// "ENE") and maps to a canonical clockwise bearing in degrees where:
+    /// - 0° corresponds to North
+    /// - 90° corresponds to East
+    /// - 180° corresponds to South
+    /// - 270° corresponds to West
+    /// - Secondary points are spaced at 22.5° increments between these.
+    ///
+    /// Conformance:
+    /// - Codable: Encodes/decodes using the raw string abbreviation (e.g., "WNW").
+    /// - CaseIterable: Iterate over all 16 compass points in increasing clockwise order when paired with `direction()`.
+    /// - Identifiable: Uses `self` as a stable identity, suitable for SwiftUI lists.
+    /// - Equatable: Compare directions directly for equality.
+    /// - Sendable: Safe to use across concurrency boundaries.
+    ///
+    /// Usage notes:
+    /// - Use `direction()` to obtain the canonical bearing in degrees for a given rough direction.
+    /// - Use `abbreviation()` to obtain a display-friendly form that inserts a slash after the first character for
+    ///   multi-letter abbreviations (e.g., "N/NE") to improve readability in UI contexts where desired.
     public enum RoughDirection: String, Codable, CaseIterable, Identifiable, Equatable, Sendable {
         public var id: Self {
             return self
