@@ -69,7 +69,6 @@ struct PolisDirectionTests {
     func jsonCoding() throws {
         var data: Data!
         var string: String!
-        var expectedString: String!
 
         let zero           = PolisDirection(exactDirection: 0.1)
         let southSouthWest = PolisDirection(roughDirection: .southSouthWest)
@@ -77,22 +76,13 @@ struct PolisDirectionTests {
         
         data = try jsonEncoder.encode(zero)
         string  = String(data: data, encoding: .utf8)
-        expectedString = """
-{  
-   "exact_direction" : 0.1
-}
-"""
-        #expect(string.removeAllWhitespacesAndNewLines() == expectedString.removeAllWhitespacesAndNewLines())
+
+        #expect(string.removeAllWhitespacesAndNewLines() == PolisDirectionDataSource.almostNorthTemplate.removeAllWhitespacesAndNewLines())
 
         data = try jsonEncoder.encode(southSouthWest)
         string  = String(data: data, encoding: .utf8)
-        expectedString = """
-{  
-   "rough_direction" : "SSW"
-}
-"""
-        #expect(string.removeAllWhitespacesAndNewLines() == expectedString.removeAllWhitespacesAndNewLines())
 
+        #expect(string.removeAllWhitespacesAndNewLines() == PolisDirectionDataSource.roughSouthSouthWestTemplate.removeAllWhitespacesAndNewLines())
     }
 
     private var jsonEncoder: PrettyJSONEncoder!
