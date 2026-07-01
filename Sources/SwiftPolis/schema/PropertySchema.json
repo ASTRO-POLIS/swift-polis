@@ -18,6 +18,46 @@
         ]
     },
 
+    "dominant_wind_direction": {
+        "definition_type": "PolisDirection",
+        "description": "Often it is important to know the direction of some processes, e.g. wind direction, shadows, etc. This type cold have multiple aliaves",
+        "value_options": {
+            "value_options_type": "one_option",
+            "options": [
+                {
+                    "descriptor": "exact_direction",
+                    "description": "A float value between 0 and 360 degree",
+                    "min_value": "0.0",
+                    "max_value": "360.0",
+                    "value_type": "float"
+                },
+                {
+                    "descriptor": "rough_direction",
+                    "description": "Used when only a rough direction is known",
+                    "value_type": "string",
+                    "value_set": [
+                        "N",
+                        "NNE",
+                        "NE",
+                        "ENE",
+                        "E",
+                        "ESE",
+                        "SE",
+                        "SSE",
+                        "S",
+                        "SSW",
+                        "SW",
+                        "WSW",
+                        "W",
+                        "WNW",
+                        "NW",
+                        "NNW"
+                    ]
+                }
+            ]
+        }
+    },
+
     "gravitational_body_relationship": {
         "definition_type": "PolisObservingFacilityLocationType",
         "description": "Defines the relationship between the observatory and it's gravitational body",
@@ -91,5 +131,5 @@
             "asteroid",
             "comet"
         ]
-    },
+    }
 }
