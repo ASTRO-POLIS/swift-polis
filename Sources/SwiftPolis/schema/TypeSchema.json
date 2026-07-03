@@ -1,3 +1,7 @@
 {
-    
+    "identity": {
+        "description": "Identity identifies uniquely any POLIS object",
+        "mandatory_properties": [ "id", "last_time_update", "lifecycle_status" ],
+        "standard_properties": [ "external_references", "name", "abbreviation", "short_description", "start_time", "end_time", "polis_registration_time" ]
+    }
 }

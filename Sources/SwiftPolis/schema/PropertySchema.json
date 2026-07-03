@@ -1,4 +1,9 @@
 {
+    "abbreviation": {
+        "description": "Astronomers love to appreviate objects",
+        "value_type": "string"
+    },
+    
     "electromagnetic_spectrum_coverage": {
         "definition_type": "PolisElectromagneticSpectrumCoverage",
         "description": "Electromagnetic spectrum coverage of the POLIS object (observatory, Device, ...)",
@@ -74,6 +79,17 @@
         ]
     },
 
+    "id": {
+        "description": "All IDs are either UUIDs or UUID strings",
+        "value_type": "string"
+    },
+    
+    "last_update_time": {
+        "aliases": [ "start_time", "end_time", "polis_registration_time" ],
+        "description": "LastUpdateTime and several other synonym types define time in POLIS ISO format",
+        "value_type": "date"
+    },
+
     "lifecycle_status": {
         "definition_type": "PolisLifecycleStatus",
         "description": "The current status of the POLIS object (item) and its readiness to be used in different environments",
@@ -104,6 +120,11 @@
         ]
     },
 
+    "name": {
+        "description": "Naming any POLIS opject",
+        "value_type": "localised_string"
+    },
+    
     "place_in_the_solar_system": {
         "definition_type": "PolisPlaceInTheSolarSystem",
         "description": "The gravitational body the observatory is associated with.",
@@ -131,5 +152,11 @@
             "asteroid",
             "comet"
         ]
+    },
+    
+    "short_description": {
+        "description": "Describing any POLIS opject",
+        "value_type": "localised_string"
     }
+
 }
