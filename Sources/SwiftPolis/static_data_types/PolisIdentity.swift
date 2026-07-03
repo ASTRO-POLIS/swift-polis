@@ -17,12 +17,11 @@
 
 import Foundation
 
-/// A value type that uniquely identifies and describes the state of nearly every POLIS object,
-/// while also capturing metadata used for synchronisation and cross‑system linking.
+/// A value type that uniquely identifies and describes the state of nearly every POLIS object, while also capturing metadata used for synchronisation and
+/// cross‑system linking.
 ///
-/// The concept of `PolisIdentity` originates from a similar type found in the `RTML` standard. The `RTML`
-/// references proved incredibly useful for relating objects within a single `RTML` document and linking
-/// `RTML` documents together.
+/// The concept of `PolisIdentity` originates from a similar type found in the `RTML` standard. The `RTML` references proved incredibly useful for relating
+/// objects within a single `RTML` document and linking `RTML` documents together.
 ///
 /// Overview
 /// - PolisIdentity is intended to be embedded in most POLIS model types to:
@@ -42,23 +41,17 @@ import Foundation
 /// - externalReferences: Optional collection of external IDs or URLs linking to related systems.
 /// - lastUpdateTime: Timestamp of the most recent modification, used primarily for sync.
 /// - lifecycleStatus: Current readiness/status of the object. Client apps should treat `.deleted` as hidden.
-/// - name/localName: Human‑readable names (English preferred for `name`; localised script in `localName`).
+/// - name: Human‑readable and localisable names .
 /// - abbreviation: Short token used commonly for search and display (e.g., device/project short codes).
-/// - shortDescription: Optional description summarising the object.
+/// - shortDescription: Optional localisable description summarising the object.
 /// - startTime/endTime: Temporal bounds of the object’s operational lifetime (e.g., first light / decommissioned).
 /// - polisRegistrationTime: Timestamp when the object was initially registered in POLIS.
 ///
 /// Usage Notes
-/// - Prefer setting `name` to a unique, descriptive English label (e.g., "Alta-123_CCD").
+/// - Prefer setting `name` to a unique, descriptive label (e.g., "Alta-123_CCD").
 /// - Use `externalReferences` for durable cross‑system links (e.g., "https://monet.org/instruments/12345").
 /// - Update `lastUpdateTime` whenever any meaningful property changes to support incremental sync.
 /// - Respect `lifecycleStatus` when presenting or filtering objects; hide `.deleted` from user interfaces.
-///
-/// Coding and Interoperability
-/// - The encoded keys use snake_case to match POLIS data exchange conventions:
-///   - external_references, last_update_time, lifecycle_status, local_name, short_description,
-///     start_time, end_time, polis_registration_time.
-/// - Date encoding/decoding should use a consistent strategy (e.g., ISO‑8601) at the encoder/decoder level.
 ///
 /// Related Types
 /// - PolisLifecycleStatus: Enumerates object readiness and lifecycle states used by POLIS.
