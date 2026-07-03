@@ -85,8 +85,6 @@ struct PolisDirectionTests {
 
     private var jsonEncoder: PrettyJSONEncoder!
     private var jsonDecoder: PrettyJSONDecoder!
-    private var data: Data!
-    private var string: String!
 
     init() {
         jsonEncoder = PrettyJSONEncoder()
