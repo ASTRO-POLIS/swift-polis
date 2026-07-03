@@ -22,7 +22,7 @@ import XCTest
 
 @testable import SwiftPolis
 
-final class PolisIdentityTests: XCTestCase {
+final class _PolisIdentityTests: XCTestCase {
 
     //MARK: - Setup & Teardown -
     override class func setUp() {

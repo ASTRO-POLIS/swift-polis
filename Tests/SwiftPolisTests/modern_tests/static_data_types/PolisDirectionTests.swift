@@ -17,11 +17,9 @@
 
 import Foundation
 import SoftwareEtudesUtilities
+import Testing
 
 @testable import SwiftPolis
-
-//MARK: Modern
-import Testing
 
 struct PolisDirectionTests {
 
