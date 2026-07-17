@@ -18,8 +18,10 @@ import Synchronization
 
     //MARK: - Internal APIs
     func reset() {
-        _serviceProvider.withLock { $0 = nil }
-        _observingFacilities.withLock { $0.removeAll() }
+        _serviceProvider.withLock            { $0 = nil }
+        _serviceProvidersDirectory.withLock  { $0 = nil }
+        _observingFacilityDirectory.withLock { $0 = nil }
+        _observingFacilities.withLock        { $0.removeAll() }
     }
 
     //MARK: - Private APIs
