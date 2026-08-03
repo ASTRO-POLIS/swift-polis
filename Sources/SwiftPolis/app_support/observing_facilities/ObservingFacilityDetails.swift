@@ -27,9 +27,9 @@ import Foundation
         let newID                                = observingFacility.facilityDetailsID ?? UUID()
         let polisObject                          = PolisObservingFacilityDetails(id: newID, facilityID: observingFacility.id)
         let fileResourceFinder                   = await ObjectStoreCoordinator.shared.fileResourceFinder()!
+        let path                                 = fileResourceFinder.observingDataFile(withID: newID, observingFacilityID: observingFacility.id)
         let sP: PolisObjectRep<any PolisObject>  = PolisObjectRep(polisObject: polisObject as any PolisObject,
-                                                                  localPath: fileResourceFinder.observingDataFile(withID: newID,
-                                                                                                                  observingFacilityID: observingFacility.id),
+                                                                  localPath: path,
                                                                   objectType: .observingFacilityDirectory)
 
         self.id             = newID

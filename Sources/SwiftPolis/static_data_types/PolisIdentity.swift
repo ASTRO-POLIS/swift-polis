@@ -71,7 +71,7 @@ public struct PolisIdentity: Codable, Identifiable, Equatable, Sendable, PolisOb
 
     /// The current status of the POLIS item (object) and its readiness to be used in different environments
     ///
-    /// **Note:** Client apps should not show `.deleted` objects
+    /// **Note:** Client apps should not show `.deleted` and `delete` objects
     public var lifecycleStatus: PolisLifecycleStatus
 
     /// Human readable name of the object.

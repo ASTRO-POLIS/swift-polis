@@ -201,20 +201,22 @@ struct PolisTool {
                 print("   ---> Latest change time: \(os.serviceProvider()?.lastUpdateTime, default: "not available")")
                 print("   ---> Number of facilities: \(os.observingFacilities().count, default: "0")")
 
-                if (os.observingFacilities().isEmpty) && isTesting { try await createFacilityTestDetailData() }
+                if !os.observingFacilities().isEmpty{
 
-                for facility in os.observingFacilities() {
-                    print("      -----------------------------------------------------")
-                    print("      ---> Observing facility code: \(String(describing: facility.observingFacilityCode))")
-                    let details = try await facility.observingFacilityDetails()
+                    for facility in os.observingFacilities() {
+                        print("      -----------------------------------------------------")
+                        print("      ---> Observing facility code: \(String(describing: facility.observingFacilityCode))")
+                        let details = try await facility.observingFacilityDetails()
 
-                    if let details = details {
-                        //TODO: Continue here!
+                        if details != nil {
+                            //TODO: Continue here!
+                        }
+                        else { print("      ---> ERROR: NO DETAILS!") }
+
                     }
-                    else { print("      ---> ERROR: NO DETAILS!") }
-
+                    //TODO: To be continued!
                 }
-                //TODO: To be continued!
+                else { print("      ---> No facilities found!") }
            }
             catch {
                 print("---> ERROR: Local Service Provider failed to load. Aborting.")
