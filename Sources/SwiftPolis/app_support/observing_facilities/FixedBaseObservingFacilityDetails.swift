@@ -109,6 +109,7 @@ import Foundation
         await super.init(polisRep: sP)
 
         //TODO: We need to load the Place here!
+        //TODO: We need to load the Visiting Hours!
     }
 
     var polisEarthFixedBaseObservingFacilityDetails: PolisEarthFixedBaseObservingFacilityDetails {

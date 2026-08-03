@@ -52,7 +52,7 @@ struct IdentifiableObject: Sendable {
     //MARK: Internal APIs
 
     /// Designated initialiser
-     init(id: UUID                                    = UUID(),
+     init(id: UUID,
                 externalReferences: [String]?         = nil,
                 lastUpdateTime: Date                  = Date(),
                 lifecycleStatus: PolisLifecycleStatus = .unknown,
