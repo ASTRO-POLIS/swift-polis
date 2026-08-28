@@ -248,7 +248,7 @@ struct PolisTool {
         else { print("   ---> Artifacts: \(artifacts.count)") }
 
         // Now work with the Earth-based details
-        let earthDetails = facility.observingFacilityTypeSpecificDetail() as! FixedBaseObservingFacilityDetails
+        let earthDetails = await facility.observingFacilityTypeSpecificDetail() as! FixedBaseObservingFacilityDetails
         let place        = earthDetails.placeOnEarth()
 
         earthDetails.averageClearNightsPerYear = 100

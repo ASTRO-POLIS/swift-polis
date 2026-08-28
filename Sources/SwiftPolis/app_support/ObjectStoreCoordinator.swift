@@ -201,25 +201,29 @@ extension ObjectStoreCoordinator {
         try objectStoreStatus()
         if !_isConfigured { throw ObjectStoreCoordinatorError.cannotUseLocalProvider }
 
+        // Load the Polis data for the 3 essential configuration files (as JSON)
         let serviceProviderRep          = try await IdentifiablePersistentObject.fromLocalData(polisType: .serviceProvider)
         let serviceProviderDirectoryRep = try await IdentifiablePersistentObject.fromLocalData(polisType: .serviceDirectory)
         let facilityDirectoryRep        = try await IdentifiablePersistentObject.fromLocalData(polisType: .observingFacilityDirectory)
 
+        // Create configuration instances
         _serviceProvider            = await ServiceProvider(serviceProviderRep.polisObject as! PolisDirectory.ProviderDirectoryEntry)
         _serviceProviderDirectory   = await ServiceProviderDirectory(serviceProviderDirectoryRep.polisObject as! PolisDirectory)
         _observingFacilityDirectory = await ObservingFacilityDirectory(facilityDirectoryRep.polisObject as! PolisObservingFacilityDirectory)
 
+        // Load facilities (if any)
         if (_serviceProvider != nil) && (_serviceProviderDirectory != nil) && (_observingFacilityDirectory != nil) {
             // Configure the ObjectStore and basic objets in it
             prepareObjectStore()
 
             // Create a list of minimally configured ObservingFacilities
             for facility in _observingFacilityDirectory!.observingFacilityDirectory.observingFacilityReferences {
+                //FIXME: This should create a shallow Facility object without any details!!! So the call below is WRONG!
                 let newFacility = await ObservingFacility(facility)
+
                 _os.add(observingFacility: newFacility)
             }
 
-            //TODO: Start loading facilities in the background
             //TODO: If there is a remote provider, start the initial syncing.
         }
         else { throw ObjectStoreCoordinatorError.cannotUseLocalProvider }

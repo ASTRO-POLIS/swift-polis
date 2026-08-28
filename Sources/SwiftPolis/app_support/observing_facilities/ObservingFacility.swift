@@ -47,13 +47,29 @@ public protocol ObservingFacilityDetailsImplementing {
         let facilityDirectory = ObjectStore.shared.observingFacilityDirectory()
 
         await facilityDirectory?.addOrUpdateFacility(self)
-        //FIXME: I think we do not need this!
-        //        await ObjectStoreCoordinator.shared.didChange(object: self, ofType: .observingFacility)
+
         try await setDidChange()
     }
 
     /// In the case of Fixed Earth-Based Observing Site this method returns ``FixedBaseObservingFacilityDetails`` instance. Later other instances will be returned.
-    public func observingFacilityTypeSpecificDetail() -> ObservingFacilityDetailsImplementing? { _observingFacilityTypeSpecificDetails }
+    public func observingFacilityTypeSpecificDetail() async -> ObservingFacilityDetailsImplementing {
+        if _observingFacilityTypeSpecificDetails == nil {
+            if (self.placeInTheSolarSystem == .earth) && (self.gravitationalBodyRelationship == .surfaceFixed) {
+                self.observingFacilityTypeSpecificDetailType = .earthFixed
+
+                let earthFacility = await FixedBaseObservingFacilityDetails(facility: self)
+
+                // This is detail ID like the Fixed Earth Base detail
+                self.facilityLocationDetailsID = earthFacility.id
+
+                await earthFacility.setDidChange()
+                _observingFacilityTypeSpecificDetails = earthFacility
+            }
+
+        }
+
+        return _observingFacilityTypeSpecificDetails!
+    }
 
     //MARK: Internal APIs
     init(_ facility: PolisObservingFacilityDirectory.ObservingFacilityReference) async {
@@ -76,18 +92,7 @@ public protocol ObservingFacilityDetailsImplementing {
 
         await super.init(polisRep: sP, identity: IdentifiableObject(identity: facility.identity))
 
-        //TODO: When we implement more types, this needs to be enhanced.
-        if (facility.placeInTheSolarSystem == .earth) && (facility.gravitationalBodyRelationship == .surfaceFixed) {
-            self.observingFacilityTypeSpecificDetailType = .earthFixed
-
-            let earthFacility = await FixedBaseObservingFacilityDetails(facility: self)
-
-            // This is detail ID like the Fixed Earth Base detail
-            self.facilityLocationDetailsID = earthFacility.id
-
-            await earthFacility.setDidChange()
-            _observingFacilityTypeSpecificDetails = earthFacility
-        }
+        //FIXME: We should create or load various details on request (lazy).
  }
     var facilityDetailsID: UUID?
     var facilityLocationDetailsID: UUID?
@@ -154,6 +159,7 @@ extension ObservingFacility {
 
             // If details do not exist yet, this will throw an exception, and in the catch part we will create the details
             let details = await ObservingFacilityDetails(polisDetails)
+
             return details
         }
         catch {
