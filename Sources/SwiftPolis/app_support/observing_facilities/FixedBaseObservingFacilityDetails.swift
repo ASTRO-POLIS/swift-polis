@@ -37,14 +37,13 @@ import Foundation
         await setDidChange()
     }
 
-    public func placeOnEarth() -> PlaceOnEarth { _placeOnEarth! }
+    public func placeOnEarth() -> PlaceOnEarth? { _placeOnEarth! }
     public func visitingHours(createIfMissing: Bool = false) async -> VisitingHours? {
-        if _visitingHours != nil { return _visitingHours! }
-        else if createIfMissing {
+        if (_visitingHours == nil) && createIfMissing {
             // Now create visitingHours
             self._visitingHours   = await VisitingHours(facilityID: _facilityID)
             self._visitingHoursID = _visitingHours!.id
-            await _visitingHours!.setDidChange()
+            await self._visitingHours!.setDidChange()
         }
         
         return _visitingHours

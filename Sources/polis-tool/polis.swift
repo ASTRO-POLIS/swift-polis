@@ -253,10 +253,10 @@ struct PolisTool {
 
         earthDetails.averageClearNightsPerYear = 100
 
-        place.country = "USA"
-        place.site    = "Texas"
+        place!.country = "USA"
+        place!.site    = "Texas"
 
-        try await place.markAsChanged()
+        try await place!.markAsChanged()
         try await earthDetails.markAsChanged()
     }
 

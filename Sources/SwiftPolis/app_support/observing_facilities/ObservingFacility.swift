@@ -65,7 +65,6 @@ public protocol ObservingFacilityDetailsImplementing {
                 await earthFacility.setDidChange()
                 _observingFacilityTypeSpecificDetails = earthFacility
             }
-
         }
 
         return _observingFacilityTypeSpecificDetails!
