@@ -22,6 +22,7 @@ import Foundation
     public var apartment: String?
     public var district: String?
     public var site: String?                      // e.g. Mount Wilson
+    public var settlement: String?
     public var block: String?
     public var zipCode: String?
     public var province: String?
@@ -80,6 +81,7 @@ import Foundation
         self.apartment          = place.apartment
         self.district           = place.district
         self.site               = place.site
+        self.settlement         = place.settlement
         self.zipCode            = place.zipCode
         self.province           = place.province
         self.regionOrState      = place.regionOrState
@@ -134,6 +136,7 @@ import Foundation
                           apartment: apartment,
                           district: district,
                           site: site,
+                          settlement: settlement,
                           block: block,
                           zipCode: zipCode,
                           province: province,

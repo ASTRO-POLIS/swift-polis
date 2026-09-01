@@ -169,15 +169,18 @@ struct PolisTool {
         }
 
     }
-
+    // The goal is to create as good as possible the data for the Byurakan Observatory
     @MainActor static func createTestFacilityData() async throws {
-        let newFacility = try await storeCoordinator.createObservingFacility(observingFacilityCode: "1234",
+        let newFacility = try await storeCoordinator.createObservingFacility(observingFacilityCode: "123",
                                                                              placeInTheSolarSystem: .earth,
                                                                              gravitationalBodyRelationship: .surfaceFixed)
 
         // Set few attributes
-        newFacility.name = PolisLocalisedText(text: "Test Facility",languageCode: "en")
-        newFacility.shortDescription = PolisLocalisedText(text: "Описание испытательного полигона",languageCode: "ru")
+        newFacility.name                  = PolisLocalisedText(["BYURAKAN  ASTROPHYSICAL  OBSERVATORY  AFTER  V. A.  AMBARTSUMIAN": "en", "Վ․ Հ․  ՀԱՄԲԱՐՁՈՒՄՅԱՆԻ  ԱՆՎԱՆ  ԲՅՈՒՐԱԿԱՆԻ  ԱՍՏՂԱԴԻՏԱՐԱՆ" : "am"])
+        newFacility.shortDescription      = PolisLocalisedText(text: "Byurakan Astrophysical Observatory as a Research Institute.",languageCode: "en")
+        newFacility.abbreviation          = "BAO"
+        newFacility.startTime             = Date(timeIntervalSinceNow: -925930648000)
+        newFacility.polisRegistrationTime = Date.now
 
         try await newFacility.markAsChanged()
 
@@ -230,7 +233,11 @@ struct PolisTool {
         let facility   = os.observingFacilities().first!
         let newDetails = try await facility.observingFacilityDetails()
 
-        newDetails!.website = URL(string:"https://example.com")
+
+
+        newDetails!.website              = URL(string:"https://www.bao.am")
+        newDetails!.scientificObjectives = PolisLocalisedText(text: "The main scientific goals of the observatory are: the study of the structure and evolution of galaxies, the study of the formation and evolution of the Universe, the study of the origin of the elements, the study of the processes of star and planetary formation, and the study of the processes of star and planetary evolution.", languageCode: "en")
+        newDetails?.history              = PolisLocalisedText(text: "Byurakan Astrophysical Observatory (BAO) was founded in 1946 on the initiative of academician Victor Ambartsumian, who became the first director of the observatory. It is located on the picturesque southern slope of the mountain Aragats. At the observatory there are 12 observational instruments installed, the larger ones being 2.6 m Cassegrain telescope and 1m Schmidt telescope. Scientific researches of the observatory are related mainly with the instability phenomena taking place in the Universe. Since 1946 numerous scientific meetings have been held in Byurakan including four symposia and a colloquium of the IAU. The architectural ensemble of the observatory comprises the administrative buildings and telescope towers. Buildings constructed during 1940-1950’s were designed by the famous Armenian architect Samvel Safarian, while the ones constructed during 1960-1980’s by Sargis Gurzadian. Besides the scientific research the observatory fulfils an informative activity by organising excursions and lectures for amateurs. Since 1998 the Byurakan Observatory bears the name of V. A. Ambartsumian.", languageCode: "en")
 
         // Now add an Artifact and save it
         // If there is an existing Artifact - edit it. Otherwise create a new one
@@ -240,7 +247,7 @@ struct PolisTool {
             print("   ---> No artifacts yet!")
             let artifact = await newDetails!.addArtifactWith(artifactType: .museum)
 
-            artifact.name            = PolisLocalisedText(text: "An Astronomy museum", languageCode: "en")
+            artifact.name            = PolisLocalisedText(text: "V. A. Ambartsumian Museum", languageCode: "en")
             artifact.lifecycleStatus = .active
 
             try await artifact.markAsChanged()
@@ -251,10 +258,12 @@ struct PolisTool {
         let earthDetails = await facility.observingFacilityTypeSpecificDetail() as! FixedBaseObservingFacilityDetails
         let place        = earthDetails.placeOnEarth()
 
-        earthDetails.averageClearNightsPerYear = 100
+        earthDetails.averageClearNightsPerYear = 143
 
-        place!.country = "USA"
-        place!.site    = "Texas"
+        place!.country    = "Armenia"
+        place?.countryID  = "AM"
+        place!.settlement = "Byurakan"
+        place!.altitude   = PolisPropertyValue(valueKind: .double, value: "1400.0",  unit: "m")
 
         try await place!.markAsChanged()
         try await earthDetails.markAsChanged()

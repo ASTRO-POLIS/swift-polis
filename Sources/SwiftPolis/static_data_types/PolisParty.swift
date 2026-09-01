@@ -121,6 +121,7 @@ public struct PolisPlaceOnEarth: Codable, Equatable, Identifiable, Sendable, Pol
     public var apartment: String?
     public var district: String?
     public var site: String?                      // e.g. Mount Wilson
+    public var settlement: String?                // e.g. Atlanta
     public var block: String?
     public var zipCode: String?
     public var province: String?
@@ -164,6 +165,7 @@ public struct PolisPlaceOnEarth: Codable, Equatable, Identifiable, Sendable, Pol
                 apartment: String?                 = nil,
                 district: String?                  = nil,
                 site: String?                      = nil,
+                settlement: String?                = nil,
                 block: String?                     = nil,
                 zipCode: String?                   = nil,
                 province: String?                  = nil,
@@ -198,6 +200,7 @@ public struct PolisPlaceOnEarth: Codable, Equatable, Identifiable, Sendable, Pol
         self.apartment          = apartment
         self.district           = district
         self.site               = site
+        self.settlement         = settlement
         self.block              = block
         self.zipCode            = zipCode
         self.province           = province
@@ -301,6 +304,7 @@ extension PolisPlaceOnEarth {
         case apartment
         case district
         case site
+        case settlement
         case block
         case zipCode            = "zip_code"
         case province

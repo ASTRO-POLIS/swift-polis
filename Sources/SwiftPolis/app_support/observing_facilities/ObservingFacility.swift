@@ -90,9 +90,8 @@ public protocol ObservingFacilityDetailsImplementing {
         self.facilityLocationDetailsID              = facility.facilityLocationDetailsID
 
         await super.init(polisRep: sP, identity: IdentifiableObject(identity: facility.identity))
+    }
 
-        //FIXME: We should create or load various details on request (lazy).
- }
     var facilityDetailsID: UUID?
     var facilityLocationDetailsID: UUID?
 
